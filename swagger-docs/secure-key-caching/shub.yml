@@ -1,0 +1,653 @@
+basePath: /sgx-ah/v1
+definitions:
+  HostTenantMapping:
+    description: HostTenantMapping struct is the database schema of a HostTenantMappings
+      table
+    properties:
+      created_time:
+        format: date-time
+        type: string
+        x-go-name: CreatedTime
+      deleted:
+        type: boolean
+        x-go-name: Deleted
+      host_hardware_uuid:
+        type: string
+        x-go-name: HostHardwareUUID
+      id:
+        type: string
+        x-go-name: Id
+      tenant_uuid:
+        type: string
+        x-go-name: TenantUUID
+      updated_time:
+        format: date-time
+        type: string
+        x-go-name: UpdatedTime
+    type: object
+    x-go-package: intel/isecl/shub/types
+  HostTenantMappingRequest:
+    properties:
+      hardware_uuids:
+        items:
+          type: string
+        type: array
+        x-go-name: HardwareUUID
+      tenant_id:
+        type: string
+        x-go-name: TenantId
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  HostTenantMappingResponse:
+    properties:
+      mappings:
+        items:
+          $ref: '#/definitions/TenantHostMapping'
+        type: array
+        x-go-name: Mapping
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  HostTenantMappings:
+    items:
+      $ref: '#/definitions/HostTenantMapping'
+    type: array
+    x-go-package: intel/isecl/shub/types
+  Plugin:
+    properties:
+      name:
+        type: string
+        x-go-name: PluginName
+      properties:
+        items:
+          $ref: '#/definitions/PluginProperty'
+        type: array
+        x-go-name: Properties
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  PluginProperty:
+    properties:
+      key:
+        type: string
+        x-go-name: Key
+      value:
+        type: string
+        x-go-name: Value
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  PluginReq:
+    properties:
+      name:
+        type: string
+        x-go-name: PluginName
+      plugins:
+        items:
+          $ref: '#/definitions/Plugin'
+        type: array
+        x-go-name: Plugins
+    type: object
+    x-go-package: intel/isecl/shub/swagger/docs
+  Tenant:
+    properties:
+      deleted:
+        type: boolean
+        x-go-name: TenantDeleted
+      id:
+        type: string
+        x-go-name: TenantId
+      name:
+        type: string
+        x-go-name: TenantName
+      plugins:
+        items:
+          $ref: '#/definitions/Plugin'
+        type: array
+        x-go-name: Plugins
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  TenantHostMapping:
+    properties:
+      hardware_uuid:
+        type: string
+        x-go-name: HardwareUUID
+      mapping_id:
+        type: string
+        x-go-name: MappingId
+      tenant_id:
+        type: string
+        x-go-name: TenantId
+    type: object
+    x-go-package: intel/isecl/shub/resource
+  Tenants:
+    items:
+      $ref: '#/definitions/Tenant'
+    type: array
+    x-go-package: intel/isecl/shub/swagger/docs
+host: sgx-ah.com:14000
+info:
+  description: |-
+    SGX Hub is responsible for getting host’s platform details from SGX Host Verification Service (SHVS) and pushing the details to orchestrator.
+    SGX Hub uses the node SGX information obtained from SHVS to update the OpenStack (custom traits) or K8S (CRDs) orchestrators.
+    SGX Hub registers the tenant and maintains mapping of tenantID and hardwareUUID. SGX Hub listening port is user-configurable.
+  license:
+    name: 'Copyright (C) 2020 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause'
+  title: SGX HUB
+  version: "1.0"
+paths:
+  /host-assignments:
+    get:
+      description: |
+        Searches for the tenant to host(s) mappings based on the provided filter criteria in the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: queryHostTenantMappings
+      parameters:
+      - description: Hardware UUID of the host.
+        format: uuid
+        in: query
+        name: host_hardware_uuid
+        type: string
+      - description: Unique UUID of the tenant.
+        format: uuid
+        in: query
+        name: tenant_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the tenant to host mapping information.
+          schema:
+            $ref: '#/definitions/HostTenantMappings'
+      security:
+      - bearerAuth: []
+      tags:
+      - Host-assignment
+      x-sample-call-endpoint: https://sgx-ah.com:14000/sgx-ah/v1/host-assignments?tenant_id=b182fdf4-46f3-4287-b8b7-26bc0fb3e3df
+      x-sample-call-output: |
+        [
+          {
+              "id": "16b73650-a372-43a7-af83-78b558c9a572",
+              "host_hardware_uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
+              "tenant_uuid": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+              "created_time": "2020-06-16T08:43:46.72043Z",
+              "updated_time": "2020-06-16T08:43:46.720431Z",
+              "deleted": false
+          }
+        ]
+    post:
+      consumes:
+      - application/json
+      description: |
+        Creates or updates a tenant to host(s) mappings by assigning the host(s) to the tenant
+        in the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: createHostTenantMapping
+      parameters:
+      - in: body
+        name: request body
+        required: true
+        schema:
+          $ref: '#/definitions/HostTenantMappingRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created the tenant to host mapping.
+          schema:
+            $ref: '#/definitions/HostTenantMappingResponse'
+      security:
+      - bearerAuth: []
+      tags:
+      - Host-assignment
+      x-sample-call-endpoint: https://sgx-ah.com:14000/sgx-ah/v1/host-assignments
+      x-sample-call-input: |
+        {
+          "tenant_id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+          "hardware_uuids": [
+              "88888888-8887-1214-0516-3707a5a5a5a5"
+          ]
+        }
+      x-sample-call-output: |
+        {
+          "mappings": [
+              {
+                  "mapping_id": "16b73650-a372-43a7-af83-78b558c9a572",
+                  "tenant_id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+                  "hardware_uuid": "88888888-8887-1214-0516-3707a5a5a5a5"
+              }
+          ]
+        }
+  /host-assignments/{id}:
+    delete:
+      description: |
+        Deletes a tenant to host mapping information associated with a specified mapping id in the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: deleteTenantMapping
+      parameters:
+      - description: Unique Mapping ID.
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted tenant to host mapping information.
+      security:
+      - bearerAuth: []
+      tags:
+      - Host-assignment
+      x-sample-call-endpoint: |
+        https://sgx-ah.com:14000/sgx-ah/v1/host-assignments/16b73650-a372-43a7-af83-78b558c9a572
+      x-sample-call-output: |
+        204 No content
+    get:
+      description: |
+        Retrieves a tenant to host mapping information associated with a specified mapping id from the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: getHostTenantMapping
+      parameters:
+      - description: Unique Mapping ID.
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the tenant to host mapping information.
+          schema:
+            $ref: '#/definitions/HostTenantMapping'
+      security:
+      - bearerAuth: []
+      tags:
+      - Host-assignment
+      x-sample-call-endpoint: |
+        https://sgx-ah.com:14000/sgx-ah/v1/host-assignments/16b73650-a372-43a7-af83-78b558c9a572
+      x-sample-call-output: |
+        {
+          "id": "16b73650-a372-43a7-af83-78b558c9a572",
+          "host_hardware_uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
+          "tenant_uuid": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+          "created_time": "2020-06-16T08:43:46.72043Z",
+          "updated_time": "2020-06-16T08:43:46.720431Z",
+          "deleted": false
+        }
+  /tenants:
+    get:
+      description: |
+        Searches for the tenant configuration based on the specified filter criteria in the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: queryTenants
+      parameters:
+      - description: Name of the tenant.
+        in: query
+        name: nameEqualTo
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the tenant configuration based on provided
+            filter criteria.
+          schema:
+            $ref: '#/definitions/Tenants'
+      security:
+      - bearerAuth: []
+      tags:
+      - Tenant
+      x-sample-call-endpoint: https://sgx-ah.com:14000/sgx-ah/v1/tenants?nameEqualTo=km-os-223
+      x-sample-call-output: |
+        [
+          {
+              "id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+              "name": "km-os-223",
+              "deleted": false,
+              "plugins": [
+                  {
+                      "name": "Nova",
+                      "properties": [
+                          {
+                              "key": "api.endpoint",
+                              "value": "http://openstack.server.com:8774"
+                          },
+                          {
+                              "key": "auth.endpoint",
+                              "value": "http://openstack.server.com:5000"
+                         },
+                          {
+                              "key": "auth.version",
+                              "value": "v2"
+                          },
+                          {
+                              "key": "tenant.name",
+                              "value": "default"
+                          },
+                          {
+                              "key": "plugin.provider",
+                              "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                          }
+                      ]
+                  }
+              ]
+          }
+        ]
+    post:
+      consumes:
+      - application/json
+      description: |
+        Registers a tenant. A tenant controls SGX hosts that are managed by an orchestrator that is also under the control of the tenant.
+        SGX Hub pushes the tenant's hosts SGX data to the tenant's orchestrator.
+        It is registered by providing tenant configuration along with plugins in the request body.
+        Supported plugin names are nova and kubernetes in the tenant configuration.
+        A valid bearer token is required to authorize this REST call.
+      operationId: registerTenant
+      parameters:
+      - in: body
+        name: request body
+        required: true
+        schema:
+          $ref: '#/definitions/PluginReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully registered the tenant. The boolean attribute "deleted"
+            specifies whether the tenant is present or deleted from the SGX Hub database.
+          schema:
+            $ref: '#/definitions/Tenant'
+      security:
+      - bearerAuth: []
+      tags:
+      - Tenant
+      x-sample-call-endpoint: https://sgx-ah.com:14000/sgx-ah/v1/tenants
+      x-sample-call-input: |
+        {
+         "name": "km-os-223",
+            "plugins": [
+            {
+                   "name": "Nova",
+                   "properties": [
+                   {
+                           "key": "api.endpoint",
+                           "value": "http://openstack.server.com:8774"
+                   },
+                   {
+                           "key": "auth.endpoint",
+                           "value": "http://openstack.server.com:5000"
+                   },
+                   {
+                           "key": "auth.version",
+                           "value": "v2"
+                   },
+                   {
+                           "key": "user.name",
+                           "value": "admin"
+                   },
+                   {
+                           "key": "user.password",
+                           "value": "password"
+                   },
+                   {
+                           "key": "tenant.name",
+                           "value": "default"
+                   },
+                   {
+                           "key": "plugin.provider",
+                           "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                   }
+                   ]
+            }
+            ]
+        }
+      x-sample-call-output: |
+        {
+          "id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+          "name": "km-os-223",
+          "deleted": false,
+          "plugins": [
+              {
+                  "name": "Nova",
+                  "properties": [
+                      {
+                          "key": "api.endpoint",
+                          "value": "http://openstack.server.com:8774"
+                      },
+                      {
+                          "key": "auth.endpoint",
+                          "value": "http://openstack.server.com:5000"
+                      },
+                      {
+                          "key": "auth.version",
+                          "value": "v2"
+                      },
+                      {
+                          "key": "tenant.name",
+                          "value": "default"
+                      },
+                      {
+                          "key": "plugin.provider",
+                          "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                      }
+                  ]
+              }
+          ]
+        }
+  /tenants/{id}:
+    delete:
+      description: |
+        Deletes a tenant configuration associated with the specified tenant id from the SGX Hub  database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: deleteTenant
+      parameters:
+      - description: Unique ID of the tenant.
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Successfully deleted the tenant configuration associated with the specified
+            tenant id.
+      security:
+      - bearerAuth: []
+      tags:
+      - Tenant
+      x-sample-call-endpoint: |
+        https://sgx-ah.com:14000/sgx-ah/v1/tenants/30a59ee5-0475-40fb-adbf-992039cc2d0b
+      x-sample-call-output: |
+        204 No content
+    get:
+      description: |
+        Retrieves the tenant configuration associated with a specified tenant id from the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: getTenant
+      parameters:
+      - description: Unique ID of the tenant.
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the tenant configuration associated
+            with the specified tenant id.
+          schema:
+            $ref: '#/definitions/Tenant'
+      security:
+      - bearerAuth: []
+      tags:
+      - Tenant
+      x-sample-call-endpoint: |
+        https://sgx-ah.com:14000/sgx-ah/v1/tenants/b182fdf4-46f3-4287-b8b7-26bc0fb3e3df
+      x-sample-call-output: |
+        {
+          "id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+          "name": "km-os-223",
+          "deleted": false,
+          "plugins": [
+              {
+                  "name": "Nova",
+                  "properties": [
+                      {
+                          "key": "api.endpoint",
+                          "value": "http://openstack.server.com:8774"
+                      },
+                      {
+                          "key": "auth.endpoint",
+                          "value": "http://openstack.server.com:5000"
+                      },
+                      {
+                          "key": "auth.version",
+                          "value": "v2"
+                      },
+                      {
+                          "key": "tenant.name",
+                          "value": "default"
+                      },
+                      {
+                          "key": "plugin.provider",
+                          "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                      }
+                  ]
+              }
+          ]
+        }
+    put:
+      consumes:
+      - application/json
+      description: |
+        Updates a tenant configuration associated with a specified tenant id from the SGX Hub database.
+        A valid bearer token is required to authorize this REST call.
+      operationId: updateTenant
+      parameters:
+      - description: Unique ID of the tenant.
+        format: uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - in: body
+        name: request body
+        required: true
+        schema:
+          $ref: '#/definitions/PluginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated the tenant configuration.
+          schema:
+            $ref: '#/definitions/Tenant'
+      security:
+      - bearerAuth: []
+      tags:
+      - Tenant
+      x-sample-call-endpoint: https://sgx-ah.com:14000/sgx-ah/v1/tenants/b182fdf4-46f3-4287-b8b7-26bc0fb3e3df
+      x-sample-call-input: |
+        {
+            "name": "km-os-223-updated",
+            "plugins": [
+            {
+                   "name": "Nova",
+                   "properties": [
+                   {
+                           "key": "api.endpoint",
+                           "value": "http://openstack.server.com:8774"
+                   },
+                   {
+                           "key": "auth.endpoint",
+                           "value": "http://openstack.server.com:5000"
+                   },
+                   {
+                           "key": "auth.version",
+                           "value": "v2"
+                   },
+                   {
+                           "key": "user.name",
+                           "value": "admin"
+                   },
+                   {
+                           "key": "user.password",
+                           "value": "password"
+                   },
+                   {
+                           "key": "tenant.name",
+                           "value": "default"
+                   },
+                   {
+                           "key": "plugin.provider",
+                           "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                   }
+                   ]
+            }
+            ]
+        }
+      x-sample-call-output: |
+        {
+          "id": "b182fdf4-46f3-4287-b8b7-26bc0fb3e3df",
+          "name": "km-os-223-updated",
+          "deleted": false,
+          "plugins": [
+              {
+                  "name": "Nova",
+                  "properties": [
+                      {
+                          "key": "api.endpoint",
+                          "value": "http://openstack.server.com:8774"
+                      },
+                      {
+                          "key": "auth.endpoint",
+                          "value": "http://openstack.server.com:5000"
+                      },
+                      {
+                          "key": "auth.version",
+                          "value": "v2"
+                      },
+                      {
+                          "key": "tenant.name",
+                          "value": "default"
+                      },
+                      {
+                          "key": "plugin.provider",
+                          "value": "com.intel.attestationhub.plugin.nova.NovaPluginImpl"
+                      }
+                  ]
+              }
+          ]
+        }
+responses:
+  HostTenantMapping:
+    description: HostTenantMapping response payload
+    schema:
+      $ref: '#/definitions/HostTenantMapping'
+  HostTenantMappingResponse:
+    description: HostTenantMappingResponse response payload
+    schema:
+      $ref: '#/definitions/HostTenantMappingResponse'
+  HostTenantMappings:
+    description: HostTenantMappings response payload
+    schema:
+      $ref: '#/definitions/HostTenantMappings'
+  Tenant:
+    description: Tenant resposne payload
+    schema:
+      $ref: '#/definitions/Tenant'
+  Tenants:
+    description: Tenants resposne payload
+    schema:
+      $ref: '#/definitions/Tenants'
+schemes:
+- https
+securityDefinitions:
+  bearerAuth:
+    description: Enter your bearer token in the format **Bearer &lt;token&gt;**
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

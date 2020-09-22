@@ -1,0 +1,280 @@
+# **Secure Key Caching (SKC) Quick Start Guide**
+
+[[_TOC_]]
+
+## **1. Hardware & OS Requirements**
+
+1. **Three Hosts or VMs**
+
+   a.    Build System (Building and Deploying)
+
+   b.    CSP managed Services 
+
+   c.    Enterprise Managed Services
+
+2. **SGX Enabled Host**
+
+3. **OS Requirements**
+
+   a.    RHEL 8.2 or later. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
+
+   **Assumption:**
+
+   CSP and Enterprise side deployment will be done through Ansible-Galaxy role;
+
+## **2. Network Requirements**
+
+1. **Build System**
+
+   a.    Internet access required
+
+2. **CSP Managed Services** 
+
+   a.    Internet access required for SCS_1;
+
+3. **Enterprise Managed Services**
+
+   a.    Internet access required for SCS_2;
+
+4. **SGX Enabled Host**
+
+   a.    Internet access required to access KBS running on Enterprise environment
+
+**Setting Proxy and No Proxy**
+
+```
+export http_proxy=http://<proxy-url>:<proxy-port>
+export https_proxy=http://<proxy-url>:<proxy-port>
+export no_proxy=0.0.0.0,127.0.0.1,localhost,<Any other systems>
+```
+
+**Firewall Settings**
+
+***Sample***: Disable firewall
+
+```
+systemctl firewalld stop
+```
+
+
+
+## **3. RHEL Package Requirements**
+
+Access required for the following packages in all systems
+
+1. **BaseOS**
+
+2. **Appstream**
+
+3. **CodeReady**
+
+**Sample RHEL Repo Configuration**
+
+```
+[codeready-builder-for-rhel-8-x86_64-rpms]
+baseurl = <URL>/codeready-builder-for-rhel-8-x86_64-rpms
+enabled = 1
+gpgcheck = 0
+name =  CodeReady Builder Local Repo
+
+[rhel-8-for-x86_64-baseos-rpms]
+baseurl = <URL>/rhel-8-for-x86_64-baseos-rpms
+enabled = 1
+gpgcheck = 0
+name =  RHEL8 BaseOS Local Repo
+
+[rhel-8-for-x86_64-appstream-rpms]
+baseurl = <URL>/rhel-8-for-x86_64-appstream-rpms
+enabled = 1
+gpgcheck = 0
+name =  RHEL8 appstreams Local Repo
+```
+
+
+
+## **4. System Tools and Utilities**
+
+**System Tools and utils**
+
+```
+yum install git wget tar python3 yum-utils
+```
+
+***Softlink for Python3***
+
+```
+ln -s /usr/bin/python3 /usr/bin/python
+ln -s /usr/bin/pip3 /usr/bin/pip
+```
+
+***Repo Tool***
+
+```
+tmpdir=$(mktemp -d)
+git clone https://gerrit.googlesource.com/git-repo $tmpdir
+install -m 755 $tmpdir/repo /usr/local/bin
+rm -rf $tmpdir
+```
+
+## **5. Deployment & Testing Tools**
+
+**Build System**
+
+**Deployment Tools**
+
+**Install Ansible and Pull ISECL role from Ansible Galaxy**
+
+```
+<yum install ansible>
+<pull ansible-galaxy role for ISECL>
+```
+
+**Testing Tools**
+
+**Install Postman & pull collections**
+
+```
+<yum install postman>
+<pull postman collections>
+```
+
+## **6. System User Configuration**
+
+**Build System**
+
+**Setup ~/.gitconfig to update the git user details. A sample config is provided below**
+
+GIT Configuration**
+
+```
+[user]
+        name = Siva Jonnalagadda
+        email = siva.jonnalagadda@intel.com
+[color]
+        ui = auto
+ [push]
+        default = matching 
+```
+
+## **7. Build Services, Libraries and Install packages**
+
+**Pulling Source Code**
+
+```
+mkdir -p /root/workspace && cd /root/workspace
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.0.0 -m manifest/skc.xml
+repo sync
+```
+
+**Building**
+
+**Build SKC Services**
+
+**Build Pre-requisites**
+
+```
+make all
+```
+
+**Build SGX Agent Package**
+
+**Build Pre-requisites**
+
+```
+cd sgx_agent/build_scripts
+./sgxagent_build.sh
+```
+
+**Building SKC Library Package**
+
+**Build Pre-requisites**
+
+```
+cd ../../sgx_agent/build_scripts
+./skc_library_build.sh
+```
+
+**Copy Binaries to a clean folder**
+
+```
+<Copy binaries and Packages to central repo>
+```
+
+## 8. Deployment
+
+**Assumption:** Ansible-Galaxy role deploys both CSP managed (Services and Agent) and Enterprise Managed (services and workload)
+
+**Deployment Using Ansible:**
+
+**Update Ansible Galaxy Configuration in Build System:**
+
+1. Update inventories (MUST)
+
+2. Update variables (MUST)
+
+3. Deploy Playbook for SKC
+
+**Deployment**
+
+```
+cd <Ansible Folder>
+Update Inventories <Sample>
+Update Variables <Sample>
+<<   ansible-playbook -i <inventories> <skc-playbook>  >>
+```
+
+**Deployment Using Binaries**
+
+**TBD**
+
+## **9. Testing Using Postman Collections**
+
+1. Update inventories in postman collections matching deployment
+
+2. Update config files matching deployment
+
+3. Execute Use cases 
+
+**Testing**
+
+```
+Update Postman Inventories <Sample>
+Update Postman Variables <Sample>
+Execute Postman Collections for the use cases
+```
+
+
+
+## Appendix
+
+**User Specific Environment**
+
+**SSH Key Generation**
+
+```
+ssh-keygen -t rsa
+```
+
+**OpenSSL Config**
+
+[engine_section]
+pkcs11 = pkcs11_section
+
+[pkcs11_section]
+engine_id = pkcs11
+dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+init = 0
+
+**SGX Measurement example**
+
+Retrieving Quote+Public key - ECDSA
+SGX_ISSUER[size:32]:cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f
+**SGX_MEASUREMENT[size:32]:31085b62833ed5490f71f1d051b1dc5a0c078af8671419752a903692d0cfb865**
+SGX_CONFIG_ID[size:64]:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+SGX_PRODUCT_ID[size:2]:00
+SGX_EXT_PRODUCT_ID[size:16]:00000000000000000000000000000000
+SGX_CONFIG_ID_SVN[size:2]:00
+SGX_ENCLAVE_SVN[size:2]:1
+Retrieving Quote+Public key - EPID
+
