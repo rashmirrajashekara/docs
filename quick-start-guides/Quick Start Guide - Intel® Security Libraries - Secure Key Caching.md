@@ -16,7 +16,7 @@
 
 3. **OS Requirements**
 
-   a.    RHEL 8.2 or later. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
+   a.    RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
    **Assumption:**
 
@@ -116,6 +116,28 @@ install -m 755 $tmpdir/repo /usr/local/bin
 rm -rf $tmpdir
 ```
 
+***Golang Installation***
+
+```
+wget https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
+tar -xzf go1.14.1.linux-amd64.tar.gz
+sudo mv go /usr/local
+export GOROOT=/usr/local/go
+export PATH=$GOROOT/bin:$PATH
+rm -rf go1.14.1.linux-amd64.tar.gz
+```
+
+***Maven Installation***
+
+```
+wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+tar -xvf apache-maven-3.6.3-bin.tar.gz
+mv apache-maven-3.6.3/ /usr/local/
+rm -rf apache-maven-3.6.3-bin.tar.gz
+export M2_HOME=/usr/local/apache-maven-3.6.3/
+export PATH=$M2_HOME/bin:$PATH
+```
+
 ## **5. Deployment & Testing Tools**
 
 **Build System**
@@ -134,8 +156,6 @@ rm -rf $tmpdir
 **Install Postman & pull collections**
 
 ```
-<yum install postman>
-<pull postman collections>
 ```
 
 ## **6. System User Configuration**
@@ -148,8 +168,8 @@ GIT Configuration**
 
 ```
 [user]
-        name = Siva Jonnalagadda
-        email = siva.jonnalagadda@intel.com
+        name = <User name>
+        email = <User Email Id>
 [color]
         ui = auto
  [push]
@@ -162,11 +182,14 @@ GIT Configuration**
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.0.0 -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
 repo sync
 ```
 
 **Building**
+```
+make all
+```
 
 **Build SKC Services**
 
