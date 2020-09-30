@@ -66,35 +66,7 @@ rm -rf $tmpdir
 
 
 
-## **4. Deployment & Usecase Workflow Tools Installation**
-
-The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
-
-#### Deployment Tools Installation
-
-* Install Ansible on Build VM
-
-  ```shell
-  pip3 install ansible==2.9.10
-  ```
-
-* Download role from `ansible-galaxy`
-
-  ```shell
-  ansible-galaxy install intel-secl.ansible
-  ```
-
-  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository `intel-secl/ansible-role` for specific release tags
-
-#### Usecases Workflow Tools Installation
-
-* Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
-
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
-
-
-
-## **5. Build Services and packages**
+## **4. Build Services and packages**
 
 The below steps needs to be carried out on the Build and Deployment VM
 
@@ -105,6 +77,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 * RHEL 8.2 VM for building repos
 
 * Enable the following RHEL repos:
+
   * `rhel-8-for-x86_64-appstream-rpms`
   * `rhel-8-for-x86_64-baseos-rpms`
 
@@ -228,6 +201,34 @@ repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.
 repo sync
 make all
 ```
+
+
+
+## **5. Deployment & Usecase Workflow Tools Installation**
+
+The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
+
+#### Deployment Tools Installation
+
+* Install Ansible on Build VM
+
+  ```shell
+  pip3 install ansible==2.9.10
+  ```
+
+* Download role from `ansible-galaxy`
+
+  ```shell
+  ansible-galaxy install intel-secl.ansible
+  ```
+
+  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository `intel-secl/ansible-role` for specific release tags
+
+#### Usecases Workflow Tools Installation
+
+* Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
+
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
 
 
 
@@ -412,7 +413,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-## Appendix
+## **Appendix**
 
 ##### Running behind Proxy
 
