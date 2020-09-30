@@ -66,7 +66,7 @@ rm -rf $tmpdir
 
 
 
-## **4. Deployment & Usecase Workflow Tools Installation**
+## **4. Deployment & Usecase Workflow Tools Installation**
 
 The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
@@ -98,15 +98,106 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 The below steps needs to be carried out on the Build and Deployment VM
 
-#### Building from Source
+#### Pre-requisites
 
-```shell
-mkdir -p /root/isecl && cd /root/isecl
-```
+* The repos can be built only as `root` user
+
+* RHEL 8.2 VM for building repos
+
+* Enable the following RHEL repos:
+  * `rhel-8-for-x86_64-appstream-rpms`
+  * `rhel-8-for-x86_64-baseos-rpms`
+
+* Following packages need to be installed for building Foundational & Workload Security usecases
+
+  ```shell
+  dnf install -y java-1.8.0-openjdk.x86_64 wget gcc gcc-c++ ant git patch zip unzip make tpm2-tss-2.0.0-4.el8.x86_64 tpm2-abrmd-2.1.1-3.el8.x86_64 openssl-devel
+  ```
+
+  ```shell
+  dnf install -y https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/m/makeself-2.2.0-3.el7.noarch.rpm \
+  	       http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/tpm2-abrmd-devel-2.1.1-3.el8.x86_64.rpm \
+                 http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/trousers-devel-0.3.14-4.el8.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm 
+  ```
+
+* Extract Install `go` version > `go1.11.4` & <= `go1.14.1` from `https://golang.org/dl/` and set `GOROOT` & `PATH`
+
+  ```shell
+  export GOROOT=<path_to_go>
+  export PATH=$GOROOT/bin:$PATH
+  ```
+
+* Extract and Install `Maven`, version >= `3.6.3` from `https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz` & set in `PATH`
+
+  ```shell
+  export M2_HOME=<path_to_maven>
+  export PATH=$M2_HOME/bin:$PATH
+  ```
+
+  - Add the below profile element under the `<profiles>` section of `settings.xml` located under `<path_to_maven>/conf/` folder
+
+    ```xml
+    <profile>
+        <id>artifacts</id>
+        <repositories>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <snapshots><enabled>false</enabled></snapshots>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+        </repositories>
+    </profile>
+    ```
+
+  - Enable `<activeProfiles>` to include the above profile.
+
+    ```xml
+    <activeProfiles>
+        <activeProfile>artifacts</activeProfile>
+    </activeProfiles>
+    ```
+
+  - If you are behind a proxy, enable proxy setting under maven `settings.xml`
+
+    ```xml
+    <!-- proxies
+    | This is a list of proxies which can be used on this machine to connect to the network.
+    | Unless otherwise specified (by system property or command-line switch), the first proxy
+    | specification in this list marked as active will be used.
+    |-->
+    <proxies>
+        <!-- proxy
+        | Specification for one proxy, to be used in connecting to the network.
+        |
+        <proxy>
+        <id>optional</id>
+        <active>true</active>
+        <protocol>http</protocol>
+        <username>proxyuser</username>
+        <password>proxypass</password>
+        <host>proxy.host.net</host>
+        <port>80</port>
+        <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+        </proxy>
+        -->
+    </proxies>  
+    ```
+
+#### Building
 
 ##### Foundational Security Usecase
 
 ```shell
+mkdir -p /root/isecl/fs && cd /root/isecl/fs
 repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/fs.xml
 repo sync
 make all
@@ -116,6 +207,7 @@ make all
 
 ```shell
 #Container Confidentiality with Docker Runtime
+mkdir -p /root/isecl/cc-docker.xml && cd /root/isecl/cc-docker.xml
 repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc.xml
 repo sync
 make all
@@ -123,6 +215,7 @@ make all
 #or
 
 #Container Confidentiality with CRIO Runtime
+mkdir -p /root/isecl/cc-crio.xml && cd /root/isecl/cc-crio.xml
 ??
 repo sync
 make all
@@ -130,6 +223,7 @@ make all
 #or 
 
 #VM Confidentiality
+mkdir -p /root/isecl/vmc.xml && cd /root/isecl/vmc.xml
 repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
 repo sync
 make all
@@ -177,7 +271,7 @@ git checkout <release-tag of choice>
 
 #### Update Ansible Inventory
 
-The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
+The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
 
 ```
 [CSP]
