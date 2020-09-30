@@ -214,8 +214,8 @@ GIT Configuration**
 
 ```
 [user]
-        name = <User name>
-        email = <User Email Id>
+        name = John Doe
+        email = john.doe@abc.com
 [color]
         ui = auto
  [push]
@@ -232,18 +232,15 @@ repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.
 repo sync
 ```
 
-**Building**
+**Building All SKC Components**
 ```
 make
-```
 
-**Build SKC Services**
-
-**Build Pre-requisites**
+This script installs the following packages
+    wget gcc gcc-c++ ant git zip java-1.8.0 make makeself
 
 ```
-make
-```
+
 
 **Build SGX Agent Package**
 
@@ -252,8 +249,11 @@ make
 ```
 cd utils/build/skc-tools/sgx_agent/build_scripts
 ./sgxagent_build.sh
-```
 
+This script installs the following packages
+    wget tar git gcc-c++ make curl-devel makeself
+```
+    
 **Building SKC Library Package**
 
 **Build Pre-requisites**
@@ -261,7 +261,11 @@ cd utils/build/skc-tools/sgx_agent/build_scripts
 ```
 cd utils/build/skc-tools/skc_library/build_scripts
 ./skc_library_build.sh
+
+This script installs the following packages
+    bc wget tar git gcc-c++ make automake autoconf libtool yum-utils p11-kit-devel cppunit-devel openssl-devel
 ```
+
 
 **Copy Binaries to a clean folder**
 
