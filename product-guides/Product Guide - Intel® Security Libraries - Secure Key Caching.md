@@ -1,7 +1,7 @@
 # Intel® Security Libraries - Datacenter Secure Key Caching
 
 ## Product Guide
-### August 2020
+### October 2020
 
 ### Revision 3.1
 
@@ -147,7 +147,7 @@ The SGX Agent resides on physical servers and reports on platform SGX-related in
 
 ## Integration Hub
 
-The Integration Hub (iHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the SGX compute nodes information from the SGX Host Verification Service (SHVS) and pushes it to Kubernetes or Open stack. SHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that SHUB pushes to Kubernetes and Open stack consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
+The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the SGX compute nodes information from the SGX Host Verification Service (SHVS) and pushes it to Kubernetes or Open stack. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes and Open stack consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
 ## Key Broker Service
 
@@ -223,7 +223,7 @@ Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are call
 
 The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). The SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
-The platform information can optionally be made available to Kubernetes via the SGX Hub (SHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
+The platform information can optionally be made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
 
 ![](Images/image-20200727163158892.png)
 
@@ -498,8 +498,6 @@ SCS: scs_aas_curl.sh
 SHVS: shvs_aas_curl.sh
 
 SGX-AGENT: sgx_agent_aas.sh
-
-SHUB: shub_aas_curl.sh
 
 SQVS: sqvs_aas_curl.sh
 
@@ -842,9 +840,9 @@ To install the SGX Integration Hub, follow these steps:
 
 2.  Create the ihub.env installation answer file. See the sample file below
 
-​           IHUB_SERVICE_USERNAME =< SHUB service user username > 
+​           IHUB_SERVICE_USERNAME =< IHUB service user username > 
 
-​           IHUB_SERVICE_PASSWORD=< SHUB service user password > 
+​           IHUB_SERVICE_PASSWORD=< IHUB service user password > 
 
 ​           ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
 
@@ -1368,7 +1366,7 @@ Contains executables and scripts.
 
 Contains the config.yml configuration file.
 
-## SGX Attestation Hub
+## Integration Hub
 
 ### Installation Answer File
 
@@ -1393,51 +1391,51 @@ Contains the config.yml configuration file.
 
 ### Configuration Options 
 
-The SGX Integration Hub configuration can be found in /etc/shub/config.yml.
+The Integration Hub configuration can be found in /etc/ihub/config.yml.
 
 ### Command-Line Options 
 
-The SGX HUB supports several command-line commands that can be executed only as the Root user:
+The Integrtion HUB supports several command-line commands that can be executed only as the Root user:
 
 Syntax:
 
-shub \<command\>
+ihub \<command\>
 
 #### Available Commands 
 
 ##### Help 
 
-shub help
+ihub help
 
 Displays the list of available CLI commands
 
 ##### Start
 
-shub start
+ihub start
 
 Start the service
 
 ##### Stop
 
-shub stop
+ihub stop
 
 stops the service
 
 ##### Status
 
-shub status
+ihub status
 
 Reports whether the service is currently running.
 
 #####  Uninstall 
 
-shub uninstall \[\--purge\]
+ihub uninstall \[\--purge\]
 
-Removes the service. Use \--purge option to remove configuration directory(/etc/shub/)
+Removes the service. Use \--purge option to remove configuration directory(/etc/ihub/)
 
 ##### Version 
 
-shub version
+ihub version
 
 Reports the version of the service.
 
@@ -1445,25 +1443,22 @@ Reports the version of the service.
 
 #### Logs 
 
-The SGX HUB installs by default to /opt/shub with the following folders.
+The Integration HUB installs by default to /opt/ihub with the following folders.
 
 #### Bin 
 
 This folder contains executable scripts.
 
-**9.1.4.2 Dbscripts**
-
-Contains database scripts.
 
 **Other folders which are created during installation are:**
 
 #### Configuration 
 
-This folder /etc/shub/ contains certificates, keys, and configuration files.
+This folder /etc/ihub/ contains certificates, keys, and configuration files.
 
 #### Logs 
 
-This folder contains log files: /var/log/shub/
+This folder contains log files: /var/log/ihub/
 
 ## Certificate Management Service
 
@@ -2069,21 +2064,21 @@ Removes following directories:
 
 -   /var/log/sgx_agent
 
-## SGX Attestation Hub 
+## Integration Hub 
 
-To uninstall the SGX Attestation Hub, run the following command:
+To uninstall the Integration Hub, run the following command:
 
-shub uninstall \--purge
+ihub uninstall \--purge
 
 Removes the following directories:
 
-1.  /opt/shub/
+1.  /opt/ihub/
 
-2.  /run/shub/
+2.  /run/ihub/
 
-3.  /var/log/shub
+3.  /var/log/ihub
 
-4.  /etc/shub
+4.  /etc/ihub
 
 ## SGX Caching Service
 
