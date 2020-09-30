@@ -16,7 +16,7 @@
 
 3. **OS Requirements**
 
-   a.    RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
+   RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
    **Assumption:**
 
@@ -26,26 +26,26 @@
 
 1. **Build System**
 
-   a.    Internet access required
+   Internet access required
 
 2. **CSP Managed Services** 
 
-   a.    Internet access required for SCS_1;
+   Internet access required for SGX Caching Service deployed on CSP VM/SGX Compute Node;
 
 3. **Enterprise Managed Services**
 
-   a.    Internet access required for SCS_2;
+   Internet access required for SGX Caching Service deployed on Enterprise VM;
 
 4. **SGX Enabled Host**
 
-   a.    Internet access required to access KBS running on Enterprise environment
+   Internet access required to access KBS running on Enterprise environment
 
 **Setting Proxy and No Proxy**
 
 ```
 export http_proxy=http://<proxy-url>:<proxy-port>
 export https_proxy=http://<proxy-url>:<proxy-port>
-export no_proxy=0.0.0.0,127.0.0.1,localhost,<Any other systems>
+export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX Compute Node IP>, <KBS VM Hostname>
 ```
 
 **Firewall Settings**
@@ -89,7 +89,6 @@ enabled = 1
 gpgcheck = 0
 name =  RHEL8 appstreams Local Repo
 ```
-
 
 
 ## **4. System Tools and Utilities**
@@ -138,6 +137,56 @@ export M2_HOME=/usr/local/apache-maven-3.6.3/
 export PATH=$M2_HOME/bin:$PATH
 ```
 
+  Add the below profile element under the `<profiles>` section of `settings.xml` located under `<path_to_maven>/conf/` folder
+
+    <profile>
+        <id>artifacts</id>
+        <repositories>
+        <repository>
+            <id>mulesoft-releases</id>
+            <name>MuleSoft Repository</name>
+            <url>http://repository.mulesoft.org/releases/</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>maven-central</id>
+            <snapshots><enabled>false</enabled></snapshots>
+            <url>http://central.maven.org/maven2</url>
+        </repository>
+        </repositories>
+    </profile>
+
+  Enable `<activeProfiles>` to include the above profile.
+
+    <activeProfiles>
+        <activeProfile>artifacts</activeProfile>
+    </activeProfiles>
+
+  If you are behind a proxy, enable proxy setting under maven `settings.xml`
+
+    <!-- proxies
+    | This is a list of proxies which can be used on this machine to connect to the network.
+    | Unless otherwise specified (by system property or command-line switch), the first proxy
+    | specification in this list marked as active will be used.
+    |-->
+    <proxies>
+        <!-- proxy
+        | Specification for one proxy, to be used in connecting to the network.
+        |
+        <proxy>
+        <id>optional</id>
+        <active>true</active>
+        <protocol>http</protocol>
+        <username>proxyuser</username>
+        <password>proxypass</password>
+        <host>proxy.host.net</host>
+        <port>80</port>
+        <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+        </proxy>
+        -->
+    </proxies>
+
+
 ## **5. Deployment & Testing Tools**
 
 **Build System**
@@ -147,8 +196,6 @@ export PATH=$M2_HOME/bin:$PATH
 **Install Ansible and Pull ISECL role from Ansible Galaxy**
 
 ```
-<yum install ansible>
-<pull ansible-galaxy role for ISECL>
 ```
 
 **Testing Tools**
@@ -188,7 +235,7 @@ repo sync
 
 **Building**
 ```
-make all
+make
 ```
 
 **Build SKC Services**
@@ -196,7 +243,7 @@ make all
 **Build Pre-requisites**
 
 ```
-make all
+make
 ```
 
 **Build SGX Agent Package**
@@ -204,7 +251,7 @@ make all
 **Build Pre-requisites**
 
 ```
-cd sgx_agent/build_scripts
+cd utils/build/skc-tools/sgx_agent/build_scripts
 ./sgxagent_build.sh
 ```
 
@@ -213,14 +260,14 @@ cd sgx_agent/build_scripts
 **Build Pre-requisites**
 
 ```
-cd ../../sgx_agent/build_scripts
+cd utils/build/skc-tools/skc_library/build_scripts
 ./skc_library_build.sh
 ```
 
 **Copy Binaries to a clean folder**
 
 ```
-<Copy binaries and Packages to central repo>
+copy the binaries directory to the VM where they need to be deployed
 ```
 
 ## 8. Deployment
