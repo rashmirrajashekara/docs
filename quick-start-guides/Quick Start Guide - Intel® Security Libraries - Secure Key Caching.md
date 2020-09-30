@@ -6,7 +6,7 @@
 
 1. **Three Hosts or VMs**
 
-   a.    Build System (Building and Deploying)
+   a.    Build System
 
    b.    CSP managed Services 
 
@@ -55,7 +55,6 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 ```
 systemctl firewalld stop
 ```
-
 
 
 ## **3. RHEL Package Requirements**
@@ -229,7 +228,7 @@ GIT Configuration**
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.1/develop -m manifest/skc.xml
 repo sync
 ```
 
@@ -267,7 +266,7 @@ cd utils/build/skc-tools/skc_library/build_scripts
 **Copy Binaries to a clean folder**
 
 ```
-copy the binaries directory to the VM where they need to be deployed
+copy the generated binaries directory to the home directory on the CSP/Enterprise VM
 ```
 
 ## 8. Deployment
@@ -312,7 +311,6 @@ Update Postman Inventories <Sample>
 Update Postman Variables <Sample>
 Execute Postman Collections for the use cases
 ```
-
 
 
 ## Appendix
