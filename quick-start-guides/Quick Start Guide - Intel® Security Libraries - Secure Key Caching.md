@@ -298,7 +298,56 @@ Update Variables <Sample>
 
 **Deployment Using Binaries**
 
-**TBD**
+**Deploy CSP SKC Services**
+
+Copy the binaries directory generated in the build system VM to the home directory on the CSP VM
+
+Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
+
+Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
+
+./install_csp_skc.sh
+
+
+
+**Deploy Enterprise SKC Services**
+
+Copy the binaries directory generated in the build system VM to the home directory on Enterprise VM
+
+Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in csp_skc.conf
+
+Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
+
+./install_enterprise_skc.sh
+
+
+
+**Deploy SGX Agent**
+
+Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to SGX compute node
+
+./agent_untar.sh
+
+Edit agent.conf Update the IP address for CMS/AAS/SHVS services deployed on CSP VM
+
+Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deployed)
+
+./deploy_sgx_agent.sh
+
+
+
+**Deploy SKC Library**
+
+Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to SGX compute node
+
+./skclib_untar.sh
+
+Edit skc_library.conf and Update the IP address for CMS/AAS/SCS/KBS services deployed on CSP VM
+
+Update the Hostname of the Enterprise VM where KBS is deployed
+
+./deploy_skc_library.sh
+
 
 ## **9. Testing Using Postman Collections**
 
