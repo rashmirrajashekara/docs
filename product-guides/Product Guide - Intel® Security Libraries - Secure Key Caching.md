@@ -447,6 +447,14 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 ### Installation
 
+
+Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
+dnf module disable postgresql -y
+copy install_pgdb.sh and create_db.sh to home directory
+./install_pgdb.sh
+./create_db.sh aas_db <dbuser> <dbpassword>
+
+
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
 
 cms setup cms_auth_token --force
@@ -960,7 +968,7 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
     Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to SGX Compute node
     ./skclib_untar.sh
-    Update the IP address for the services mentioned in skc_library.conf
+    Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be the CSP SCS IP)
     ./deploy_skc_library.sh
 
 # Authentication
