@@ -487,7 +487,7 @@ If separate database servers will be used (for example, if the management plane 
 ./create_db.sh isecl_hvs_db hvs_db_username hvs_db_password
 ./create_db.sh isecl_aas_db aas_db_username aas_db_password
 ./create_db.sh isecl_wls_db wls_db_username wls_db_password
-./create_db.sh isecl_hub_db hub_db_username hub_db_password
+
 ```
 
 Note that the database name, username, and password details for each service must be used in the corresponding installation answer file for that service. 
@@ -658,7 +658,7 @@ Creating these required users and roles is facilitated by a script that will acc
 Create the `populate-users.env` file:
 
 ```shell
-ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,AH,HVS,WLA,AAS
+ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IH,HVS,WLA,AAS
 
 AAS_API_URL=https://<AAS IP address or hostname>:8444/aas
 AAS_ADMIN_USERNAME=<AAS username>
@@ -985,7 +985,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
 4. Update the default boot option
 
-   Ensure that the `GRUB_DEFAULT` value is set to the tboot option. The tboot boot option can be found my looking in the `/boot/redhat/grub.cfg` file. For example (the precise menu entry may be different, but should say "tboot"):
+   Ensure that the `GRUB_DEFAULT` value is set to the tboot option. The tboot boot option can be found by looking in the `/boot/redhat/grub.cfg` file. For example (the precise menu entry may be different, but should say "tboot"):
 
    `menuentry **'Red Hat Enterprise Linux GNU/Linux, with tboot 1.9.7 and Linux 4.18.0-147.el8.x86_64**' --class red --class gnu-	  linux --class gnu --class os --class tboot {`
 
@@ -1054,7 +1054,7 @@ To install the Trust Agent for Linux:
   For Platform Attestation only, provide the following in `trustagent.env` 
 
    ```shell
-  MTWILSON_API_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
+  HVS_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
   PROVISION_ATTESTATION=y
   GRUB_FILE=<path to grub.cfg>
   CURRENT_IP=<Trust Agent IP address>
@@ -1525,7 +1525,7 @@ KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
 TENANT=KUBERNETES
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
+KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -2043,7 +2043,7 @@ CreateUsers script) and exist by default.
 | **Role Name**             | **Permissions**                                              | **Utility**                                                  |
 | ------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | TA:Administrator          | TA:\*:\*                                                     | Used by the Verification Service to access Trust Agent APIs, including retrieval of TPM quotes, provisioning Asset Tags and SOFTWARE Flavors, etc. |
-| HVS:ReportRetriever       | HVS: \["reports:retrieve:\*", "reports:search:\*"]           | Used by the Integration Hub to retrieve attestation reports from the Verification Service |
+| HVS:ReportSearcher        | HVS: \[reports:search:\*"]                                   | Used by the Integration Hub to retrieve attestation reports from the Verification Service |
 | KMS:Keymanager            | KBS: \["keys:create:\*", "keys:transfer:\*"\]                | Used by the WPM to create and retrieve symmetric encryption keys to encrypt workload images |
 | WLS:FlavorsImageRetrieval | WLS: image\_flavors:retrieve:\*                              | Used by the Workload Agent during Workload Confidentiality flows to retrieve the image Flavor |
 | HVS: ReportCreator        | HVS: \["reports:create:\*"\]                                 | Used by the Workload Service to create new attestation reports on the Verification Service as part of Workload Confidentiality key retrievals. |
@@ -2052,7 +2052,7 @@ CreateUsers script) and exist by default.
 | AAS: RoleManager          | AAS: \[roles:create:\*, roles:retrieve:\*, roles:search:\*, roles:delete:\*\] | AAS role that allows all actions for Roles, but cannot create or delete Users or assign Roles to Users. |
 | AAS: UserManager          | AAS: \[users:create:\*, users:retrieve:\*, users:store:\*, users:search:\*, users:delete:\*\] | AAS role with all permissions for Users, but has no ability to create Roles or assign Roles to Users. |
 | AAS: UserRoleManager      | AAS: \[user\_roles:create:\*, user\_roles:retrieve:\*, user\_roles:search:\*, user\_roles:delete:\*, | AAS role with permissions to assign Roles to Users, but cannot create delete or modify Users or Roles. |
-| HVS: AttestatioNRegister  | HVS: \[host\_tls\_policies:create:\*, hosts:create:\*, hosts:store:\*, hosts:search:\*, host\_unique\_flavors:create:\*, flavors:search:\*, tpm\_passwords:retrieve:\*, tpm\_passwords:create:\*, host\_aiks:certify:\* | Role used for Trust Agent provisioning. Used to create the installation token provided during installation. |
+| HVS: AttestationRegister  | HVS: \[host\_tls\_policies:create:\*, hosts:create:\*, hosts:store:\*, hosts:search:\*, host\_unique\_flavors:create:\*, flavors:search:\*, tpm\_passwords:retrieve:\*, tpm\_passwords:create:\*, host\_aiks:certify:\* | Role used for Trust Agent provisioning. Used to create the installation token provided during installation. |
 | HVS: Certifier            | HVS: host\_signing\_key\_certificates:create:\*              | Used for installation of the Workload Agent                  |
 
 
@@ -2065,7 +2065,7 @@ used to communicate with the registered host for retrieving TPM quotes
 and other host information. Connection Strings differ based on the type
 of host.
 
-5.1  Trust Agent (Windows and Linux)
+5.1  Trust Agent 
 -------------------------------
 
 The Trust Agent connection string connects directly to the Trust Agent
@@ -2319,8 +2319,7 @@ Requires the permission `flavors:create`
 > VMWare ESXi host types, MUST be created for each registered host of
 > that type, and should in general be imported from that host. This
 > means that importing the HOST\_UNIQUE flavor should always be done
-> for each host registered (except for Windows hosts, which do not
-> have HOST\_UNIQUE measurements)
+> for each host registered.
 
 To import ONLY the HOST\_UNIQUE Flavor part from a host:
 
@@ -2504,7 +2503,7 @@ Authorization: Bearer <token>
 #### 6.4.2.2  VMWare
 
 Since VMWare ESXi hosts do not use a Trust Agent, the process for
-writing Asset Tags to a VMWare host is different from RHEL or Windows. A
+writing Asset Tags to a VMWare host is different from RHEL. A
 new interface has been added to ESXi via a new `esxcli` command starting
 in vSphere 6.5 Update 2 that allows the Asset Tag information to be
 written to the TPM via a command-line command. The older process is also
@@ -3196,7 +3195,7 @@ kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
 To verify the Intel SecL CRDs have been deployed:
 
 ```shell
-kubectl get pods -n isecl
+kubectl get crds
 ```
 
 
@@ -3530,17 +3529,19 @@ fail, as the decryption key will not be provided.
 
 
 
-7.2  Docker Container Confidentiality
+7.2  Container Confidentiality
 --------------------------------
 
-### 7.2.1  Docker Container Integrity
+### 7.2.1  Container Integrity and Confidentiality with Docker
+
+#### 7.2.1.1  Docker Container Integrity
 
 Intel® recommends using Docker Notary to verify the integrity of Docker
 container images at launch.
 
 <https://docs.docker.com/notary/getting_started/>
 
-### 7.2.2  Prerequisites
+#### 7.2.1.2  Prerequisites
 
 To enable Docker Container Confidentiality, the following Intel® SecL-DC
 components must be installed and available:
@@ -3606,9 +3607,9 @@ encrypted workloads.
 > use OCI-standard container encryption without the need for
 > recompilation or file replacement.
 
-### 7.2.3  Workflow
+#### 7.2.1.3  Workflow
 
-#### 7.2.3.1  Encrypting Docker Container Images
+##### 7.2.1.3.1  Encrypting Docker Container Images
 
 The first step is encryption of a Docker Container image. The WPM is a
 command line utility that will perform the actual image encryption and
@@ -3635,7 +3636,7 @@ before uploading the image to the Registry:
 After generating the encrypted image with the WPM, the encrypted image
 can be uploaded to a local Docker Registry.
 
-#### 7.2.3.2  Uploading the Image Flavor
+##### 7.2.1.3.2  Uploading the Image Flavor
 
 ```
 POST https://<Workload Service IP or Hostname>:5000/wls/flavors
@@ -3648,7 +3649,7 @@ Use the above API request to upload the Image Flavor to the WLS. The
 Image Flavor will tell other Intel® SecL-DC components the Key Transfer
 URL for this image.
 
-#### 7.2.3.3  Creating the Image Flavor to Image ID Association
+##### 7.2.1.3.3  Creating the Image Flavor to Image ID Association
 
 For Docker images stored in a Docker Registry, the ID is typically an
 MD5 hash. This format must be converted for use with the Workload
@@ -3677,7 +3678,7 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 7.2.3.4  Launching Encrypted Docker Containers
+##### 7.2.1.3.4  Launching Encrypted Docker Containers
 
 Containers of the protected images can now be launched as normal using
 Kubernetes pods and deployments. Encrypted images will only be
@@ -3686,6 +3687,24 @@ the host is trusted.
 
 If the Docker Container is launched on a host that is not trusted, the
 launch will fail, as the decryption key will not be provided.
+
+### 7.2.2  Container Confidentiality with CRI-O and Skopeo
+
+
+
+#### 7.2.2.1  Prerequisites
+
+Container Confidentiality with CRI-O and Skopeo requires 
+
+#### 7.2.2.2  Workflow
+
+
+
+##### 7.2.2.2.1  Encrypting Container Images
+
+
+
+##### 7.2.2.2.2  Launching Encrypted Containers with CRI-O
 
 
 
@@ -4497,8 +4516,7 @@ OS flavor for the other measurements that would be identical for other
 similarly configured hosts.
 
 > **Note**:The HOST\_UNIQUE Flavors are unique to a specific host, and should
-> always be imported directly from the specific host. Windows hosts do
-> not require a HOST\_UNIQUE flavor part.
+> always be imported directly from the specific host. 
 
 ```json
 {
@@ -7426,58 +7444,9 @@ To uninstall the Integration Hub, run the following command:
 14.1  PCR Definitions
 ---------------
 
-### 14.1.1  Microsoft Windows Server 2016 Datacenter
+### 14.1.1  Red Had Enterprise Linux
 
 #### 14.1.1.1  TPM 2.0
-
-<table>
-<thead>
-<tr class="header">
-<th>PCR</th>
-<th>Measurement Parameters</th>
-<th>Description</th>
-<th>Operating System</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>PCR 0</td>
-<td>BIOS ROM and Flash Image</td>
-<td>This PCR is based solely on the BIOS version, and remains identical across all hosts using the same BIOS. This PCR is used as the PLATFORM Flavor</td>
-<td><ul>
-<li><p>All</p></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>PCR 12</td>
-<td>Data events and highly volatile events</td>
-<td>This PCR measures some of the modules which has boot counters in it. It changes on every boot and resume (Microsoft Windows ONLY; do not use for attestation as the values change on reboot)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td>PCR 13</td>
-<td>Boot Module Details</td>
-<td>This PCR remains static except major changes such as kernel module update, different device driver for different OEM servers, etc. (Microsoft Windows ONLY)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>PCR 14</td>
-<td>Boot Authorities</td>
-<td>Used to record the Public keys of authorities that sign OS components. Expected not to change often. (Microsoft Windows ONLY)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
-
-### 14.1.2  Red Had Enterprise Linux
-
-#### 14.1.2.1  TPM 2.0
 
 <table>
 <thead>
@@ -7556,9 +7525,9 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-### 14.1.3  VMWare ESXi
+### 14.1.2  VMWare ESXi
 
-#### 14.1.3.1  TPM 1.2
+#### 14.1.2.1  TPM 1.2
 
 <table>
 <thead>
@@ -7634,7 +7603,7 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-#### 14.1.3.2  TPM 2.0
+#### 14.1.2.2  TPM 2.0
 
 VMWare supports TPM 2.0 with Intel TXT starting in vSphere 6.7 Update 1.
 Earlier versions will support TPM 1.2 only.
@@ -8193,7 +8162,7 @@ The Intel® SecL-DC services can be installed in a variety of layouts, partially
 
 Management services can typically be deployed anywhere with network access to all of the protected servers. This could be a set of individual VMs per service; containers; or all installed on a single physical or virtual machine.
 
-Node components must be installed on each protected physical server. Typically this is needed for Windows and Linux deployments.
+Node components must be installed on each protected physical server. Typically this is needed for Linux deployments.
 
 ### 3.3.1  Platform Integrity 
 
@@ -8714,7 +8683,7 @@ Tboot will not be installed automatically. Instructions for installing and confi
 
 ### 3.9.3  Supported Operating Systems
 
-The Intel® Security Libraries Trust Agent for Linux supports Red Hat Enterprise Linux 8.2. Windows support is described in the section "Installing the Trust Agent for Windows"
+The Intel® Security Libraries Trust Agent for Linux supports Red Hat Enterprise Linux 8.2. 
 
 ### 3.9.4  Prerequisites
 
@@ -8968,134 +8937,7 @@ The following must be completed before installing the Workload Agent:
 
   
 
-## 3.11  Installing the Trust Agent for Windows
-
-### 3.11.1  Required For
-
-The Trust Agent for Windows is REQUIRED for the following use cases:
-
--   Platform Integrity with Data Sovereignty and Signed Flavors
-
-Other use cases are currently not supported for Windows.
-
-### 3.11.2  Supported Operating Systems
-
-The Trust Agent for Windows supports Windows Server 2016 Datacenter.
-
-### 3.11.3  Prerequisites
-
-The following must be completed before installing the Trust Agent:
-
--   Supported server hardware including an Intel® Xeon processor.
-
--   Trusted Platform Module (version 1.2 or 2.0) installed and activated
-    in the system BIOS, with cleared ownership status.
-
--   coreinfo
-    (<https://docs.microsoft.com/en-us/sysinternals/downloads/coreinfo>)
-    must be installed
-
--   (Provisioning step only) Intel® SecL Verification Service server
-    installed and active.
-
--   The Authentication and Authorization Service must be installed and
-    available
-
--   The Certificate Management Service must be installed and available
-
-#### 3.11.3.1  TPM Ownership
-
-The Intel® SecL-DC Trust Agent for Windows requires the TPM ownership
-secret to be stored in the local system registry. To confirm that the
-secret is populated in the registry:
-
-1. Open a Command Prompt as Administrator
-
-2. Run the following command:
-
-   ```shell 
-   REG QUERY hklm\\system\\controlset001\\services\\tpm\\wmi\\admin
-   ```
-3. If the output contains the `OwnerAuthFull` key and a corresponding
-   value, the ownership secret is present in the registry and no
-   further action is needed.
-
-If the output does not contain the secret, system must be configured
-to store the secret in the registry. 
-
-To configure GPO to store the ownership secret in the local registry:
-
-1.  Open a Command Prompt as an Administrator
-
-2.  Run `gpedit.msc`
-
-3.  In the GP Editor, browse to Computer Configuration\\Administrative
-    `Templates\System\Trusted Platform Module Services\`
-
-4.  Set the Operating System Managed TPM Authentication Level to “Full”
-
-5.  Clear the TPM ownership and reboot
-
-To clear TPM ownership from within Windows:
-
-1.  Open a Command Prompt as Administrator
-
-2.  Run `tpm.msc`
-
-3.  From the TPM Management Console that appears, click “Clear TPM”
-
-4.  After the process is complete, reboot
-
-### 3.11.4  Installation
-
-Installation of the Trust Agent is split into two major steps:
-Installation, which covers the creation of system files and folders, and
-Provisioning, which involves the creation of keys and secrets and links
-the Trust Agent to a specific Verification Service. Both operations can
-be performed at the same time using an installation answer file. Without
-the answer file, the Trust Agent can be installed and left in an
-un-provisioned state regardless of whether a Verification Service is up
-and running, until such time as the datacenter administrator is ready to
-run the provisioning step and link the Trust Agent to a Verification
-Service.
-
-To install the Trust Agent for Windows:
-
-1.  (Optional; required to perform Provisioning and Installation at the
-    same time.) Create the trustagent.ini answer file in the `C:\\Temp`
-    directory (for full configuration options, see section 9.2). The
-    minimum configuration options for installation are provided below.
-
-```ini
-[TRUST_AGENT]
-HVS_API_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
-REGISTER_TPM_PASSWORD=y
-TRUSTAGENT_LOGIN_REGISTER=true
-PROVISION_ATTESTATION=y
-CURRENT_IP=<Trust Agent IP address>
-CMS_TLS_CERT_SHA384=<CMS TLS digest>
-BEARER_TOKEN=<Installation token from populate-users script>
-AAS_API_URL=https://<AAS IP or Hostname>:8444/aas
-CMS_BASE_URL=https://<CMS IP or Hostname>:8445/cms/v1
-TA_TLS_CERT_IP=<comma-separated list of IP addresses for the Trust Agent>
-TA_TLS_CERT_DNS=<comma-separated list of hostnames for the Trust Agent>
-```
-2. Copy the Trust Agent installer executable to the `C:\Temp` directory.
-
-3. Execute the Trust Agent installer and wait for the installation to
-   complete.
-
-If the `trustagent.ini` answer file was provided with the minimum required
-options, the Trust Agent will be installed and also Provisioned to the
-Verification Service specified in the answer file.
-
-If no answer file was provided, the Trust Agent will be installed, but
-will not be Provisioned. TPM-related functionality will not be available
-from the Trust Agent until the Provisioning step is completed.
-
-
-
-## 3.12  Trust Agent Provisioning
+## 3.11  Trust Agent Provisioning
 
 "Provisioning" the Trust Agent involves connecting to a Verification
 Service to download the Verification Service PrivacyCA certificate,
@@ -9131,7 +8973,7 @@ path>
 
 
 
-## 3.13  Trust Agent Registration
+## 3.12  Trust Agent Registration
 
 Registration creates a host record with connectivity details and other
 host information in the Verification Service database. This host record
@@ -9174,7 +9016,7 @@ POST <https://verification.service.com:8443/hvs/v2/hosts>
 
 
 
-## 3.14  Importing the HOST\_UNIQUE Flavor
+## 3.13  Importing the HOST\_UNIQUE Flavor
 
 RHEL and VMWare ESXi hosts have measured components that are unique to
 each host. This means that a special `HOST_UNIQUE` flavor part needs to
@@ -9212,7 +9054,7 @@ POST https://verification.service.com:8443/hvs/v2/flavors
 
 
 
-## 3.15  Installing the Integration Hub
+## 3.14  Installing the Integration Hub
 
 > ***Note:*** *The Integration Hub is only required to integrate Intel® SecL with
 > third-party scheduler services, such as OpenStack Nova or
@@ -9220,7 +9062,7 @@ POST https://verification.service.com:8443/hvs/v2/flavors
 > require Intel® SecL security attributes to be pushed to an
 > integration endpoint.*
 
-### 3.15.1  Required For
+### 3.14.1  Required For
 
 The Hub is REQUIRED for the following use cases.
 
@@ -9232,11 +9074,11 @@ orchestration or other integration support is needed):
 - Platform Integrity with Data Sovereignty and Signed Flavors
 - Application Integrity
 
-### 3.15.2  Deployment Architecture Considerations for the Hub
+### 3.14.2  Deployment Architecture Considerations for the Hub
 
 A separate Hub instance is REQUIRED for each Cloud environment (also referred to as a Hub "tenant").  For example, if a single datacenter will have an OpenStack cluster and also two separate Kubernetes clusters, a total of three Hub instances must be installed, though additional instances of other Intel SecL services are not required (in the same example, only a single Verification Service is required).  Each Hub will manage a single orchestrator environment.  If multiple orchestrator environments will be managed, be sure to create separate database schema names for each separate Hub.  Each Hub instance should be installed on a separate VM or physical server
 
-### 3.15.3  Prerequisites
+### 3.14.3  Prerequisites
 
 The Intel® Security Libraries Integration Hub can be run as a VM or as a
 bare-metal server. The Hub may be installed on the same server (physical
@@ -9249,7 +9091,7 @@ or VM) as the Verification Service.
 -   The Integration Hub database must be available
 -   (REQUIRED for Kubernetes integration only) The Intel SecL Custom Resource Definitions must be installed and available (see the Integration section for details)
 
-### 3.15.4  Package Dependencies
+### 3.14.4  Package Dependencies
 
 The Intel® SecL Integration Hub requires a number of packages and their
 dependencies:
@@ -9262,12 +9104,12 @@ mirror), which may require an Internet connection. If the packages are
 to be installed from the package repository, be sure to update your
 repository package lists before installation.
 
-### 3.15.5  Supported Operating Systems
+### 3.14.5  Supported Operating Systems
 
 The Intel Security Libraries Integration Hub supports Red Hat Enterprise
 Linux 8.2
 
-### 3.15.6  Recommended Hardware
+### 3.14.6  Recommended Hardware
 
 -   1 vCPUs
 
@@ -9284,7 +9126,7 @@ Linux 8.2
 -   One network interface with network access to any integration
     endpoints (for example, OpenStack Nova).
 
-### 3.15.7  Installing the Integration Hub
+### 3.14.7  Installing the Integration Hub
 
 To install the Integration Hub, follow these steps:
 
@@ -9341,16 +9183,16 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
 
-## 3.16  Installing the Key Broker Service
+## 3.15  Installing the Key Broker Service
 
 
-### 3.16.1  Required For
+### 3.15.1  Required For
 
 The KBS is REQUIRED for the following use cases:
 
 -   Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.16.2  Prerequisites
+### 3.15.2  Prerequisites
 
 The following must be completed before installing the Key Broker:
 
@@ -9377,16 +9219,16 @@ The following must be completed before installing the Key Broker:
         implementation differences among KMIP providers may prevent
         functionality with specific providers.
 
-### 3.16.3  Package Dependencies
+### 3.15.3  Package Dependencies
 
-### 3.16.4  Supported Operating Systems
+### 3.15.4  Supported Operating Systems
 
 The Intel® Security Libraries Key Broker Service supports Red Hat
 Enterprise Linux 8.2
 
-### 3.16.5  Recommended Hardware
+### 3.15.5  Recommended Hardware
 
-### 3.16.6  Installation
+### 3.15.6  Installation
 
 1.  Copy the Key Broker installation binary to the `/root` directory.
 
@@ -9407,7 +9249,7 @@ Enterprise Linux 8.2
     ./kms-6.0-SNAPSHOT.bin
     ```
 
-#### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
+#### 3.15.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
 
 The Key Broker immediately after installation will be configured to use
 a filesystem key management solution. This should be used only for
@@ -9441,7 +9283,7 @@ Broker to point to a 3rd-party KMIP-compliant Key Management Server:
     kms restart
     ```
 
-### 3.16.7  Importing Verification Service Certificates
+### 3.15.7  Importing Verification Service Certificates
 
 After installation, the Key Broker must import the SAML and PrivacyCA
 certificates from any Verification Services it will trust. This provides
@@ -9449,7 +9291,7 @@ the Key Broker a way to ensure that only attestations that come from a
 “known” Verification Service. The SAML and PrivacyCA certificates needed
 can be found on the Verification Service.
 
-#### 3.16.7.1  Importing a SAML certificate
+#### 3.15.7.1  Importing a SAML certificate
 
 Use OpenSSL to display the SAML certificate content:
 
@@ -9491,7 +9333,7 @@ JAF53vmU+1jE
 -----END CERTIFICATE-----
 ```
 
-#### 3.16.7.2  Importing a PrivacyCA Certificate
+#### 3.15.7.2  Importing a PrivacyCA Certificate
 
 Use OpenSSL to display the PrivacyCA certificate content:
 
@@ -9553,27 +9395,27 @@ WTeXt+1HCFSo5WcAZWV8R9FYv7tzFxPY8aoLj82sgrOE4IwRqaA8KMbq3anF4RCk
 
 
 
-## 3.17  Installing the Workload Policy Manager
+## 3.16  Installing the Workload Policy Manager
 
-### 3.17.1  Required For
+### 3.16.1  Required For
 
 The WPM is REQUIRED for the following use cases.
 
 -   Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.17.2  Package Dependencies
+### 3.16.2  Package Dependencies
 
 (Required only if Docker Container encryption is needed) `Docker-ce
 19.03.5` must be installed. This is needed only if the option
 `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
 file.
 
-### 3.17.3  Supported Operating Systems
+### 3.16.3  Supported Operating Systems
 
 The Intel® Security Libraries Workload Policy Manager supports Red Hat
 Enterprise Linux 8.2.
 
-### 3.17.4  Recommended Hardware
+### 3.16.4  Recommended Hardware
 
 -   2 vCPUs
 
@@ -9587,7 +9429,7 @@ Enterprise Linux 8.2.
 -   Additional memory and disk space may be required depending on the
     size of images to be encrypted
 
-### 3.17.5  Installation
+### 3.16.5  Installation
 
 1.  Copy the WPM installer to the `/root` directory
 

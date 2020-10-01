@@ -48,7 +48,11 @@ The SKC use case requires the provisioning of host servers to respond to SGX att
 
 Link to Product Guide 
 
-Link to Quick Start Guide [https://gitlab.devtools.intel.com/sivaramp/tools-n-docs/-/blob/master/docs/Foundational%20Security/Product%20Guide](https://gitlab.devtools.intel.com/sivaramp/tools-n-docs/-/blob/master/docs/Foundational Security/Product Guide)
+https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+
+Link to Quick Start Guide
+
+https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 ## License 
 

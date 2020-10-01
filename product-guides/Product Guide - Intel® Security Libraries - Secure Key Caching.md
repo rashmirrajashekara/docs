@@ -1,9 +1,9 @@
 # Intel® Security Libraries - Datacenter Secure Key Caching
 
 ## Product Guide
-### August 2020
+### October 2020
 
-### Revision 3.0
+### Revision 3.1
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -145,9 +145,9 @@ SHVS pushes the SGX platform hardware and software information to the SGX Cachin
 
 The SGX Agent resides on physical servers and reports on platform SGX-related information to the SGX Host Verification Service (SHVS).
 
-## SGX Hub
+## Integration Hub
 
-The SGX Hub (SHUB) allows to support SGX in Kubernetes and Open stack. SHUB pulls the SGX compute nodes information from the SGX Host Verification Service (SHVS) and pushes it to Kubernetes or Open stack. SHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that SHUB pushes to Kubernetes and Open stack consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
+The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the SGX compute nodes information from the SGX Host Verification Service (SHVS) and pushes it to Kubernetes or Open stack. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes and Open stack consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
 ## Key Broker Service
 
@@ -223,7 +223,7 @@ Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are call
 
 The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). The SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
-The platform information can optionally be made available to Kubernetes via the SGX Hub (SHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
+The platform information can optionally be made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
 
 ![](Images/image-20200727163158892.png)
 
@@ -239,9 +239,9 @@ Instructions and sample scripts for building the Intel® SecL-DC components can 
 
 https://01.org/intel-secl/documentation/build-installation-scripts
 
-After the components have been built, the installation binaries can be found in the directories created by the build scripts.
+After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
-For components written in GO (Authentication and Authorization Service, Certificate Management Service, SGXAgent, SGX Attestation HUB, SGX Caching Service, SGX Quote Verfication Service, SGX Host Verification Service):
+For components written in GO (Authentication and Authorization Service, Certificate Management Service, SGXAgent, Integration HUB, SGX Caching Service, SGX Quote Verfication Service, SGX Host Verification Service):
 
 \<servicename\>/out/\<servicename\>.bin
 
@@ -257,7 +257,6 @@ Install_pgscsdb: sgx-caching-service/out/install_pgscsdb.sh
 
 Install_pgshvsdb: sgx-hvs/out/install_pgshvsdb.sh
 
-Install_pgshubdb: sgx-ah/out/install_pgshubdb.sh
 
 ## Hardware Considerations
 
@@ -271,18 +270,13 @@ Install_pgshubdb: sgx-ah/out/install_pgshubdb.sh
 
 -   Intel® SGX should be enabled in BIOS menu (Intel® SGX is Disabled by default on Ice Lake).
 
--   If OEM/ODM pre-installs an Intel® SGX application, then Intel® SGX must be configured as "Enabled" in BIOS.
-
 -   Intel® SGX BIOS requirements include exposing Flexible Launch Control menu.
 
--   Production signed uCode patch
-
--   DAM (Delayed Authentication Mode) Disabled in IFWI \*\*Using SPS FitC tool
 
 ### OS Requirements (Intel® SGX does not supported on 32-bit OS):
 
 -   Linux\*:\
-    • RHEL 8.1 or later
+    • RHEL 8.2
 
 ##  Recommended Service Layout
 
@@ -306,7 +300,7 @@ This Includes:
 
 -   SGX Host Verification Service (SHVS)
 
--   SGX Integration HUB (SHUB)
+-   Integration HUB (IHUB)
 
 -   Key Broker Service (KBS) with backend key management
 
@@ -334,21 +328,20 @@ Note that the values above assume that the database will be accessed locally. If
 
 ### Provisioning the Database
 
-Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX Hub, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pg (app name).sh script to configure the database.
+Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pg(app name).sh script to configure the database.
 
 If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run the script multiple times, once for each service that requires a database.
 
 If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the script on each server hosting a database. The database install scripts use default configuration
 
+AAS: install_pg.sh
+
 SCS: install_pgscsdb.sh
 
 SHVS: install_pgshvsdb.sh
 
-SHUB: install_pgshubdb.sh
 
-AAS: install_pg.sh
-
-Note the dbusername and password will be taken from respective environment files.
+Note the dbusername and password will be taken from respective component environment files.
 
 ###  Database Server TLS Certificate
 
@@ -404,7 +397,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-3.0.0.bin
+./cms-3.1.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -490,7 +483,7 @@ Create the authservice.env installation answer file:
 
 Execute the AAS installer:
 
-./authservice-v3.0.0.bin
+./authservice-v3.1.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -505,8 +498,6 @@ SCS: scs_aas_curl.sh
 SHVS: shvs_aas_curl.sh
 
 SGX-AGENT: sgx_agent_aas.sh
-
-SHUB: shub_aas_curl.sh
 
 SQVS: sqvs_aas_curl.sh
 
@@ -598,9 +589,11 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 ​           SAN_LIST=\<comma-separated list of IPs and hostnames for the SCS\>
 
+​           BEARER_TOKEN=< Installation token from AAS > 
+
 Execute the SCS installer binary:
 
-./scs-v3.0.0.bin
+./scs-v3.1.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -669,6 +662,8 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
 ​     CMS_TLS_CERT_SHA384=< Certificate Management Service TLS digest > 
 
+​     SHVS_DB_SSLCERTSRC=/usr/local/pgsql/data/server.crt
+
 ​     BEARER_TOKEN=< Installation token from AAS > 
 
 ​     AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas 
@@ -681,7 +676,7 @@ SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS mat
 
 Execute the installer binary.
 
-./shvs-v3.0.0.bin
+./shvs-v3.1.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -715,9 +710,12 @@ Intel® Xeon® SP (Ice Lake-SP)
 
 ### Installation
 
-    Please Refer to "Build & Deployment of SGX Agent & SKC Library" section in the skc-tools/README.md for instructions on SGX Agent deployment
+    Copy sgx_agent.tar sgx_agent.sh2 and agent_untar.sh to SGX Compute node
+    ./agent_untar.sh
+    Update the IP address for the services mentioned in agent.conf
+    ./deploy_sgx_agent.sh
 
-##  Installing the SGX-QVS
+##  Installing the SQVS
 
 ### Required for
 
@@ -725,7 +723,7 @@ SGX ECDSA Attestation / SGX Quote Verification by KBS
 
 ### Prerequisites 
 
--   The following must be completed before installing the SGX QVS:
+-   The following must be completed before installing the SQVS:
 
     -   Certificate Management Service, Authentication and Authorization Service and SGX Caching Service must be installed and available.
 
@@ -759,11 +757,11 @@ To install the SQVS Service, follow these steps:
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.0.0.bin
+sqvs-v3.1.0.bin
 
 A sample minimal sqvs.env file is provided below. For all configuration options and their descriptions, refer to the Configuration section on the SGX Quote Verification Service.
 
-​       SGX_TRUSTED_ROOT_CA_PATH=< IP address or hostname of the Verification Service > 
+​       SGX_TRUSTED_ROOT_CA_PATH=< Path where trusted root ca cert for PCS is stored, by default /tmp/trusted_rootca.pem > 
 
 ​       SCS_BASE_URL=https://< SCS IP or Hostname >:9000/scs/sgx/certification/v1
 
@@ -793,13 +791,13 @@ When the installation completes, the SGX Quote Verification Service is available
 
 ### Required For
 
-The SGX Integration Hub is REQUIRED for the following use case.
+The Integration Hub is REQUIRED for the following use case.
 
 Orchestration or other integration support.
 
 ### Prerequisites
 
-The Intel® Security Libraries SGX Hub can be run on a VM or on a bare-metal server. The SGX Hub may be installed on the same server (physical or VM) as the SGX Host Verification Service.
+The Intel® Security Libraries Integration Hub can be run on a VM or on a bare-metal server. The Integration Hub may be installed on the same server (physical or VM) as the SGX Host Verification Service.
 
 -   SGX Caching Service must be installed and available.
   
@@ -809,13 +807,10 @@ The Intel® Security Libraries SGX Hub can be run on a VM or on a bare-metal ser
 
 -   The Certificate Management Service must be installed and available
 
--   The SGX Hub database must be available
 
 ### Package Dependencies
 
-The Intel® SecL SGX Integration Hub requires a number of packages and their dependencies:
-
--   Postgres\* client and server 11.6 (server component optional if an external Postgres database is used)
+The Intel® SecL Integration Hub requires a number of packages and their dependencies:
 
 -   Golang packages
 
@@ -823,7 +818,7 @@ If these are not already installed, the Integration Hub installer attempts to in
 
 ### Supported Operating Systems
 
-The Intel Security Libraries SGX Integration Hub supports Red Hat Enterprise Linux 8.2.
+The Intel Security Libraries Integration Hub supports Red Hat Enterprise Linux 8.2.
 
 ### Recommended Hardware
 
@@ -831,25 +826,33 @@ The Intel Security Libraries SGX Integration Hub supports Red Hat Enterprise Lin
 
 -   RAM: 2 GB
 
--   1 GB free space to install the Verification Service services. Additional free space is needed for the Attestation Hub database and logs (database and log space requirements are dependent on the number of managed servers).
+-   1 GB free space to install the Integration Hub (database and log space requirements are dependent on the number of managed servers).
 
 -   One network interface with network access to the SGX Host Verification Service.
 
 -   One network interface with network access to any integration endpoints (for example, OpenStack Nova).
 
-#### Installing the SGX Hub
+#### Installing the Integration Hub
 
 To install the SGX Integration Hub, follow these steps:
 
-1.  Copy the SGX Hub installation binary to the /root/ directory.
+1.  Copy the Integration Hub installation binary to the /root/ directory.
 
-2.  Create the shub.env installation answer file. See the sample file below
+2.  Create the ihub.env installation answer file. See the sample file below
 
-​           SHUB_ADMIN_USERNAME =< SHUB service user username > 
+​           IHUB_SERVICE_USERNAME =< IHUB service user username > 
 
-​           SHUB_ADMIN_PASSWORD=< SHUB service user password > 
+​           IHUB_SERVICE_PASSWORD=< IHUB service user password > 
 
-​           SHVS_BASE_URL = https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+​           ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+
+​           ATTESTATION_TYPE = SGX
+
+​           KUBERNETES_URL =< https://< Kubernetes IP >:6443/
+
+​           KUBERNETES_CRD = custom-isecl
+
+​           KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
 
 ​           CMS_TLS_CERT_SHA384=< CMS TLS digest > 
 
@@ -859,21 +862,11 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1 
 
-​           SHUB_DB_NAME=< database name >
-
-​           SHUB_DB_USERNAME=< database username > 
-
-​           SHUB_DB_PASSWORD=< database password >
-
-​           SHUB_DB_HOSTNAME=< database hostname or IP > 
-
-​           SHUB_DB_PORT=< database port; default is 5432 > 
-
-​           SAN_LIST =< comma separated list of IPs and hostnames for the SHUB >
+​           TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
 3.  Execute the installer binary.
 
-./shub-v3.0.0.bin
+./ihub-v3.1.0.bin
 
 ##  Installing the Key Broker Service
 
@@ -909,21 +902,31 @@ NA
 
 2.  Create the installation answer file kms.env:
 
-​            AAS_API_URL=https://\<AAS IP or hostname\>:8444/aas
+​           KBS_SERVICE_USERNAME =< KBS service user username > 
 
-​            CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+​           KBS_SERVICE_PASSWORD=< KBS service user password > 
 
-​            KMS_TLS_CERT_IP=\<comma-separated list of IP addresses for the Key Broker\>
+​           AAS_API_URL=https://\<AAS IP or hostname\>:8444/aas
 
-​            KMS_TLS_CERT_DNS=\<comma-separated list of hostnames for the Key Brok
+​           CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
 
-​            CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
+​           SVS_BASE_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
 
-​            BEARER_TOKEN=\<Installation token from populate-users script\>
+​           JETTY_SECURE_PORT=9443
+
+​           KMS_NOSETUP=false
+
+​           KMS_TLS_CERT_IP=\<comma-separated list of IP addresses for the KBS\>
+
+​           KMS_TLS_CERT_DNS=\<comma-separated list of hostnames for the KBS
+
+​           CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
+
+​           BEARER_TOKEN=\<Installation token from AAS\>
 
 3.  Execute the KBS installer.
 
-./kms-6.0-SNAPSHOT.bin
+./kms-6.1-SNAPSHOT.bin
 
 ##  Installing the SKC Library
 
@@ -955,7 +958,10 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
 ### Installation
 
-    Please Refer to the "Build & Deployment of SGX Agent & SKC Library" section in skc-tools/README.md for instructions on SKC_Library deployment
+    Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to SGX Compute node
+    ./skclib_untar.sh
+    Update the IP address for the services mentioned in skc_library.conf
+    ./deploy_skc_library.sh
 
 # Authentication
 
@@ -1360,7 +1366,7 @@ Contains executables and scripts.
 
 Contains the config.yml configuration file.
 
-## SGX Attestation Hub
+## Integration Hub
 
 ### Installation Answer File
 
@@ -1385,51 +1391,51 @@ Contains the config.yml configuration file.
 
 ### Configuration Options 
 
-The SGX Integration Hub configuration can be found in /etc/shub/config.yml.
+The Integration Hub configuration can be found in /etc/ihub/config.yml.
 
 ### Command-Line Options 
 
-The SGX HUB supports several command-line commands that can be executed only as the Root user:
+The Integrtion HUB supports several command-line commands that can be executed only as the Root user:
 
 Syntax:
 
-shub \<command\>
+ihub \<command\>
 
 #### Available Commands 
 
 ##### Help 
 
-shub help
+ihub help
 
 Displays the list of available CLI commands
 
 ##### Start
 
-shub start
+ihub start
 
 Start the service
 
 ##### Stop
 
-shub stop
+ihub stop
 
 stops the service
 
 ##### Status
 
-shub status
+ihub status
 
 Reports whether the service is currently running.
 
 #####  Uninstall 
 
-shub uninstall \[\--purge\]
+ihub uninstall \[\--purge\]
 
-Removes the service. Use \--purge option to remove configuration directory(/etc/shub/)
+Removes the service. Use \--purge option to remove configuration directory(/etc/ihub/)
 
 ##### Version 
 
-shub version
+ihub version
 
 Reports the version of the service.
 
@@ -1437,25 +1443,22 @@ Reports the version of the service.
 
 #### Logs 
 
-The SGX HUB installs by default to /opt/shub with the following folders.
+The Integration HUB installs by default to /opt/ihub with the following folders.
 
 #### Bin 
 
 This folder contains executable scripts.
 
-**9.1.4.2 Dbscripts**
-
-Contains database scripts.
 
 **Other folders which are created during installation are:**
 
 #### Configuration 
 
-This folder /etc/shub/ contains certificates, keys, and configuration files.
+This folder /etc/ihub/ contains certificates, keys, and configuration files.
 
 #### Logs 
 
-This folder contains log files: /var/log/shub/
+This folder contains log files: /var/log/ihub/
 
 ## Certificate Management Service
 
@@ -2061,21 +2064,21 @@ Removes following directories:
 
 -   /var/log/sgx_agent
 
-## SGX Attestation Hub 
+## Integration Hub 
 
-To uninstall the SGX Attestation Hub, run the following command:
+To uninstall the Integration Hub, run the following command:
 
-shub uninstall \--purge
+ihub uninstall \--purge
 
 Removes the following directories:
 
-1.  /opt/shub/
+1.  /opt/ihub/
 
-2.  /run/shub/
+2.  /run/ihub/
 
-3.  /var/log/shub
+3.  /var/log/ihub
 
-4.  /etc/shub
+4.  /etc/ihub
 
 ## SGX Caching Service
 
