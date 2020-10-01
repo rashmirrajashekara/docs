@@ -242,30 +242,6 @@ This script installs the following packages
 ```
 
 
-**Build SGX Agent Package**
-
-**Build Pre-requisites**
-
-```
-cd utils/build/skc-tools/sgx_agent/build_scripts
-./sgxagent_build.sh
-
-This script installs the following packages
-    wget tar git gcc-c++ make curl-devel makeself
-```
-    
-**Building SKC Library Package**
-
-**Build Pre-requisites**
-
-```
-cd utils/build/skc-tools/skc_library/build_scripts
-./skc_library_build.sh
-
-This script installs the following packages
-    bc wget tar git gcc-c++ make automake autoconf libtool yum-utils p11-kit-devel cppunit-devel openssl-devel
-```
-
 
 **Copy Binaries to a clean folder**
 
