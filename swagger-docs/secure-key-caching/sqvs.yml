@@ -70,6 +70,8 @@ paths:
           description: Successfully verified the quote and its parameters.
           schema:
             $ref: '#/definitions/SGXResponse'
+      security:
+      - bearerAuth: []
       tags:
       - Quote
       x-sample-call-endpoint: https://svs.com:12000/svs/v1/verifyQuote
@@ -199,4 +201,10 @@ responses:
       $ref: '#/definitions/SGXResponse'
 schemes:
 - https
+securityDefinitions:
+  bearerAuth:
+    description: Enter your bearer token in the format **Bearer &lt;token&gt;**
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
