@@ -1248,13 +1248,13 @@ Displays the list of available CLI commands.
 
 shvs start
 
-Starts the service
+Starts the SGX Host Verification service
 
 ####  Stop 
 
 shvs stop
 
-Stops the service
+Stops the SGX Host Verification service
 
 #### Status 
 
@@ -1333,19 +1333,19 @@ sgx_agent uninstall \--purge
 
 #####  start 
 
-Start the sgx_agent service. 
+Start the SGX Agent service. 
 
 sgx_agent start
 
 ##### stop 
 
-Stop the sgx agent service. 
+Stop the SGX Agent service. 
 
 sgx_agent stop
 
 ##### status 
 
-Get the status of the sgx_agent service. 
+Get the status of the SGX Agent Service. 
 
 sgx_agent status
 
@@ -1353,7 +1353,7 @@ sgx_agent status
 
 #### Linux 
 
-The Linux SGX_Agent installs by default to /opt/sgx_agent, with the following subfolders:
+The Linux SGX Agent installs by default to /opt/sgx_agent, with the following subfolders:
 
 ##### Bin 
 
@@ -1443,7 +1443,6 @@ The Integration HUB installs by default to /opt/ihub with the following folders.
 #### Bin 
 
 This folder contains executable scripts.
-
 
 **Other folders which are created during installation are:**
 
@@ -1953,7 +1952,7 @@ Reports the version of the scs
 
 ### Directory Layout 
 
-The scs installs by default to /opt/scs with the following folders.
+The SGX Caching Service installs by default to /opt/scs with the following folders.
 
 ####  Bin 
 
@@ -1989,7 +1988,7 @@ The SGX Quote Verification Service configuration can be found in /etc/sqvs/confi
 
 ### Command-Line Options 
 
-The SQVS supports several command-line commands:
+The SGX Quote Verifiction Service supports several command-line commands:
 
 Syntax:
 
@@ -2031,7 +2030,6 @@ Reports the version of the sqvs
 
 This section describes steps used for uninstalling Intel SecL-DC services.
 
-Note: This section does not apply for containerized deployments. To uninstall a containerized deployment, simply shut down the container and delete the persistence volumes.
 
 ## SGX Host Verification Service 
 
@@ -2041,29 +2039,31 @@ shvs uninstall \--purge
 
 Removes following directories:
 
-/opt/shvs
+1.  /opt/shvs
 
-/var/log/shvs
+2.  /run/shvs
 
-/etc/shvs
+3.  /var/log/shvs
 
-/run/shvs
+4.  /etc/shvs
 
 Note: The uninstall command must be issued last, because the uninstall process removes the scripts that execute the other commands, along with all database connectivity info.
 
 ## SGX_Agent 
 
-To uninstall the SGX Agent, run the following command: sgx_agent uninstall \--purge
+To uninstall the SGX Agent, run the following command: 
 
-removes all SGX Agent files.
+sgx_agent uninstall \--purge
 
 Removes following directories:
 
--   /opt/sgx_agent
+1.  /opt/sgx_agent
 
--   /etc/sgx_agent
+2.  /run/sgx_agent
 
--   /var/log/sgx_agent
+3.  /var/log/sgx_agent
+
+4.  /etc/sgx_agent
 
 ## Integration Hub 
 
@@ -2073,9 +2073,9 @@ ihub uninstall \--purge
 
 Removes the following directories:
 
-1.  /opt/ihub/
+1.  /opt/ihub
 
-2.  /run/ihub/
+2.  /run/ihub
 
 3.  /var/log/ihub
 
@@ -2083,17 +2083,19 @@ Removes the following directories:
 
 ## SGX Caching Service
 
-To uninstall the SCS , run the following command:
+To uninstall the SGX Caching Service , run the following command:
 
 scs uninstall \--purge
 
 Removes the following directories:
 
-1.  /opt/scs/
+1.  /opt/scs
 
-2.  /etc/scs/
+2.  /run/scs
 
 3.  /var/log/scs
+
+4.  /etc/scs
 
 ## SGX Quote Verification Service 
 
@@ -2103,11 +2105,13 @@ sqvs uninstall \--purge
 
 Removes the following directories:
 
-1.  /opt/sqvs/
+1.  /opt/sqvs
 
-2.  /etc/sqvs/
+2.  /run/sqvs
 
 3.  /var/log/sqvs
+
+4.  /etc/sqvs
 
 # Appendix 
 
