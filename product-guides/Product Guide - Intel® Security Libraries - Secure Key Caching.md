@@ -334,7 +334,7 @@ If a single shared database server will be used for each Intel® SecL service (f
 
 If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the script on each server hosting a database. The database install scripts use default configuration
 
-AAS: install_pg.sh
+AAS: install_pgdb.sh
 
 SCS: install_pgscsdb.sh
 
@@ -1593,23 +1593,22 @@ This folder contains the CMS root CA certificate.
 
 | Key                  | Sample Value                                 | Description                                                  |
 | -------------------- | -------------------------------------------- | ------------------------------------------------------------ |
-| CMS_BASE_URL         | https://< cms IP or hostname>/cms/v1/        | Required; Provides the URL for the CMS.                      |
-| AAS_NOSETUP          | false                                        | Optional. Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
-| AAS_DB_HOSTNAME      | localhost                                    | Required. Hostname or IP address of the AAS database         |
-| AAS_DB_PORT          | 5432                                         | Required. Database port number                               |
-| AAS_DB_NAME          | pgdb                                         | Required. Database name                                      |
-| AAS_DB_USERNAME      | dbuser                                       | Required. Database username                                  |
-| AAS_DB_PASSWORD      | dbpassword                                   | Required. Database password                                  |
-| AAS_DB_SSLMODE       | verify-ca                                    |                                                              |
-| AAS_DB_SSLCERTSRC    | /usr/local/pgsql/data/server.crt             | Optional, required if the “AAS_DB_SSLMODE” is set to “verify-ca.” Defines the location of the database SSL certificate. |
-| AAS_DB_SSLCERT       | < path_to_cert_file_on_system >              | Optional. The AAS_DB_SSLCERTSRC variable defines the  source location of the database SSL certificate; this variable determines the  local location. If the former option  is used without specifying this option, the service will copy the SSL  certificate to the default configuration directory. |
-| AAS_ADMIN_USERNAME   | admin@aas                                    | Required. Defines a new AAS administrative user. This user will be able to create new users, new roles, and new role-user mappings. This user will have the AAS:Administrator role. |
-| AAS_ADMIN_PASSWORD   | aasAdminPass                                 | Required. Password for the new AAS admin user                |
-| AAS_JWT_CERT_SUBJECT | "AAS JWT Signing Certificate"                | Optional. Defines the subject of the JWT signing certificate. |
-| AAS_JWT_TOKEN_DURATI | 5                                            | Optional. Defines the amount of time in minutes that an issued token will be valid. |
+| CMS_BASE_URL         | https://< cms IP or hostname>/cms/v1/        | Provides the URL for the CMS.                                |
+| AAS_NOSETUP          | false                                        | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
+| AAS_DB_HOSTNAME      | localhost                                    | Hostname or IP address of the AAS database                   |
+| AAS_DB_PORT          | 5432                                         | Database port number                                         |
+| AAS_DB_NAME          | pgdb                                         | Database name                                                |
+| AAS_DB_USERNAME      | dbuser                                       | Database username                                            |
+| AAS_DB_PASSWORD      | dbpassword                                   | Database password                                            |
+| AAS_DB_SSLMODE       | verify-full                                  |                                                              |
+| AAS_DB_SSLCERTSRC    | /usr/local/pgsql/data/server.crt             | Required if the “AAS_DB_SSLMODE” is set to “verify-ca.” Defines the location of the database SSL certificate. |
+| AAS_DB_SSLCERT       | < path_to_cert_file_on_system >              | The AAS_DB_SSLCERTSRC variable defines the  source location of the database SSL certificate; this variable determines the  local location. If the former option  is used without specifying this option, the service will copy the SSL  certificate to the default configuration directory. |
+| AAS_ADMIN_USERNAME   | admin@aas                                    | Defines a new AAS administrative user. This user will be able to create new users, new roles, and new role-user mappings. This user will have the AAS:Administrator role. |
+| AAS_ADMIN_PASSWORD   | aasAdminPass                                 | Password for the new AAS admin user                          |
+| AAS_JWT_CERT_SUBJECT | "AAS JWT Signing Certificate"                | Defines the subject of the JWT signing certificate.          |
+| AAS_JWT_TOKEN_DURATION | 5                                            | Defines the amount of time in minutes that an issued token will be valid. |
 | SAN_LIST             | 127.0.0.1,localhost                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
-| BEARER_TOKEN         | < token >                                    | Required. Token from the CMS generated during CMS setup that allows the AAS to perform initial setup tasks. |
-| LOG_LEVEL            | Critical, error, warning, info, debug, trace | Optional. Defaults to INFO. Changes the log level used.      |
+| BEARER_TOKEN         |                                              | Installation Token from AAS.                                 |
 
 
 
@@ -2012,6 +2011,40 @@ Reports the version of the sqvs
 This section describes steps used for uninstalling Intel SecL-DC services.
 
 
+## Certificate Management Service
+
+To uninstall the Certificate Management Service, run the following command:
+
+cms uninstall \--purge
+
+Removes following directories:
+
+1.  /opt/cms
+
+2.  /run/cms
+
+3.  /var/log/cms
+
+4.  /etc/cms
+
+
+## Authentication and Authorization Service
+
+To uninstall the Authentication and Authorization Service, run the following command:
+
+authservice uninstall \--purge
+
+Removes following directories:
+
+1.  /opt/authservice
+
+2.  /run/authservice
+
+3.  /var/log/authservice
+
+4.  /etc/authservice
+
+
 ## SGX Host Verification Service 
 
 To uninstall the SGX Host Verification Service, run the following command:
@@ -2028,7 +2061,6 @@ Removes following directories:
 
 4.  /etc/shvs
 
-Note: The uninstall command must be issued last, because the uninstall process removes the scripts that execute the other commands, along with all database connectivity info.
 
 ## SGX_Agent 
 
@@ -2093,6 +2125,26 @@ Removes the following directories:
 3.  /var/log/sqvs
 
 4.  /etc/sqvs
+
+## Key Broker Service
+
+To uninstall the Key Broker Service , run the following command:
+
+Removes the following directories:
+
+   /opt/kms
+
+kms uninstall \--purge
+
+## SKC Library
+
+To uninstall the SKC Library, run the following command:
+
+./opt/skc/devops/scripts/uninstall.sh
+
+Removes the following directories:
+
+   /opt/skc
 
 # Appendix 
 
