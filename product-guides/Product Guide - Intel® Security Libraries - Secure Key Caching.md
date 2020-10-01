@@ -235,9 +235,9 @@ The SGX Agent and the SGX services integrate with the Authentication and Authori
 
 Intel® Security Libraries is distributed as open source code and must be compiled into installation binaries before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components can be found here:
+Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://01.org/intel-secl/documentation/build-installation-scripts
+https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
