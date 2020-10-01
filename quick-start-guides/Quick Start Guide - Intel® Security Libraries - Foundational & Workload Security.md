@@ -180,23 +180,23 @@ make all
 
 ```shell
 #Container Confidentiality with Docker Runtime
-mkdir -p /root/isecl/cc-docker.xml && cd /root/isecl/cc-docker.xml
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc.xml
+mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
 repo sync
 make all
 
 #or
 
 #Container Confidentiality with CRIO Runtime
-mkdir -p /root/isecl/cc-crio.xml && cd /root/isecl/cc-crio.xml
-??
+mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
 repo sync
 make all
 
 #or 
 
 #VM Confidentiality
-mkdir -p /root/isecl/vmc.xml && cd /root/isecl/vmc.xml
+mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
 repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
 repo sync
 make all
