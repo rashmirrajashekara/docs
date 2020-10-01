@@ -81,28 +81,13 @@ The below steps needs to be carried out on the Build and Deployment VM
   * `rhel-8-for-x86_64-appstream-rpms`
   * `rhel-8-for-x86_64-baseos-rpms`
 
-* Following packages need to be installed for building Foundational & Workload Security usecases
-
-  ```shell
-  dnf install -y java-1.8.0-openjdk.x86_64 wget gcc gcc-c++ ant git patch zip unzip make tpm2-tss-2.0.0-4.el8.x86_64 tpm2-abrmd-2.1.1-3.el8.x86_64 openssl-devel
-  ```
-
-  ```shell
-  dnf install -y https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/m/makeself-2.2.0-3.el7.noarch.rpm \
-  	       http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/tpm2-abrmd-devel-2.1.1-3.el8.x86_64.rpm \
-                 http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/trousers-devel-0.3.14-4.el8.x86_64.rpm \
-                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm \
-                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm \
-                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm 
-  ```
-
-* Extract Install `go` version > `go1.11.4` & <= `go1.14.1` from `https://golang.org/dl/` and set `GOROOT` & `PATH`
+* Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` and set `GOROOT` & `PATH`
 
   ```shell
   export GOROOT=<path_to_go>
   export PATH=$GOROOT/bin:$PATH
-  ```
-
+```
+  
 * Extract and Install `Maven`, version >= `3.6.3` from `https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz` & set in `PATH`
 
   ```shell
@@ -162,8 +147,49 @@ The below steps needs to be carried out on the Build and Deployment VM
         <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
         </proxy>
         -->
-    </proxies>  
+    </proxies> 
     ```
+  
+* Additional packages for **Foundational Security** & **Workload Security** usecase
+
+  ```shell
+  dnf install java-1.8.0-openjdk.x86_64 wget gcc gcc-c++ ant git patch zip unzip make tpm2-tss-2.0.0-4.el8.x86_64 tpm2-abrmd-2.1.1-3.el8.x86_64 openssl-devel
+  ```
+
+  ```shell
+  dnf install https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/m/makeself-2.2.0-3.el7.noarch.rpm \
+  	       http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/tpm2-abrmd-devel-2.1.1-3.el8.x86_64.rpm \
+                 http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/trousers-devel-0.3.14-4.el8.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm \
+                 https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm 
+  ```
+
+* Enable and start the Docker daemon
+
+  ```shell
+  systemctl enable docker
+  systemctl start docker
+  ```
+
+* If Running behind a proxy, configure docker to run behind proxy
+
+  ```shell
+  mkdir -p /etc/systemd/system/docker.service.d
+  touch /etc/systemd/system/docker.service.d/proxy.conf
+  
+  #Add the below lines in proxy.conf
+  [Service]
+  Environment="HTTP_PROXY=<http_proxy>"
+  Environment="HTTPS_PROXY=<https_proxy>"
+  Environment="NO_PROXY=<no_proxy>"
+  ```
+
+  ```shell
+  #Reload docker
+  systemctl daemon-reload
+  systemctl restart docker
+  ```
 
 #### Building
 
@@ -185,15 +211,11 @@ repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.
 repo sync
 make all
 
-#or
-
 #Container Confidentiality with CRIO Runtime
 mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
 repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
 repo sync
 make all
-
-#or 
 
 #VM Confidentiality
 mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
