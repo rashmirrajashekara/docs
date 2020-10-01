@@ -81,14 +81,16 @@ The below steps needs to be carried out on the Build and Deployment VM
   * `rhel-8-for-x86_64-appstream-rpms`
   * `rhel-8-for-x86_64-baseos-rpms`
 
-* Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` and set `GOROOT` & `PATH`
+* Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` 
+  and set `GOROOT` & `PATH`
 
   ```shell
   export GOROOT=<path_to_go>
   export PATH=$GOROOT/bin:$PATH
-```
+  ```
   
-* Extract and Install `Maven`, version >= `3.6.3` from `https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz` & set in `PATH`
+* Extract and Install `Maven`, version >= `3.6.3` from `https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz` 
+  & set in `PATH`
 
   ```shell
   export M2_HOME=<path_to_maven>
