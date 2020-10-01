@@ -186,7 +186,35 @@ export PATH=$M2_HOME/bin:$PATH
     </proxies>
 
 
-## **5. Deployment & Usecase Workflow Tools Installation**
+## **5. Build Services, Libraries and Install packages**
+
+**Pulling Source Code**
+
+```
+mkdir -p /root/workspace && cd /root/workspace
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.1/develop -m manifest/skc.xml
+repo sync
+```
+
+**Building All SKC Components**
+```
+make
+
+This script installs the following packages
+    wget gcc gcc-c++ ant git zip java-1.8.0 make makeself
+
+```
+
+
+
+**Copy Binaries to a clean folder**
+
+```
+copy the generated binaries directory to the home directory on the CSP/Enterprise VM
+```
+
+
+## **6. Deployment & Usecase Workflow Tools Installation**
 
 The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
@@ -213,7 +241,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
   >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
 
 
-## **6. Deployment**
+## **7. Deployment**
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
 
@@ -340,16 +368,10 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 | Usecase                                                      | Variable                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Host Attestation                                             | `setup: host-attestation` in playbook or via `--extra-vars` as `setup=host-attestation` in CLI |
-| Application Integrity                                        | `setup: application-integrity` in playbook or via `--extra-vars` as `setup=application-integrity` in CLI |
-| Data Fencing & Asset Tags                                    | `setup: data-fencing` in playbook or via `--extra-vars` as `setup=data-fencing` in CLI |
-| Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
-| Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
-| Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
-| Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-crio`in CLI |
+| Secure Key Caching                                           |                                                              |
 
 
-## **7. Usecase Workflows with Postman API Collections**
+## **8. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/api-collections) repository
 
@@ -392,73 +414,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
   <TODO: add image/gif>
 
 
-## **6. System User Configuration**
 
-**Build System**
-
-**Setup ~/.gitconfig to update the git user details. A sample config is provided below**
-
-GIT Configuration**
-
-```
-[user]
-        name = John Doe
-        email = john.doe@abc.com
-[color]
-        ui = auto
- [push]
-        default = matching 
-```
-
-## **7. Build Services, Libraries and Install packages**
-
-**Pulling Source Code**
-
-```
-mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.1/develop -m manifest/skc.xml
-repo sync
-```
-
-**Building All SKC Components**
-```
-make
-
-This script installs the following packages
-    wget gcc gcc-c++ ant git zip java-1.8.0 make makeself
-
-```
-
-
-
-**Copy Binaries to a clean folder**
-
-```
-copy the generated binaries directory to the home directory on the CSP/Enterprise VM
-```
-
-## 8. Deployment
-
-**Assumption:** Ansible-Galaxy role deploys both CSP managed (Services and Agent) and Enterprise Managed (services and workload)
-
-**Deployment Using Ansible:**
-
-**Update Ansible Galaxy Configuration in Build System:**
-
-1. Update inventories (MUST)
-
-2. Update variables (MUST)
-
-3. Deploy Playbook for SKC
-
-**Deployment**
-
-```
-cd <Ansible Folder>
-Update Inventories <Sample>
-Update Variables <Sample>
-<<   ansible-playbook -i <inventories> <skc-playbook>  >>
-```
 
 **Deployment Using Binaries**
 
@@ -513,20 +469,22 @@ Update the Hostname of the Enterprise VM where KBS is deployed
 ./deploy_skc_library.sh
 
 
-## **9. Testing Using Postman Collections**
+## **9. System User Configuration**
 
-1. Update inventories in postman collections matching deployment
+**Build System**
 
-2. Update config files matching deployment
+**Setup ~/.gitconfig to update the git user details. A sample config is provided below**
 
-3. Execute Use cases 
-
-**Testing**
+GIT Configuration**
 
 ```
-Update Postman Inventories <Sample>
-Update Postman Variables <Sample>
-Execute Postman Collections for the use cases
+[user]
+        name = John Doe
+        email = john.doe@abc.com
+[color]
+        ui = auto
+ [push]
+        default = matching 
 ```
 
 
