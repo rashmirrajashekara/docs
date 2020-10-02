@@ -336,11 +336,11 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
 
 ```yaml
 - hosts: all
+  gather_facts: yes
+  any_errors_fatal: true
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
-  gather_facts: yes
-  any_errors_fatal: true
   roles:   
   - intel-secl.ansible-role
   environment:
@@ -362,7 +362,7 @@ OR
 ```yaml
 - hosts: all
   gather_facts: yes
-  any_errors_fatal:true
+  any_errors_fatal: true
   roles:   
   - intel-secl.ansible-role
   environment:
