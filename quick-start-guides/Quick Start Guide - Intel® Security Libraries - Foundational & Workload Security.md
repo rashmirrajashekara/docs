@@ -443,15 +443,15 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 * Update env as per the deployment details for specific usecase
 
-  ![updating-env](.\images\updating_env.gif)
+  ![updating-env](./images/updating_env.gif)
 
 * View Documentation
 
-  ![view-docs](.\images\view_documentation.gif)
+  ![view-docs](./images/view_documentation.gif)
 
 * Run the workflow
 
-  ![running-collection](.\images\running_collection.gif)
+  ![running-collection](./images/running_collection.gif)
 
 
 
