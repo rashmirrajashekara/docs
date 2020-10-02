@@ -421,19 +421,21 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 * Import the collection into Postman API Client
 
-  <TODO: add image/gif>
+  > **Note:** This step is required only when not using Postman API Network and downloading from Github
+
+  ![importing-collection](.\images\importing_collection.gif)
 
 * Update env as per the deployment details for specific usecase
 
-  <TODO: add image/gif>
+  ![updating-env](.\images\updating_env.gif)
 
 * View Documentation
 
-  <TODO: add image/image>
+  ![view-docs](.\images\view_documentation.gif)
 
 * Run the workflow
 
-  <TODO: add image/gif>
+  ![running-collection](.\images\running_collection.gif)
 
 
 
