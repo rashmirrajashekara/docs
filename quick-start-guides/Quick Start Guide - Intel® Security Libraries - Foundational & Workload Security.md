@@ -6,9 +6,19 @@
 
 #### Hardware
 
-* Build and Deploy VM
-* CSP Managed Services (VM and 1 Physical Server)
+* Build and Deploy Machine
+
+* CSP Managed Services
+
 * Enterprise Managed Services VM
+
+* Intel® SecL-DC supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL.
+
+  > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. 
+
+  ![hardware-options](./images/trusted-boot-options.png)
+
+> **Note:** A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
 #### OS Requirements
 
@@ -21,7 +31,7 @@ The services need to be built and installed as `root` user. Ensure root privileg
 
 
 
-## **2. Network Requirements**
+## **2. Deployment Model**
 
 1. **Build and Deployment VM**
 
