@@ -395,9 +395,25 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ## **7. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tools/api-collections) repository
 
-#### Download Postman API Collections
+#### Use Case Collections
+
+| Use case                     | Sub-Usecase                                   | API Collection     |
+| ---------------------------- | --------------------------------------------- | ------------------ |
+| Foundational Security        | Host Attestation                              | ✔️                  |
+|                              | Data Fencing  with Asset Tags                 | ✔️                  |
+|                              | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
+|                              | Application Integrity                         | ✔️                  |
+| Launch Time Protection       | VM Confidentiality                            | ❌                  |
+|                              | Container Confidentiality with Docker Runtime | ✔️                  |
+|                              | Container Confidentiality with CRIO Runtime   | ✔️                  |
+| Secure Key Caching           |                                               | ✔️                  |
+| Security Aware Orchestration |                                               | ✔️(Kubernetes Only) |
+
+
+
+#### Downloading API Collections
 
 * Postman API Network for latest release
 
@@ -417,7 +433,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-#### Running the Collections
+#### Running API Collections
 
 * Import the collection into Postman API Client
 
@@ -436,6 +452,8 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 * Run the workflow
 
   ![running-collection](.\images\running_collection.gif)
+
+
 
 
 
