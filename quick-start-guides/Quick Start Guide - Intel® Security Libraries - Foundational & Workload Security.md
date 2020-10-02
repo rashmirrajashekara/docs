@@ -6,11 +6,11 @@
 
 #### Hardware
 
-* Build and Deploy Machine
+* Build and Deployment Machine
+* CSP Managed Services Machines (Physical server + VM/Server)
+* Enterprise Managed Services Machine (VM/Server)
 
-* CSP Managed Services
-
-* Enterprise Managed Services VM
+##### Physical Server requirements
 
 * Intel® SecL-DC supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL.
 
@@ -33,20 +33,17 @@ The services need to be built and installed as `root` user. Ensure root privileg
 
 ## **2. Deployment Model**
 
-1. **Build and Deployment VM**
+![deploy_model](./images/isecl_deploy_model.PNG)
 
-   a.    Internet access required
+* Build + Deployment Machine
 
-2. **CSP Managed Services** 
+* CSP - ISecL Services Machine
 
-   a.    Internet access required
+* CSP - Physical Server as per supported configurations
 
-3. **Enterprise Managed Services**
+* Enterprise - ISecL Services Machine
 
-   a.    Internet access required
-
-
-
+  
 
 ## **3. System Tools and Utilities Installation**
 
@@ -400,6 +397,8 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
 | Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
 | Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-crio`in CLI |
+
+> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
 
 
