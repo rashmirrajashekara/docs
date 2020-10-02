@@ -806,9 +806,15 @@ SQVS parses the quote, verifies all the parameters in the quote and returns the 
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/verifyQuote</span></code></pre>
 
     			<h2>Authorization</h2>
-  			<ul>
-    				<li>None</li>
-  			</ul>
+                        <ul>
+                        
+      			
+      			<li>Bearer Token Authorization.
+      			<ul>
+         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
+         			<li>Name of header: Authorization</li> 
+      			</ul></li>
+    			</ul>
 
     			  <h2>Consumes</h2>
     			    <ul>
@@ -929,7 +935,7 @@ SQVS parses the quote, verifies all the parameters in the quote and returns the 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Quote-quoteVerify-0-curl">
-			  <pre><code class="language-bsh">curl -X POST "https://svs.com:12000/svs/v1/verifyQuote" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://svs.com:12000/svs/v1/verifyQuote" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
   "quote":"AQAAAAAAAAB7EwAAAQAAAAEAAAADAAAAAAEAANwGAAAtLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUlJRTZE
   Q0NCSTJnQXdJQkFnSVVMYW1oN3R6RWpZSm5qUVl6U2syOWV3a0FGT1l3Q2dZSUtvWkl6ajBFQXdJd2NERWlNQ0FHQTFVRQpBd3
   daU1c1MFpXd2dVMGRZSUZCRFN5QlFiR0YwWm05eWJTQkRRVEVhTUJnR0ExVUVDZ3dSU1c1MFpXd2dRMjl5Y0c5eVlYUnBiMjR4
