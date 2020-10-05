@@ -90,10 +90,11 @@ The below steps needs to be carried out on the Build and Deployment VM
   export PATH=$GOROOT/bin:$PATH
   ```
   
-* Extract and Install `Maven`, version >= `3.6.3` from `https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz` 
-  & set in `PATH`
+* Extract and Install `Maven` & set in `PATH`
 
   ```shell
+  wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+  tar -xf apache-maven-3.6.3-bin.tar.gz
   export M2_HOME=<path_to_maven>
   export PATH=$M2_HOME/bin:$PATH
   ```
@@ -153,7 +154,7 @@ The below steps needs to be carried out on the Build and Deployment VM
     </proxies> 
     ```
   
-* Additional packages for **Foundational Security** & **Workload Security** usecase
+* Additional packages for **Foundational Security** & **Workload Security** usecases
 
   ```shell
   dnf install java-1.8.0-openjdk.x86_64 wget gcc gcc-c++ ant git patch zip unzip make tpm2-tss-2.0.0-4.el8.x86_64 tpm2-abrmd-2.1.1-3.el8.x86_64 openssl-devel
@@ -244,16 +245,16 @@ The below installation is required on the Build & Deployment VM only and the Pla
 * Download role from `ansible-galaxy`
 
   ```shell
-  ansible-galaxy install intel-secl.ansible
+  ansible-galaxy install intel-secl.isecl
   ```
 
-  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository `intel-secl/ansible-role` for specific release tags
+  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository of [Ansible-Role](https://github.com/intel-secl/ansible-role) for specific release tags
 
 #### Usecases Workflow Tools Installation
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tools/api-collections)
 
 
 
@@ -267,13 +268,13 @@ The role can be downloaded from ansible galaxy as follows:
 
 ```shell
 #search for isecl role
-ansible-galaxy search intel-secl 
+ansible-galaxy search isecl 
 
 #describe isecl role details
-ansible-galaxy info intel-secl 
+ansible-galaxy info isecl
 
  #install isecl role
-ansible-galaxy install intel-isecl  
+ansible-galaxy install intel-secl.isecl  
 ```
 
 or 
@@ -343,7 +344,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
   roles:   
-  - intel-secl.ansible-role
+  - intel-secl.isecl
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -365,7 +366,7 @@ OR
   gather_facts: yes
   any_errors_fatal: true
   roles:   
-  - intel-secl.ansible-role
+  - intel-secl.isecl
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -377,6 +378,16 @@ and
 ```shell
 ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
 ```
+
+
+
+#### Additional Examples and Tips
+
+* If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook with the following command:
+
+  ```shell
+  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars tpm_owner_secret=<tpm owner secret>
+  ```
 
 
 
@@ -402,17 +413,15 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 #### Use Case Collections
 
-| Use case                     | Sub-Usecase                                   | API Collection     |
-| ---------------------------- | --------------------------------------------- | ------------------ |
-| Foundational Security        | Host Attestation                              | ✔️                  |
-|                              | Data Fencing  with Asset Tags                 | ✔️                  |
-|                              | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
-|                              | Application Integrity                         | ✔️                  |
-| Launch Time Protection       | VM Confidentiality                            | ❌                  |
-|                              | Container Confidentiality with Docker Runtime | ✔️                  |
-|                              | Container Confidentiality with CRIO Runtime   | ✔️                  |
-| Secure Key Caching           |                                               | ✔️                  |
-| Security Aware Orchestration |                                               | ✔️(Kubernetes Only) |
+| Use case               | Sub-Usecase                                   | API Collection     |
+| ---------------------- | --------------------------------------------- | ------------------ |
+| Foundational Security  | Host Attestation                              | ✔️                  |
+|                        | Data Fencing  with Asset Tags                 | ✔️                  |
+|                        | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
+|                        | Application Integrity                         | ✔️                  |
+| Launch Time Protection | VM Confidentiality                            | ❌                  |
+|                        | Container Confidentiality with Docker Runtime | ✔️                  |
+|                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
 
 
 
