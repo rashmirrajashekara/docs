@@ -13,7 +13,6 @@
    c.    Enterprise Managed Services
 
 2. **SGX Enabled Host**
-3. 
 
 3. **OS Requirements**
 
@@ -67,28 +66,6 @@ Access required for the following packages in all systems
 2. **Appstream**
 
 3. **CodeReady**
-
-**Sample RHEL Repo Configuration**
-
-```
-[codeready-builder-for-rhel-8-x86_64-rpms]
-baseurl = <URL>/codeready-builder-for-rhel-8-x86_64-rpms
-enabled = 1
-gpgcheck = 0
-name =  CodeReady Builder Local Repo
-
-[rhel-8-for-x86_64-baseos-rpms]
-baseurl = <URL>/rhel-8-for-x86_64-baseos-rpms
-enabled = 1
-gpgcheck = 0
-name =  RHEL8 BaseOS Local Repo
-
-[rhel-8-for-x86_64-appstream-rpms]
-baseurl = <URL>/rhel-8-for-x86_64-appstream-rpms
-enabled = 1
-gpgcheck = 0
-name =  RHEL8 appstreams Local Repo
-```
 
 ## **4. Deployment Model**
 
@@ -216,11 +193,10 @@ This script installs the following packages
 ```
 
 
-
 **Copy Binaries to a clean folder**
 
 ```
-copy the generated binaries directory to the home directory on the CSP/Enterprise VM
+copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
 ```
 
 
@@ -288,7 +264,6 @@ git checkout <release-tag of choice>
 ```
 
 
-
 #### Update Ansible Inventory
 
 The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
@@ -320,7 +295,6 @@ ansible_password=<password>
 ```
 
 
-
 #### Create and Run Playbook
 
 The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
@@ -342,6 +316,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
     no_proxy: "{{no_proxy}}"```
+```
 
 and
 
@@ -370,7 +345,6 @@ and
 ```shell
 ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
 ```
-
 
 
 #### Usecase Setup Options
@@ -413,7 +387,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
   ```
 
 
-
 #### Running API Collections
 
 * Import the collection into Postman API Client
@@ -436,7 +409,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-
 **Deployment Using Binaries**
 
 **Deploy CSP SKC Services**
@@ -448,7 +420,6 @@ Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
 Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 ./install_csp_skc.sh
-
 
 
 **Deploy Enterprise SKC Services**
