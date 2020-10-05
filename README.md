@@ -52,6 +52,11 @@ Secure Key Caching Quick Start Guide
 
 https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
+Secure Key Caching Swagger Document
+
+https://gitlab.devtools.intel.com/sst/isecl/docs/-/tree/v3.1/develop/swagger-docs%2Fsecure-key-caching
+
+
 ## License 
 
 ## Support 
