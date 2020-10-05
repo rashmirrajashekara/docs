@@ -565,13 +565,11 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
 
-dnf module disable postgresql -y
-
 copy install_pgscsdb.sh and create_db.sh to /root/ directory
 
 ./install_pgscsdb.sh
 
-./create_db.sh pgscsdb <dbuser> <dbpassword>
+./create_db.sh pgscsdb <db_user> <db_password>
 
 
 1.  Copy the SCS installation binary to the /root/ directory.
@@ -661,13 +659,11 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 
 Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
 
-dnf module disable postgresql -y
-
 copy install_pgshvsdb.sh and create_db.sh to /root/ directory
 
 ./install_pgshvsdb.sh
 
-./create_db.sh pgshvsdb <dbuser> <dbpassword>
+./create_db.sh pgshvsdb <db_user> <db_password>
 
 To install the SGX Host Verification Service, follow these steps:
 
@@ -868,8 +864,10 @@ The Intel Security Libraries Integration Hub supports Red Hat Enterprise Linux 8
 To install the SGX Integration Hub, follow these steps:
 
 1.  Copy the Integration Hub installation binary to the /root/ directory.
+  
+2.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
-2.  Create the ihub.env installation answer file in /root/ directory as below
+3.  Create the ihub.env installation answer file in /root/ directory as below
 
 ​           IHUB_SERVICE_USERNAME =< IHUB service user username > 
 
@@ -931,7 +929,9 @@ NA
 
 1.  Copy the Key Broker installation binary to the /root/ directory.
 
-2.  Create the installation answer file kms.env /root/ directory as below:
+2.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
+
+3.  Create the installation answer file kms.env /root/ directory as below:
 
 ​           KBS_SERVICE_USERNAME =< KBS service user username > 
 
@@ -2179,3 +2179,83 @@ Removes the following directories:
 
 # Appendix 
 
+Sample Shell script to create KBS user, KBS Roles and mapping KBS user to KBS roles and generating a KBS Token from AAS
+
+#### Sample Script to create Key Broker Service User account and roles
+
+```
+#!/bin/bash
+
+dnf install -y jq
+
+#Create KBS User
+
+KMS_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "kmsuser@kms","password": "kmspassword"}'`
+
+KMS_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=kmsuser@kms -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+
+#Create KMS Certificate Approver Role
+
+KMS_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=KMS TLS Certificate;SAN='$KMS_IP','$KMS_HOSTNAME';certType=TLS"}' | jq -r ".role_id"`
+
+KMS_ROLE_ID2=`curl --noproxy "*" -k -X GET https://$AAS_IP:8444/aas/roles?name=Administrator -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].role_id'`
+
+#Create SQVS Quote Verifier Role
+
+KMS_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SQVS","name": "QuoteVerifier","context": ""}' | jq -r ".role_id"`
+
+if [ $? -eq 0 ]; then
+
+  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$KMS_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$KMS_ROLE_ID1"'", "'"$KMS_ROLE_ID2"'", "'"$KMS_ROLE_ID3"'"]}'
+
+fi
+
+KMS_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "kmsuser@kms","password": "kmspassword"}'`
+
+echo "KMS Token $KMS_TOKEN"
+
+```
+
+The printed KMS_TOKEN needs to be added in BEARER_TOKEN section in kms.env
+
+
+
+
+#### Sample Script to Create Integrated Hub User account and Roles
+
+```
+#!/bin/bash
+
+dnf install -y jq
+
+#Create IHUB User
+
+IHUB_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "ihubuser@ihub","password": "ihubpassword"}'`
+
+IHUB_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=ihubuser@ihub -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+
+#Create CMS Certificate Approver Role
+
+IHUB_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=Integration HUB TLS Certificate;SAN='$IHUB_IP';certType=TLS"}' | jq -r ".role_id"`
+
+#Create SHVS Host Data Reader Role
+
+IHUB_ROLE_ID2=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SHVS","name": "HostDataReader","context": ""}' | jq -r ".role_id"`
+
+#Create SHVS Host List Reader Role
+
+IHUB_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SHVS","name": "HostsListReader","context": ""}' | jq -r ".role_id"`
+
+if [ $? -eq 0 ]; then
+
+  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$IHUB_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$IHUB_ROLE_ID1"'", "'"$IHUB_ROLE_ID2"'", "'"$IHUB_ROLE_ID3"'"]}'
+
+fi
+
+IHUB_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "ihubuser@ihub","password": "ihubpassword"}'`
+
+echo "IHUB Token $IHUB_TOKEN"
+
+```
+
+The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
