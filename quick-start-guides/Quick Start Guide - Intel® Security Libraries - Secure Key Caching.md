@@ -109,13 +109,9 @@ name =  RHEL8 appstreams Local Repo
 ```
 dnf install git wget tar python3 make yum-utils
 dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/30/Everything/x86_64/os/Packages/m/makeself-2.4.0-3.fc30.noarch.rpm
-```
-
-***Softlink for Python3***
-
-```
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
+
 ```
 
 ***Repo Tool***
@@ -334,7 +330,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
 
 ```yaml
 - hosts: all
- gather_facts: yes
+  gather_facts: yes
   any_errors_fatal: true
   vars:
     setup: <setup var from supported usecases>
