@@ -53,7 +53,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 ***Sample***: Disable firewall
 
 ```
-systemctl firewalld stop
+systemctl stop firewalld
 ```
 
 
@@ -67,42 +67,29 @@ Access required for the following packages in all systems
 
 3. **CodeReady**
 
-**Sample RHEL Repo Configuration**
+## **4. Deployment Model**
 
-```
-[codeready-builder-for-rhel-8-x86_64-rpms]
-baseurl = <URL>/codeready-builder-for-rhel-8-x86_64-rpms
-enabled = 1
-gpgcheck = 0
-name =  CodeReady Builder Local Repo
+![deploy_model](./images/isecl_deploy_model.PNG)
 
-[rhel-8-for-x86_64-baseos-rpms]
-baseurl = <URL>/rhel-8-for-x86_64-baseos-rpms
-enabled = 1
-gpgcheck = 0
-name =  RHEL8 BaseOS Local Repo
+* Build + Deployment Machine
 
-[rhel-8-for-x86_64-appstream-rpms]
-baseurl = <URL>/rhel-8-for-x86_64-appstream-rpms
-enabled = 1
-gpgcheck = 0
-name =  RHEL8 appstreams Local Repo
-```
+* CSP - ISecL Services Machine
+
+* CSP - Physical Server as per supported configurations
+
+* Enterprise - ISecL Services Machine
 
 
-## **4. System Tools and Utilities**
+## **5. System Tools and Utilities**
 
 **System Tools and utils**
 
 ```
-yum install git wget tar python3 yum-utils
-```
-
-***Softlink for Python3***
-
-```
+dnf install git wget tar python3 make yum-utils
+dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/30/Everything/x86_64/os/Packages/m/makeself-2.4.0-3.fc30.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
+
 ```
 
 ***Repo Tool***
@@ -186,7 +173,7 @@ export PATH=$M2_HOME/bin:$PATH
     </proxies>
 
 
-## **5. Build Services, Libraries and Install packages**
+## **6. Build Services, Libraries and Install packages**
 
 **Pulling Source Code**
 
@@ -206,15 +193,14 @@ This script installs the following packages
 ```
 
 
-
 **Copy Binaries to a clean folder**
 
 ```
-copy the generated binaries directory to the home directory on the CSP/Enterprise VM
+copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
 ```
 
 
-## **6. Deployment & Usecase Workflow Tools Installation**
+## **7. Deployment & Usecase Workflow Tools Installation**
 
 The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
@@ -241,7 +227,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
   >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
 
 
-## **7. Deployment**
+## **8. Deployment**
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
 
@@ -278,7 +264,6 @@ git checkout <release-tag of choice>
 ```
 
 
-
 #### Update Ansible Inventory
 
 The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
@@ -310,7 +295,6 @@ ansible_password=<password>
 ```
 
 
-
 #### Create and Run Playbook
 
 The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
@@ -321,17 +305,17 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
 
 ```yaml
 - hosts: all
+  gather_facts: yes
+  any_errors_fatal: true
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
-  gather_facts: yes
-  any_errors_fatal: true
   roles:   
   - intel-secl.ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
-    no_proxy: "{{no_proxy}}"
+    no_proxy: "{{no_proxy}}"```
 ```
 
 and
@@ -363,17 +347,26 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 ```
 
 
-
 #### Usecase Setup Options
 
 | Usecase                                                      | Variable                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Secure Key Caching                                           |                                                              |
 
+> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
-## **8. Usecase Workflows with Postman API Collections**
+
+## **9. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/api-collections) repository
+
+#### Use Case Collections
+
+| Use case                     | Sub-Usecase                                   | API Collection     |
+| ---------------------------- | --------------------------------------------- | ------------------ |
+| Secure Key Caching           |                                               | ✔️                  |
+| Security Aware Orchestration |                                               | ✔️(Kubernetes Only) |
+
 
 #### Download Postman API Collections
 
@@ -394,25 +387,25 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
   ```
 
 
-
-#### Running the Collections
+#### Running API Collections
 
 * Import the collection into Postman API Client
 
-  <TODO: add image/gif>
+  > **Note:** This step is required only when not using Postman API Network and downloading from Github
+
+  ![importing-collection](./images/importing_collection.gif)
 
 * Update env as per the deployment details for specific usecase
 
-  <TODO: add image/gif>
+  ![updating-env](./images/updating_env.gif)
 
 * View Documentation
 
-  <TODO: add image/image>
+  ![view-docs](./images/view_documentation.gif)
 
 * Run the workflow
 
-  <TODO: add image/gif>
-
+  ![running-collection](./images/running_collection.gif)
 
 
 
@@ -429,14 +422,13 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 ./install_csp_skc.sh
 
 
-
 **Deploy Enterprise SKC Services**
 
 Copy the binaries directory generated in the build system VM to the home directory on Enterprise VM
 
-Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in csp_skc.conf
+Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in enterprise_skc.conf
 
-Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
+Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 ./install_enterprise_skc.sh
 
@@ -462,14 +454,16 @@ Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy
 
 ./skclib_untar.sh
 
-Edit skc_library.conf and Update the IP address for CMS/AAS/SCS/KBS services deployed on CSP VM
+Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
+
+Also update the IP Address for CS Service deployed in CSP VM
 
 Update the Hostname of the Enterprise VM where KBS is deployed
 
 ./deploy_skc_library.sh
 
 
-## **9. System User Configuration**
+## **10. System User Configuration**
 
 **Build System**
 
@@ -490,34 +484,24 @@ GIT Configuration**
 
 ## Appendix
 
-**User Specific Environment**
-
-**SSH Key Generation**
-
-```
-ssh-keygen -t rsa
-```
-
 **OpenSSL Config**
+****
+
+Add the folowing block in openssl.cnf in order to enable pkcs11 engine support in openssl.
 
 [engine_section]
+
 pkcs11 = pkcs11_section
 
 [pkcs11_section]
+
 engine_id = pkcs11
+
 dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+
 init = 0
 
-**SGX Measurement example**
 
-Retrieving Quote+Public key - ECDSA
-SGX_ISSUER[size:32]:cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f
-**SGX_MEASUREMENT[size:32]:31085b62833ed5490f71f1d051b1dc5a0c078af8671419752a903692d0cfb865**
-SGX_CONFIG_ID[size:64]:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-SGX_PRODUCT_ID[size:2]:00
-SGX_EXT_PRODUCT_ID[size:16]:00000000000000000000000000000000
-SGX_CONFIG_ID_SVN[size:2]:00
-SGX_ENCLAVE_SVN[size:2]:1
-Retrieving Quote+Public key - EPID
 

@@ -459,7 +459,7 @@ To install the AAS, a bearer token from the CMS is required. This bearer token i
 
 cms setup cms_auth_token --force
 
-Create the authservice.env installation answer file:
+Create the authservice.env installation answer file in /root/ directory as below:
 
 ​      CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
 
@@ -563,7 +563,7 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 1.  Copy the SCS installation binary to the /root/ directory.
 
-2.  Create the scs.env installation answer file:
+2.  Create the scs.env installation answer file in /root/ directory as below:
 
 ​           SCS_DB_USERNAME=\<database username\>
 
@@ -650,7 +650,7 @@ To install the SGX Host Verification Service, follow these steps:
 
 -   Copy the SGX Host Verification Service installation binary to the /root/ directory.
 
--   Create the shvs.env  installation answer file for an unattended installation.
+-   Create the shvs.env installation answer file in /root/ directory as below.
 
 A sample minimal shvs.env file is provided below. For all configuration options and their descriptions, refer to the Intel® SecL Configuration section on the SGX Host Verification Service.
 
@@ -761,11 +761,7 @@ To install the SQVS Service, follow these steps:
 
 1.  Copy the SQVS installation binary to the ~/root directory
 
-2.  Verify that the sqvs.env answer file is present. This file is necessary for installing/provisioning sqvs.
-
-3.  Execute the sqvs installer binary.
-
-sqvs-v3.1.0.bin
+2.  Create the sqvs.env installation answer file in /root/ directory as below
 
 A sample minimal sqvs.env file is provided below. For all configuration options and their descriptions, refer to the Configuration section on the SGX Quote Verification Service.
 
@@ -785,9 +781,13 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 
 ​       CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
 
-SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS matching the SAN list specified in the populate-users script; may include wildcards* > 
+​       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS matching the SAN list specified in the populate-users script; may include wildcards* > 
 
-Execute the installer binary.
+
+3.  Execute the sqvs installer binary.
+
+sqvs-v3.1.0.bin
+
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -846,7 +846,7 @@ To install the SGX Integration Hub, follow these steps:
 
 1.  Copy the Integration Hub installation binary to the /root/ directory.
 
-2.  Create the ihub.env installation answer file. See the sample file below
+2.  Create the ihub.env installation answer file in /root/ directory as below
 
 ​           IHUB_SERVICE_USERNAME =< IHUB service user username > 
 
@@ -908,7 +908,7 @@ NA
 
 1.  Copy the Key Broker installation binary to the /root/ directory.
 
-2.  Create the installation answer file kms.env:
+2.  Create the installation answer file kms.env /root/ directory as below:
 
 ​           KBS_SERVICE_USERNAME =< KBS service user username > 
 
@@ -966,9 +966,9 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
 ### Installation
 
-    Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to SGX Compute node
+    Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to a directory in SGX Compute node
     ./skclib_untar.sh
-    Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be the CSP SCS IP)
+    Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
     ./deploy_skc_library.sh
 
 # Authentication
