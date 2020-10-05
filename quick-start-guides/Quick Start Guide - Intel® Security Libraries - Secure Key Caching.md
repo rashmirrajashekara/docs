@@ -89,8 +89,20 @@ gpgcheck = 0
 name =  RHEL8 appstreams Local Repo
 ```
 
+## **4. Deployment Model**
 
-## **4. System Tools and Utilities**
+![deploy_model](./images/isecl_deploy_model.PNG)
+
+* Build + Deployment Machine
+
+* CSP - ISecL Services Machine
+
+* CSP - Physical Server as per supported configurations
+
+* Enterprise - ISecL Services Machine
+
+
+## **5. System Tools and Utilities**
 
 **System Tools and utils**
 
@@ -187,7 +199,7 @@ export PATH=$M2_HOME/bin:$PATH
     </proxies>
 
 
-## **5. Build Services, Libraries and Install packages**
+## **6. Build Services, Libraries and Install packages**
 
 **Pulling Source Code**
 
@@ -215,7 +227,7 @@ copy the generated binaries directory to the home directory on the CSP/Enterpris
 ```
 
 
-## **6. Deployment & Usecase Workflow Tools Installation**
+## **7. Deployment & Usecase Workflow Tools Installation**
 
 The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
@@ -242,7 +254,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
   >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository `intel-secl/api-collections`
 
 
-## **7. Deployment**
+## **8. Deployment**
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
 
@@ -322,18 +334,17 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
 
 ```yaml
 - hosts: all
+ gather_facts: yes
+  any_errors_fatal: true
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
-  gather_facts: yes
-  any_errors_fatal: true
   roles:   
   - intel-secl.ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
-    no_proxy: "{{no_proxy}}"
-```
+    no_proxy: "{{no_proxy}}"```
 
 and
 
@@ -371,10 +382,20 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Secure Key Caching                                           |                                                              |
 
+> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
-## **8. Usecase Workflows with Postman API Collections**
+
+## **9. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/api-collections) repository
+
+#### Use Case Collections
+
+| Use case                     | Sub-Usecase                                   | API Collection     |
+| ---------------------------- | --------------------------------------------- | ------------------ |
+| Secure Key Caching           |                                               | ✔️                  |
+| Security Aware Orchestration |                                               | ✔️(Kubernetes Only) |
+
 
 #### Download Postman API Collections
 
@@ -396,7 +417,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-#### Running the Collections
+#### Running API Collections
 
 * Import the collection into Postman API Client
 
@@ -472,7 +493,7 @@ Update the Hostname of the Enterprise VM where KBS is deployed
 ./deploy_skc_library.sh
 
 
-## **9. System User Configuration**
+## **10. System User Configuration**
 
 **Build System**
 
@@ -502,7 +523,7 @@ ssh-keygen -t rsa
 ```
 
 **OpenSSL Config**
-
+****
 [engine_section]
 pkcs11 = pkcs11_section
 
