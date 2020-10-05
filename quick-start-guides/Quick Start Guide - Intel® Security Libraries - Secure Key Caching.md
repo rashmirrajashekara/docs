@@ -13,6 +13,7 @@
    c.    Enterprise Managed Services
 
 2. **SGX Enabled Host**
+3. 
 
 3. **OS Requirements**
 
@@ -514,12 +515,22 @@ GIT Configuration**
 
 **OpenSSL Config**
 ****
+
+Add the folowing block in openssl.cnf in order to enable pkcs11 engine support in openssl.
+
 [engine_section]
+
 pkcs11 = pkcs11_section
 
 [pkcs11_section]
+
 engine_id = pkcs11
+
 dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+
 init = 0
+
+
 
