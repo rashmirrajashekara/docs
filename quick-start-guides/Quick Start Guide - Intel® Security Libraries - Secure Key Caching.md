@@ -53,7 +53,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 ***Sample***: Disable firewall
 
 ```
-systemctl firewalld stop
+systemctl stop firewalld
 ```
 
 
@@ -95,7 +95,8 @@ name =  RHEL8 appstreams Local Repo
 **System Tools and utils**
 
 ```
-yum install git wget tar python3 yum-utils
+dnf install git wget tar python3 make yum-utils
+dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/30/Everything/x86_64/os/Packages/m/makeself-2.4.0-3.fc30.noarch.rpm
 ```
 
 ***Softlink for Python3***
@@ -434,9 +435,9 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 Copy the binaries directory generated in the build system VM to the home directory on Enterprise VM
 
-Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in csp_skc.conf
+Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in enterprise_skc.conf
 
-Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
+Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 ./install_enterprise_skc.sh
 
@@ -462,7 +463,9 @@ Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy
 
 ./skclib_untar.sh
 
-Edit skc_library.conf and Update the IP address for CMS/AAS/SCS/KBS services deployed on CSP VM
+Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
+
+Also update the IP Address for CS Service deployed in CSP VM
 
 Update the Hostname of the Enterprise VM where KBS is deployed
 
