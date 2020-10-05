@@ -421,19 +421,21 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 * Import the collection into Postman API Client
 
-  <TODO: add image/gif>
+  > **Note:** This step is required only when not using Postman API Network and downloading from Github
+
+  ![importing-collection](./images/importing_collection.gif)
 
 * Update env as per the deployment details for specific usecase
 
-  <TODO: add image/gif>
+  ![updating-env](./images/updating_env.gif)
 
 * View Documentation
 
-  <TODO: add image/image>
+  ![view-docs](./images/view_documentation.gif)
 
 * Run the workflow
 
-  <TODO: add image/gif>
+  ![running-collection](./images/running_collection.gif)
 
 
 
@@ -514,14 +516,6 @@ GIT Configuration**
 
 ## Appendix
 
-**User Specific Environment**
-
-**SSH Key Generation**
-
-```
-ssh-keygen -t rsa
-```
-
 **OpenSSL Config**
 ****
 [engine_section]
@@ -532,16 +526,4 @@ engine_id = pkcs11
 dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 init = 0
-
-**SGX Measurement example**
-
-Retrieving Quote+Public key - ECDSA
-SGX_ISSUER[size:32]:cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f
-**SGX_MEASUREMENT[size:32]:31085b62833ed5490f71f1d051b1dc5a0c078af8671419752a903692d0cfb865**
-SGX_CONFIG_ID[size:64]:00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-SGX_PRODUCT_ID[size:2]:00
-SGX_EXT_PRODUCT_ID[size:16]:00000000000000000000000000000000
-SGX_CONFIG_ID_SVN[size:2]:00
-SGX_ENCLAVE_SVN[size:2]:1
-Retrieving Quote+Public key - EPID
 
