@@ -449,10 +449,14 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
+
 dnf module disable postgresql -y
-copy install_pgdb.sh and create_db.sh to home directory
+
+copy install_pgdb.sh and create_db.sh to /root/ directory
+
 ./install_pgdb.sh
-./create_db.sh aas_db <dbuser> <dbpassword>
+
+./create_db.sh aas_db <db_user> <db_password>
 
 
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
@@ -466,8 +470,6 @@ Create the authservice.env installation answer file in /root/ directory as below
 ​      CMS_TLS_CERT_SHA384=\<CMS TLS certificate sha384
 
 ​      AAS_DB_HOSTNAME=\<IP or hostname of database server\>
-
-​      AAS_DB_PORT=\<database port number; default is 5432\>
 
 ​      AAS_DB_PORT=\<database port number; default is 5432\>
 
@@ -561,6 +563,17 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 ### Installation
 
+Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
+
+dnf module disable postgresql -y
+
+copy install_pgscsdb.sh and create_db.sh to /root/ directory
+
+./install_pgscsdb.sh
+
+./create_db.sh pgscsdb <dbuser> <dbpassword>
+
+
 1.  Copy the SCS installation binary to the /root/ directory.
 
 2.  Create the scs.env installation answer file in /root/ directory as below:
@@ -645,6 +658,16 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 -   One network interface with network access to all managed servers
 
 ###  Installation
+
+Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
+
+dnf module disable postgresql -y
+
+copy install_pgshvsdb.sh and create_db.sh to /root/ directory
+
+./install_pgshvsdb.sh
+
+./create_db.sh pgshvsdb <dbuser> <dbpassword>
 
 To install the SGX Host Verification Service, follow these steps:
 
