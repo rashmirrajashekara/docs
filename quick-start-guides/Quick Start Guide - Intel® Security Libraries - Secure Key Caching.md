@@ -432,7 +432,7 @@ Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 #### Deploy SGX Agent
 
-Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to SGX compute node
+Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./agent_untar.sh
 
@@ -446,13 +446,13 @@ Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deploye
 
 #### Deploy SKC Library
 
-Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to SGX compute node
+Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./skclib_untar.sh
 
 Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
 
-Also update the IP Address for CS Service deployed in CSP VM
+Also update the IP Address for SGX Caching Service deployed in CSP VM
 
 Update the Hostname of the Enterprise VM where KBS is deployed
 
