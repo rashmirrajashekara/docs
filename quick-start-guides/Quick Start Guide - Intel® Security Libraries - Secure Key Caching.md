@@ -50,11 +50,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 
 **Firewall Settings**
 
-***Sample***: Disable firewall
-
-```
-systemctl stop firewalld
-```
+***Sample***: Ensure that all the SKC service ports are opened up with firewall
 
 
 ## **3. RHEL Package Requirements**
@@ -86,7 +82,7 @@ Access required for the following packages in all systems
 
 ```
 dnf install git wget tar python3 make yum-utils
-dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/30/Everything/x86_64/os/Packages/m/makeself-2.4.0-3.fc30.noarch.rpm
+dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 
@@ -331,7 +327,7 @@ OR
 ```yaml
 - hosts: all
   gather_facts: yes
-  any_errors_fatal:true
+  any_errors_fatal: true
   roles:   
   - intel-secl.ansible-role
   environment:
@@ -409,11 +405,11 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-**Deployment Using Binaries**
+## **10. Deployment Using Binaries**
 
-**Deploy CSP SKC Services**
+#### Deploy CSP SKC Services
 
-Copy the binaries directory generated in the build system VM to the home directory on the CSP VM
+Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
 
 Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
 
@@ -422,9 +418,9 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 ./install_csp_skc.sh
 
 
-**Deploy Enterprise SKC Services**
+#### Deploy Enterprise SKC Services
 
-Copy the binaries directory generated in the build system VM to the home directory on Enterprise VM
+Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
 
 Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in enterprise_skc.conf
 
@@ -434,9 +430,9 @@ Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 
 
-**Deploy SGX Agent**
+#### Deploy SGX Agent
 
-Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to SGX compute node
+Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./agent_untar.sh
 
@@ -448,22 +444,22 @@ Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deploye
 
 
 
-**Deploy SKC Library**
+#### Deploy SKC Library
 
-Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to SGX compute node
+Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./skclib_untar.sh
 
 Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
 
-Also update the IP Address for CS Service deployed in CSP VM
+Also update the IP Address for SGX Caching Service deployed in CSP VM
 
 Update the Hostname of the Enterprise VM where KBS is deployed
 
 ./deploy_skc_library.sh
 
 
-## **10. System User Configuration**
+## **11. System User Configuration**
 
 **Build System**
 
