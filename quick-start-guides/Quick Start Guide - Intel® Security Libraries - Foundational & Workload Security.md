@@ -21,7 +21,8 @@
 
 #### User Access
 
-The services need to be built and installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC
+The services need to be built and installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
+All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
 
 
 
