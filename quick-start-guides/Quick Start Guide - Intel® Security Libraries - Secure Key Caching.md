@@ -409,7 +409,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 #### Deploy CSP SKC Services
 
-Copy the binaries directory generated in the build system VM to the home directory on the CSP VM
+Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
 
 Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
 
@@ -420,7 +420,7 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 #### Deploy Enterprise SKC Services
 
-Copy the binaries directory generated in the build system VM to the home directory on Enterprise VM
+Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
 
 Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in enterprise_skc.conf
 
