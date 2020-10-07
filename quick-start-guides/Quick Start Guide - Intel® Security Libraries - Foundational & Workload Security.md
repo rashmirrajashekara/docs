@@ -381,13 +381,63 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 
 
-#### Additional Examples and Tips
+Additional Examples and Tips
+----------------------------
 
-* If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook with the following command:
+* If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
+  
+  ```shell
+  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars tpm_secret=<tpm owner secret>
+  ```
+  or
+
+  Update the following vars in `defaults/main.yml`
+
+  ```yaml
+  # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
+  tpm_owner_secret: <tpm_secret>
+  ```
+
+* If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtime` , following option can be provided during runtime in playbook
 
   ```shell
-  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars tpm_owner_secret=<tpm owner secret>
+  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars skip_sdd=yes
   ```
+  or
+
+  Update the following vars in `defaults/main.yml`
+
+  ```yaml
+  #Enable/disable container security for CRIO runtime
+  # [yes - Launch Time Protection with CRIO Containers, NA - others]
+  skip_secure_docker_daemon: 'yes'
+  ```
+
+* If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
+
+  ```shell
+  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> --extra-vars registry_ipaddr=<registry ipaddr> --extra-vars registry_scheme=<registry schedme[http/https]>
+  ```
+  or
+ 
+  Update the following vars in `defaults/main.yml`
+
+  ```yaml
+  # [TRUE/FALSE based on registry configured with http/https respectively]
+  # Required for Workload Integrity with containers
+  insecure_skip_verify: <insecur_skip_verify>
+
+  # The registry IP for the Docker registry from where container images are pulled
+  # Required for Workload Integrity with containers
+  registry_ip: <registry_ipaddr>
+
+  # The registry protocol for talking to the remote registry [http/https]
+  # Required for Workload Integrity with containers
+  registry_scheme_type: <registry_scheme>
+  ```
+
+* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible 
+  and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
 
