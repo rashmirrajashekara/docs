@@ -3698,9 +3698,15 @@ Container Confidentiality with Cri-o and Skopeo requires modified versions of bo
 
 [Skopeo](https://github.com/lumjjb/skopeo/tree/sample_integration)
 
-- The patched version of 0.1.41-dev must be installed on each Worker Node: https://github.com/lumjjb/skopeo/tree/sample_integration. 
+- The patched version of Skopeo 0.1.41-dev must be installed on each Worker Node: https://github.com/lumjjb/skopeo/tree/sample_integration. 
 
 - The Skopeo wrapper that allows Skopeo to interface with the ISecL components must be installed on each Worker Node: https://github.com/lumjjb/skopeo/blob/sample_integration/vendor/github.com/lumjjb/seclkeywrap/keywrapper_secl.go.
+
+- Copy the Skopeo wrapper into /usr/bin: 
+
+  ```
+  cp skopeo-v0.1.41.bin /usr/bin/skopeo
+  ```
 
 - Add the following to the crio.service definition to always start Cri-o with the Intel SecL policy parameters enabled:
 
@@ -3715,9 +3721,11 @@ Container Confidentiality with Cri-o and Skopeo requires modified versions of bo
             --decryption-secl-parameters secl:enabled
   ```
 
-[Cri-o](https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration)
+[Cri-o 1.17](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cri-o)
 
-- The patched version of Cri-o 1.16 must be installed on each Worker Node:   https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration. 
+- The patched version of Cri-o 1.17 must be installed on each Worker Node:   https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration. 
+
+- Copy the CRI-O binary from IsecL builds (need details here)
 
 - The Cri-o wrapper that allows Cri-o to interface with ISecL components must be installed on each Worker Node: https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration/vendor/github.com/lumjjb/seclkeywrap/keywrapper_secl.go.
 
@@ -3742,26 +3750,6 @@ Container Confidentiality with Cri-o and Skopeo requires modified versions of bo
 - Only physical Worker Nodes are supported at this time.  
 
 #### 7.2.2.2  Workflow
-
-##### 7.2.2.2.1 Pulling and Encrypting a Container Image
-
-Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in teh examples below). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
-
-The modified Cri-o and wrapper will modify the Cri-o commands to allow Intel SecL policies to be utilized.
-
-```
-crio --decryption-secl-parameters secl:enabled starts the crio service with ISecL components enabled for decryption
-
-crictl [global options] command [command options] [arguments...]
-
-  pull
-
-  rmi
-
-  images
-
-To use the cri-o runtime, use the global option flag `--runtime-endpoint` (`-r)` and use endpoint `unix://var/run/crio/crio.sock`.
-```
 
 ###### Skopeo Commands
 
@@ -3852,11 +3840,19 @@ Alternatively, encrypt the image and push it to a registry in a single step:
 $ skopeo copy --encryption-key secl:any oci:custom-image:latest docker://registry.server.com:5000/custom-image:enc
 ```
 
-#####  7.2.2.2.2 Pulling and Decrypting a Container Image
+
+##### 7.2.2.2.1 Pulling and Encrypting a Container Image
+
+Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in teh examples below). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
+
+The modified Cri-o and wrapper will modify the Cri-o commands to allow Intel SecL policies to be utilized.
+
+
+#####  7.2.2.2.2 Launching an Encrypted Container Image
 
 Cri-o allows for pulling and decryption of an encrypted container image from a container registry. When trying to pull and decrypt a container image, Cri-o has a hook that calls into the Workload Agent (WLA). The WLA will call into the Workload Service (WLS) and pass it the key URL associated with the encrypted image as well as the host's hardware UUID. These two serve as input to /keys endpoint of the WLS. The WLS initializes a HVS client in order to retrieve the host SAML report and then validates the report. If the host is trusted, the WLS will attempt to get the key. First, it will check if it's been cached alredy. If not, it will initialize a KBS client. The WLS uses this client to retrieve the key from the KBS. If the key is retrieved, it will be cached in the WLS temporarily so that the WLS will not need to requery the KBS if attempting to decrypt with the same key. The key is then passed back to the WLA as the return of the WLS's keys API. Finally, the key is returned to Cri-o, which uses the key to decrypt the container image layer by layer.
 
-Skopeo can also be used to decrypt, but not pull images. It follows the same flow as decryption using cri-o.
+Containers of the protected images can now be launched as normal using Kubernetes pods and deployments. Encrypted images will only be accessible on hosts with a Platform Integrity Attestation report showing the host is trusted. If the Crio Container is launched on a host that is not trusted, the launch will fail, as the decryption key will not be provided.
 
 ##### 
 
