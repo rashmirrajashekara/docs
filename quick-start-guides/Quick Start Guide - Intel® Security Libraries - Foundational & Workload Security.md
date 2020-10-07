@@ -320,7 +320,7 @@ isecl_role=enterprise
 ansible_user=root
 ansible_password=<password>
 
-[Node]
+[Node:vars]
 isecl_role=node
 ansible_user=root
 ansible_password=<password>
