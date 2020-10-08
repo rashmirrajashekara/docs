@@ -155,19 +155,67 @@ The below steps needs to be carried out on the Build and Deployment VM
     </proxies> 
     ```
   
-* Additional packages for **Foundational Security** & **Workload Security** usecases
+
+
+
+#### Building
+
+##### Foundational Security Usecase
+
+* Sync the repo
 
   ```shell
-  dnf install java-1.8.0-openjdk.x86_64 wget gcc gcc-c++ ant git patch zip unzip make tpm2-tss-2.0.0-4.el8.x86_64 tpm2-abrmd-2.1.1-3.el8.x86_64 openssl-devel
+  mkdir -p /root/isecl/fs && cd /root/isecl/fs
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/fs.xml
+  repo sync
   ```
 
+* Run the `pre-requisites` setup script
+
   ```shell
-  dnf install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/m/makeself-2.4.2-1.el8.noarch.rpm \
-  	          http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/tpm2-abrmd-devel-2.1.1-3.el8.x86_64.rpm \
-              http://mirror.centos.org/centos/8/PowerTools/x86_64/os/Packages/trousers-devel-0.3.14-4.el8.x86_64.rpm \
-              https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm \
-              https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm \
-              https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm 
+  cd utils/build/foundational-security/
+  chmod +x fs-prereq.sh
+  ./fs-prereq.sh
+  ```
+
+* Build all repos
+
+  ```shell
+  make all
+  ```
+
+  
+
+##### Workload Security Usecase
+
+* Sync the repo
+
+  ```shell
+  #Container Confidentiality with Docker Runtime
+  mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
+  repo sync
+  
+  or
+  
+  #Container Confidentiality with CRIO Runtime
+  mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
+  repo sync
+  
+  or 
+  #VM Confidentiality
+  mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
+  repo sync
+  ```
+
+* Run the `pre-requisites` script
+
+  ```shell
+  cd utils/build/workload-security
+  chmod +x ws-prereq.sh
+  ./ws-prereq.sh
   ```
 
 * Enable and start the Docker daemon
@@ -177,7 +225,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   systemctl start docker
   ```
 
-* If Running behind a proxy, configure docker to run behind proxy
+* Ignore the below steps if not running behind a proxy
 
   ```shell
   mkdir -p /etc/systemd/system/docker.service.d
@@ -195,40 +243,14 @@ The below steps needs to be carried out on the Build and Deployment VM
   systemctl daemon-reload
   systemctl restart docker
   ```
+  
+* Build all repos
 
-#### Building
+  ```shell
+  make all
+  ```
 
-##### Foundational Security Usecase
-
-```shell
-mkdir -p /root/isecl/fs && cd /root/isecl/fs
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/fs.xml
-repo sync
-make all
-```
-
-##### Workload Security Usecase
-
-```shell
-#Container Confidentiality with Docker Runtime
-mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
-repo sync
-make all
-
-#Container Confidentiality with CRIO Runtime
-mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
-repo sync
-make all
-
-#VM Confidentiality
-mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
-repo sync
-make all
-```
-
+  
 
 
 ## **5. Deployment & Usecase Workflow Tools Installation**
@@ -243,19 +265,12 @@ The below installation is required on the Build & Deployment VM only and the Pla
   pip3 install ansible==2.9.10
   ```
 
-* Download role from `ansible-galaxy`
-
-  ```shell
-  ansible-galaxy install intel-secl.isecl
-  ```
-
-  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository of [Ansible-Role](https://github.com/intel-secl/ansible-role) for specific release tags
 
 #### Usecases Workflow Tools Installation
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For older releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tools/api-collections)
 
 
 
@@ -264,21 +279,6 @@ The below installation is required on the Build & Deployment VM only and the Pla
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
 
 #### Download the Ansible Role
-
-The role can be downloaded from ansible galaxy as follows:
-
-```shell
-#search for isecl role
-ansible-galaxy search isecl 
-
-#describe isecl role details
-ansible-galaxy info isecl
-
- #install isecl role
-ansible-galaxy install intel-secl.isecl  
-```
-
-or 
 
 The role can be cloned locally from git and the contents can be copied to the roles folder used by your ansible server 
 
@@ -292,7 +292,7 @@ cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-r
 #Checkout to specific release tag
 git checkout <release-tag of choice>
 
-#Update ansible.cfg roles_path to point to /root/intel-secl/deploy/ansible-role
+#Update ansible.cfg roles_path to point to path where intel-secl/ansible-role is downloaded
 ```
 
 
@@ -345,7 +345,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
   roles:   
-  - intel-secl.isecl
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -367,7 +367,7 @@ OR
   gather_facts: yes
   any_errors_fatal: true
   roles:   
-  - intel-secl.isecl
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -411,7 +411,7 @@ Additional Examples and Tips
   ```yaml
   #Enable/disable container security for CRIO runtime
   # [yes - Launch Time Protection with CRIO Containers, NA - others]
-  skip_secure_docker_daemon: 'yes'
+  skip_secure_docker_daemon: <skip_sdd>
   ```
 
 * If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
@@ -420,7 +420,7 @@ Additional Examples and Tips
   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> --extra-vars registry_ipaddr=<registry ipaddr> --extra-vars registry_scheme=<registry schedme[http/https]>
   ```
   or
- 
+
   Update the following vars in `defaults/main.yml`
 
   ```yaml
@@ -455,6 +455,8 @@ Additional Examples and Tips
 | Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-crio`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
+>
+> **Note: ** `Key Broker Service` is not configured with KMIP compliant KMS when installing through ansible role  
 
 
 
@@ -484,14 +486,18 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
   or 
 
-* Github repo for older releases
+* Github repo for all releases
 
   ```shell
   #Clone the github repo for api-collections
-  git clone https://github.com/intel-secl/api-collections
+  git clone https://github.com/intel-secl/utils/
   
   #Switch to specific release tag of choice
+  cd utils/
   git checkout <release-tag of choice>
+  
+  #Import Collections from
+  cd tools/api-collections
   ```
 
 
