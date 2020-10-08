@@ -285,7 +285,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
   roles:   
-  - intel-secl.ansible-role
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -307,7 +307,7 @@ OR
   gather_facts: yes
   any_errors_fatal: true
   roles:   
-  - intel-secl.ansible-role
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
