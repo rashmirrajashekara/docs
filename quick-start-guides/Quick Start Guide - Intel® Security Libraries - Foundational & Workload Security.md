@@ -292,7 +292,7 @@ cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-r
 #Checkout to specific release tag
 git checkout <release-tag of choice>
 
-#Update ansible.cfg roles_path to point to path where intel-secl/ansible-role is downloaded
+#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/)
 ```
 
 
@@ -499,6 +499,8 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
   #Import Collections from
   cd tools/api-collections
   ```
+
+> **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
 
 
 
