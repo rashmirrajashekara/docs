@@ -181,6 +181,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build all repos
 
   ```shell
+  cd /root/isecl/fs/
   make all
   ```
 
@@ -262,6 +263,20 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build all repos
 
   ```shell
+  #Container Confidentiality with Docker Runtime
+  cd /root/isecl/cc-docker/
+  make all
+
+  or 
+
+   #Container Confidentiality with CRIO Runtime
+  cd /root/isecl/cc-crio/
+  make all
+
+  or 
+
+  #VM Confidentiality
+  cd /root/isecl/vmc/
   make all
   ```
 
