@@ -208,13 +208,6 @@ The below installation is required on the Build & Deployment VM only and the Pla
   pip3 install ansible==2.9.10
   ```
 
-* Download role from `ansible-galaxy`
-
-  ```shell
-  ansible-galaxy install intel-secl.ansible
-  ```
-
-  > **Note: ** The ansible galaxy role will have always the latest version of the role. For older releases , refer the github repository `intel-secl/ansible-role` for specific release tags
 
 #### Usecases Workflow Tools Installation
 
@@ -227,22 +220,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
 
-#### Download the Ansible Role
-
-The role can be downloaded from ansible galaxy as follows:
-
-```shell
-#search for isecl role
-ansible-galaxy search intel-secl 
-
-#describe isecl role details
-ansible-galaxy info intel-secl 
-
- #install isecl role
-ansible-galaxy install intel-isecl  
-```
-
-or 
+#### Download the Ansible Role 
 
 The role can be cloned locally from git and the contents can be copied to the roles folder used by your ansible server 
 
@@ -256,7 +234,7 @@ cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-r
 #Checkout to specific release tag
 git checkout <release-tag of choice>
 
-#Update ansible.cfg roles_path to point to /root/intel-secl/deploy/ansible-role
+#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/)
 ```
 
 
@@ -284,7 +262,7 @@ isecl_role=enterprise
 ansible_user=root
 ansible_password=<password>
 
-[Node]
+[Node:vars]
 isecl_role=node
 ansible_user=root
 ansible_password=<password>
@@ -307,7 +285,7 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
   roles:   
-  - intel-secl.ansible-role
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -329,7 +307,7 @@ OR
   gather_facts: yes
   any_errors_fatal: true
   roles:   
-  - intel-secl.ansible-role
+  - ansible-role
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
@@ -345,9 +323,9 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 #### Usecase Setup Options
 
-| Usecase                                                      | Variable                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Secure Key Caching                                           |                                                              |
+| Usecase            | Variable                                                     |
+| ------------------ | ------------------------------------------------------------ |
+| Secure Key Caching | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
@@ -358,29 +336,34 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 #### Use Case Collections
 
-| Use case                     | Sub-Usecase                                   | API Collection     |
-| ---------------------------- | --------------------------------------------- | ------------------ |
-| Secure Key Caching           |                                               | ✔️                  |
-| Security Aware Orchestration |                                               | ✔️(Kubernetes Only) |
+| Use case                     | Sub-Usecase | API Collection     |
+| ---------------------------- | ----------- | ------------------ |
+| Secure Key Caching           | -           | ✔️                  |
+| Security Aware Orchestration | -           | ✔️(Kubernetes Only) |
 
 
 #### Download Postman API Collections
 
-* Postman API Network for latest release
-
-  <TODO: add image>
+* Postman API Network for latest released collections: https://explore.postman.com/intelsecldc
 
   or 
 
-* Github repo for older releases
+* Github repo for allreleases
 
   ```shell
   #Clone the github repo for api-collections
-  git clone https://github.com/intel-secl/api-collections
+  git clone https://github.com/intel-secl/utils/
   
   #Switch to specific release tag of choice
+  cd utils/
   git checkout <release-tag of choice>
+  
+  #Import Collections from
+  cd tools/api-collections
   ```
+
+>  **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
+
 
 
 #### Running API Collections
