@@ -3694,7 +3694,11 @@ launch will fail, as the decryption key will not be provided.
 
 #### 7.2.2.1  Prerequisites
 
-Container Confidentiality with Cri-o and Skopeo requires modified versions of both Cri-o and Skopeo.
+Container Confidentiality with Cri-o and Skopeo requires modified versions of both Cri-o and Skopeo.  Both of these are automatically built with the Intel SecL build scripts, and can be found here after the script has executed:
+
+```
+isecl/cc-crio/binaries/
+```
 
 [Skopeo](https://github.com/lumjjb/skopeo/tree/sample_integration)
 
@@ -3705,7 +3709,7 @@ Container Confidentiality with Cri-o and Skopeo requires modified versions of bo
 - Copy the Skopeo wrapper into /usr/bin: 
 
   ```
-  cp skopeo-v0.1.41.bin /usr/bin/skopeo
+  cp isecl/cc-crio/binaries/skopeo-v0.1.41.bin /usr/bin/skopeo
   ```
 
 - Add the following to the crio.service definition to always start Cri-o with the Intel SecL policy parameters enabled:
@@ -3725,7 +3729,13 @@ Container Confidentiality with Cri-o and Skopeo requires modified versions of bo
 
 - The patched version of Cri-o 1.17 must be installed on each Worker Node:   https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration. 
 
-- Copy the CRI-O binary from IsecL builds (need details here)
+- Copy the CRI-O binary from IsecL build script to /usr/bin/:
+
+  ```
+  cp isecl/cc-crio/binaries/crio /usr/bin/crio
+  ```
+
+  
 
 - The Cri-o wrapper that allows Cri-o to interface with ISecL components must be installed on each Worker Node: https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration/vendor/github.com/lumjjb/seclkeywrap/keywrapper_secl.go.
 
@@ -3805,17 +3815,6 @@ $ skopeo copy oci:nginx_secl_enc docker://10.80.245.116/nginx_secl_enc:latest
 
 ###### Prepare an Image
 
-Encrypt an image built from Dockerfile and Docker build:
-
-```
-cat << EOF > Dockerfile
-FROM fedora:latest
-RUN touch /foo
-ONBUILD RUN touch /bar
-EOF
-$ docker build -f Dockerfile -t custom-image:latest .
-```
-
 Convert the image to an OCI image using Skopeo:
 
 ```
@@ -3854,7 +3853,7 @@ Cri-o allows for pulling and decryption of an encrypted container image from a c
 
 Containers of the protected images can now be launched as normal using Kubernetes pods and deployments. Encrypted images will only be accessible on hosts with a Platform Integrity Attestation report showing the host is trusted. If the Crio Container is launched on a host that is not trusted, the launch will fail, as the decryption key will not be provided.
 
-##### 
+
 
 
 
