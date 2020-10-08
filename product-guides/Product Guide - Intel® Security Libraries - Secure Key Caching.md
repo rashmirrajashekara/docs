@@ -947,9 +947,9 @@ NA
 
 ​           KMS_NOSETUP=false
 
-​           KMS_TLS_CERT_IP=\<comma-separated list of IP addresses for the KBS\>
+​           JETTY_TLS_CERT_IP=\<comma-separated list of IP addresses for the KBS\>
 
-​           KMS_TLS_CERT_DNS=\<comma-separated list of hostnames for the KBS
+​           JETTY_TLS_CERT_DNS=\<comma-separated list of hostnames for the KBS\>
 
 ​           CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
 
