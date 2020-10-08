@@ -2188,6 +2188,10 @@ Sample Shell script to create KBS user, KBS Roles and mapping KBS user to KBS ro
 
 dnf install -y jq
 
+AAS_IP=<Provide AAS IP Here>
+
+TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin", "password": "password" }'`
+
 #Create KBS User
 
 KMS_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "kmsuser@kms","password": "kmspassword"}'`
@@ -2227,6 +2231,10 @@ The printed KMS_TOKEN needs to be added in BEARER_TOKEN section in kms.env
 #!/bin/bash
 
 dnf install -y jq
+
+AAS_IP=<Provide AAS IP Here>
+
+TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin", "password": "password" }'`
 
 #Create IHUB User
 
