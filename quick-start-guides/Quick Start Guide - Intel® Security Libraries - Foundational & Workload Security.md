@@ -184,6 +184,12 @@ The below steps needs to be carried out on the Build and Deployment VM
   make all
   ```
 
+* Built Binaries
+
+  ```shell
+  /root/isecl/fs/binaries
+  ```
+
   
 
 ##### Workload Security Usecase
@@ -204,6 +210,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   repo sync
   
   or 
+  
   #VM Confidentiality
   mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
   repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
@@ -216,6 +223,14 @@ The below steps needs to be carried out on the Build and Deployment VM
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
   ./ws-prereq.sh
+  ```
+
+* Download go dependencies
+
+  ```shell
+  cd /root/
+  go get github.com/cpuguy83/go-md2man
+  mv /root/go/bin/go-md2man /usr/bin/
   ```
 
 * Enable and start the Docker daemon
@@ -248,6 +263,19 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   make all
+  ```
+
+* Built binaries
+
+  ```shell
+  #Container Confidentiality with Docker Runtime
+  /root/isecl/cc-docker/binaries/
+  
+  #Container Confidentiality with CRIO Runtime
+  /root/isecl/cc-crio/binaries/
+  
+  #VM Confidentiality
+  /root/isecl/vmc/binaries
   ```
 
   
