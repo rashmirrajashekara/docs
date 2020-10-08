@@ -508,9 +508,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 #### Downloading API Collections
 
-* Postman API Network for latest release
-
-  <TODO: add image>
+* Postman API Network for latest released collections: https://explore.postman.com/intelsecldc
 
   or 
 
