@@ -4,13 +4,15 @@
 
 ## **1. Hardware & OS Requirements**
 
-1. **Three Hosts or VMs**
+1. **Four Hosts or VMs**
 
    a.    Build System
 
    b.    CSP managed Services 
 
    c.    Enterprise Managed Services
+   
+   d.    K8S Master Node Setup
 
 2. **SGX Enabled Host**
 
@@ -416,6 +418,36 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 ## **10. Deployment Using Binaries**
 
+#### Setup K8S Cluster & Deploy Isecl-k8s-extensions
+
+Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+
+Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+
+Once the master/worker setup is done, copy the binaries directory generated in the build system VM to the /root/ directory on the Master Node.
+
+Go to /root/binaries directory and run ./isecl-k8s-extensions-* .
+
+Edit /etc/kubernetes/manifests/kube-scheduler.yaml and remove/comment the following content and restart kubelet.
+	--policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json 
+	systemctl restart kubelet
+
+Wait for the isecl-controller and isecl-scheduler pods to be into running state.
+	kubectl get pods -n isecl
+
+Create role bindings on the Kubernetes Master.
+	kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
+	kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+	
+Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in /root/binaries/env/ihub.env on CSP VM with kubernetes certificate path.
+
+Get k8s token in master, using below commands.
+    kubectl get secrets -n isecl 
+    kubectl describe secret <ouput-secret-name> -n isecl. 
+
+Update KUBERNETES_TOKEN in /root/binaries/env/ihub.env on CSP VM with above kubernetes token.
+
+
 #### Deploy CSP SKC Services
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
@@ -426,7 +458,37 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 ./install_csp_skc.sh
 
+Copy IHUB public key to the master node and restart kubelet.
+	scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+	systemctl restart kubelet
+	
+Run this command to validate if the data has been pushed to CRD: 
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+	
+Run this command to validate that the labels have been populated: 
+	kubectl get nodes --show-labels. The SGX node labels should be present.
+	
+Sample labels:
+	EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
 
+Create sample yml file for nginx workload and add SGX labels to it such as:
+    nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+           
+Validate if the pod can be launched on the node. Run following commands:
+	kubectl apply -f pod.yml – pod gets created.
+	kubectl get pods – pod should be in running state
+	kubectl describe pods nginx – pod should have been launched on the host as per values in pod.yml.
+	
+    
 #### Deploy Enterprise SKC Services
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
