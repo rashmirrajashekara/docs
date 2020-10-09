@@ -550,7 +550,7 @@ Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 #### Deploy SGX Agent
 
-Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
+Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./agent_untar.sh
 
@@ -564,7 +564,7 @@ Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deploye
 
 #### Deploy SKC Library
 
-Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
+Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./skclib_untar.sh
 
@@ -598,17 +598,42 @@ GIT Configuration**
 
 ## Appendix
 
-**OpenSSL Config**
-****
+## Creating AES and RSA Keys in Key Broker Service
 
-Add the folowing block in openssl.cnf in order to enable pkcs11 engine support in openssl.
+**Configuration Update to create Keys in KBS**
+
+​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+
+​	Update KBS and AAS IP addresses in run.sh
+
+**Create AES Key**
+
+​	Execute the command
+
+​	./run.sh
+- Copy the key id generated
+
+**Create RSA Key**
+
+​	Execute the command
+
+​	./run.sh reg
+
+- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+
+## Configuration for NGINX testing
+
+**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+
+**OpenSSL**
+
+[openssl_def]
+engines = engine_section
 
 [engine_section]
-
 pkcs11 = pkcs11_section
 
 [pkcs11_section]
-
 engine_id = pkcs11
 
 dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
@@ -616,6 +641,48 @@ dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 
 init = 0
+
+**Nginx**
+
+user root;
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the loaction where it was copied into the skc_library machine. 
+
+ssl_certificate "/root/nginx/nginxcert.pem"; 
+
+Update the KeyID with the KeyID received when RSA key was generated in KBS
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+**SKC Configuration**
+
+​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+
+​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+​	**Note:** Content of this file should match with the nginx conf file
+
+​	**/opt/skc/etc/pkcs11-apimodule.ini**
+
+​	**[core]**
+
+​	preload_keys=/tmp/keys.txt
+
+​	keyagent_conf=/opt/skc/etc/key-agent.ini
+
+​	mode=SGX
+
+​	debug=true
+
+​	**[SW]**
+
+​	module=/usr/lib64/pkcs11/libsofthsm2.so
+
+​	**[SGX]**
+
+​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 
 
