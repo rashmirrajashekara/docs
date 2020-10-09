@@ -429,21 +429,33 @@ Once the master/worker setup is done, copy the binaries directory generated in t
 Go to /root/binaries directory and run ./isecl-k8s-extensions-* .
 
 Edit /etc/kubernetes/manifests/kube-scheduler.yaml and remove/comment the following content and restart kubelet.
-	--policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json 
-	systemctl restart kubelet
+
+```
+    --policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json
+    systemctl restart kubelet
+```
 
 Wait for the isecl-controller and isecl-scheduler pods to be into running state.
-	kubectl get pods -n isecl
+
+```
+    kubectl get pods -n isecl
+```
 
 Create role bindings on the Kubernetes Master.
-	kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
-	kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
+    kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+```
 	
 Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in /root/binaries/env/ihub.env on CSP VM with kubernetes certificate path.
 
 Get k8s token in master, using below commands.
-    kubectl get secrets -n isecl 
-    kubectl describe secret <ouput-secret-name> -n isecl. 
+
+```
+    kubectl get secrets -n isecl
+    kubectl describe secret <ouput-secret-name> -n isecl.
+```
 
 Update KUBERNETES_TOKEN in /root/binaries/env/ihub.env on CSP VM with above kubernetes token.
 
@@ -459,20 +471,44 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 ./install_csp_skc.sh
 
 Copy IHUB public key to the master node and restart kubelet.
-	scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-	systemctl restart kubelet
+
+```
+    scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+    systemctl restart kubelet
+```
 	
 Run this command to validate if the data has been pushed to CRD: 
-	kubectl get -o json hostattributes.crd.isecl.intel.com
+
+```
+    kubectl get -o json hostattributes.crd.isecl.intel.com
+```
 	
-Run this command to validate that the labels have been populated: 
-	kubectl get nodes --show-labels. The SGX node labels should be present.
+Run this command to validate that the labels have been populated:
+
+```
+    kubectl get nodes --show-labels.
+```
 	
 Sample labels:
-	EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
+
+```
+    EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
+```
 
 Create sample yml file for nginx workload and add SGX labels to it such as:
-    nodeSelectorTerms:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
        - matchExpressions:
          - key: SGX-Enabled
            operator: In
@@ -482,11 +518,22 @@ Create sample yml file for nginx workload and add SGX labels to it such as:
            operator: In
            values:
            - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
            
-Validate if the pod can be launched on the node. Run following commands:
-	kubectl apply -f pod.yml – pod gets created.
-	kubectl get pods – pod should be in running state
-	kubectl describe pods nginx – pod should have been launched on the host as per values in pod.yml.
+Validate if pod can be launched on the node. Run following commands:
+
+```
+    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx 
+```
+
+Pod should be in running state and launched on the host as per values in pod.yml.
 	
     
 #### Deploy Enterprise SKC Services
