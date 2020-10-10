@@ -181,9 +181,12 @@ repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.
 repo sync
 ```
 
-**Enable and start the Docker daemon**
+**Install, Enable and start the Docker daemon**
 
   ```shell
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm
   systemctl enable docker
   systemctl start docker
   ```
