@@ -177,7 +177,7 @@ export PATH=$M2_HOME/bin:$PATH
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
 repo sync
 ```
 
