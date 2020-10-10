@@ -455,6 +455,7 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
 
 dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
 dnf module disable postgresql -y
 
 copy install_pgdb.sh and create_db.sh to /root/ directory
@@ -507,6 +508,8 @@ Note: the AAS_ADMIN credentials specified in this answer file will have administ
 After installation is complete, several roles and user accounts must be generated.  Most of these accounts will be service users, used by the various Intel® SecL SKC services to work together.
 
 Creating these required users and roles is facilitated by the scripts in the corresponding components and needs to be executed before installation of each component.
+
+Note: Update variable IPADDR and aas-hostname inside below scripts with the SAN_LIST and AAS IP given in env file. Also install package "jq" before running these scripts.
 
 SCS: scs_aas_curl.sh
 
