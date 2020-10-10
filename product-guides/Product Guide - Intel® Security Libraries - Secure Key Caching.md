@@ -237,7 +237,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -322,7 +322,11 @@ ISECL_PGDB_PORT=5432
 
 ISECL_PGDB_SAVE_DB_INSTALL_LOG=true
 
-ISECL_PGDB_CERT_DNS=localhost ISECL_PGDB_CERT_IP=127.0.0.1
+ISECL_PGDB_CERT_DNS=localhost
+
+ISECL_PGDB_CERT_IP=127.0.0.1
+
+ISECL_PGDB_USERPASSWORD=dbpassword
 
 Note that the values above assume that the database will be accessed locally. If the database server will be external to the Intel® SecL services, change these values to the hostname or FQDN and IP address where the client will access the database server.
 
@@ -383,11 +387,11 @@ To install the Intel® SecL-DC Certificate Management Service:
 
 2.  Create the cms.env installation answer file for an unattended installation:
 
-AAS_TLS_SAN=\<comma-separated list of IPs and hostnames for the AAS\>
+AAS_TLS_SAN=\< Comma-Separated list of IPs and hostnames for the AAS\>
 
-AAS_API_URL=https://\<Authentication and Authorization Service IP or Hostname\>:8444/aas
+AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas
 
-SAN_LIST=\<Comma-Separated list of IP addresses and hostnames for the CMS\>
+SAN_LIST=\< Comma-Separated list of IP addresses and hostnames for the CMS\>
 
 The SAN list will be used to authenticate the Certificate Signing Request from the AAS to the CMS. Only a CSR originating from a host matching the SAN list will be honored. Later, in the AAS authservice.env installation answer file, this same SAN list will be provided for the AAS installation. These lists must match and must be valid for IPs and/or hostnames used by the AAS system. The SAN list variables also accept the wildcards "?" (for single-character wildcards) and "\*" (for multiple-character wildcards) to allow address ranges or multiple FQDNs.
 
@@ -397,7 +401,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-3.1.0.bin
+./cms-v3.1.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -450,6 +454,7 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
 
+dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 dnf module disable postgresql -y
 
 copy install_pgdb.sh and create_db.sh to /root/ directory
@@ -465,7 +470,7 @@ cms setup cms_auth_token --force
 
 Create the authservice.env installation answer file in /root/ directory as below:
 
-​      CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+​      CMS_BASE_URL=https://\< CMS IP or hostname\>:8445/cms/v1/
 
 ​      CMS_TLS_CERT_SHA384=\<CMS TLS certificate sha384
 
@@ -565,11 +570,9 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
 
-copy install_pgscsdb.sh and create_db.sh to /root/ directory
+copy install_pgscsdb.sh to /root/ directory
 
 ./install_pgscsdb.sh
-
-./create_db.sh pgscsdb <db_user> <db_password>
 
 
 1.  Copy the SCS installation binary to the /root/ directory.
@@ -659,11 +662,10 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 
 Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
 
-copy install_pgshvsdb.sh and create_db.sh to /root/ directory
+copy install_pgshvsdb.sh to /root/ directory
 
 ./install_pgshvsdb.sh
 
-./create_db.sh pgshvsdb <db_user> <db_password>
 
 To install the SGX Host Verification Service, follow these steps:
 
@@ -737,7 +739,7 @@ Intel® Xeon® SP (Ice Lake-SP)
 
 ### Installation
 
-    Copy sgx_agent.tar sgx_agent.sh2 and agent_untar.sh to SGX Compute node
+    Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to SGX Compute node
     ./agent_untar.sh
     Update the IP address for the services mentioned in agent.conf
     ./deploy_sgx_agent.sh
@@ -812,7 +814,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 \# sqvs status
 
-##  Installing the SGX Hub
+##  Installing the Integration Hub
 
 **Note:** The SGX Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as OpenStack Nova or Kubernetes. The Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
 
@@ -877,9 +879,13 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           ATTESTATION_TYPE = SGX
 
+​           TENANT=< tenant-type e.g. KUBERNETES >
+
 ​           KUBERNETES_URL =< https://< Kubernetes IP >:6443/
 
 ​           KUBERNETES_CRD = custom-isecl
+
+​           KUBERNETES_TOKEN = < K8S token >
 
 ​           KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
 
