@@ -2409,7 +2409,9 @@ The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
 
 **Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
 
-**OpenSSL**
+**OpenSSL Configuration**
+
+Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
 
 [openssl_def]
 engines = engine_section
@@ -2426,13 +2428,15 @@ MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 
 init = 0
 
-**Nginx**
+**Nginx Configuration**
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
 user root;
 
 ssl_engine pkcs11;
 
-Update the location of certificate with the loaction where it was copied into the skc_library machine. 
+Update the location of certificate with the location where it was copied into the skc_library machine. 
 
 ssl_certificate "/root/nginx/nginxcert.pem"; 
 
@@ -2467,3 +2471,30 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 ​	**[SGX]**
 
 ​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
+# KBS key-transfer flow validation
+
+Execute below commands for KBS key-transfer:
+
+```
+    pkill nginx
+```
+
+Remove any existing pkcs11 token
+
+```
+    rm -rf /opt/intel/cryptoapitoolkit/token/*
+```
+
+Initiate Key tranfer from KBS
+
+```
+    systemctl restart nginx
+```
+
+Establish ssh session with the nginx using the key transferred inside the enclave
+
+```
+    wget https://localhost:2443 --no-check-certificate
+```
+
