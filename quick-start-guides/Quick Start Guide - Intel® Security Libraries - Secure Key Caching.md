@@ -705,7 +705,7 @@ Remove any existing pkcs11 token
     rm -rf /opt/intel/cryptoapitoolkit/token/*
 ```
 
-Initiate Key tranfer from KBS
+Initiate Key transfer from KBS
 
 ```
     systemctl restart nginx
