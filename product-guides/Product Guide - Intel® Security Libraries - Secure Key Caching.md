@@ -936,7 +936,9 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
 
-​           CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1 
+​           CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+
+​           POLL_INTERVAL_MINUTES=2
 
 ​           TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
@@ -1101,7 +1103,7 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
 ### Installation
 
-    Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to a directory in SGX Compute node
+    Copy skc_library.tar skc_library.sha2 and skclib_untar.sh to a directory in SGX Compute node
     ./skclib_untar.sh
     Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
     ./deploy_skc_library.sh
@@ -1295,11 +1297,10 @@ Following are the set of roles which are required during installation and runtim
 | < SGX_AGENT:HostDataReader: >                                |                                                              | Used by the SHVS to retrieve platform data from SGX_Agent    |
 | < CMS:CertApprover:CN=SGX_AGENT TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                              | Used by the SGX-AGENT to get TLS certificate from CMS        |
 | < SHVS:HostRegistration: >                                   |                                                              | Used by the SGX_Agent to register host to the SHVS           |
-| < SHVS:HostsListReader: >                                    |                                                              | Used by the SHUB to retrieve the list of hosts from SHVS     |
-| < SHVS:HostDataReader: >                                     |                                                              | Used by the SHUB to retrieve platform-data from SHVS         |
+| < SHVS:HostsListReader: >                                    |                                                              | Used by the IHUB to retrieve the list of hosts from SHVS     |
+| < SHVS:HostDataReader: >                                     |                                                              | Used by the IHUB to retrieve platform-data from SHVS         |
 | < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                   | Used by the SHVS to retrieve TLS Certificate from CMS        |
-| < SHUB:TenantManager: >                                      |                                                              | Used by the SHUB to manage the tenant and host-assignments resource |
-| < CMS:CertApprover:CN=SHUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                   | Used by the SHUB to retrieve TLS Certificate from CMS        |
+| < CMS:CertApprover:CN=Integration HUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                        | Used by the IHUB to retrieve TLS Certificate from CMS        |
 | < SCS:HostDataUpdater: >                                     |                                                              | Used by the SHVS to push the platform-info to SCS            |
 | < SCS:HostDataReader: >                                      |                                                              | Used by the SHVS to retrieve the TCB status info from SCS    |
 | < SCS:CacheManager: >                                        |                                                              | Used by the SCS admin to refresh the platform info           |
@@ -1413,7 +1414,7 @@ Removes the service. Use \--purge option to remove configuration directory(/etc/
 
 #### Version 
 
-shvs \--version
+shvs version
 
 Shows the version of the service.
 
@@ -1525,6 +1526,7 @@ Contains the config.yml configuration file.
 | KUBERNETES_CRD         | custom-isecl                                                 | CRD Name to be used                                          |
 | TLS_SAN_LIST           | 127.0.0.1, localhost                                         | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | KUBERNETES_TOKEN       |                                                              | Token from Kubernetes Master Node                            |
+| KUBERNETES_CERT_FILE   | /root/apiserver.crt                                          | Kubernetes server certificate path                           |
 | POLL_INTERVAL_MINUTES  | 2                                                            | IHUB Polling Interval in Minutes                             |
 
 ### Configuration Options 
@@ -1674,7 +1676,7 @@ Uninstalls the service, including the deletion of all files and folders.
 
 #### Version 
 
-cms version
+cms --version
 
 Reports the version of the service.
 
@@ -2379,3 +2381,89 @@ echo "IHUB Token $IHUB_TOKEN"
 ```
 
 The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
+
+## Creating AES and RSA Keys in Key Broker Service
+
+**Configuration Update to create Keys in KBS**
+
+​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+
+​	Update KBS and AAS IP addresses in run.sh
+
+**Create AES Key**
+
+​	Execute the command
+
+​	./run.sh
+- Copy the key id generated
+
+**Create RSA Key**
+
+​	Execute the command
+
+​	./run.sh reg
+
+- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+
+## Configuration for NGINX testing
+
+**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+
+**OpenSSL**
+
+[openssl_def]
+engines = engine_section
+
+[engine_section]
+pkcs11 = pkcs11_section
+
+[pkcs11_section]
+engine_id = pkcs11
+
+dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+
+MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+
+init = 0
+
+**Nginx**
+
+user root;
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the loaction where it was copied into the skc_library machine. 
+
+ssl_certificate "/root/nginx/nginxcert.pem"; 
+
+Update the KeyID with the KeyID received when RSA key was generated in KBS
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+**SKC Configuration**
+
+​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+
+​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+​	**Note:** Content of this file should match with the nginx conf file
+
+​	**/opt/skc/etc/pkcs11-apimodule.ini**
+
+​	**[core]**
+
+​	preload_keys=/tmp/keys.txt
+
+​	keyagent_conf=/opt/skc/etc/key-agent.ini
+
+​	mode=SGX
+
+​	debug=true
+
+​	**[SW]**
+
+​	module=/usr/lib64/pkcs11/libsofthsm2.so
+
+​	**[SGX]**
+
+​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
