@@ -630,6 +630,8 @@ GIT Configuration**
 
 **OpenSSL**
 
+Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
+
 [openssl_def]
 engines = engine_section
 
@@ -646,6 +648,8 @@ MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 init = 0
 
 **Nginx**
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
 user root;
 
@@ -686,6 +690,34 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 ​	**[SGX]**
 
 ​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
+# KBS key-transfer flow validation
+
+Execute below commands for KBS key-transfer:
+
+```
+    pkill nginx
+```
+
+Remove any existing pkcs11 token
+
+```
+    rm -rf /opt/intel/cryptoapitoolkit/token/*
+```
+
+Initiate Key tranfer from KBS
+
+```
+    systemctl restart nginx
+```
+
+Establish ssh session with the nginx using the key transferred inside the enclave
+
+```
+    wget https://localhost:2443 --no-check-certificate
+```
+
+
 
 
 
