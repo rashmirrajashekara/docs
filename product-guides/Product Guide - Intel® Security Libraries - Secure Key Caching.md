@@ -1900,7 +1900,9 @@ Shows the SHA384 digest of the TLS certificate.
 
 Removes the service. Use the "\--purge" flag to also delete all data.
 
-#### Version 
+#### Version
+
+authservice --version
 
 Shows the version of the service.
 
@@ -2076,6 +2078,8 @@ uninstall the SGX Caching Service. \--purge option needs to be applied to remove
 
 #### version 
 
+scs --version
+
 Reports the version of the scs
 
 ### Directory Layout 
@@ -2151,6 +2155,8 @@ sqvs uninstall \[\--purge\]
 uninstalls the SGX Quote Verification Service. \--purge option needs to be applied to remove configuration files
 
 #### version 
+
+sqvs --version
 
 Reports the version of the sqvs
 
