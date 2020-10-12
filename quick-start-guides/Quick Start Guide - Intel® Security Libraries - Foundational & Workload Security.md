@@ -624,7 +624,7 @@ export no_proxy=<ip_address/hostname>
         default = matching 
 ```
 
-**Rebuilding repos**
+##### Rebuilding Repos
 
 In order to rebuild repos, ensure the following steps are followed as a pre-requisite
 
@@ -632,7 +632,7 @@ In order to rebuild repos, ensure the following steps are followed as a pre-requ
 # Clean all go-mod packages
 rm -rf ~/go/pkg/mod/*
 
-#Navigate to specific folder where repos are built, example
+#Navigate to specific folder where repos are built, example below
 cd /root/isec/fs
 rm -rf * .repo
 ```
