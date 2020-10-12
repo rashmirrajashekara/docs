@@ -147,7 +147,7 @@ The SGX Agent resides on physical servers and reports on platform SGX-related in
 
 ## Integration Hub
 
-The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the SGX compute nodes information from the SGX Host Verification Service (SHVS) and pushes it to Kubernetes or Open stack. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes and Open stack consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
+The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts deails from Kubernetes and then using the host infomration it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
 ## Key Broker Service
 
@@ -718,7 +718,7 @@ When the installation completes, the SGX Host Verification Service is available.
 
 ### Required for
 
-The SGX Agent is REQUIRED for SGX Discovery and Provisioning. SGX Agent registers itself to SGX-Host Verification service and provides all platform details needed for SGX discovery.
+The SGX Agent is REQUIRED for SGX Discovery and Provisioning. SGX Agent registers with SGX-Host Verification service and provides all platform details needed for SGX discovery.
 
 ### Prerequisites 
 
@@ -742,9 +742,9 @@ Intel® Xeon® SP (Ice Lake-SP)
 
 ### Installation
 
-    Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to SGX Compute node
+    Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
-    Update the IP address for the services mentioned in agent.conf
+    Update the IP address for all the services mentioned in agent.conf
     ./deploy_sgx_agent.sh
 
 ##  Installing the SQVS
@@ -819,7 +819,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 ## Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
-Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be setup on any VM.
 
 Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
 
@@ -859,8 +859,8 @@ Get k8s token in master, using below commands.
 Update KUBERNETES_TOKEN in ihub.env on CSP VM with above kubernetes token.
 
 ##  Installing the Integration Hub
-
-**Note:** The SGX Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as OpenStack Nova or Kubernetes. The Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
+    
+**Note:** The Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as Kubernetes. The Integration Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
 
 ### Required For
 
@@ -1474,6 +1474,12 @@ sgx_agent \<command\>
 
 Show the help message.
 
+##### Version 
+
+sgx_agent version
+
+Reports the version of the service.
+
 ##### uninstall 
 
 sgx_agent uninstall \--purge
@@ -1673,7 +1679,7 @@ Reports whether the service is currently running.
 
 #### Uninstall 
 
-cms uninstall
+cms uninstall \[\--purge\]
 
 Uninstalls the service, including the deletion of all files and folders.
 
@@ -1896,7 +1902,9 @@ Stops the service.
 
 Shows the SHA384 digest of the TLS certificate.
 
-#### Uninstall 
+#### Uninstall
+
+authservice uninstall \[\--purge\]
 
 Removes the service. Use the "\--purge" flag to also delete all data.
 
@@ -1939,7 +1947,6 @@ Contains database scripts.
 
 
 
-
 ### Configuration Options 
 
 ### Command-Line Options 
@@ -1959,6 +1966,8 @@ Starts the service
 Stops the service
 
 #### Uninstall 
+
+kms uninstall \[\--purge\]
 
 Removes the service
 
@@ -2395,16 +2404,11 @@ The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
 
 **Configuration Update to create Keys in KBS**
 
-​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+On the Enterprise VM, where Key broker service is running
+
+​	cd utils/build/skc-tools/kbs_script
 
 ​	Update KBS and AAS IP addresses in run.sh
-
-**Create AES Key**
-
-​	Execute the command
-
-​	./run.sh
-- Copy the key id generated
 
 **Create RSA Key**
 
@@ -2412,11 +2416,11 @@ The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
 
 ​	./run.sh reg
 
-- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+- copy the generated cert file to SGX compute node where skc_library is deployed. Also note down the the key id generated
 
 ## Configuration for NGINX testing
 
-**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
 **OpenSSL Configuration**
 
@@ -2445,9 +2449,9 @@ user root;
 
 ssl_engine pkcs11;
 
-Update the location of certificate with the location where it was copied into the skc_library machine. 
+Update the location of certificate with the location where it was copied into the SGX compute node. 
 
-ssl_certificate "/root/nginx/nginxcert.pem"; 
+ssl_certificate "add absolute path of crt file"; 
 
 Update the KeyID with the KeyID received when RSA key was generated in KBS
 
