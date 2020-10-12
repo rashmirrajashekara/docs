@@ -985,13 +985,29 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
 4. Update the default boot option
 
-   Ensure that the `GRUB_DEFAULT` value is set to the tboot option. The tboot boot option can be found by looking in the `/boot/redhat/grub.cfg` file. For example (the precise menu entry may be different, but should say "tboot"):
+   Ensure that the `GRUB_DEFAULT` value is set to the tboot option. 
 
-   `menuentry **'Red Hat Enterprise Linux GNU/Linux, with tboot 1.9.7 and Linux 4.18.0-147.el8.x86_64**' --class red --class gnu-	  linux --class gnu --class os --class tboot {`
+   a. Update /etc/default/grub and set the GRUB_DEFAULT value to "saved"
 
-   `vi /etc/default/grub`
+   ```
+   GRUB_DEFAULT=saved
+   ```
 
-   `GRUB_DEFAULT='Red Hat Enterprise Linux GNU/Linux, with tboot 1.9.7 and Linux 4.18.0-147.el8.x86_64'`
+   b. Set the grub default option to tboot using the following
+
+   ```
+   grub2-set-default 2
+   ```
+
+   Note that option 2 will be the correct Grub option assuming an otherwise-default installation of  RHEL.  A different option may be needed depending on the system configuration.
+
+   c. Regenerate grub.cfg:
+
+   ```
+   grub2-mkconfig -o /boot/grub2/grub.cfg
+   ```
+
+   
 
 5. Reboot the system
 
