@@ -555,7 +555,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.0.0.bin
+   ./cms-v3.1.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -645,7 +645,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.0.0.bin
+./authservice-v3.1.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
@@ -820,7 +820,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.0.0.bin
+./hvs-v3.1.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -884,7 +884,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.0.0.bin
+  ./wls-v3.1.0.bin
   ```
   
   
@@ -1105,7 +1105,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.0.0.bin
+  ./trustagent-v3.1.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1173,7 +1173,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.0.0.bin
+  ./workload-agent-v3.1.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1551,7 +1551,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.0.0.bin
+   ./ihub-v3.1.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -1825,7 +1825,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.0.0.bin
+    ./wpm-v3.1.0.bin
     ```
 
 
@@ -3104,7 +3104,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.0.0.bin
+    ./isecl-k8s-extensions-v3.1.0.bin
     ```
     
 2.  Add a mount path to the
@@ -8488,7 +8488,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.0.0.bin
+   ./cms-v3.1.0.bin
    ```
 
     When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -8577,7 +8577,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.0.0.bin
+./authservice-v3.1.0.bin
 ```
 
 > ***Note:*** *The `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.*
@@ -8751,7 +8751,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
  ```shell
-./hvs-v3.0.0.bin
+./hvs-v3.1.0.bin
  ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -8814,7 +8814,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.0.0.bin
+  ./wls-v3.1.0.bin
   ```
   
   
@@ -9021,7 +9021,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.0.0.bin
+  ./trustagent-v3.1.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -9088,7 +9088,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.0.0.bin
+  ./workload-agent-v3.1.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -9344,7 +9344,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.0.0.bin
+   ./ihub-v3.1.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -9621,7 +9621,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.0.0.bin
+    ./wpm-v3.1.0.bin
     ```
 
 
@@ -10892,7 +10892,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.0.0.bin
+    ./isecl-k8s-extensions-v3.1.0.bin
     ```
     
 2.  Add a mount path to the
