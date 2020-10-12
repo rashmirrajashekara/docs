@@ -550,7 +550,6 @@ Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 ./install_enterprise_skc.sh
 
 
-
 #### Deploy SGX Agent
 
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
@@ -609,24 +608,17 @@ GIT Configuration**
 
 ​	Update KBS and AAS IP addresses in run.sh
 
-**Create AES Key**
-
-​	Execute the command
-
-​	./run.sh
-- Copy the key id generated
-
 **Create RSA Key**
 
 ​	Execute the command
 
 ​	./run.sh reg
 
-- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+- copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
 ## Configuration for NGINX testing
 
-**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
 **OpenSSL**
 
@@ -657,7 +649,7 @@ ssl_engine pkcs11;
 
 Update the location of certificate with the loaction where it was copied into the skc_library machine. 
 
-ssl_certificate "/root/nginx/nginxcert.pem"; 
+ssl_certificate "add absolute path of crt file";
 
 Update the KeyID with the KeyID received when RSA key was generated in KBS
 
@@ -716,8 +708,3 @@ Establish ssh session with the nginx using the key transferred inside the enclav
 ```
     wget https://localhost:2443 --no-check-certificate
 ```
-
-
-
-
-
