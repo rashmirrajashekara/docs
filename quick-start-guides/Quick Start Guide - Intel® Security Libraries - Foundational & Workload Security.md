@@ -4,7 +4,7 @@
 
 ## **1. Hardware & OS Requirements**
 
-#### Physical Server requirements
+### Physical Server requirements
 
 * Intel® SecL-DC  supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL.
 
@@ -14,12 +14,12 @@
 
 > **Note:** A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
-#### OS Requirements
+### OS Requirements
 
 * RHEL 8.2 or later
 * `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on the OS
 
-#### User Access
+### User Access
 
 The services need to be built and installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
 All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
@@ -44,20 +44,20 @@ All Intel® SecL-DC service & agent ports should be allowed in firewall rules.
 
 The below installation is required on the Build and Deployment VM only
 
-#### Install basic utilities for getting started
+### Install basic utilities for getting started
 
 ```shell
 dnf install git wget tar python3 yum-utils
 ```
 
-#### Create symlink for python3
+### Create symlink for python3
 
 ```shell
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 ```
 
-#### Install repo tool
+### Install repo tool
 
 ```shell
 tmpdir=$(mktemp -d)
@@ -67,12 +67,11 @@ rm -rf $tmpdir
 ```
 
 
-
 ## **4. Build Services and packages**
 
 The below steps needs to be carried out on the Build and Deployment VM
 
-#### Pre-requisites
+### Pre-requisites
 
 * The repos can be built only as `root` user
 
@@ -157,10 +156,9 @@ The below steps needs to be carried out on the Build and Deployment VM
   
 
 
+### Building
 
-#### Building
-
-##### Foundational Security Usecase
+#### Foundational Security Usecase
 
 * Sync the repo
 
@@ -193,7 +191,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   
 
-##### Workload Security Usecase
+#### Workload Security Usecase
 
 **VM Confidentiality**
 
@@ -331,7 +329,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
-#### Deployment Tools Installation
+### Deployment Tools Installation
 
 * Install Ansible on Build VM
 
@@ -340,7 +338,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
   ```
 
 
-#### Usecases Workflow Tools Installation
+### Usecases Workflow Tools Installation
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
@@ -352,7 +350,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/master/tools/ansible-role) repository.
 
-#### Download the Ansible Role
+### Download the Ansible Role
 
 The role can be cloned locally from git and the contents can be copied to the roles folder used by your ansible server 
 
@@ -372,8 +370,7 @@ cd tools/ansible-role
 ```
 
 
-
-#### Update Ansible Inventory
+### Update Ansible Inventory
 
 The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
 
@@ -405,7 +402,7 @@ ansible_password=<password>
 
 
 
-#### Create and Run Playbook
+### Create and Run Playbook
 
 The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
 
@@ -460,8 +457,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 
 
-Additional Examples and Tips
-----------------------------
+### Additional Examples & Tips
 
 * If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
   
@@ -519,7 +515,7 @@ Additional Examples and Tips
 
 
 
-#### Usecase Setup Options
+### Usecase Setup Options
 
 | Usecase                                                      | Variable                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -541,7 +537,7 @@ Additional Examples and Tips
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
 
-#### Use Case Collections
+### Use Case Collections
 
 | Use case               | Sub-Usecase                                   | API Collection     |
 | ---------------------- | --------------------------------------------- | ------------------ |
@@ -555,7 +551,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-#### Downloading API Collections
+### Downloading API Collections
 
 * Postman API Network for latest released: https://explore.postman.com/intelsecldc
 
@@ -579,7 +575,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-#### Running API Collections
+### Running API Collections
 
 * Import the collection into Postman API Client
 
@@ -605,7 +601,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 ## **Appendix**
 
-##### Running behind Proxy
+### Running behind Proxy
 
 ```shell
 #Set proxy in ~/.bash_profile
@@ -614,7 +610,7 @@ export https_proxy=<proxy-url>
 export no_proxy=<ip_address/hostname>
 ```
 
-##### Git Config Sample (~/.gitconfig)
+### Git Config Sample (~/.gitconfig)
 
 ```
 [user]
@@ -626,7 +622,7 @@ export no_proxy=<ip_address/hostname>
         default = matching 
 ```
 
-##### Rebuilding Repos
+### Rebuilding Repos
 
 In order to rebuild repos, ensure the following steps are followed as a pre-requisite
 
