@@ -177,13 +177,16 @@ export PATH=$M2_HOME/bin:$PATH
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.1/develop -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
 repo sync
 ```
 
-**Enable and start the Docker daemon**
+**Install, Enable and start the Docker daemon**
 
   ```shell
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm
+  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm
   systemctl enable docker
   systemctl start docker
   ```
@@ -627,6 +630,8 @@ GIT Configuration**
 
 **OpenSSL**
 
+Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
+
 [openssl_def]
 engines = engine_section
 
@@ -643,6 +648,8 @@ MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 init = 0
 
 **Nginx**
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
 user root;
 
@@ -683,6 +690,34 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 ​	**[SGX]**
 
 ​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
+# KBS key-transfer flow validation
+
+Execute below commands for KBS key-transfer:
+
+```
+    pkill nginx
+```
+
+Remove any existing pkcs11 token
+
+```
+    rm -rf /opt/intel/cryptoapitoolkit/token/*
+```
+
+Initiate Key transfer from KBS
+
+```
+    systemctl restart nginx
+```
+
+Establish ssh session with the nginx using the key transferred inside the enclave
+
+```
+    wget https://localhost:2443 --no-check-certificate
+```
+
+
 
 
 

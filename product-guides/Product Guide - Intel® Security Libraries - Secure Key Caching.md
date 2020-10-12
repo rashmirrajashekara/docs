@@ -237,7 +237,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -322,7 +322,11 @@ ISECL_PGDB_PORT=5432
 
 ISECL_PGDB_SAVE_DB_INSTALL_LOG=true
 
-ISECL_PGDB_CERT_DNS=localhost ISECL_PGDB_CERT_IP=127.0.0.1
+ISECL_PGDB_CERT_DNS=localhost
+
+ISECL_PGDB_CERT_IP=127.0.0.1
+
+ISECL_PGDB_USERPASSWORD=dbpassword
 
 Note that the values above assume that the database will be accessed locally. If the database server will be external to the Intel® SecL services, change these values to the hostname or FQDN and IP address where the client will access the database server.
 
@@ -383,11 +387,11 @@ To install the Intel® SecL-DC Certificate Management Service:
 
 2.  Create the cms.env installation answer file for an unattended installation:
 
-AAS_TLS_SAN=\<comma-separated list of IPs and hostnames for the AAS\>
+AAS_TLS_SAN=\< Comma-Separated list of IPs and hostnames for the AAS\>
 
-AAS_API_URL=https://\<Authentication and Authorization Service IP or Hostname\>:8444/aas
+AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas
 
-SAN_LIST=\<Comma-Separated list of IP addresses and hostnames for the CMS\>
+SAN_LIST=\< Comma-Separated list of IP addresses and hostnames for the CMS\>
 
 The SAN list will be used to authenticate the Certificate Signing Request from the AAS to the CMS. Only a CSR originating from a host matching the SAN list will be honored. Later, in the AAS authservice.env installation answer file, this same SAN list will be provided for the AAS installation. These lists must match and must be valid for IPs and/or hostnames used by the AAS system. The SAN list variables also accept the wildcards "?" (for single-character wildcards) and "\*" (for multiple-character wildcards) to allow address ranges or multiple FQDNs.
 
@@ -397,7 +401,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-3.1.0.bin
+./cms-v3.1.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -450,6 +454,8 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
 
+dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
 dnf module disable postgresql -y
 
 copy install_pgdb.sh and create_db.sh to /root/ directory
@@ -465,7 +471,7 @@ cms setup cms_auth_token --force
 
 Create the authservice.env installation answer file in /root/ directory as below:
 
-​      CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+​      CMS_BASE_URL=https://\< CMS IP or hostname\>:8445/cms/v1/
 
 ​      CMS_TLS_CERT_SHA384=\<CMS TLS certificate sha384
 
@@ -502,6 +508,8 @@ Note: the AAS_ADMIN credentials specified in this answer file will have administ
 After installation is complete, several roles and user accounts must be generated.  Most of these accounts will be service users, used by the various Intel® SecL SKC services to work together.
 
 Creating these required users and roles is facilitated by the scripts in the corresponding components and needs to be executed before installation of each component.
+
+Note: Update variable IPADDR and aas-hostname inside below scripts with the SAN_LIST and AAS IP given in env file. Also install package "jq" before running these scripts.
 
 SCS: scs_aas_curl.sh
 
@@ -565,11 +573,9 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
 
-copy install_pgscsdb.sh and create_db.sh to /root/ directory
+copy install_pgscsdb.sh to /root/ directory
 
 ./install_pgscsdb.sh
-
-./create_db.sh pgscsdb <db_user> <db_password>
 
 
 1.  Copy the SCS installation binary to the /root/ directory.
@@ -659,11 +665,10 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 
 Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
 
-copy install_pgshvsdb.sh and create_db.sh to /root/ directory
+copy install_pgshvsdb.sh to /root/ directory
 
 ./install_pgshvsdb.sh
 
-./create_db.sh pgshvsdb <db_user> <db_password>
 
 To install the SGX Host Verification Service, follow these steps:
 
@@ -737,7 +742,7 @@ Intel® Xeon® SP (Ice Lake-SP)
 
 ### Installation
 
-    Copy sgx_agent.tar sgx_agent.sh2 and agent_untar.sh to SGX Compute node
+    Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to SGX Compute node
     ./agent_untar.sh
     Update the IP address for the services mentioned in agent.conf
     ./deploy_sgx_agent.sh
@@ -812,7 +817,48 @@ When the installation completes, the SGX Quote Verification Service is available
 
 \# sqvs status
 
-##  Installing the SGX Hub
+## Setup K8S Cluster & Deploy Isecl-k8s-extensions
+
+Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+
+Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+
+Once the master/worker setup is done, copy the binaries directory generated in the build system VM to the /root/ directory on the Master Node.
+
+Go to /root/binaries directory and run ./isecl-k8s-extensions-* .
+
+Edit /etc/kubernetes/manifests/kube-scheduler.yaml and remove/comment the following content and restart kubelet.
+
+```
+    --policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json
+    systemctl restart kubelet
+```
+
+Wait for the isecl-controller and isecl-scheduler pods to be into running state.
+
+```
+    kubectl get pods -n isecl
+```
+
+Create role bindings on the Kubernetes Master.
+
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
+    kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+```
+	
+Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in ihub.env on CSP VM with kubernetes certificate path.
+
+Get k8s token in master, using below commands.
+
+```
+    kubectl get secrets -n isecl
+    kubectl describe secret <ouput-secret-name> -n isecl.
+```
+
+Update KUBERNETES_TOKEN in ihub.env on CSP VM with above kubernetes token.
+
+##  Installing the Integration Hub
 
 **Note:** The SGX Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as OpenStack Nova or Kubernetes. The Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
 
@@ -877,9 +923,13 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           ATTESTATION_TYPE = SGX
 
+​           TENANT=< tenant-type e.g. KUBERNETES >
+
 ​           KUBERNETES_URL =< https://< Kubernetes IP >:6443/
 
 ​           KUBERNETES_CRD = custom-isecl
+
+​           KUBERNETES_TOKEN = < K8S token >
 
 ​           KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
 
@@ -889,13 +939,80 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
 
-​           CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1 
+​           CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+
+​           POLL_INTERVAL_MINUTES=2
 
 ​           TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
 3.  Execute the installer binary.
 
 ./ihub-v3.1.0.bin
+
+Copy IHUB public key to the master node and restart kubelet.
+
+```
+    scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+    systemctl restart kubelet
+```
+	
+Run this command to validate if the data has been pushed to CRD: 
+
+```
+    kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+	
+Run this command to validate that the labels have been populated:
+
+```
+    kubectl get nodes --show-labels.
+```
+	
+Sample labels:
+
+```
+    EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
+```
+
+Create sample yml file for nginx workload and add SGX labels to it such as:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
+           
+Validate if pod can be launched on the node. Run following commands:
+
+```
+    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx 
+```
+
+Pod should be in running state and launched on the host as per values in pod.yml.
 
 ##  Installing the Key Broker Service
 
@@ -989,7 +1106,7 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
 ### Installation
 
-    Copy skc_library.tar skc_library.sh2 and skclib_untar.sh to a directory in SGX Compute node
+    Copy skc_library.tar skc_library.sha2 and skclib_untar.sh to a directory in SGX Compute node
     ./skclib_untar.sh
     Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
     ./deploy_skc_library.sh
@@ -1183,11 +1300,10 @@ Following are the set of roles which are required during installation and runtim
 | < SGX_AGENT:HostDataReader: >                                |                                                              | Used by the SHVS to retrieve platform data from SGX_Agent    |
 | < CMS:CertApprover:CN=SGX_AGENT TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                              | Used by the SGX-AGENT to get TLS certificate from CMS        |
 | < SHVS:HostRegistration: >                                   |                                                              | Used by the SGX_Agent to register host to the SHVS           |
-| < SHVS:HostsListReader: >                                    |                                                              | Used by the SHUB to retrieve the list of hosts from SHVS     |
-| < SHVS:HostDataReader: >                                     |                                                              | Used by the SHUB to retrieve platform-data from SHVS         |
+| < SHVS:HostsListReader: >                                    |                                                              | Used by the IHUB to retrieve the list of hosts from SHVS     |
+| < SHVS:HostDataReader: >                                     |                                                              | Used by the IHUB to retrieve platform-data from SHVS         |
 | < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                   | Used by the SHVS to retrieve TLS Certificate from CMS        |
-| < SHUB:TenantManager: >                                      |                                                              | Used by the SHUB to manage the tenant and host-assignments resource |
-| < CMS:CertApprover:CN=SHUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                   | Used by the SHUB to retrieve TLS Certificate from CMS        |
+| < CMS:CertApprover:CN=Integration HUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                        | Used by the IHUB to retrieve TLS Certificate from CMS        |
 | < SCS:HostDataUpdater: >                                     |                                                              | Used by the SHVS to push the platform-info to SCS            |
 | < SCS:HostDataReader: >                                      |                                                              | Used by the SHVS to retrieve the TCB status info from SCS    |
 | < SCS:CacheManager: >                                        |                                                              | Used by the SCS admin to refresh the platform info           |
@@ -1301,7 +1417,7 @@ Removes the service. Use \--purge option to remove configuration directory(/etc/
 
 #### Version 
 
-shvs \--version
+shvs version
 
 Shows the version of the service.
 
@@ -1413,6 +1529,7 @@ Contains the config.yml configuration file.
 | KUBERNETES_CRD         | custom-isecl                                                 | CRD Name to be used                                          |
 | TLS_SAN_LIST           | 127.0.0.1, localhost                                         | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | KUBERNETES_TOKEN       |                                                              | Token from Kubernetes Master Node                            |
+| KUBERNETES_CERT_FILE   | /root/apiserver.crt                                          | Kubernetes server certificate path                           |
 | POLL_INTERVAL_MINUTES  | 2                                                            | IHUB Polling Interval in Minutes                             |
 
 ### Configuration Options 
@@ -1562,7 +1679,7 @@ Uninstalls the service, including the deletion of all files and folders.
 
 #### Version 
 
-cms version
+cms --version
 
 Reports the version of the service.
 
@@ -1783,7 +1900,9 @@ Shows the SHA384 digest of the TLS certificate.
 
 Removes the service. Use the "\--purge" flag to also delete all data.
 
-#### Version 
+#### Version
+
+authservice --version
 
 Shows the version of the service.
 
@@ -1959,6 +2078,8 @@ uninstall the SGX Caching Service. \--purge option needs to be applied to remove
 
 #### version 
 
+scs --version
+
 Reports the version of the scs
 
 ### Directory Layout 
@@ -2034,6 +2155,8 @@ sqvs uninstall \[\--purge\]
 uninstalls the SGX Quote Verification Service. \--purge option needs to be applied to remove configuration files
 
 #### version 
+
+sqvs --version
 
 Reports the version of the sqvs
 
@@ -2267,3 +2390,120 @@ echo "IHUB Token $IHUB_TOKEN"
 ```
 
 The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
+
+## Creating AES and RSA Keys in Key Broker Service
+
+**Configuration Update to create Keys in KBS**
+
+​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+
+​	Update KBS and AAS IP addresses in run.sh
+
+**Create AES Key**
+
+​	Execute the command
+
+​	./run.sh
+- Copy the key id generated
+
+**Create RSA Key**
+
+​	Execute the command
+
+​	./run.sh reg
+
+- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+
+## Configuration for NGINX testing
+
+**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+
+**OpenSSL Configuration**
+
+Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
+
+[openssl_def]
+engines = engine_section
+
+[engine_section]
+pkcs11 = pkcs11_section
+
+[pkcs11_section]
+engine_id = pkcs11
+
+dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+
+MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+
+init = 0
+
+**Nginx Configuration**
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
+
+user root;
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the location where it was copied into the skc_library machine. 
+
+ssl_certificate "/root/nginx/nginxcert.pem"; 
+
+Update the KeyID with the KeyID received when RSA key was generated in KBS
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+**SKC Configuration**
+
+​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+
+​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+​	**Note:** Content of this file should match with the nginx conf file
+
+​	**/opt/skc/etc/pkcs11-apimodule.ini**
+
+​	**[core]**
+
+​	preload_keys=/tmp/keys.txt
+
+​	keyagent_conf=/opt/skc/etc/key-agent.ini
+
+​	mode=SGX
+
+​	debug=true
+
+​	**[SW]**
+
+​	module=/usr/lib64/pkcs11/libsofthsm2.so
+
+​	**[SGX]**
+
+​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
+# KBS key-transfer flow validation
+
+Execute below commands for KBS key-transfer:
+
+```
+    pkill nginx
+```
+
+Remove any existing pkcs11 token
+
+```
+    rm -rf /opt/intel/cryptoapitoolkit/token/*
+```
+
+Initiate Key tranfer from KBS
+
+```
+    systemctl restart nginx
+```
+
+Establish ssh session with the nginx using the key transferred inside the enclave
+
+```
+    wget https://localhost:2443 --no-check-certificate
+```
+
