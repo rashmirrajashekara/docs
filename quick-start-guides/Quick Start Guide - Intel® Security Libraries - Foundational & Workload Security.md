@@ -175,7 +175,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   ```shell
   cd utils/build/foundational-security/
   chmod +x fs-prereq.sh
-  ./fs-prereq.sh
+  ./fs-prereq.sh -s
   ```
 
 * Build all repos
@@ -195,43 +195,54 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 ##### Workload Security Usecase
 
+**VM Confidentiality**
+
 * Sync the repo
 
   ```shell
-  #Container Confidentiality with Docker Runtime
-  mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
-  repo sync
-  
-  or
-  
-  #Container Confidentiality with CRIO Runtime
-  mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
-  repo sync
-  
-  or 
-  
-  #VM Confidentiality
   mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
   repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
   repo sync
   ```
 
+* Run the pre-req script
+
+  ```shell
+  cd utils/build/workload-security
+  chmod +x ws-prereq.sh
+  ./ws-prereq.sh -s
+  ```
+  
+* Build repo
+
+  ```shell
+  cd /root/isecl/vmc/
+  make all
+  ```
+
+* Built Binaries
+  ```shell
+  /root/isecl/vmc/binaries/
+  ```
+
+
+
+**Container Confidentiality with Docker Runtime**
+
+* Sync the repo
+
+  ```shell
+  mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
+  repo sync
+  ```
+  
 * Run the `pre-requisites` script
 
   ```shell
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
-  ./ws-prereq.sh
-  ```
-
-* Download go dependencies
-
-  ```shell
-  cd /root/
-  go get github.com/cpuguy83/go-md2man
-  mv /root/go/bin/go-md2man /usr/bin/
+  ./ws-prereq.sh -s
   ```
 
 * Enable and start the Docker daemon
@@ -260,40 +271,60 @@ The below steps needs to be carried out on the Build and Deployment VM
   systemctl restart docker
   ```
   
-* Build all repos
+* Build repos
 
   ```shell
-  #Container Confidentiality with Docker Runtime
   cd /root/isecl/cc-docker/
-  make all
-
-  or 
-
-   #Container Confidentiality with CRIO Runtime
-  cd /root/isecl/cc-crio/
-  make all
-
-  or 
-
-  #VM Confidentiality
-  cd /root/isecl/vmc/
-  make all
+  make all 
   ```
-
+  
 * Built binaries
 
   ```shell
-  #Container Confidentiality with Docker Runtime
   /root/isecl/cc-docker/binaries/
+  ```
   
-  #Container Confidentiality with CRIO Runtime
-  /root/isecl/cc-crio/binaries/
-  
-  #VM Confidentiality
-  /root/isecl/vmc/binaries
+
+
+
+**Container Confidentiality with CRIO Runtime**
+
+* Sync the repo
+
+  ```shell
+  mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
+  repo sync
   ```
 
+* Run the `pre-requisites` script
+
+  ```shell
+  cd utils/build/workload-security
+  chmod +x ws-prereq.sh
+  ./ws-prereq.sh -s
+  ```
+
+* Download go dependencies
+
+  ```shell
+  cd /root/
+  go get github.com/cpuguy83/go-md2man
+  mv /root/go/bin/go-md2man /usr/bin/
+  ```
+
+* Build the repos
+
+  ```shell
+  cd /root/isecl/cc-crio/
+  make all
+  ```
   
+* Built binaries
+  ```shell
+  /root/isecl/cc-crio/binaries/
+  ```
+
 
 
 ## **5. Deployment & Usecase Workflow Tools Installation**
@@ -313,7 +344,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections)
 
 
 
@@ -480,8 +511,7 @@ Additional Examples and Tips
   registry_scheme_type: <registry_scheme>
   ```
 
-* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible 
-  and rerun the playbook. The successfully installed services wont be reinstalled.
+* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
 
@@ -531,11 +561,11 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
   ```shell
   #Clone the github repo for api-collections
-  git clone https://github.com/intel-secl/utils/
+  git clone https://github.com/intel-secl/utils.git
   
-  #Switch to specific release tag of choice
+  #Switch to specific release-version of choice
   cd utils/
-  git checkout <release-tag of choice>
+  git checkout <release-version of choice>
   
   #Import Collections from
   cd tools/api-collections
@@ -591,4 +621,19 @@ export no_proxy=<ip_address/hostname>
  [push]
         default = matching 
 ```
+
+**Rebuilding repos**
+
+In order to rebuild repos, ensure the following steps are followed as a pre-requisite
+
+```shell
+# Clean all go-mod packages
+rm -rf ~/go/pkg/mod/*
+
+#Navigate to specific folder where repos are built, example
+cd /root/isec/fs
+rm -rf * .repo
+```
+
+
 
