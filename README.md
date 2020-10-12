@@ -43,15 +43,15 @@ The SKC use case requires the provisioning of host servers to respond to SGX att
 
 Secure Key Caching Product Guide
 
-https://github.com/intel-secl/docs/blob/v3.1.0/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 Secure Key Caching Quick Start Guide
 
-https://github.com/intel-secl/docs/blob/v3.1.0/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/master/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 Secure Key Caching Quick Start Guide: quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
-https://github.com/intel-secl/docs/tree/v3.1.0/swagger-docs/secure-key-caching
+https://github.com/intel-secl/docs/tree/master/swagger-docs/secure-key-caching
 
 
 ## License 
