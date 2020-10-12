@@ -375,6 +375,8 @@ Additional Examples and Tips
   intel_provisioning_server_api_key_sandbox: <pcs server key>
   ```
 
+* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
+
 
 #### Usecase Setup Options
 
