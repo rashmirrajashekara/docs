@@ -531,7 +531,7 @@ Additional Examples and Tips
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 >
-> **Note: ** `Key Broker Service` is not configured with KMIP compliant KMS when installing through ansible role  
+> **Note:** `Key Broker Service` is not configured with KMIP compliant KMS when installing through ansible role  
 
 
 
