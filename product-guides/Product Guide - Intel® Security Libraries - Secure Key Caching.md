@@ -2496,7 +2496,7 @@ Execute below commands for KBS key-transfer:
 Remove any existing pkcs11 token
 
 ```
-    rm -rf /opt/intel/cryptoapitoolkit/token/*
+    rm -rf /opt/intel/cryptoapitoolkit/tokens/*
 ```
 
 Initiate Key tranfer from KBS
