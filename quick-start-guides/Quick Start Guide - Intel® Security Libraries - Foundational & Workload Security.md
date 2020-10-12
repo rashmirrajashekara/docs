@@ -350,7 +350,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 ## **6. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/master/tools/ansible-role) repository.
 
 #### Download the Ansible Role
 
@@ -361,12 +361,14 @@ The role can be cloned locally from git and the contents can be copied to the ro
 mkdir -p /root/intel-secl/deploy/
 
 #Clone the repository
-cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-role.git
+cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/utils.git
 
-#Checkout to specific release tag
-git checkout <release-tag of choice>
+#Checkout to specific release-version
+cd utils/
+git checkout <release-version of choice>
+cd tools/ansible-role
 
-#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/)
+#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/utils/tools/)
 ```
 
 
