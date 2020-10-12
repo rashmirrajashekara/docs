@@ -409,6 +409,8 @@ The following are playbook and CLI for deploying Intel® SecL-DC binaries for Fo
 
 > **Note :** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
 
+> **Note:** Go through the `Additional Examples and Tips` section for specific workflow samples
+
 **Option 1**
 
 ```yaml
@@ -535,14 +537,14 @@ Additional Examples and Tips
 
 ## **7. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
 
 #### Use Case Collections
 
 | Use case               | Sub-Usecase                                   | API Collection     |
 | ---------------------- | --------------------------------------------- | ------------------ |
-| Foundational Security  | Host Attestation                              | ✔️                  |
-|                        | Data Fencing  with Asset Tags                 | ✔️                  |
+| Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
+|                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
 |                        | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
 |                        | Application Integrity                         | ✔️                  |
 | Launch Time Protection | VM Confidentiality                            | ❌                  |

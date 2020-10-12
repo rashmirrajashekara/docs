@@ -304,7 +304,9 @@ ansible_password=<password>
 
 The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
 
-> **Note :** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
+> **Note:** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
+
+> **Note:** Go through the `Additional Examples and Tips` section for specific workflow samples
 
 **Option 1**
 
@@ -329,6 +331,8 @@ and
 ansible-playbook <playbook-name>
 ```
 
+> **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
+
 OR
 
 **Option 2:**
@@ -351,19 +355,41 @@ and
 ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
 ```
 
+> **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
+
+
+Additional Examples and Tips
+----------------------------
+
+* For `secure-key-caching` & `security-aware-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+
+  ```shell
+   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
+  ```
+
+  or 
+
+  Update the following vars in `defaults/main.yml`
+
+  ```yaml
+  intel_provisioning_server_api_key_sandbox: <pcs server key>
+  ```
+
 
 #### Usecase Setup Options
 
 | Usecase            | Variable                                                     |
 | ------------------ | ------------------------------------------------------------ |
 | Secure Key Caching | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
+| Security Aware Orchestration | `setup: security-aware-orchestration` in playbook or via `--extra-vars` as `setup=security-aware-orchestration`in CLI |
+
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
 
 ## **9. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
 
 #### Use Case Collections
 
@@ -383,11 +409,11 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
   ```shell
   #Clone the github repo for api-collections
-  git clone https://github.com/intel-secl/utils/
+  git clone https://github.com/intel-secl/utils.git
   
-  #Switch to specific release tag of choice
+  #Switch to specific release-version of choice
   cd utils/
-  git checkout <release-tag of choice>
+  git checkout <release-version of choice>
   
   #Import Collections from
   cd tools/api-collections
