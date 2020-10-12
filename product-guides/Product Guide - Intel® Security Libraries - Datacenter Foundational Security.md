@@ -800,7 +800,7 @@ To install the Verification Service, follow these steps:
    HVS_SERVICE_PASSWORD=password
    
    # CMS URL and CMS webserivce TLS hash for server verification 
-   CMS_BASE_URL=https://isecl-cms:8445/
+   CMS_BASE_URL=https://isecl-cms:8445/cms/v1
    CMS_TLS_CERT_SHA384=digest
    
    # TLS Configuration
@@ -5463,7 +5463,7 @@ HVS_SERVICE_USERNAME=HVS_service
 HVS_SERVICE_PASSWORD=password
 
 # CMS URL and CMS webserivce TLS hash for server verification - mandatory
-CMS_BASE_URL=https://isecl-cms:8445/
+CMS_BASE_URL=https://isecl-cms:8445/cms/v1
 CMS_TLS_CERT_SHA384=digest
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
@@ -8731,7 +8731,7 @@ To install the Verification Service, follow these steps:
    HVS_SERVICE_PASSWORD=password
    
    # CMS URL and CMS webserivce TLS hash for server verification 
-   CMS_BASE_URL=https://isecl-cms:8445/
+   CMS_BASE_URL=https://isecl-cms:8445/cms/v1
    CMS_TLS_CERT_SHA384=digest
    
    # TLS Configuration
@@ -13017,7 +13017,7 @@ HVS_SERVICE_USERNAME=HVS_service
 HVS_SERVICE_PASSWORD=password
 
 # CMS URL and CMS webserivce TLS hash for server verification - mandatory
-CMS_BASE_URL=https://isecl-cms:8445/
+CMS_BASE_URL=https://isecl-cms:8445/cms/v1
 CMS_TLS_CERT_SHA384=digest
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
