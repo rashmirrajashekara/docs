@@ -493,7 +493,7 @@ Additional Examples and Tips
 * If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
 
   ```shell
-  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> --extra-vars registry_ipaddr=<registry ipaddr> --extra-vars registry_scheme=<registry schedme[http/https]>
+  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> --extra-vars registry_ipaddr=<registry ipaddr> --extra-vars registry_scheme=<registry scheme[http/https]>
   ```
   or
 
@@ -502,7 +502,7 @@ Additional Examples and Tips
   ```yaml
   # [TRUE/FALSE based on registry configured with http/https respectively]
   # Required for Workload Integrity with containers
-  insecure_skip_verify: <insecur_skip_verify>
+  insecure_skip_verify: <insecure_skip_verify>
 
   # The registry IP for the Docker registry from where container images are pulled
   # Required for Workload Integrity with containers
