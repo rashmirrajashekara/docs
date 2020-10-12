@@ -4,7 +4,7 @@
 ## Product Guide
 ### August 2020
 
-### Revision 3.0
+### Revision 3.1
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -56,114 +56,115 @@ Revision History
 <tbody>
 <tr class="odd">
 <td>Document Number</td>
-<td>Revision<br />
-Number</td>
+<td>Revision<br /> Number</td>
 <td>Description</td>
 <td>Date</td>
 </tr>
 <tr class="even">
-<td></td>
+<td>&nbsp;</td>
 <td>1</td>
-<td><ul>
-<li><p>Updated for all GA Failures</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for all GA Failures</p>
+</li>
+</ul>
+</td>
 <td>May 2019</td>
 </tr>
 <tr class="odd">
-<td></td>
+<td>&nbsp;</td>
 <td>1.5</td>
-<td><ul>
-<li><p>Updated for version 1.5 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 1.5 release</p>
+</li>
+</ul>
+</td>
 <td>July 2019</td>
 </tr>
 <tr class="even">
-<td></td>
+<td>&nbsp;</td>
 <td>1.6 BETA</td>
-<td><ul>
-<li><p>Updated for 1.6 BETA release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for 1.6 BETA release</p>
+</li>
+</ul>
+</td>
 <td>November 2019</td>
 </tr>
 <tr class="odd">
-<td></td>
+<td>&nbsp;</td>
 <td>1.6</td>
-<td><ul>
-<li><p>Updated for version 1.6 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 1.6 release</p>
+</li>
+</ul>
+</td>
 <td>December 2019</td>
 </tr>
 <tr class="even">
-<td></td>
+<td>&nbsp;</td>
 <td>2.0</td>
-<td><ul>
-<li><p>Updated for version 2.0 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 2.0 release</p>
+</li>
+</ul>
+</td>
 <td>February 2020</td>
 </tr>
 <tr class="odd">
-<td></td>
+<td>&nbsp;</td>
 <td>2.1</td>
-<td><ul>
-<li><p>Updated for version 2.1 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 2.1 release</p>
+</li>
+</ul>
+</td>
 <td>April 2020</td>
 </tr>
 <tr class="even">
-<td></td>
+<td>&nbsp;</td>
 <td>2.2</td>
-<td><ul>
-<li><p>Updated for version 2.2 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 2.2 release</p>
+</li>
+</ul>
+</td>
 <td>June 2020</td>
 </tr>
 <tr class="odd">
-<td></td>
+<td>&nbsp;</td>
 <td>3.0</td>
-<td><ul>
-<li><p>Updated for version 3.0 release</p></li>
-</ul></td>
+<td>
+<ul>
+<li>
+<p>Updated for version 3.0 release</p>
+</li>
+</ul>
+</td>
 <td>August 2020</td>
 </tr>
 <tr class="even">
-<td></td>
-<td></td>
-<td><ul>
-<li></li>
-</ul></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td><ul>
-<li></li>
-</ul></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td><ul>
-<li></li>
-</ul></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td></td>
-<td></td>
-<td><ul>
-<li></li>
-</ul></td>
-<td></td>
-</tr>
-<tr class="even">
-<td></td>
-<td></td>
-<td><ul>
-<li></li>
-</ul></td>
-<td></td>
+<td>&nbsp;</td>
+<td>&nbsp;3.1</td>
+<td>
+<ul>
+<li>Updated for version 3.1 release</li>
+</ul>
+</td>
+<td>&nbsp;October 2020</td>
 </tr>
 </tbody>
 </table>
