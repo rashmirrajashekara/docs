@@ -240,7 +240,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
   ```
 
 
-#### Usecases Workflow Tools Installation
+### Usecases Workflow Tools Installation
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
@@ -251,7 +251,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/master/tools/ansible-role) repository.
 
-#### Download the Ansible Role 
+### Download the Ansible Role 
 
 The role can be cloned locally from git and the contents can be copied to the roles folder used by your ansible server 
 
@@ -271,7 +271,7 @@ cd tools/ansible-role
 ```
 
 
-#### Update Ansible Inventory
+### Update Ansible Inventory
 
 The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
 
@@ -302,7 +302,7 @@ ansible_password=<password>
 ```
 
 
-#### Create and Run Playbook
+### Create and Run Playbook
 
 The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
 
@@ -360,8 +360,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 > **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
 
 
-Additional Examples and Tips
-----------------------------
+### Additional Examples & Tips
 
 * For `secure-key-caching` & `security-aware-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
@@ -380,7 +379,7 @@ Additional Examples and Tips
 * If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
-#### Usecase Setup Options
+### Usecase Setup Options
 
 | Usecase            | Variable                                                     |
 | ------------------ | ------------------------------------------------------------ |
@@ -395,7 +394,7 @@ Additional Examples and Tips
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
 
-#### Use Case Collections
+### Use Case Collections
 
 | Use case                     | Sub-Usecase | API Collection     |
 | ---------------------------- | ----------- | ------------------ |
@@ -403,7 +402,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Security Aware Orchestration | -           | ✔️(Kubernetes Only) |
 
 
-#### Download Postman API Collections
+### Download Postman API Collections
 
 * Postman API Network for latest released collections: https://explore.postman.com/intelsecldc
 
@@ -427,7 +426,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 
-#### Running API Collections
+### Running API Collections
 
 * Import the collection into Postman API Client
 
