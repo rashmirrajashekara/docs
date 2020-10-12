@@ -4,13 +4,15 @@
 
 ## **1. Hardware & OS Requirements**
 
-1. **Three Hosts or VMs**
+1. **Four Hosts or VMs**
 
    a.    Build System
 
    b.    CSP managed Services 
 
    c.    Enterprise Managed Services
+   
+   d.    K8S Master Node Setup
 
 2. **SGX Enabled Host**
 
@@ -178,6 +180,32 @@ mkdir -p /root/workspace && cd /root/workspace
 repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.1/develop -m manifest/skc.xml
 repo sync
 ```
+
+**Enable and start the Docker daemon**
+
+  ```shell
+  systemctl enable docker
+  systemctl start docker
+  ```
+
+**Ignore the below steps if not running behind a proxy**
+
+  ```shell
+  mkdir -p /etc/systemd/system/docker.service.d
+  touch /etc/systemd/system/docker.service.d/proxy.conf
+  
+  #Add the below lines in proxy.conf
+  [Service]
+  Environment="HTTP_PROXY=<http_proxy>"
+  Environment="HTTPS_PROXY=<https_proxy>"
+  Environment="NO_PROXY=<no_proxy>"
+  ```
+
+  ```shell
+  #Reload docker
+  systemctl daemon-reload
+  systemctl restart docker
+  ```
 
 **Building All SKC Components**
 ```
@@ -390,6 +418,48 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 ## **10. Deployment Using Binaries**
 
+#### Setup K8S Cluster & Deploy Isecl-k8s-extensions
+
+Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+
+Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+
+Once the master/worker setup is done, copy the binaries directory generated in the build system VM to the /root/ directory on the Master Node.
+
+Go to /root/binaries directory and run ./isecl-k8s-extensions-* .
+
+Edit /etc/kubernetes/manifests/kube-scheduler.yaml and remove/comment the following content and restart kubelet.
+
+```
+    --policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json
+    systemctl restart kubelet
+```
+
+Wait for the isecl-controller and isecl-scheduler pods to be into running state.
+
+```
+    kubectl get pods -n isecl
+```
+
+Create role bindings on the Kubernetes Master.
+
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
+    kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+```
+	
+Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in /root/binaries/env/ihub.env on CSP VM with kubernetes certificate path.
+
+Get k8s token in master, using below commands.
+
+```
+    kubectl get secrets -n isecl
+    kubectl describe secret <ouput-secret-name> -n isecl.
+```
+
+Update KUBERNETES_TOKEN in /root/binaries/env/ihub.env on CSP VM with above kubernetes token.
+
+
 #### Deploy CSP SKC Services
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
@@ -400,7 +470,72 @@ Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 ./install_csp_skc.sh
 
+Copy IHUB public key to the master node and restart kubelet.
 
+```
+    scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+    systemctl restart kubelet
+```
+	
+Run this command to validate if the data has been pushed to CRD: 
+
+```
+    kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+	
+Run this command to validate that the labels have been populated:
+
+```
+    kubectl get nodes --show-labels.
+```
+	
+Sample labels:
+
+```
+    EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
+```
+
+Create sample yml file for nginx workload and add SGX labels to it such as:
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
+           
+Validate if pod can be launched on the node. Run following commands:
+
+```
+    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx 
+```
+
+Pod should be in running state and launched on the host as per values in pod.yml.
+	
+    
 #### Deploy Enterprise SKC Services
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
@@ -415,7 +550,7 @@ Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 #### Deploy SGX Agent
 
-Copy sgx_agent.tar, sgx_agent.sh2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
+Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./agent_untar.sh
 
@@ -429,7 +564,7 @@ Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deploye
 
 #### Deploy SKC Library
 
-Copy skc_library.tar, skc_library.sh2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
+Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 
 ./skclib_untar.sh
 
@@ -463,17 +598,42 @@ GIT Configuration**
 
 ## Appendix
 
-**OpenSSL Config**
-****
+## Creating AES and RSA Keys in Key Broker Service
 
-Add the folowing block in openssl.cnf in order to enable pkcs11 engine support in openssl.
+**Configuration Update to create Keys in KBS**
+
+​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+
+​	Update KBS and AAS IP addresses in run.sh
+
+**Create AES Key**
+
+​	Execute the command
+
+​	./run.sh
+- Copy the key id generated
+
+**Create RSA Key**
+
+​	Execute the command
+
+​	./run.sh reg
+
+- copy the generated cert file to sgx machine where skc_library is deployed. Also copy the key id generated
+
+## Configuration for NGINX testing
+
+**Note:** OpenSSL and NGINX base configuration updates are completed as part of deployment script.
+
+**OpenSSL**
+
+[openssl_def]
+engines = engine_section
 
 [engine_section]
-
 pkcs11 = pkcs11_section
 
 [pkcs11_section]
-
 engine_id = pkcs11
 
 dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
@@ -481,6 +641,48 @@ dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 
 init = 0
+
+**Nginx**
+
+user root;
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the loaction where it was copied into the skc_library machine. 
+
+ssl_certificate "/root/nginx/nginxcert.pem"; 
+
+Update the KeyID with the KeyID received when RSA key was generated in KBS
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+**SKC Configuration**
+
+​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+
+​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+​	**Note:** Content of this file should match with the nginx conf file
+
+​	**/opt/skc/etc/pkcs11-apimodule.ini**
+
+​	**[core]**
+
+​	preload_keys=/tmp/keys.txt
+
+​	keyagent_conf=/opt/skc/etc/key-agent.ini
+
+​	mode=SGX
+
+​	debug=true
+
+​	**[SW]**
+
+​	module=/usr/lib64/pkcs11/libsofthsm2.so
+
+​	**[SGX]**
+
+​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 
 

@@ -3709,7 +3709,7 @@ isecl/cc-crio/binaries/
 - Copy the Skopeo wrapper into /usr/bin: 
 
   ```
-  cp isecl/cc-crio/binaries/skopeo-v0.1.41.bin /usr/bin/skopeo
+  cp isecl/cc-crio/binaries/skopeo /usr/bin/skopeo
   ```
 
 - Add the following to the crio.service definition to always start Cri-o with the Intel SecL policy parameters enabled:
