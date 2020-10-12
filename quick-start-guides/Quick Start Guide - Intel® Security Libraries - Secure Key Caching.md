@@ -260,7 +260,7 @@ The role can be cloned locally from git and the contents can be copied to the ro
 mkdir -p /root/intel-secl/deploy/
 
 #Clone the repository
-cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-role
+cd /root/intel-secl/deploy/ && git clone https://github.com/intel-secl/ansible-role.git
 
 #Checkout to specific release tag
 git checkout <release-tag of choice>
