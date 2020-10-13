@@ -564,12 +564,16 @@ To install the Intel® SecL-DC Certificate Management Service:
 cms status
    ```
 
-   After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, use the following command:
+   After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, export the AAS_TLS_SAN variable (see the Installation section for details)
+
+   ```export AAS_TLS_SAN=<comma-separated list of IPs and hostnames for the AAS>```
+
+   Then use the following command:
 
    ```shell
-cms setup cms_auth_token --force
+   cms setup cms_auth_token --force
    ```
-
+   
    In addition, the SHA384 digest of the CMS TLS certificate will be needed for installation of the remaining Intel® SecL services. The digest can be obtained using the following command:
    
    ```shell
@@ -1503,7 +1507,7 @@ Linux 8.2
 -   One network interface with network access to any integration
     endpoints (for example, OpenStack Nova).
 
-### 3.15.7  Installing the Integration Hub
+### 3.15.7  Installation
 
 To install the Integration Hub, follow these steps:
 
@@ -1709,7 +1713,7 @@ JAF53vmU+1jE
 Use OpenSSL to display the PrivacyCA certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/PrivacyCA.pem
+openssl x509 -in /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
 ```
 
 Use the PrivacyCA certificate output in the following POST call to the
@@ -3217,7 +3221,7 @@ kubectl get crds
 
 
 
-#### 6.13.3.3	Configuring the Integration Hub for Use with Kubernetes
+#### 6.13.3.3	Installing the Integration Hub for Use with Kubernetes
 
 The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Master.  If the Hub has already been installed without an available tenant endpoint, the isntaller can simply b rerun with a modified ihub.env answer file containing the required tenant variables.
 
@@ -9462,14 +9466,14 @@ can be found on the Verification Service.
 Use OpenSSL to display the SAML certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/saml.crt.pem
+openssl x509 -in /etc/hvs/certs/trustedca/saml-cert.pem
 ```
 
 Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -9511,7 +9515,7 @@ Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -10861,15 +10865,37 @@ Asset Tag values.
 
 #### 6.13.3.1  Prerequisites
 
--   Verification Service must be installed and running.
+- Verification Service must be installed and running.
 
--   Kubernetes Master Node must be installed and running
+- Kubernetes Master Node must be installed and running
 
 -   The supported Kubernetes versions are from `1.14.8`-`1.17.3` and the
     integration is validated with `1.14.8` and `1.17.3`
 
 -   Kubernetes Worker Nodes must be configured as physical hosts and
     attached to the Master Node
+    
+-   The Kubernetes Master must have the following prerequisite binaries installed:
+    
+    -  http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    
+      ```
+      chmod 0755 cfssl_linux-amd64
+      
+      mv  cfssl_linux-amd64 /usr/local/bin/cfssl
+      ```
+    
+      
+    
+    -  http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    
+      ```
+      chmod 0755 cfssljson_linux-amd64
+      
+      mv  cfssljson_linux-amd64 /usr/local/bin/cfssljson
+      ```
+    
+      
 
 
 #### 6.13.3.2  Installing the Intel® SecL Custom Resource Definitions
