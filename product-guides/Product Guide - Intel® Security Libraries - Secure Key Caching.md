@@ -704,7 +704,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
 ​     SCS_BASE_URL= https://< SGX Caching Service IP or Hostname >:9000/scs/sgx/
 
-SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS matching the SAN list specified in the populate-users  script; may include wildcards* > 
+SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS* > 
 
 Execute the installer binary.
 
@@ -805,7 +805,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 
 ​       CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
 
-​       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS matching the SAN list specified in the populate-users script; may include wildcards* > 
+​       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
 
 
 3.  Execute the sqvs installer binary.
