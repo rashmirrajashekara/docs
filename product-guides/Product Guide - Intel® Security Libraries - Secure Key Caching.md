@@ -2400,7 +2400,7 @@ echo "IHUB Token $IHUB_TOKEN"
 
 The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
 
-## Creating AES and RSA Keys in Key Broker Service
+## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
