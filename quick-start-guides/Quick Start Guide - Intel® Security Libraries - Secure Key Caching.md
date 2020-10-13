@@ -52,7 +52,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 
 **Firewall Settings**
 
-***Sample***: Ensure that all the SKC service ports are opened up with firewall
+Ensure that all the SKC service ports are opened up with firewall
 
 
 ## **3. RHEL Package Requirements**
@@ -146,7 +146,7 @@ export PATH=$M2_HOME/bin:$PATH
         <activeProfile>artifacts</activeProfile>
     </activeProfiles>
 
-  If you are behind a proxy, enable proxy setting under maven `settings.xml`
+  If you are behind a proxy, enable proxy setting under maven `settings.xml` and set host and port accordingly
 
     <!-- proxies
     | This is a list of proxies which can be used on this machine to connect to the network.
@@ -154,7 +154,6 @@ export PATH=$M2_HOME/bin:$PATH
     | specification in this list marked as active will be used.
     |-->
     <proxies>
-        <!-- proxy
         | Specification for one proxy, to be used in connecting to the network.
         |
         <proxy>
@@ -167,7 +166,6 @@ export PATH=$M2_HOME/bin:$PATH
         <port>80</port>
         <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
         </proxy>
-        -->
     </proxies>
 
 
@@ -184,9 +182,9 @@ repo sync
 **Install, Enable and start the Docker daemon**
 
   ```shell
-  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
-  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm
-  dnf install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm
+  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
+  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm
+  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm
   systemctl enable docker
   systemctl start docker
   ```
@@ -197,7 +195,7 @@ repo sync
   mkdir -p /etc/systemd/system/docker.service.d
   touch /etc/systemd/system/docker.service.d/proxy.conf
   
-  #Add the below lines in proxy.conf
+  #Add the below lines in proxy.conf and set proxy server details if proxy is used
   [Service]
   Environment="HTTP_PROXY=<http_proxy>"
   Environment="HTTPS_PROXY=<https_proxy>"
@@ -629,7 +627,7 @@ GIT Configuration**
 
 ## Appendix
 
-## Creating AES and RSA Keys in Key Broker Service
+## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
