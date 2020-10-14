@@ -555,7 +555,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.1.0.bin
+   ./cms-v3.0.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -564,16 +564,12 @@ To install the Intel® SecL-DC Certificate Management Service:
 cms status
    ```
 
-   After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, export the AAS_TLS_SAN variable (see the Installation section for details)
-
-   ```export AAS_TLS_SAN=<comma-separated list of IPs and hostnames for the AAS>```
-
-   Then use the following command:
+   After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, use the following command:
 
    ```shell
-   cms setup cms_auth_token --force
+cms setup cms_auth_token --force
    ```
-   
+
    In addition, the SHA384 digest of the CMS TLS certificate will be needed for installation of the remaining Intel® SecL services. The digest can be obtained using the following command:
    
    ```shell
@@ -649,7 +645,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.1.0.bin
+./authservice-v3.0.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
@@ -824,7 +820,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.1.0.bin
+./hvs-v3.0.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -888,7 +884,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.1.0.bin
+  ./wls-v3.0.0.bin
   ```
   
   
@@ -1109,7 +1105,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.1.0.bin
+  ./trustagent-v3.0.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1177,7 +1173,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.1.0.bin
+  ./workload-agent-v3.0.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1507,7 +1503,7 @@ Linux 8.2
 -   One network interface with network access to any integration
     endpoints (for example, OpenStack Nova).
 
-### 3.15.7  Installation
+### 3.15.7  Installing the Integration Hub
 
 To install the Integration Hub, follow these steps:
 
@@ -1555,7 +1551,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.1.0.bin
+   ./ihub-v3.0.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -1713,7 +1709,7 @@ JAF53vmU+1jE
 Use OpenSSL to display the PrivacyCA certificate content:
 
 ```shell
-openssl x509 -in /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
+openssl x509 -in /opt/hvs/configuration/PrivacyCA.pem
 ```
 
 Use the PrivacyCA certificate output in the following POST call to the
@@ -1829,7 +1825,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.1.0.bin
+    ./wpm-v3.0.0.bin
     ```
 
 
@@ -2934,7 +2930,7 @@ The Integration Hub acts as the integration point between the Verification Servi
 
 For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Docker environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Docker environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
 
-Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Master).
+Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
 <img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\integration1.png" alt="image-20200621122250278" style="zoom:150%;" />
 
@@ -3058,7 +3054,7 @@ to run instances of controlled Images.
 ### 6.13.3  Integration with Kubernetes
 
 Through the use of Custom Resource Definitions for the Kubernetes
-Master, Intel® Security Libraries can make Kubernetes aware of Intel®
+Control Plane, Intel® Security Libraries can make Kubernetes aware of Intel®
 SecL security attributes and make them available for pod orchestration.
 In this way, a security-sensitive pod can be launched only on `Trusted`
 physical worker nodes, or on physical worker nodes that match specified
@@ -3070,7 +3066,7 @@ Asset Tag values.
 > (since this does not use the scheduler at all). Intel SecL-DC uses
 > existing Kubernetes interfaces and does not modify Kubernetes code,
 > using only the standard Custom Resource Definition mechanism to add
-> this functionality to the Kubernetes Master.  The datacenter owner or
+> this functionality to the Kubernetes Control Plane.  The datacenter owner or
 > Kubernetes administrator is responsible for the security of the
 > Kubernetes workload scheduling process in general, and Intel
 > recommends following published Kubernetes security best practices.
@@ -3079,13 +3075,13 @@ Asset Tag values.
 
 -   Verification Service must be installed and running.
 
--   Kubernetes Master Node must be installed and running
+-   Kubernetes Control Plane Node must be installed and running
 
 -   The supported Kubernetes versions are from `1.14.8`-`1.17.3` and the
     integration is validated with `1.14.8` and `1.17.3`
 
 -   Kubernetes Worker Nodes must be configured as physical hosts and
-    attached to the Master Node
+    attached to the Control Plane Node
 
 
 #### 6.13.3.2  Installing the Intel® SecL Custom Resource Definitions
@@ -3093,22 +3089,22 @@ Asset Tag values.
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
 Kubernetes. These CRDs allow Kubernetes administrators to configure pods
-to require specific security attributes so that the Kubernetes Master
+to require specific security attributes so that the Kubernetes Control Plane
 Node will schedule those pods only on Worker Nodes that match the
 specified attributes.
 
 Two CRDs are required for integration with Intel® SecL – an extension
-for the Master nodes, and a scheduler extension. A single installer will
+for the Control Plane nodes, and a scheduler extension. A single installer will
 deploy both of these CRDs. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
 To deploy the Kubernetes integration CRDs for Intel® SecL:
 
-1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Master
+1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.1.0.bin
+    ./isecl-k8s-extensions-v3.0.0.bin
     ```
     
 2.  Add a mount path to the
@@ -3151,7 +3147,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
 kubectl get pods -n isecl
     ```
     
-6. Create role bindings on the Kubernetes Master:
+6. Create role bindings on the Kubernetes Control Plane Node:
 
 ```
 kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
@@ -3161,7 +3157,7 @@ kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-cont
 
 
 
-7. Copy the Integration Hub public key to the Kubernetes Master:
+7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
 
 ```shell
 scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
@@ -3221,9 +3217,9 @@ kubectl get crds
 
 
 
-#### 6.13.3.3	Installing the Integration Hub for Use with Kubernetes
+#### 6.13.3.3	Configuring the Integration Hub for Use with Kubernetes
 
-The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Master.  If the Hub has already been installed without an available tenant endpoint, the isntaller can simply b rerun with a modified ihub.env answer file containing the required tenant variables.
+The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Control Plane.  If the Hub has already been installed without an available tenant endpoint, the isntaller can simply b rerun with a modified ihub.env answer file containing the required tenant variables.
 
 The ihub.env answer file requires two variables to be configured with information from teh Kubernetes environment before installation:  
 
@@ -3231,7 +3227,7 @@ The ihub.env answer file requires two variables to be configured with informatio
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
 ```
 
-This file can be copied from the Kuberetes Master, and can be found at the following path: 
+This file can be copied from the Kuberetes Control Plane Node, and can be found at the following path: 
 /etc/kubernetes/pki/apiserver.crt
 
 ```
@@ -8492,7 +8488,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.1.0.bin
+   ./cms-v3.0.0.bin
    ```
 
     When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -8581,7 +8577,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.1.0.bin
+./authservice-v3.0.0.bin
 ```
 
 > ***Note:*** *The `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.*
@@ -8755,7 +8751,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
  ```shell
-./hvs-v3.1.0.bin
+./hvs-v3.0.0.bin
  ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -8818,7 +8814,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.1.0.bin
+  ./wls-v3.0.0.bin
   ```
   
   
@@ -9025,7 +9021,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.1.0.bin
+  ./trustagent-v3.0.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -9092,7 +9088,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.1.0.bin
+  ./workload-agent-v3.0.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -9348,7 +9344,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.1.0.bin
+   ./ihub-v3.0.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -9466,14 +9462,14 @@ can be found on the Verification Service.
 Use OpenSSL to display the SAML certificate content:
 
 ```shell
-openssl x509 -in /etc/hvs/certs/trustedca/saml-cert.pem
+openssl x509 -in /opt/hvs/configuration/saml.crt.pem
 ```
 
 Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:443/v1/saml-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -9515,7 +9511,7 @@ Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:443/v1/tpm-identity-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -9625,7 +9621,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.1.0.bin
+    ./wpm-v3.0.0.bin
     ```
 
 
@@ -10723,7 +10719,7 @@ The Integration Hub acts as the integration point between the Verification Servi
 
 For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Docker environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Docker environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
 
-Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Master).
+Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
 <img src="images\integration1.png" alt="image-20200621122250278" style="zoom:150%;" />
 
@@ -10846,7 +10842,7 @@ to run instances of controlled Images.
 ### 6.13.3  Integration with Kubernetes
 
 Through the use of Custom Resource Definitions for the Kubernetes
-Master, Intel® Security Libraries can make Kubernetes aware of Intel®
+Control Plane, Intel® Security Libraries can make Kubernetes aware of Intel®
 SecL security attributes and make them available for pod orchestration.
 In this way, a security-sensitive pod can be launched only on `Trusted`
 physical worker nodes, or on physical worker nodes that match specified
@@ -10858,44 +10854,22 @@ Asset Tag values.
 > (since this does not use the scheduler at all). Intel SecL-DC uses
 > existing Kubernetes interfaces and does not modify Kubernetes code,
 > using only the standard Custom Resource Definition mechanism to add
-> this functionality to the Kubernetes Master.  The datacenter owner or
+> this functionality to the Kubernetes Control Plane.  The datacenter owner or
 > Kubernetes administrator is responsible for the security of the
 > Kubernetes workload scheduling process in general, and Intel
 > recommends following published Kubernetes security best practices.*
 
 #### 6.13.3.1  Prerequisites
 
-- Verification Service must be installed and running.
+-   Verification Service must be installed and running.
 
-- Kubernetes Master Node must be installed and running
+-   Kubernetes Control Plane Node must be installed and running
 
 -   The supported Kubernetes versions are from `1.14.8`-`1.17.3` and the
     integration is validated with `1.14.8` and `1.17.3`
 
 -   Kubernetes Worker Nodes must be configured as physical hosts and
-    attached to the Master Node
-    
--   The Kubernetes Master must have the following prerequisite binaries installed:
-    
-    -  http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
-    
-      ```
-      chmod 0755 cfssl_linux-amd64
-      
-      mv  cfssl_linux-amd64 /usr/local/bin/cfssl
-      ```
-    
-      
-    
-    -  http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
-    
-      ```
-      chmod 0755 cfssljson_linux-amd64
-      
-      mv  cfssljson_linux-amd64 /usr/local/bin/cfssljson
-      ```
-    
-      
+    attached to the Control Plane Node
 
 
 #### 6.13.3.2  Installing the Intel® SecL Custom Resource Definitions
@@ -10903,22 +10877,22 @@ Asset Tag values.
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
 Kubernetes. These CRDs allow Kubernetes administrators to configure pods
-to require specific security attributes so that the Kubernetes Master
+to require specific security attributes so that the Kubernetes Control Plane
 Node will schedule those pods only on Worker Nodes that match the
 specified attributes.
 
 Two CRDs are required for integration with Intel® SecL – an extension
-for the Master nodes, and a scheduler extension. A single installer will
+for the Control Plane nodes, and a scheduler extension. A single installer will
 deploy both of these CRDs. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
 To deploy the Kubernetes integration CRDs for Intel® SecL:
 
-1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Master
+1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.1.0.bin
+    ./isecl-k8s-extensions-v3.0.0.bin
     ```
     
 2.  Add a mount path to the
@@ -10961,7 +10935,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
 kubectl get pods -n isecl
     ```
     
-6. Create role bindings on the Kubernetes Master:
+6. Create role bindings on the Kubernetes Control Plane:
 
 ```
 kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:default:default
@@ -10969,7 +10943,7 @@ kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --
 kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-controller --user=system:serviceaccount:default:default
 ```
 
-7. Copy the Integration Hub public key to the Kubernetes Master:
+7. Copy the Integration Hub public key to the Kubernetes Control Plane:
 
 ```shell
 scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
@@ -15349,7 +15323,7 @@ without the –purge option):
 
 Uninstalling the Intel® SecL Custom Resource Definitions 
 
- To unisntall the Intel® SecL CRDs, run the following commands on the Kubernetes Master where the CRDs were installed:
+ To unisntall the Intel® SecL CRDs, run the following commands on the Kubernetes Control Plane where the CRDs were installed:
 
 ```
 kubectl delete deploy -n isecl --all
