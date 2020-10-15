@@ -437,17 +437,17 @@ The following is the inventory to be used and updated.
 <machine3_ip/hostname>
 
 [CSP:vars]
-isecl_role=CSP
+isecl_role=csp
 ansible_user=root
 ansible_password=<password>
 
 [Enterprise:vars]
-isecl_role=Enterprise
+isecl_role=enterprise
 ansible_user=root
 ansible_password=<password>
 
 [Node:vars]
-isecl_role=Node
+isecl_role=node
 ansible_user=root
 ansible_password=<password>
 ```
