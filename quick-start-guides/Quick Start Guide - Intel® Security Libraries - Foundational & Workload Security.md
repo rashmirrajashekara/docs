@@ -1,6 +1,40 @@
 # **Foundational & Workload Security Quick Start Guide**
 
-[[_TOC_]]
+Table of Contents
+-----------------
+
+   * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
+         * [Physical Server requirements](#physical-server-requirements)
+         * [OS Requirements](#os-requirements)
+         * [User Access](#user-access)
+      * [<strong>2. Deployment Model</strong>](#2-deployment-model)
+      * [<strong>3. System Tools and Utilities Installation</strong>](#3-system-tools-and-utilities-installation)
+         * [Install basic utilities for getting started](#install-basic-utilities-for-getting-started)
+         * [Create symlink for python3](#create-symlink-for-python3)
+         * [Install repo tool](#install-repo-tool)
+      * [<strong>4. Build Services and packages</strong>](#4-build-services-and-packages)
+         * [Pre-requisites](#pre-requisites)
+         * [Building](#building)
+            * [Foundational Security Usecase](#foundational-security-usecase)
+            * [Workload Security Usecase](#workload-security-usecase)
+      * [<strong>5. Deployment &amp; Usecase Workflow Tools Installation</strong>](#5-deployment--usecase-workflow-tools-installation)
+         * [Deployment Tools Installation](#deployment-tools-installation)
+         * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
+      * [<strong>6. Deployment</strong>](#6-deployment)
+         * [Download the Ansible Role](#download-the-ansible-role)
+         * [Update Ansible Inventory](#update-ansible-inventory)
+         * [Create and Run Playbook](#create-and-run-playbook)
+         * [Additional Examples &amp; Tips](#additional-examples--tips)
+         * [Usecase Setup Options](#usecase-setup-options)
+      * [<strong>7. Usecase Workflows with Postman API Collections</strong>](#7-usecase-workflows-with-postman-api-collections)
+         * [Use Case Collections](#use-case-collections)
+         * [Downloading API Collections](#downloading-api-collections)
+         * [Running API Collections](#running-api-collections)
+      * [<strong>Appendix</strong>](#appendix)
+         * [Running behind Proxy](#running-behind-proxy)
+         * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
+         * [Rebuilding Repos](#rebuilding-repos)
 
 ## **1. Hardware & OS Requirements**
 
@@ -16,7 +50,7 @@
 
 ### OS Requirements
 
-* RHEL 8.2 or later
+* `RHEL 8.2` OS
 * `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on the OS
 
 ### User Access
@@ -75,7 +109,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 * The repos can be built only as `root` user
 
-* RHEL 8.2 VM for building repos
+* RHEL 8.2 Machine for building repos
 
 * Enable the following RHEL repos:
 
@@ -331,11 +365,27 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 ### Deployment Tools Installation
 
-* Install Ansible on Build VM
+* Install Ansible on Build Machine
 
   ```shell
   pip3 install ansible==2.9.10
   ```
+
+* Install `epel-release` repository and install `sshpass` for ansible to connect to remote hosts using SSH
+
+  ```shell
+  dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  dnf install sshpass
+  ```
+
+* Create directory for ansible default configuration and hosts file
+
+  ```shell
+  mkdir -p /etc/ansible/
+  touch /etc/ansible/ansible.cfg
+  ```
+
+* Copy the default `ansible.cfg` contents from https://raw.githubusercontent.com/ansible/ansible/v2.9.10/examples/ansible.cfg and paste it under `/etc/ansible/ansible.cfg`
 
 
 ### Usecases Workflow Tools Installation
@@ -372,7 +422,9 @@ cd tools/ansible-role
 
 ### Update Ansible Inventory
 
-The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
+The following is the inventory to be used and updated. 
+
+> **Note:** Ansible requires `ssh` and `root` user access to remote machines.
 
 ```
 [CSP]
@@ -389,7 +441,7 @@ isecl_role=csp
 ansible_user=root
 ansible_password=<password>
 
-[Enterpise:vars]
+[Enterprise:vars]
 isecl_role=enterprise
 ansible_user=root
 ansible_password=<password>
@@ -399,7 +451,6 @@ isecl_role=node
 ansible_user=root
 ansible_password=<password>
 ```
-
 
 
 ### Create and Run Playbook
