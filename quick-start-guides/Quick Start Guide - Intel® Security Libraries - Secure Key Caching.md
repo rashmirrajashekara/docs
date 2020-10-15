@@ -231,11 +231,27 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 **Deployment Tools Installation**
 
-* Install Ansible on Build VM
+* Install Ansible on Build Machine
 
   ```shell
   pip3 install ansible==2.9.10
   ```
+
+* Install `epel-release` repository and install `sshpass` for ansible to connect to remote hosts using SSH
+
+  ```shell
+  dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+  dnf install sshpass
+  ```
+
+* Create directory for ansible default configuration and hosts file
+
+  ```shell
+  mkdir -p /etc/ansible/
+  touch /etc/ansible/ansible.cfg
+  ```
+
+* Copy the `ansible.cfg` contents from https://raw.githubusercontent.com/ansible/ansible/v2.9.10/examples/ansible.cfg and paste it under `/etc/ansible/ansible.cfg`
 
 
 ### Usecases Workflow Tools Installation
@@ -284,17 +300,17 @@ The following is the inventory to be used and updated. Ansible requires `ssh` an
 <machine3_ip/hostname>
 
 [CSP:vars]
-isecl_role=csp
+isecl_role=CSP
 ansible_user=root
 ansible_password=<password>
 
-[Enterpise:vars]
-isecl_role=enterprise
+[Enterprise:vars]
+isecl_role=Enterprise
 ansible_user=root
 ansible_password=<password>
 
 [Node:vars]
-isecl_role=node
+isecl_role=Node
 ansible_user=root
 ansible_password=<password>
 ```
