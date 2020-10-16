@@ -1716,7 +1716,7 @@ Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```
-POST https://<Key Broker IP address or hostname>:443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
 Content-Type: application/x-pem-file 
 -----BEGIN CERTIFICATE-----
 MIIHaDCCBdCgAwIBAgIGAW72eWZ9MA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMT
