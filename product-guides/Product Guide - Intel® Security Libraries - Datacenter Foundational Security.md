@@ -1619,7 +1619,7 @@ Enterprise Linux 8.2
 3.  Execute the KBS installer.
 
     ```shell
-    ./kms-6.0-SNAPSHOT.bin
+    ./kms-6.1-SNAPSHOT.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
