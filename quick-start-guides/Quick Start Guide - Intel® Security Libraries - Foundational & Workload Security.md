@@ -3,31 +3,28 @@
 Table of Contents
 -----------------
 
-   * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
-      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
+ * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
          * [Physical Server requirements](#physical-server-requirements)
          * [OS Requirements](#os-requirements)
          * [User Access](#user-access)
       * [<strong>2. Deployment Model</strong>](#2-deployment-model)
-      * [<strong>3. System Tools and Utilities Installation</strong>](#3-system-tools-and-utilities-installation)
-         * [Install basic utilities for getting started](#install-basic-utilities-for-getting-started)
-         * [Create symlink for python3](#create-symlink-for-python3)
-         * [Install repo tool](#install-repo-tool)
-      * [<strong>4. Build Services and packages</strong>](#4-build-services-and-packages)
+      * [<strong>3. Build Services and packages</strong>](#3-build-services-and-packages)
          * [Pre-requisites](#pre-requisites)
          * [Building](#building)
             * [Foundational Security Usecase](#foundational-security-usecase)
             * [Workload Security Usecase](#workload-security-usecase)
-      * [<strong>5. Deployment &amp; Usecase Workflow Tools Installation</strong>](#5-deployment--usecase-workflow-tools-installation)
-         * [Deployment Tools Installation](#deployment-tools-installation)
-         * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
-      * [<strong>6. Deployment</strong>](#6-deployment)
+               * [VM Confidentiality](#vm-confidentiality)
+               * [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
+               * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
+      * [<strong>4. Deployment</strong>](#4-deployment)
+         * [Pre-requisites](#pre-requisites-1)
          * [Download the Ansible Role](#download-the-ansible-role)
+         * [Usecase Setup Options](#usecase-setup-options)
          * [Update Ansible Inventory](#update-ansible-inventory)
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
-         * [Usecase Setup Options](#usecase-setup-options)
-      * [<strong>7. Usecase Workflows with Postman API Collections</strong>](#7-usecase-workflows-with-postman-api-collections)
+      * [<strong>5. Usecase Workflows with Postman API Collections</strong>](#5-usecase-workflows-with-postman-api-collections)
+         * [Pre-requisites](#pre-requisites-2)
          * [Use Case Collections](#use-case-collections)
          * [Downloading API Collections](#downloading-api-collections)
          * [Running API Collections](#running-api-collections)
@@ -52,12 +49,12 @@ Table of Contents
 
 * `RHEL 8.2` OS
 * `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on the OS
+* Date and time should be in sync across the machines
 
 ### User Access
 
-The services need to be built and installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
+The services need to be installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
 All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
-
 
 
 ## **2. Deployment Model**
@@ -71,37 +68,9 @@ All Intel® SecL-DC service & agent ports should be allowed in firewall rules.
 * CSP - Physical Server as per supported configurations
 
 * Enterprise - ISecL Services Machine
-
   
 
-## **3. System Tools and Utilities Installation**
-
-The below installation is required on the Build and Deployment VM only
-
-### Install basic utilities for getting started
-
-```shell
-dnf install git wget tar python3 yum-utils
-```
-
-### Create symlink for python3
-
-```shell
-ln -s /usr/bin/python3 /usr/bin/python
-ln -s /usr/bin/pip3 /usr/bin/pip
-```
-
-### Install repo tool
-
-```shell
-tmpdir=$(mktemp -d)
-git clone https://gerrit.googlesource.com/git-repo $tmpdir
-install -m 755 $tmpdir/repo /usr/local/bin
-rm -rf $tmpdir
-```
-
-
-## **4. Build Services and packages**
+## **3. Build Services and packages**
 
 The below steps needs to be carried out on the Build and Deployment VM
 
@@ -115,6 +84,28 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   * `rhel-8-for-x86_64-appstream-rpms`
   * `rhel-8-for-x86_64-baseos-rpms`
+
+* Install basic utilities for getting started
+
+  ```shell
+  dnf install git wget tar python3 yum-utils
+  ```
+
+* Create symlink for python3
+
+  ```shell
+  ln -s /usr/bin/python3 /usr/bin/python
+  ln -s /usr/bin/pip3 /usr/bin/pip
+  ```
+
+* Install repo tool
+
+  ```shell
+  tmpdir=$(mktemp -d)
+  git clone https://gerrit.googlesource.com/git-repo $tmpdir
+  install -m 755 $tmpdir/repo /usr/local/bin
+  rm -rf $tmpdir
+  ```
 
 * Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` 
   and set `GOROOT` & `PATH`
@@ -188,8 +179,6 @@ The below steps needs to be carried out on the Build and Deployment VM
     </proxies> 
     ```
   
-
-
 ### Building
 
 #### Foundational Security Usecase
@@ -197,7 +186,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Sync the repo
 
   ```shell
-  mkdir -p /root/isecl/fs && cd /root/isecl/fs
+  mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
   repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/fs.xml
   repo sync
   ```
@@ -213,27 +202,25 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build all repos
 
   ```shell
-  cd /root/isecl/fs/
+  cd /root/intel-secl/build/fs/
   make all
   ```
 
 * Built Binaries
 
   ```shell
-  /root/isecl/fs/binaries
+  /root/intel-secl/build/fs/binaries
   ```
-
-  
 
 #### Workload Security Usecase
 
-**VM Confidentiality**
+##### VM Confidentiality
 
 * Sync the repo
 
   ```shell
-  mkdir -p /root/isecl/vmc && cd /root/isecl/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/vmc.xml
+  mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -248,24 +235,22 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build repo
 
   ```shell
-  cd /root/isecl/vmc/
+  cd /root/intel-secl/build/vmc/
   make all
   ```
 
 * Built Binaries
   ```shell
-  /root/isecl/vmc/binaries/
+  /root/intel-secl/build/vmc/binaries/
   ```
 
-
-
-**Container Confidentiality with Docker Runtime**
+##### Container Confidentiality with Docker Runtime
 
 * Sync the repo
 
   ```shell
-  mkdir -p /root/isecl/cc-docker && cd /root/isecl/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-docker.xml
+  mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/cc-docker.xml
   repo sync
   ```
   
@@ -306,26 +291,23 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build repos
 
   ```shell
-  cd /root/isecl/cc-docker/
+  cd /root/intel-secl/build/cc-docker/
   make all 
   ```
   
 * Built binaries
 
   ```shell
-  /root/isecl/cc-docker/binaries/
+  /root/intel-secl/build/cc-docker/binaries/
   ```
-  
 
-
-
-**Container Confidentiality with CRIO Runtime**
+##### Container Confidentiality with CRIO Runtime
 
 * Sync the repo
 
   ```shell
-  mkdir -p /root/isecl/cc-crio && cd /root/isecl/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/cc-crio.xml
+  mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/cc-crio.xml
   repo sync
   ```
 
@@ -354,16 +336,15 @@ The below steps needs to be carried out on the Build and Deployment VM
   
 * Built binaries
   ```shell
-  /root/isecl/cc-crio/binaries/
+  /root/intel-secl/build/cc-crio/binaries/
   ```
 
+## **4. Deployment**
+
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/master/tools/ansible-role) repository.
 
 
-## **5. Deployment & Usecase Workflow Tools Installation**
-
-The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
-
-### Deployment Tools Installation
+### Pre-requisites
 
 * Install Ansible on Build Machine
 
@@ -388,18 +369,6 @@ The below installation is required on the Build & Deployment VM only and the Pla
 * Copy the default `ansible.cfg` contents from https://raw.githubusercontent.com/ansible/ansible/v2.9.10/examples/ansible.cfg and paste it under `/etc/ansible/ansible.cfg`
 
 
-### Usecases Workflow Tools Installation
-
-* Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
-
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections)
-
-
-
-## **6. Deployment**
-
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/master/tools/ansible-role) repository.
-
 ### Download the Ansible Role
 
 The role can be cloned locally from git and the contents can be copied to the roles folder used by your ansible server 
@@ -419,6 +388,21 @@ cd tools/ansible-role
 #Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/utils/tools/)
 ```
 
+### Usecase Setup Options
+
+| Usecase                                                      | Variable                                                     |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Host Attestation                                             | `setup: host-attestation` in playbook or via `--extra-vars` as `setup=host-attestation` in CLI |
+| Application Integrity                                        | `setup: application-integrity` in playbook or via `--extra-vars` as `setup=application-integrity` in CLI |
+| Data Fencing & Asset Tags                                    | `setup: data-fencing` in playbook or via `--extra-vars` as `setup=data-fencing` in CLI |
+| Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
+| Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
+| Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
+| Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-crio`in CLI |
+
+> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
+>
+> **Note:** `Key Broker Service` is not configured with KMIP compliant KMS when installing through ansible role  
 
 ### Update Ansible Inventory
 
@@ -451,7 +435,6 @@ isecl_role=node
 ansible_user=root
 ansible_password=<password>
 ```
-
 
 ### Create and Run Playbook
 
@@ -505,8 +488,6 @@ and
 ```shell
 ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
 ```
-
-
 
 ### Additional Examples & Tips
 
@@ -565,28 +546,15 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 * If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
-
-### Usecase Setup Options
-
-| Usecase                                                      | Variable                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Host Attestation                                             | `setup: host-attestation` in playbook or via `--extra-vars` as `setup=host-attestation` in CLI |
-| Application Integrity                                        | `setup: application-integrity` in playbook or via `--extra-vars` as `setup=application-integrity` in CLI |
-| Data Fencing & Asset Tags                                    | `setup: data-fencing` in playbook or via `--extra-vars` as `setup=data-fencing` in CLI |
-| Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
-| Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
-| Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
-| Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-crio`in CLI |
-
-> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
->
-> **Note:** `Key Broker Service` is not configured with KMIP compliant KMS when installing through ansible role  
-
-
-
-## **7. Usecase Workflows with Postman API Collections**
+## **5. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
+
+### Pre-requisites
+
+* Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
+
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections)
 
 ### Use Case Collections
 
@@ -599,8 +567,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Launch Time Protection | VM Confidentiality                            | ❌                  |
 |                        | Container Confidentiality with Docker Runtime | ✔️                  |
 |                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
-
-
 
 ### Downloading API Collections
 
@@ -624,8 +590,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 > **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
 
-
-
 ### Running API Collections
 
 * Import the collection into Postman API Client
@@ -645,9 +609,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 * Run the workflow
 
   ![running-collection](./images/running_collection.gif)
-
-
-
 
 
 ## **Appendix**
@@ -685,6 +646,169 @@ rm -rf ~/go/pkg/mod/*
 cd /root/isec/fs
 rm -rf * .repo
 ```
+
+### Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)
+
+Intel® SecL uses Custom Resource Definitions to add the ability to base
+orchestration decisions on Intel® SecL security attributes to
+Kubernetes. These CRDs allow Kubernetes administrators to configure pods
+to require specific security attributes so that the Kubernetes Control Plane
+Node will schedule those pods only on Worker Nodes that match the
+specified attributes.
+
+Two CRDs are required for integration with Intel® SecL – an extension
+for the Control Plane nodes, and a scheduler extension. A single installer will
+deploy both of these CRDs. The extensions are deployed as a Kubernetes
+deployment in the `isecl` namespace.
+
+To deploy the Kubernetes integration CRDs for Intel® SecL:
+
+1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node
+    and execute the installer
+    
+    ```shell
+    ./isecl-k8s-extensions-v3.0.0.bin
+    ```
+    
+2.  Add a mount path to the
+    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
+    SecL scheduler extension:
+
+    ```yaml
+    - mountPath: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+      name: extendedsched
+      readOnly: true
+    ```
+
+3.  Add a volume path to the
+    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
+    SecL scheduler extension:
+
+    ```yaml
+    - hostPath:
+        path: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+        type: ""
+      name: extendedsched
+    ```
+
+4.  Add `policy-config-file` path in the
+    `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
+
+    ```yaml
+    - command:
+      - kube-scheduler
+      - --policy-config-file=/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/scheduler-policy.json
+      - --bind-address=127.0.0.1
+      - --kubeconfig=/etc/kubernetes/scheduler.conf
+      - --leader-elect=true
+    ```
+
+5.  Wait for the isecl-controller and isecl-scheduler pods to be into
+    running state
+
+    ```shell
+kubectl get pods -n isecl
+    ```
+    
+6. Create role bindings on the Kubernetes Control Plane Node:
+
+```
+kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+
+kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-controller --user=system:serviceaccount:isecl:isecl
+```
+
+
+
+7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
+
+```shell
+scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+```
+
+8. Run the command `systemctl restart kubelet` to restart all the control
+   plane container services, including the base scheduler.
+
+The scheduler yaml is present under
+`/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
+
+9. If the Controller and/or Scheduler deployments are deleted, the
+   following steps need to be performed:
+
+a. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
+remove/comment the following content and restart kubelet
+
+​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
+
+​	`systemctl restart kubelet`
+
+b. Redeploy scheduler and controller
+
+```
+kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
+kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml
+```
+
+c. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
+add/uncomment the following content and restart kubelet
+
+​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
+
+​	`systemctl restart kubelet`
+
+d. Logs will be appended to older logs in
+/var/log/isecl-k8s-extensions
+
+10. Whenever the CRD's are deleted and restarted for updates, the CRD's
+    using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
+    Kubernetes Version 1.14-1.15 uses crd-1.14.yaml and 1.16-1.17 uses
+    crd-1.17.yaml
+
+```shell
+kubectl delete hostattributes.crd.isecl.intel.com
+kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
+```
+
+11. (Optional) Verify that the Intel ® SecL Custom Resource Definitions
+    have been started:
+
+To verify the Intel SecL CRDs have been deployed:
+
+```shell
+kubectl get crds
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

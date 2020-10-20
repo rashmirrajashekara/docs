@@ -1619,7 +1619,7 @@ Enterprise Linux 8.2
 3.  Execute the KBS installer.
 
     ```shell
-    ./kms-6.0-SNAPSHOT.bin
+    ./kms-6.1-SNAPSHOT.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -1676,7 +1676,7 @@ Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```
-POST https://<Key Broker IP address or hostname>:443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
 Content-Type: application/x-pem-file 
 -----BEGIN CERTIFICATE-----
 MIID9TCCAl2gAwIBAgIBCTANBgkqhkiG9w0BAQwFADBQMQswCQYDVQQGEwJVUzEL
@@ -7181,7 +7181,7 @@ Contains scripts and executable binaries.
 
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:443/v1/   | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
+| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
 | AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas     | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
@@ -9469,7 +9469,7 @@ Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -9511,7 +9511,7 @@ Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -14732,7 +14732,7 @@ Contains scripts and executable binaries.
 
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:443/v1/   | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
+| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
 | KMS\_TLS\_SHA384               |                                                         | Required. SHA384 hash of the Key Broker TLS certificate      |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
