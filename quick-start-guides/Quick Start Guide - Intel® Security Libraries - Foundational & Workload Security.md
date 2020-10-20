@@ -660,7 +660,7 @@ cd /root/isec/fs
 rm -rf * .repo
 ```
 
-### Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)
+### Installing the Intel® SecL isecl-k8s-extensions
 
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
