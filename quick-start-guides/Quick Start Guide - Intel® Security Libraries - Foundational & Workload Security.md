@@ -2,13 +2,14 @@
 
 Table of Contents
 -----------------
-
-   * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
+   
+   * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
          * [Physical Server requirements](#physical-server-requirements)
          * [OS Requirements](#os-requirements)
          * [User Access](#user-access)
-   * [<strong>2. Deployment Model</strong>](#2-deployment-model)
-   * [<strong>3. Build Services and packages</strong>](#3-build-services-and-packages)
+      * [<strong>2. Deployment Model</strong>](#2-deployment-model)
+      * [<strong>3. Build Services and packages</strong>](#3-build-services-and-packages)
          * [Pre-requisites](#pre-requisites)
          * [Building](#building)
             * [Foundational Security Usecase](#foundational-security-usecase)
@@ -16,7 +17,7 @@ Table of Contents
                * [VM Confidentiality](#vm-confidentiality)
                * [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
                * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
-   * [<strong>4. Deployment</strong>](#4-deployment)
+      * [<strong>4. Deployment</strong>](#4-deployment)
          * [Pre-requisites](#pre-requisites-1)
             * [Installing Ansible](#installing-ansible)
          * [Download the Ansible Role](#download-the-ansible-role)
@@ -24,16 +25,17 @@ Table of Contents
          * [Update Ansible Inventory](#update-ansible-inventory)
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
-   * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
+      * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-2)
          * [Use Case Collections](#use-case-collections)
          * [Downloading API Collections](#downloading-api-collections)
          * [Running API Collections](#running-api-collections)
-   * [<strong>Appendix</strong>](#appendix)
+      * [<strong>Appendix</strong>](#appendix)
          * [Running behind Proxy](#running-behind-proxy)
          * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
          * [Rebuilding Repos](#rebuilding-repos)
          * [Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)](#installing-the-intel-secl-custom-resource-definitionsisecl-k8s-extensions)
+
 
 
 ## **1. Hardware & OS Requirements**
