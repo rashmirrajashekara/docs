@@ -2,8 +2,9 @@
 
 Table of Contents
 -----------------
-
- * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
+   
+   * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
          * [Physical Server requirements](#physical-server-requirements)
          * [OS Requirements](#os-requirements)
          * [User Access](#user-access)
@@ -18,12 +19,13 @@ Table of Contents
                * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
       * [<strong>4. Deployment</strong>](#4-deployment)
          * [Pre-requisites](#pre-requisites-1)
+            * [Installing Ansible](#installing-ansible)
          * [Download the Ansible Role](#download-the-ansible-role)
          * [Usecase Setup Options](#usecase-setup-options)
          * [Update Ansible Inventory](#update-ansible-inventory)
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
-      * [<strong>5. Usecase Workflows with Postman API Collections</strong>](#5-usecase-workflows-with-postman-api-collections)
+      * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-2)
          * [Use Case Collections](#use-case-collections)
          * [Downloading API Collections](#downloading-api-collections)
@@ -32,6 +34,9 @@ Table of Contents
          * [Running behind Proxy](#running-behind-proxy)
          * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
          * [Rebuilding Repos](#rebuilding-repos)
+         * [Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)](#installing-the-intel-secl-custom-resource-definitionsisecl-k8s-extensions)
+
+
 
 ## **1. Hardware & OS Requirements**
 
@@ -48,13 +53,16 @@ Table of Contents
 ### OS Requirements
 
 * `RHEL 8.2` OS
-* `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on the OS
+* `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on build machine and remote machines
 * Date and time should be in sync across the machines
+
 
 ### User Access
 
-The services need to be installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
-All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
+* The services need to be built & installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
+  > **Note:** When using Ansible role for deployment, Ansible needs to be able to talk to remote machines as root user for successful deployment
+
+* All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
 
 
 ## **2. Deployment Model**
@@ -346,6 +354,11 @@ The below details would enable the deployment through Ansible Role for Intel® S
 
 ### Pre-requisites
 
+* The Ansible Server is required to use this role to deploy Intel® SecL-DC services based on the supported deployment model. The Ansible server is recommended to be installed on the Build machine itself. 
+* The role has been tested with Ansible Version `2.9.10`
+
+#### Installing Ansible
+
 * Install Ansible on Build Machine
 
   ```shell
@@ -546,7 +559,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 * If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
-## **5. Usecase Workflows with Postman API Collections**
+## **5. Usecase Workflows API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/master/tools/api-collections) repository
 
@@ -647,7 +660,7 @@ cd /root/isec/fs
 rm -rf * .repo
 ```
 
-### Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)
+### Installing the Intel® SecL isecl-k8s-extensions
 
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
