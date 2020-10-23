@@ -52,7 +52,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX
 
 **Firewall Settings**
 
-Ensure that all the SKC service ports are opened up with firewall
+Ensure that all the SKC service ports are accessible with firewall
 
 
 ## **3. RHEL Package Requirements**
@@ -83,10 +83,15 @@ Access required for the following packages in all systems
 **System Tools and utils**
 
 ```
-dnf install git wget tar python3 make yum-utils
+dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
 dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
+
+Install latest libkmip for KBS
+git clone https://github.com/openkmip/libkmip.git
+cd libkmip
+make && make install
 
 ```
 
@@ -110,64 +115,6 @@ export PATH=$GOROOT/bin:$PATH
 rm -rf go1.14.1.linux-amd64.tar.gz
 ```
 
-***Maven Installation***
-
-```
-wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-tar -xvf apache-maven-3.6.3-bin.tar.gz
-mv apache-maven-3.6.3/ /usr/local/
-rm -rf apache-maven-3.6.3-bin.tar.gz
-export M2_HOME=/usr/local/apache-maven-3.6.3/
-export PATH=$M2_HOME/bin:$PATH
-```
-
-  Add the below profile element under the `<profiles>` section of `settings.xml` located under `<path_to_maven>/conf/` folder
-
-    <profile>
-        <id>artifacts</id>
-        <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Repository</name>
-            <url>http://repository.mulesoft.org/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <snapshots><enabled>false</enabled></snapshots>
-            <url>http://central.maven.org/maven2</url>
-        </repository>
-        </repositories>
-    </profile>
-
-  Enable `<activeProfiles>` to include the above profile.
-
-    <activeProfiles>
-        <activeProfile>artifacts</activeProfile>
-    </activeProfiles>
-
-  If you are behind a proxy, enable proxy setting under maven `settings.xml` and set host and port accordingly
-
-    <!-- proxies
-    | This is a list of proxies which can be used on this machine to connect to the network.
-    | Unless otherwise specified (by system property or command-line switch), the first proxy
-    | specification in this list marked as active will be used.
-    |-->
-    <proxies>
-        | Specification for one proxy, to be used in connecting to the network.
-        |
-        <proxy>
-        <id>optional</id>
-        <active>true</active>
-        <protocol>http</protocol>
-        <username>proxyuser</username>
-        <password>proxypass</password>
-        <host>proxy.host.net</host>
-        <port>80</port>
-        <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
-        </proxy>
-    </proxies>
-
 
 ## **6. Build Services, Libraries and Install packages**
 
@@ -175,7 +122,7 @@ export PATH=$M2_HOME/bin:$PATH
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.2/develop -m manifest/skc.xml
 repo sync
 ```
 
@@ -211,9 +158,6 @@ repo sync
 **Building All SKC Components**
 ```
 make
-
-This script installs the following packages
-    wget gcc gcc-c++ ant git zip java-1.8.0 make makeself
 
 ```
 
@@ -647,9 +591,11 @@ GIT Configuration**
 
 **Configuration Update to create Keys in KBS**
 
-​	cd into /root/workspace/utils/build/skc-tools/kbs_script folder
+​	cd into /root/binaries/kbs_script folder
 
 ​	Update KBS and AAS IP addresses in run.sh
+
+​	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
 
 **Create RSA Key**
 
