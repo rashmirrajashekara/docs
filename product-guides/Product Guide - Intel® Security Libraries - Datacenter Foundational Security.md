@@ -4,7 +4,7 @@
 ## Product Guide
 ### August 2020
 
-### Revision 3.1
+### Revision 3.2
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -555,7 +555,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.0.0.bin
+   ./cms-v3.2.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -645,7 +645,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.0.0.bin
+./authservice-v3.2.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
@@ -797,12 +797,12 @@ To install the Verification Service, follow these steps:
    ```shell
    # Authentication URL and service account credentials 
    AAS_API_URL=https://isecl-aas:8444/aas
-   HVS_SERVICE_USERNAME=HVS_service
-   HVS_SERVICE_PASSWORD=password
+   HVS_SERVICE_USERNAME=<username>
+   HVS_SERVICE_PASSWORD=<password>
    
    # CMS URL and CMS webserivce TLS hash for server verification 
    CMS_BASE_URL=https://isecl-cms:8445/cms/v1
-   CMS_TLS_CERT_SHA384=digest
+   CMS_TLS_CERT_SHA384=<digest>
    
    # TLS Configuration
    SAN_LIST=127.0.0.1,192.168.1.1,hvs.server.com #comma-separated list of IP addresses and hostnames for the HVS to be used in the Subject Alternative Names list in the TLS Certificate
@@ -811,16 +811,16 @@ To install the Verification Service, follow these steps:
    BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
    
    # Database 
-   HVS_DB_NAME=mw_as
-   HVS_DB_USERNAME=runner
-   HVS_DB_PASSWORD=test
+   HVS_DB_NAME=<database name>
+   HVS_DB_USERNAME=<database username>
+   HVS_DB_PASSWORD=<database password>
    HVS_DB_SSLCERTSRC=/tmp/dbcert.pem  # Not required if VS_DB_SSLCERT is given
    ```
 
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.0.0.bin
+./hvs-v3.2.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -884,7 +884,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.0.0.bin
+  ./wls-v3.2.0.bin
   ```
   
   
@@ -1105,7 +1105,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.0.0.bin
+  ./trustagent-v3.2.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1173,7 +1173,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.0.0.bin
+  ./workload-agent-v3.2.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1188,134 +1188,7 @@ The following must be completed before installing the Workload Agent:
 
   
 
-3.11  Installing the Trust Agent for Windows
---------------------------------------
 
-### 3.11.1  Required For
-
-The Trust Agent for Windows is REQUIRED for the following use cases:
-
--   Platform Integrity with Data Sovereignty and Signed Flavors
-
-Other use cases are currently not supported for Windows.
-
-### 3.11.2  Supported Operating Systems
-
-The Trust Agent for Windows supports Windows Server 2016 Datacenter.
-
-### 3.11.3  Prerequisites
-
-The following must be completed before installing the Trust Agent:
-
--   Supported server hardware including an Intel® Xeon processor.
-
--   Trusted Platform Module (version 1.2 or 2.0) installed and activated
-    in the system BIOS, with cleared ownership status.
-
--   coreinfo
-    (<https://docs.microsoft.com/en-us/sysinternals/downloads/coreinfo>)
-    must be installed
-
--   (Provisioning step only) Intel® SecL Verification Service server
-    installed and active.
-
--   The Authentication and Authorization Service must be installed and
-    available
-
--   The Certificate Management Service must be installed and available
-
-#### 3.11.3.1  TPM Ownership
-
-The Intel® SecL-DC Trust Agent for Windows requires the TPM ownership
-secret to be stored in the local system registry. To confirm that the
-secret is populated in the registry:
-
-1. Open a Command Prompt as Administrator
-
-2. Run the following command:
-
-   `REG QUERY hklm\\system\\controlset001\\services\\tpm\\wmi\\admin`
-
-3. If the output contains the `OwnerAuthFull` key and a corresponding
-   value, the ownership secret is present in the registry and no
-   further action is needed.
-
-If the output does not contain the secret, system must be configured
-to store the secret in the registry. 
-
-
-
-To configure GPO to store the ownership secret in the local registry:
-
-1.  Open a Command Prompt as an Administrator
-
-2.  Run `gpedit.msc`
-
-3.  In the GP Editor, browse to Computer Configuration\\Administrative
-    Templates\\System\\Trusted Platform Module Services\\
-
-4.  Set the Operating System Managed TPM Authentication Level to “Full”
-
-5.  Clear the TPM ownership and reboot
-
-
-
-To clear TPM ownership from within Windows:
-
-1.  Open a Command Prompt as Administrator
-
-2.  Run `tpm.msc`
-
-3.  From the TPM Management Console that appears, click “Clear TPM”
-
-4.  After the process is complete, reboot
-
-### 3.11.4  Installation
-
-Installation of the Trust Agent is split into two major steps:
-Installation, which covers the creation of system files and folders, and
-Provisioning, which involves the creation of keys and secrets and links
-the Trust Agent to a specific Verification Service. Both operations can
-be performed at the same time using an installation answer file. Without
-the answer file, the Trust Agent can be installed and left in an
-un-provisioned state regardless of whether a Verification Service is up
-and running, until such time as the datacenter administrator is ready to
-run the provisioning step and link the Trust Agent to a Verification
-Service.
-
-To install the Trust Agent for Windows:
-
-1.  (Optional; required to perform Provisioning and Installation at the
-    same time.) Create the trustagent.ini answer file in the C:\\Temp
-    directory (for full configuration options, see section 9.2). The
-    minimum configuration options for installation are provided below.
-
-```ini
-[TRUST_AGENT]
-HVS_API_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
-REGISTER_TPM_PASSWORD=y
-TRUSTAGENT_LOGIN_REGISTER=true
-PROVISION_ATTESTATION=y
-CURRENT_IP=<Trust Agent IP address>
-CMS_TLS_CERT_SHA384=<CMS TLS digest>
-BEARER_TOKEN=<Installation token from populate-users script>
-AAS_API_URL=https://<AAS IP or Hostname>:8444/aas
-CMS_BASE_URL=https://<CMS IP or Hostname>:8445/cms/v1
-TA_TLS_CERT_IP=<comma-separated list of IP addresses for the Trust Agent>
-TA_TLS_CERT_DNS=<comma-separated list of hostnames for the Trust Agent>
-```
-2. Copy the Trust Agent installer executable to the `C:\\Temp` directory.
-
-3. Execute the Trust Agent installer and wait for the installation to
-   complete.
-
-If the `trustagent.ini` answer file was provided with the minimum required
-options, the Trust Agent will be installed and also Provisioned to the
-Verification Service specified in the answer file.
-
-If no answer file was provided, the Trust Agent will be installed, but
-will not be Provisioned. TPM-related functionality will not be available
-from the Trust Agent until the Provisioning step is completed.
 
 
 
@@ -1551,7 +1424,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.0.0.bin
+   ./ihub-v3.2.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -1619,14 +1492,14 @@ Enterprise Linux 8.2
 3.  Execute the KBS installer.
 
     ```shell
-    ./kms-6.1-SNAPSHOT.bin
+    ./kbs-6.2-SNAPSHOT.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
 
 The Key Broker immediately after installation will be configured to use
 a filesystem key management solution. This should be used only for
-testing and POC purposes; using a secure 3^rd^-party Key management
+testing and POC purposes; using a secure 3rd-party Key management
 Server should be used for production deployments. To configure the Key
 Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
