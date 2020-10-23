@@ -3092,9 +3092,9 @@ kubectl get crds
 
 #### 6.13.3.3	Configuring the Integration Hub for Use with Kubernetes
 
-The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Control Plane.  If the Hub has already been installed without an available tenant endpoint, the isntaller can simply b rerun with a modified ihub.env answer file containing the required tenant variables.
+The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Control Plane.  If the Hub has already been installed without an available tenant endpoint, the installer can simply be rerun with a modified ihub.env answer file containing the required tenant variables.
 
-The ihub.env answer file requires two variables to be configured with information from teh Kubernetes environment before installation:  
+The ihub.env answer file requires two variables to be configured with information from the Kubernetes environment before installation:  
 
 ```
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
@@ -3107,7 +3107,7 @@ This file can be copied from the Kuberetes Control Plane Node, and can be found 
 KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 ```
 
-This token can be retrieved from Kuberneted using the following command:
+This token can be retrieved from Kubernetes using the following command:
 
 ```
 kubectl get secrets -n isecl -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode
