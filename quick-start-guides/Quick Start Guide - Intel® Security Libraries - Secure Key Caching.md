@@ -91,7 +91,7 @@ ln -s /usr/bin/pip3 /usr/bin/pip
 Install latest libkmip for KBS
 git clone https://github.com/openkmip/libkmip.git
 cd libkmip
-make && make install
+make install
 
 ```
 
@@ -107,12 +107,12 @@ rm -rf $tmpdir
 ***Golang Installation***
 
 ```
-wget https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
-tar -xzf go1.14.1.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz
+tar -xzf go1.14.2.linux-amd64.tar.gz
 sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.1.linux-amd64.tar.gz
+rm -rf go1.14.2.linux-amd64.tar.gz
 ```
 
 
@@ -543,9 +543,11 @@ Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to 
 
 ./agent_untar.sh
 
-Edit agent.conf Update the IP address for CMS/AAS/SHVS services deployed on CSP VM
+Edit agent.conf to update the IP address for CMS/AAS/SHVS services deployed on CSP VM
 
 Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deployed)
+
+For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
 
 ./deploy_sgx_agent.sh
 
@@ -558,6 +560,8 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 ./skclib_untar.sh
 
 Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
+
+Also update CSP_CMS_IP to point to the IP of CMS service deployed on CSP VM
 
 Also update the IP Address for SGX Caching Service deployed in CSP VM
 
