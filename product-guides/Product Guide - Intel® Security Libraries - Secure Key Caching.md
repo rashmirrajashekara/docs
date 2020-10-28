@@ -237,7 +237,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.2/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -401,7 +401,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.1.0.bin
+./cms-v3.2.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -499,17 +499,15 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.1.0.bin
+./authservice-v3.2.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
 ### Creating Users
 
-After installation is complete, several roles and user accounts must be generated.  Most of these accounts will be service users, used by the various Intel® SecL SKC services to work together.
+Before deployment is initiated, user account and roles must be generated for each component.  Most of these accounts will be service users, used by the various Intel® SecL SKC services to work together.
 
-Creating these required users and roles is facilitated by the scripts in the corresponding components and needs to be executed before installation of each component.
-
-Note: Update variable IPADDR and aas-hostname inside below scripts with the SAN_LIST and AAS IP given in env file. Also install package "jq" before running these scripts.
+Creating these required users and roles is facilitated by the scripts in the corresponding components (Refer to dist/linux directory of each component) and needs to be executed before installation of each component.
 
 SCS: scs_aas_curl.sh
 
@@ -518,6 +516,8 @@ SHVS: shvs_aas_curl.sh
 SGX-AGENT: sgx_agent_aas.sh
 
 SQVS: sqvs_aas_curl.sh
+
+for Key Broker Service and Integration Hub User and Roles creation, Please refer to the appendix section for a sample script
 
 The output of these scripts is a bearer-token which needs to be updated in the BEARER_TOKEN env variable in the corresponding component’s env file.
 
@@ -616,9 +616,15 @@ copy install_pgscsdb.sh to /root/ directory
 
 ​           BEARER_TOKEN=< Installation token from AAS > 
 
+Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
+
+./scs_aas_curl.sh
+
+Update the BEARER_TOKEN value in the scs.env file
+
 Execute the SCS installer binary:
 
-./scs-v3.1.0.bin
+./scs-v3.2.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -706,9 +712,16 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
 SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS* > 
 
+
+Execute scs_aas_curl.sh script to create SGX Host Verification Service user account and roles
+
+./shvs_aas_curl.sh
+
+Update the BEARER_TOKEN value in the shvs.env file
+
 Execute the installer binary.
 
-./shvs-v3.1.0.bin
+./shvs-v3.2.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -808,9 +821,15 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 ​       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
 
 
+Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
+
+./sqvs_aas_curl.sh
+
+Update the BEARER_TOKEN value in the sqvs.env file
+
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.1.0.bin
+sqvs-v3.2.0.bin
 
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
@@ -945,9 +964,13 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
+Refer to the sample script in appendix section to create Integration user account and roles
+
+Update the BEARER_TOKEN value in the ihub.env file
+
 3.  Execute the installer binary.
 
-./ihub-v3.1.0.bin
+./ihub-v3.2.0.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
@@ -2322,33 +2345,41 @@ dnf install -y jq
 
 AAS_IP=<Provide AAS IP Here>
 
-TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin", "password": "password" }'`
+KBS_SERVICE_USERNAME=admin@kms
+
+KBS_SERVICE_PASSWORD=kmsAdminPass
+
+KBS_IP=<Provide KBS IP Here>
+
+KBS_HOSTNAME=<Provide KBS Hostname Here>
+
+TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
 
 #Create KBS User
 
-KMS_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "kmsuser@kms","password": "kmspassword"}'`
+KBS_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$KBS_SERVICE_USERNAME","password": "$KBS_SERVICE_PASSWORD"}'`
 
-KMS_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=kmsuser@kms -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+KBS_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=$KBS_SERVICE_USERNAME -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
 
 #Create KMS Certificate Approver Role
 
-KMS_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=KMS TLS Certificate;SAN='$KMS_IP','$KMS_HOSTNAME';certType=TLS"}' | jq -r ".role_id"`
+KBS_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=KBS TLS Certificate;SAN='$KBS_IP','$KBS_HOSTNAME';certType=TLS"}' | jq -r ".role_id"`
 
-KMS_ROLE_ID2=`curl --noproxy "*" -k -X GET https://$AAS_IP:8444/aas/roles?name=Administrator -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].role_id'`
+KBS_ROLE_ID2=`curl --noproxy "*" -k -X GET https://$AAS_IP:8444/aas/roles?name=Administrator -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].role_id'`
 
 #Create SQVS Quote Verifier Role
 
-KMS_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SQVS","name": "QuoteVerifier","context": ""}' | jq -r ".role_id"`
+KBS_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SQVS","name": "QuoteVerifier","context": ""}' | jq -r ".role_id"`
 
 if [ $? -eq 0 ]; then
 
-  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$KMS_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$KMS_ROLE_ID1"'", "'"$KMS_ROLE_ID2"'", "'"$KMS_ROLE_ID3"'"]}'
+  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$KMS_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$KBS_ROLE_ID1"'", "'"$KBS_ROLE_ID2"'", "'"$KBS_ROLE_ID3"'"]}'
 
 fi
 
-KMS_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "kmsuser@kms","password": "kmspassword"}'`
+KBS_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$KBS_SERVICE_USERNAME","password": "$KBS_SERVICE_PASSWORD"}'`
 
-echo "KMS Token $KMS_TOKEN"
+echo "KMS Token $KBS_TOKEN"
 
 ```
 
@@ -2366,13 +2397,19 @@ dnf install -y jq
 
 AAS_IP=<Provide AAS IP Here>
 
-TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin", "password": "password" }'`
+IHUB_IP=<Provide AAS IP Here>
+
+IHUB_SERVICE_USERNAME=admin@hub
+
+IHUB_SERVICE_PASSWORD=hubAdminPass
+
+TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
 
 #Create IHUB User
 
-IHUB_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "ihubuser@ihub","password": "ihubpassword"}'`
+IHUB_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$IHUB_SERVICE_USERNAME","password": "$IHUB_SERVICE_PASSWORD"}'`
 
-IHUB_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=ihubuser@ihub -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+IHUB_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=$IHUB_SERVICE_USERNAME -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
 
 #Create CMS Certificate Approver Role
 
@@ -2392,7 +2429,7 @@ if [ $? -eq 0 ]; then
 
 fi
 
-IHUB_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "ihubuser@ihub","password": "ihubpassword"}'`
+IHUB_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$IHUB_SERVICE_USERNAME","password": "$IHUB_SERVICE_PASSWORD"}'`
 
 echo "IHUB Token $IHUB_TOKEN"
 
@@ -2400,13 +2437,14 @@ echo "IHUB Token $IHUB_TOKEN"
 
 The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
 
+
 ## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
 On the Enterprise VM, where Key broker service is running
 
-​	cd utils/build/skc-tools/kbs_script
+​	cd /root/binaries/kbs_script
 
 ​	Update KBS and AAS IP addresses in run.sh
 
