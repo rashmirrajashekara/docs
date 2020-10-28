@@ -122,7 +122,7 @@ rm -rf go1.14.2.linux-amd64.tar.gz
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.2/develop -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.2/develop-gitlab -m manifest/skc.xml
 repo sync
 ```
 
