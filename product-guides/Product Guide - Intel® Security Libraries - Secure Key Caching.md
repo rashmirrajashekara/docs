@@ -2340,46 +2340,170 @@ Sample Shell script to create KBS user, KBS Roles and mapping KBS user to KBS ro
 
 ```
 #!/bin/bash
+echo "Setting up Key Broker Service Related roles and user in AAS Database"
 
-dnf install -y jq
+source ~/kbs.env 2> /dev/null
 
-AAS_IP=<Provide AAS IP Here>
+aas_hostname=${AAS_BASE_URL:-"https://<aas.server.com>:8444/aas"}
+CURL_OPTS="-s -k"
+CONTENT_TYPE="Content-Type: application/json"
+ACCEPT="Accept: application/jwt"
 
-KBS_SERVICE_USERNAME=admin@kms
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
 
-KBS_SERVICE_PASSWORD=kmsAdminPass
+mkdir -p /tmp/kbs
+tmpdir=$(mktemp -d -p /tmp/kbs)
 
-KBS_IP=<Provide KBS IP Here>
+dnf install -yq jq
 
-KBS_HOSTNAME=<Provide KBS Hostname Here>
+Bearer_token=`curl $CURL_OPTS -X POST $aas_hostname/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
 
-TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
+# This routine checks if kbs user exists and returns user id
+# it creates a new user if one does not exist
+create_kbs_user()
+{
+cat > $tmpdir/user.json << EOF
+{
+        "username":"$KBS_SERVICE_USERNAME",
+        "password":"$KBS_SERVICE_PASSWORD"
+}
+EOF
+        #check if kbs user already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users?name=$KBS_SERVICE_USERNAME > $tmpdir/user-response.status
 
-#Create KBS User
+        len=$(jq '. | length' < $tmpdir/user_response.json)
+        if [ $len -ne 0 ]; then
+                user_id=$(jq -r '.[0] .user_id' < $tmpdir/user_response.json)
+        else
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/user.json -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users > $tmpdir/user_response.status
 
-KBS_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$KBS_SERVICE_USERNAME","password": "$KBS_SERVICE_PASSWORD"}'`
+                local status=$(cat $tmpdir/user_response.status)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
 
-KBS_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=$KBS_SERVICE_USERNAME -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+                if [ -s $tmpdir/user_response.json ]; then
+                        user_id=$(jq -r '.user_id' < $tmpdir/user_response.json)
+                        if [ -n "$user_id" ]; then
+                                echo "${green} Created kbs user, id: $user_id ${reset}"
+                        fi
+                fi
+        fi
+}
 
-#Create KMS Certificate Approver Role
+# This routine checks if kbs CertApprover/Administrator/QuoteVerifier roles exist and returns those role ids
+# it creates above roles if not present in AAS db
+create_roles()
+{
+cat > $tmpdir/certroles.json << EOF
+{
+        "service": "CMS",
+        "name": "CertApprover",
+        "context": "CN=$TLS_COMMON_NAME;SAN=$TLS_SAN_LIST;CERTTYPE=TLS"
+}
+EOF
 
-KBS_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=KBS TLS Certificate;SAN='$KBS_IP','$KBS_HOSTNAME';certType=TLS"}' | jq -r ".role_id"`
+cat > $tmpdir/quoteverifyroles.json << EOF
+{
+        "service": "SQVS",
+        "name": "QuoteVerifier",
+        "context": ""
+}
+EOF
 
-KBS_ROLE_ID2=`curl --noproxy "*" -k -X GET https://$AAS_IP:8444/aas/roles?name=Administrator -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].role_id'`
+        #check if CertApprover role already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles?name=CertApprover > $tmpdir/role_response.status
 
-#Create SQVS Quote Verifier Role
+        cms_role_id=$(jq --arg SAN $TLS_SAN_LIST -r '.[] | select ( .context | ( contains("KBS") and contains($SAN)))' < $tmpdir/role_response.json | jq -r '.role_id')
+        if [ -z $cms_role_id ]; then
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/certroles.json -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_response-status.json
 
-KBS_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SQVS","name": "QuoteVerifier","context": ""}' | jq -r ".role_id"`
+                local status=$(cat $tmpdir/role_response-status.json)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
 
-if [ $? -eq 0 ]; then
+                if [ -s $tmpdir/role_response.json ]; then
+                        cms_role_id=$(jq -r '.role_id' < $tmpdir/role_response.json)
+                fi
+        fi
 
-  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$KMS_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$KBS_ROLE_ID1"'", "'"$KBS_ROLE_ID2"'", "'"$KBS_ROLE_ID3"'"]}'
+        # get admin role id
+        admin_role_id=`curl $CURL_OPTS $aas_hostname/roles?name=Administrator -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" | jq -r '.[0].role_id'`
 
+        #check if QuoteVerifier role already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=QuoteVerifier > $tmpdir/role_resp.status
+
+        len=$(jq '. | length' < $tmpdir/role_resp.json)
+        if [ $len -ne 0 ]; then
+                sqvs_role_id=$(jq -r '.[0] .role_id' < $tmpdir/role_resp.json)
+        else
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/quoteverifyroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
+
+                local status=$(cat $tmpdir/role_resp-status.json)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
+
+                if [ -s $tmpdir/role_resp.json ]; then
+                        sqvs_role_id=$(jq -r '.role_id' < $tmpdir/role_resp.json)
+                fi
+        fi
+        ROLE_ID_TO_MAP=`echo \"$cms_role_id\",\"$admin_role_id\",\"$sqvs_role_id\"`
+}
+
+#Maps kbs user to CertApprover/Administrator/QuoteVerifier Roles
+mapUser_to_role()
+{
+cat >$tmpdir/mapRoles.json <<EOF
+{
+        "role_ids": [$ROLE_ID_TO_MAP]
+}
+EOF
+        curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/mapRoles.json -o $tmpdir/mapRoles_response.json -w "%{http_code}" $aas_hostname/users/$user_id/roles > $tmpdir/mapRoles_response-status.json
+
+        local status=$(cat $tmpdir/mapRoles_response-status.json)
+        if [ $status -ne 201 ]; then
+                return 1
+        fi
+}
+
+KBS_SETUP_API="create_kbs_user create_roles mapUser_to_role"
+status=
+for api in $KBS_SETUP_API
+do
+        eval $api
+        status=$?
+        if [ $status -ne 0 ]; then
+                break;
+        fi
+done
+
+if [ $status -ne 0 ]; then
+        echo "${red} Key Broking Service user/roles creation failed.: $api ${reset}"
+        exit 1
+else
+        echo "${green} Key Broking Service user/roles creation succeded ${reset}"
 fi
 
-KBS_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$KBS_SERVICE_USERNAME","password": "$KBS_SERVICE_PASSWORD"}'`
+#Get Token for Key Broking Service user and configure it in kbs config.
+curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "$ACCEPT" --data @$tmpdir/user.json -o $tmpdir/kbs_token-resp.json -w "%{http_code}" $aas_hostname/token > $tmpdir/get_kbs_token-response.status
 
-echo "KMS Token $KBS_TOKEN"
+status=$(cat $tmpdir/get_kbs_token-response.status)
+if [ $status -ne 200 ]; then
+        echo "${red} Couldn't get bearer token for kbs user ${reset}"
+else
+        export BEARER_TOKEN=`cat $tmpdir/kbs_token-resp.json`
+        echo "************************************************************************************************************************************************"
+        echo $BEARER_TOKEN
+        echo "************************************************************************************************************************************************"
+        echo "${green} copy the above token and paste it against BEARER_TOKEN in kbs.env ${reset}"
+fi
+
+# cleanup
+rm -rf $tmpdir
 
 ```
 
@@ -2392,46 +2516,192 @@ The printed KMS_TOKEN needs to be added in BEARER_TOKEN section in kms.env
 
 ```
 #!/bin/bash
+echo "Setting up Integration Hub Service Related roles and user in AAS Database"
 
-dnf install -y jq
+source ~/ihub.env 2> /dev/null
 
-AAS_IP=<Provide AAS IP Here>
+aas_hostname=${AAS_API_URL:-"https://<aas.server.com>:8444/aas"}
+CN="Integration Hub TLS Certificate"
+CURL_OPTS="-s -k"
+CONTENT_TYPE="Content-Type: application/json"
+ACCEPT="Accept: application/jwt"
 
-IHUB_IP=<Provide AAS IP Here>
+red=`tput setaf 1`
+green=`tput setaf 2`
+reset=`tput sgr0`
 
-IHUB_SERVICE_USERNAME=admin@hub
+mkdir -p /tmp/ihub
+tmpdir=$(mktemp -d -p /tmp/ihub)
 
-IHUB_SERVICE_PASSWORD=hubAdminPass
+dnf install -yq jq
 
-TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
+Bearer_token=`curl $CURL_OPTS -X POST $aas_hostname/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
 
-#Create IHUB User
+# This routine checks if ihub user exists and returns user id
+# it creates a new user if one does not exist
+create_ihub_user()
+{
+cat > $tmpdir/user.json << EOF
+{
+        "username":"$IHUB_SERVICE_USERNAME",
+        "password":"$IHUB_SERVICE_PASSWORD"
+}
+EOF
+        #check if ihub user already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users?name=$IHUB_SERVICE_USERNAME > $tmpdir/user-response.status
 
-IHUB_USER=`curl --noproxy "*" -k  -X POST https://$AAS_IP:8444/aas/users -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$IHUB_SERVICE_USERNAME","password": "$IHUB_SERVICE_PASSWORD"}'`
+        len=$(jq '. | length' < $tmpdir/user_response.json)
+        if [ $len -ne 0 ]; then
+                user_id=$(jq -r '.[0] .user_id' < $tmpdir/user_response.json)
+        else
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/user.json -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users > $tmpdir/user_response.status
 
-IHUB_USER_ID=`curl --noproxy "*" -k https://$AAS_IP:8444/aas/users?name=$IHUB_SERVICE_USERNAME -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' | jq -r '.[0].user_id'`
+                local status=$(cat $tmpdir/user_response.status)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
 
-#Create CMS Certificate Approver Role
+                if [ -s $tmpdir/user_response.json ]; then
+                        user_id=$(jq -r '.user_id' < $tmpdir/user_response.json)
+                        if [ -n "$user_id" ]; then
+                                echo "${green} Created ihub user, id: $user_id ${reset}"
+                        fi
+                fi
+        fi
+}
 
-IHUB_ROLE_ID1=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "CMS","name": "CertApprover","context": "CN=Integration HUB TLS Certificate;SAN='$IHUB_IP';certType=TLS"}' | jq -r ".role_id"`
+# This routine checks if ihub CertApprover/HostsListReader/HostDataReader roles exist and returns those role ids
+# it creates above roles if not present in AAS db
+create_roles()
+{
+cat > $tmpdir/certroles.json << EOF
+{
+        "service": "CMS",
+        "name": "CertApprover",
+        "context": "CN=$CN;SAN=$TLS_SAN_LIST;CERTTYPE=TLS"
+}
+EOF
 
-#Create SHVS Host Data Reader Role
+cat > $tmpdir/hostlistreadroles.json << EOF
+{
+        "service": "SHVS",
+        "name": "HostsListReader",
+        "context": ""
+}
+EOF
 
-IHUB_ROLE_ID2=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SHVS","name": "HostDataReader","context": ""}' | jq -r ".role_id"`
+cat > $tmpdir/hostdatareadroles.json << EOF
+{
+        "service": "SHVS",
+        "name": "HostDataReader",
+        "context": ""
+}
+EOF
+        #check if CertApprover role already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles?name=CertApprover > $tmpdir/role_response.status
 
-#Create SHVS Host List Reader Role
+        cms_role_id=$(jq --arg SAN $TLS_SAN_LIST -r '.[] | select ( .context | ( contains("Integration Hub") and contains($SAN)))' < $tmpdir/role_response.json | jq -r '.role_id')
+        if [ -z $cms_role_id ]; then
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/certroles.json -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_response-status.json
 
-IHUB_ROLE_ID3=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"service": "SHVS","name": "HostsListReader","context": ""}' | jq -r ".role_id"`
+                local status=$(cat $tmpdir/role_response-status.json)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
 
-if [ $? -eq 0 ]; then
+                if [ -s $tmpdir/role_response.json ]; then
+                        cms_role_id=$(jq -r '.role_id' < $tmpdir/role_response.json)
+                fi
+        fi
 
-  curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/users/$IHUB_USER_ID/roles -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"role_ids": ["'"$IHUB_ROLE_ID1"'", "'"$IHUB_ROLE_ID2"'", "'"$IHUB_ROLE_ID3"'"]}'
+        #check if HostsListReader role already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=HostsListReader > $tmpdir/role_resp.status
+        len=$(jq '. | length' < $tmpdir/role_resp.json)
+        if [ $len -ne 0 ]; then
+                ihub_role_id1=$(jq -r '.[0] .role_id' < $tmpdir/role_resp.json)
+        else
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/hostlistreadroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
 
+                local status=$(cat $tmpdir/role_resp-status.json)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
+
+                if [ -s $tmpdir/role_resp.json ]; then
+                        ihub_role_id1=$(jq -r '.role_id' < $tmpdir/role_resp.json)
+                fi
+        fi
+
+        #check if HostDataReader role already exists
+        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=HostDataReader > $tmpdir/role_resp.status
+
+        ihub_role_id2=$(jq -r '.[] | select ( .service | contains("SHVS"))' < $tmpdir/role_resp.json | jq -r '.role_id')
+        if [ -z $ihub_role_id2 ]; then
+                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/hostdatareadroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
+
+                local status=$(cat $tmpdir/role_resp-status.json)
+                if [ $status -ne 201 ]; then
+                        return 1
+                fi
+
+                if [ -s $tmpdir/role_resp.json ]; then
+                        ihub_role_id2=$(jq -r '.role_id' < $tmpdir/role_resp.json)
+                fi
+        fi
+
+        ROLE_ID_TO_MAP=`echo \"$cms_role_id\",\"$ihub_role_id1\",\"$ihub_role_id2\"`
+}
+
+#Maps ihub user to CertApprover/HostsListReader/HostDataReader Roles
+mapUser_to_role()
+{
+cat >$tmpdir/mapRoles.json <<EOF
+{
+        "role_ids": [$ROLE_ID_TO_MAP]
+}
+EOF
+        curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/mapRoles.json -o $tmpdir/mapRoles_response.json -w "%{http_code}" $aas_hostname/users/$user_id/roles > $tmpdir/mapRoles_response-status.json
+
+        local status=$(cat $tmpdir/mapRoles_response-status.json)
+        if [ $status -ne 201 ]; then
+                return 1
+        fi
+}
+
+IHUB_SETUP_API="create_ihub_user create_roles mapUser_to_role"
+status=
+for api in $IHUB_SETUP_API
+do
+        eval $api
+        status=$?
+        if [ $status -ne 0 ]; then
+                break;
+        fi
+done
+
+if [ $status -ne 0 ]; then
+        echo "${red} Integration Hub Service user/roles creation failed.: $api ${reset}"
+        exit 1
+else
+        echo "${green} Integration Hub Service user/roles creation succeded ${reset}"
 fi
 
-IHUB_TOKEN=`curl --noproxy "*" -k -X POST https://$AAS_IP:8444/aas/token -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d '{"username": "$IHUB_SERVICE_USERNAME","password": "$IHUB_SERVICE_PASSWORD"}'`
+#Get Token for Integration Hub Service user and configure it in ihub config.
+curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "$ACCEPT" --data @$tmpdir/user.json -o $tmpdir/ihub_token-resp.json -w "%{http_code}" $aas_hostname/token > $tmpdir/get_ihub_token-response.status
 
-echo "IHUB Token $IHUB_TOKEN"
+status=$(cat $tmpdir/get_ihub_token-response.status)
+if [ $status -ne 200 ]; then
+        echo "${red} Couldn't get bearer token for ihub user ${reset}"
+else
+        export BEARER_TOKEN=`cat $tmpdir/ihub_token-resp.json`
+        echo "************************************************************************************************************************************************"
+        echo $BEARER_TOKEN
+        echo "************************************************************************************************************************************************"
+        echo "${green} copy the above token and paste it against BEARER_TOKEN in ihub.env ${reset}"
+fi
+
+# cleanup
+rm -rf $tmpdir
 
 ```
 
