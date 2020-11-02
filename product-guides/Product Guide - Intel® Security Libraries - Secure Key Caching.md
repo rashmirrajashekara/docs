@@ -1,9 +1,9 @@
 # Intel® Security Libraries - Datacenter Secure Key Caching
 
 ## Product Guide
-### October 2020
+### November 2020
 
-### Revision 3.1
+### Revision 3.2
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -322,7 +322,9 @@ ISECL_PGDB_CERT_DNS=localhost
 
 ISECL_PGDB_CERT_IP=127.0.0.1
 
-ISECL_PGDB_USERPASSWORD=dbpassword
+ISECL_PGDB_USERNAME=aasdbuser
+
+ISECL_PGDB_USERPASSWORD=aasdbpassword
 
 Note that the values above assume that the database will be accessed locally. If the database server will be external to the Intel® SecL services, change these values to the hostname or FQDN and IP address where the client will access the database server.
 
@@ -458,7 +460,7 @@ copy install_pgdb.sh and create_db.sh to /root/ directory
 
 ./install_pgdb.sh
 
-./create_db.sh aas_db <db_user> <db_password>
+./create_db.sh aasdb <db_user> <db_password>
 
 
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
@@ -513,7 +515,7 @@ SGX-AGENT: sgx_agent_aas.sh
 
 SQVS: sqvs_aas_curl.sh
 
-for Key Broker Service and Integration Hub User and Roles creation, Please refer to the appendix section for a sample script
+For Key Broker Service and Integration Hub User/Roles creation, Please refer to the appendix section for sample scripts
 
 The output of these scripts is a bearer-token which needs to be updated in the BEARER_TOKEN env variable in the corresponding component’s env file.
 
@@ -709,7 +711,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS* > 
 
 
-Execute scs_aas_curl.sh script to create SGX Host Verification Service user account and roles
+Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
 
 ./shvs_aas_curl.sh
 
@@ -1323,9 +1325,9 @@ Following are the set of roles which are required during installation and runtim
 | < SCS:HostDataReader: >                                      |                                                              | Used by the SHVS to retrieve the TCB status info from SCS    |
 | < SCS:CacheManager: >                                        |                                                              | Used by the SCS admin to refresh the platform info           |
 | < CMS:CertApprover:CN=SCS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                    | Used by the SCS to retrieve TLS Certificate from CMS         |
-| < KMS:KeyTransfer:permissions=nginx,USA >                    |                                                              | Used by the SKC Library user for Key Transfer                |
+| < KBS:KeyTransfer:permissions=nginx,USA >                    |                                                              | Used by the SKC Library user for Key Transfer                |
 | < CMS:CertApprover:CN=skcuser;CERTTYPE=TLS-Client>           |                                                              | Used by the SKC Library user to retrieve TLS-Client Certificate from CMS |
-| < CMS:CertApprover:CN=KMS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                    | Used by the KMS to retrieve TLS Certificate from CMS         |
+| < CMS:CertApprover:CN=KBS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                    | Used by the KBS to retrieve TLS Certificate from CMS         |
 | AAS: Administrator                                           | *:*:*                                                        | Administrator role for the AAS only. Has all permissions for AAS resources, including the ability to create or delete users and roles |
 | AAS: RoleManager                                             | AAS: [roles:create:*, roles:retrieve:*, roles:search:*, roles:delete:*] | AAS role that allows all actions for Roles but cannot create or delete Users or assign Roles to Users. |
 | AAS: UserManager                                             | AAS: [users:create:*, users:retrieve:*, users:store:*, users:search:*, users:delete:*] | AAS role with all permissions for Users but has no ability to create Roles or assign Roles to Users. |
@@ -1372,8 +1374,8 @@ Admin can get the host state information by calling this rest API. GET https://\
 | SCS_BASE_URL                   | https://< IP or hostname of SCS >:9000/scs/sgx/       | Base URL of SCS                                              |
 | SHVS_DB_PORT                   | 5432                                                  | Defines the port number for communication with the database server. By default, with a local database server installation, this port will be set to 5432. |
 | SHVS_DB_NAME                   | pgshvsdb                                              | Defines the schema name of the database. If a remote database connection will be used, this schema must be created in the remote database before installing the SGX Host Verification Service |
-| SHVS_DB_USERNAME               | dbshvsuser                                            | Username for accessing the database. If a remote database connection will be used, this user/password must be created and granted all permissions for the database schema before installing the SGX Host Verification Service. |
-| SHVS_DB_PASSWORD               | dbpassword                                            | Password for accessing the database. If a remote database connection will be used, this user/password must be created and granted all permissions for the database schema before installing the SGX Host Verification Service. |
+| SHVS_DB_USERNAME               | aasdbuser                                             | Username for accessing the database. If a remote database connection will be used, this user/password must be created and granted all permissions for the database schema before installing the SGX Host Verification Service. |
+| SHVS_DB_PASSWORD               | aasdbpassword                                         | Password for accessing the database. If a remote database connection will be used, this user/password must be created and granted all permissions for the database schema before installing the SGX Host Verification Service. |
 | SHVS_DB_HOSTNAME               | localhost                                             | Defines the database server IP address or hostname. This should be the loopback address for local database server installations but should be the IP address or hostname of the database server if a remote database will be used. |
 | SAN_LIST                       | 127.0.0.1,localhost                                   | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service |
 | SHVS_ADMIN_USERNAME            | shvsuser@shvs                                         | Username for a new user to be created during installation.   |
@@ -1384,8 +1386,6 @@ Admin can get the host state information by calling this rest API. GET https://\
 | SHVS_SCHEDULER_TIMER           | 60                                                    | SHVS Scheduler timeout                                       |
 | SHVS_HOST_PLATFORM_EXPIRY_TIME | 4                                                     | SHVS Host Info Expiry time                                   |
 | SHVS_AUTO_REFRESH_TIMER        | 120                                                   | SHVS Auto-refresh timeout                                    |
-| SHVS_NOSETUP                   | false                                                 | Determines whether “setup” will  be executed after installation. Typically, this is set to “false” to install  and perform setup in one action. The “true” option is intended for building  the service as a container, where the installation would be part of the image  build, and setup would be performed when the container starts for the first  time to generate any persistent data. |
-
 
 
 ###  Configuration Options 
@@ -1467,11 +1467,12 @@ This folder contains log files: /var/log/shvs/
 | AAS_API_URL         | https://< AAS IP or Hostname>:8444/aas                       | API URL for Authentication Authorization Service (AAS).      |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/                   | API URL for Certificate Management Service (CMS).            |
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v1/             | The url used during setup to request information from SHVS.  |
-| SGX_AGENT_USERNAME  | sgx_agent_user                                               | Name of the SGX_AGENT USER                                   |
-| SGX_AGENT_PASSWORD  | sgx_agent_pass                                               | Password of SGX_AGENT user.                                  |
+| SGX_AGENT_USERNAME  | sgx_agent                                                    | Name of the SGX_AGENT USER                                   |
+| SGX_AGENT_PASSWORD  | password                                                     | Password of SGX_AGENT user.                                  |
 | BEARER_TOKEN        |                                                              | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS_TLS_CERT_SHA384 | < Certificate Management Service TLS digest>                 | SHA384 Hash for verifying the CMS TLS certificate.           |
 | SGX_PORT            | 11001                                                        | The port on which the SGX Agent service will listen.         |
+| SGX_AGENT_MODE      | Orchestration                                                | SGX Agent will operate to work in conjuction with orchstrators like Kubernetes          |
 | SGX_AGENT_NOSETUP   | false                                                        | Skips setup during installation if set to true               |                                                           | 
 | SAN_LIST            | 127.0.0.1, localhost                                         | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service                                                        | The port on which the SGX Agent service will listen.         |
 
@@ -1635,7 +1636,6 @@ This folder contains log files: /var/log/ihub/
 | AAS_TLS_SAN                    | < Comma-separated list of IPs/hostnames for the AAS>  | SAN list populated in special JWT token; this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
 
-
 ### Configuration Options 
 
 The CMS configuration can be found in /etc/cms/config.yml.
@@ -1767,8 +1767,8 @@ This folder contains the CMS root CA certificate.
 | AAS_DB_HOSTNAME      | localhost                                    | Hostname or IP address of the AAS database                   |
 | AAS_DB_PORT          | 5432                                         | Database port number                                         |
 | AAS_DB_NAME          | pgdb                                         | Database name                                                |
-| AAS_DB_USERNAME      | dbuser                                       | Database username                                            |
-| AAS_DB_PASSWORD      | dbpassword                                   | Database password                                            |
+| AAS_DB_USERNAME      | aasdbuser                                    | Database username                                            |
+| AAS_DB_PASSWORD      | aasdbpassd                                   | Database password                                            |
 | AAS_DB_SSLMODE       | verify-full                                  |                                                              |
 | AAS_DB_SSLCERTSRC    | /usr/local/pgsql/data/server.crt             | Required if the “AAS_DB_SSLMODE” is set to “verify-ca.” Defines the location of the database SSL certificate. |
 | AAS_DB_SSLCERT       | < path_to_cert_file_on_system >              | The AAS_DB_SSLCERTSRC variable defines the  source location of the database SSL certificate; this variable determines the  local location. If the former option  is used without specifying this option, the service will copy the SSL  certificate to the default configuration directory. |
@@ -1845,46 +1845,6 @@ mandatory if db-sslcert does not already exist alternatively, set environment va
 
 -   Environment variable AAS_ADMIN_PASSWORD=\<password\> can be set alternatively
 
-##### authservice setup reghost \[\--user=\<username\>\] \[-pass=\<password\>\] 
-
--   Environment variable AAS_REG_HOST_USERNAME=\<username\> can be set alternatively
-
--   Environment variable AAS_REG_HOST_PASSWORD=\<password\> can be set alternatively
-
-##### authservice setup download_ca_cert \[\--force\] 
-
--   Download CMS root CA certificate
-
--   Option \[\--force\] overwrites any existing files, and always downloads new root CA cert
-
--   Environment variable CMS_BASE_URL=\<url\> for CMS API url
-
-#####  authservice setup download_cert TLS \[\--force\] 
-
--   Generates Key pair and CSR, gets it signed from CMS
-
--   Option \[\--force\] overwrites any existing files, and always downloads newly signed TLS cert
-
--   Environment variable CMS_BASE_URL=\<url\> for CMS API url
-
--   Environment variable BEARER_TOKEN=\<token\> for authenticating with CMS
-
--   Environment variable KEY_PATH=\<key_path\> to override default specified in config
-
--   Environment variable CERT_PATH=\<cert_path\> to override default specified in config
-
--   Environment variable AAS_TLS_CERT_CN=\<TLS CERT COMMON NAME\> to override default specified in config
-
--   Environment variable AAS_CERT_ORG=\<CERTIFICATE ORGANIZATION\> to override default specified in config
-
--   Environment variable AAS_CERT_COUNTRY=\<CERTIFICATE COUNTRY\> to override default specified in config
-
--   Environment variable AAS_CERT_LOCALITY=\<CERTIFICATE LOCALITY\> to override default specified in config
-
--   Environment variable AAS_CERT_PROVINCE=\<CERTIFICATE PROVINCE\> to override default specified in config
-
--   Environment variable SAN_LIST=\<san\> list of hosts which needs access to service
-
 ##### authservice setup jwt 
 
 -   Create jwt signing key and jwt certificate signed by CMS
@@ -1953,7 +1913,7 @@ Contains database scripts.
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest >         | SHA384 digest of CMS TLS certificate                         |
 | BEARER_TOKEN         |                                                       | JWT token for installation user                              |
 | KBS_SERVICE_USERNAME | admin@kms                                             | KBS Service Username                                         |
-| KBS_SERVICE_PASSWORD | kmsAdminsPass                                         | KBS Service User Password                                    |
+| KBS_SERVICE_PASSWORD | kmsAdminPass                                          | KBS Service User Password                                    |
 | TLS_SAN_LIST         | < KBS IP/Hostname >                                   | IP addresses/hostnames to be included in SAN list.           |
 | KEY_MANAGER          | Directory                                             | Key Manager Backend to store keys                            | 
 
@@ -1989,6 +1949,10 @@ Displays the version of the service
 
 The Key Broker Service installs by default to /opt/kbs with the following folders.
 
+####  Bin 
+
+Contains executable scripts and binaries.
+
 
 ## SGX Caching Service
 
@@ -2002,7 +1966,7 @@ The Key Broker Service installs by default to /opt/kbs with the following folder
 | SCS_ADMIN_PASSWORD                | scspassword                                                  | SCS Service password                                         |
 | BEARER_TOKEN                      |                                                              | Installation Token from AAS                                  |
 | CMS_TLS_CERT_SHA384               | < Certificate Management Service TLS digest >                | SHA384  Hash sum for verifying the CMS TLS certificate.      |
-| INTEL_PROVISIONING_SERVER         | https://sbx.api.trustedservices.intel.com/sgx/certification/v1 | Intel pcs server url                             |
+| INTEL_PROVISIONING_SERVER         | https://sbx.api.trustedservices.intel.com/sgx/certification/v3 | Intel pcs server url                             |
 | INTEL_PROVISIONING_SERVER_API_KEY | < Add your API subscription key >                            | Intel PCS Server API subscription key                        |
 | SCS_REFRESH_HOURS                 | 1 hour                                                       | Time after which the SGX collaterals in SCS db get refreshed from  Intel PCS server |
 | RETRY_COUNT                       | 3                                                            | Number Of times to connect to PCS if PCS service is not accessible |
@@ -2010,8 +1974,8 @@ The Key Broker Service installs by default to /opt/kbs with the following folder
 | SCS_DB_HOSTNAME                   | localhost                                                    | SCS Databse hostname                                         |
 | SCS_DB_PORT                       | 5432                                                         | SCS Database port                                            |
 | SCS_DB_NAME                       | pgscsdb                                                      | SCS Database name                                            |
-| SCS_DB_USERNAME                   | dbuser                                                       | SCS Database username                                        |
-| SCS_DB_PASSWORD                   | dbpassword                                                   | SCS Database password                                        |
+| SCS_DB_USERNAME                   | aasdbuser                                                    | SCS Database username                                        |
+| SCS_DB_PASSWORD                   | aasdbpassword                                                | SCS Database password                                        |
 | SCS_DB_SSLCERTSRC                 | /usr/local/pgsql/data/server.crt                             |                                                              | 
 | SAN_LIST                          | 127.0.0.1,localhost                                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 
@@ -2256,13 +2220,20 @@ Removes the following directories:
 
 ## Key Broker Service
 
+kbs uninstall \--purge
+
 To uninstall the Key Broker Service , run the following command:
 
 Removes the following directories:
 
-   /opt/kbs
+1.  /opt/kbs
 
-kbs uninstall \--purge
+2.  /run/kbs
+
+3.  /var/log/kbs
+
+4.  /etc/kbs
+
 
 ## SKC Library
 
@@ -2273,6 +2244,7 @@ To uninstall the SKC Library, run the following command:
 Removes the following directories:
 
    /opt/skc
+
 
 # Appendix 
 
@@ -2709,13 +2681,17 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
-​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+​ Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library. 
+
+Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
+
+Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
+
+The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
 
 ​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
 
-​	**Note:** Content of this file should match with the nginx conf file
-
-​	**/opt/skc/etc/pkcs11-apimodule.ini**
+​	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
 
 ​	**[core]**
 
