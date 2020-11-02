@@ -245,10 +245,6 @@ For components written in GO (Authentication and Authorization Service, Certific
 
 \<servicename\>/out/\<servicename\>.bin
 
-For components written in Java (Key Broker):
-
-\<servicename\>/packages/\<servicename\>/target/\<servicename\>\<version\>SNAPSHOT.bin
-
 In addition, the build script will produce some sample database scripts that can be used during installation to setup postgres and create database.
 
 Install_pgdb: authservice/out/install_pgdb.sh
@@ -930,9 +926,7 @@ To install the SGX Integration Hub, follow these steps:
 
 1.  Copy the Integration Hub installation binary to the /root/ directory.
   
-2.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
-
-3.  Create the ihub.env installation answer file in /root/ directory as below
+2.  Create the ihub.env installation answer file in /root/ directory as below
 
 ​           IHUB_SERVICE_USERNAME =< IHUB service user username > 
 
@@ -964,11 +958,12 @@ To install the SGX Integration Hub, follow these steps:
 
 ​           TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
-Refer to the sample script in appendix section to create Integration user account and roles
+
+3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
 Update the BEARER_TOKEN value in the ihub.env file
 
-3.  Execute the installer binary.
+4.  Execute the installer binary.
 
 ./ihub-v3.2.0.bin
 
@@ -1069,35 +1064,32 @@ NA
 
 1.  Copy the Key Broker installation binary to the /root/ directory.
 
-2.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
-
-3.  Create the installation answer file kms.env /root/ directory as below:
+2.  Create the installation answer file kbs.env /root/ directory as below:
 
 ​           KBS_SERVICE_USERNAME =< KBS service user username > 
 
 ​           KBS_SERVICE_PASSWORD=< KBS service user password > 
 
-​           AAS_API_URL=https://\<AAS IP or hostname\>:8444/aas
+​           AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
 
 ​           CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
 
-​           SVS_BASE_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
+​           SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
 
-​           JETTY_SECURE_PORT=9443
-
-​           KMS_NOSETUP=false
-
-​           JETTY_TLS_CERT_IP=\<comma-separated list of IP addresses for the KBS\>
-
-​           JETTY_TLS_CERT_DNS=\<comma-separated list of hostnames for the KBS\>
+​           KEY_MANAGER=Directory
 
 ​           CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
 
+​           TLS_SAN_LIST=\<KBS Hostname/IP>
+
 ​           BEARER_TOKEN=\<Installation token from AAS\>
 
-3.  Execute the KBS installer.
 
-./kms-6.1-SNAPSHOT.bin
+3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
+
+4.  Execute the KBS installer.
+
+./kbs-3.2.0.bin
 
 ##  Installing the SKC Library
 
@@ -1956,19 +1948,14 @@ Contains database scripts.
 | Variable Name        | Default Value                                         | Notes                                                        |
 | -------------------- | ----------------------------------------------------- | ------------------------------------------------------------ |                     
 | CMS_BASE_URL         | https://< CMS IP or hostname >:8445/cms/v1/           | Required for generating TLS certificate                      |
-| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas               | AAS baseurl                                                  |
-| SVS_BASE_URL         | https://< SQVS IP or hostname >:12000/svs/v1/         | Required to get the SGX Quote verified                       |
+| AAS_BASE_URL         | https://< AAS IP or hostname >:8444/aas               | AAS baseurl                                                  |
+| SQVS_URL             | https://< SQVS IP or hostname >:12000/svs/v1/         | Required to get the SGX Quote verified                       |
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest >         | SHA384 digest of CMS TLS certificate                         |
 | BEARER_TOKEN         |                                                       | JWT token for installation user                              |
-| KBS_SERVICE_USERNAME | kmsuser@kms                                           | KBS Service Username                                         |
-| KBS_SERVICE_PASSWORD | kbspassword                                           | KBS Service User Password                                    |
-| JETTY_SECURE_PORT    | 9443                                                  | The server will listen for HTTPS connections on this port    |
-| KMS_LOG_LEVEL        | INFO                                                  | Sets the root log level in logback.xml                       |
-| KMS_NOSETUP          | false                                                 | Skips setup during installation if set to true               |
-| JETTY_TLS_CERT_IP    | < KMS IP >                                            | IP addresses to be included in SAN list.                     |
-| JETTY_TLS_CERT_DNS   | < KMS hostname or DNS >                               | DNS addresses to be included in SAN list.                    |
-
-
+| KBS_SERVICE_USERNAME | admin@kms                                             | KBS Service Username                                         |
+| KBS_SERVICE_PASSWORD | kmsAdminsPass                                         | KBS Service User Password                                    |
+| TLS_SAN_LIST         | < KBS IP/Hostname >                                   | IP addresses/hostnames to be included in SAN list.           |
+| KEY_MANAGER          | Directory                                             | Key Manager Backend to store keys                            | 
 
 ### Configuration Options 
 
@@ -1978,7 +1965,7 @@ The Key Broker Service supports several command-line commands that can be execut
 
 Syntax:
 
-kms \<command\>
+kbs \<command\>
 
 #### Start 
 
@@ -1990,7 +1977,7 @@ Stops the service
 
 #### Uninstall 
 
-kms uninstall \[\--purge\]
+kbs uninstall \[\--purge\]
 
 Removes the service
 
@@ -1998,55 +1985,10 @@ Removes the service
 
 Displays the version of the service
 
-#### setup 
-
-Usage: kms setup \[\--force\|\--noexec\] \[task1 task2 \...\]
-
-Available setup tasks:
-
-##### kms setup jca-security-providers
-
-##### kms setup password-vault
-
-##### kms setup jetty-ports
-
-##### kms setup jetty-tls-keystore
-
-##### kms setup shiro-ssl-port
-
 ### Directory Layout 
 
-The Key Broker Service installs by default to /opt/kms with the following folders.
+The Key Broker Service installs by default to /opt/kbs with the following folders.
 
-#### Bin 
-
-Contains scripts and executable binaries
-
-#### Configuration 
-
-Contains configuration files
-
-#### Env 
-
-Contains environment details
-
-#### Features 
-
-#### Java 
-
-Contains Java artifacts
-
-####  Logs 
-
-Contains logs. Primary log file is kms.log
-
-#### Repository 
-
-Contains the "keys" subdirectory, which is used for storing symmetric/asymmetric encryption keys.
-
-#### Script 
-
-Contains additional scripts
 
 ## SGX Caching Service
 
@@ -2318,9 +2260,9 @@ To uninstall the Key Broker Service , run the following command:
 
 Removes the following directories:
 
-   /opt/kms
+   /opt/kbs
 
-kms uninstall \--purge
+kbs uninstall \--purge
 
 ## SKC Library
 
@@ -2507,7 +2449,7 @@ rm -rf $tmpdir
 
 ```
 
-The printed KMS_TOKEN needs to be added in BEARER_TOKEN section in kms.env
+The printed token needs to be added in BEARER_TOKEN section in kbs.env
 
 
 
@@ -2705,7 +2647,7 @@ rm -rf $tmpdir
 
 ```
 
-The printed IHUB_TOKEN needs to be added in BEARER_TOKEN section in ihub.env
+The printed token needs to be added in BEARER_TOKEN section in ihub.env
 
 
 ## Creating RSA Keys in Key Broker Service
