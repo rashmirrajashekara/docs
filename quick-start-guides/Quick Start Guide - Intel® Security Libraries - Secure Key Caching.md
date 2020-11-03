@@ -130,8 +130,8 @@ repo sync
 
   ```shell
   dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
-  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.5-3.el7.x86_64.rpm
-  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.5-3.el7.x86_64.rpm
+  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.13-3.el7.x86_64.rpm
+  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.13-3.el7.x86_64.rpm
   systemctl enable docker
   systemctl start docker
   ```
@@ -650,13 +650,17 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
-​ Create keys.txt in /tmp folder. The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+​ Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
+
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
+
+  Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
+
+  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
 
 ​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
 
-​	**Note:** Content of this file should match with the nginx conf file
-
-​	**/opt/skc/etc/pkcs11-apimodule.ini**
+​	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
 
 ​	**[core]**
 
