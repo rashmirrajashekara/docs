@@ -1,10 +1,11 @@
 
 # Intel® Security Libraries - Datacenter Foundational Security
 
-## Product Guide
-### October 2020
+**Product Guide**
 
-### Revision 3.2
+**November 2020**
+
+**Revision 3.2**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -235,7 +236,7 @@ The Workload Policy Manager is a Linux command line utility used by an image own
 
 ## 2.9  Key Broker Service
 
-The Key Broker Service is effectively a policy compliance engine. Its job is to manage key transfer requests for encrypted images, releasing keys only to servers that meet policy requirements. The Key Broker registers one or more SAML signing certificates from any Verification Services that it will trust. When a key transfer request is received, the request includes a trust attestation report signed by the Verification Service. If the signature matches a registered SAML key, the Broker will then look at the actual report to ensure the server requesting the key matches the image policy (currently only overall system trust is supported as a policy requirement). If the report indicates the policy requirements are met, the image decryption key is wrapped using a public key unique to the TPM of the host that was attested in the report, such that only the host that was attested can unseal the decryption key and gain access to the image.
+The Key Broker Service is effectively a policy compliance engine. Its job is to manage key transfer requests, releasing keys only to servers that meet policy requirements. The Key Broker registers one or more SAML signing certificates from any Verification Services that it will trust. When a key transfer request is received, the request includes a trust attestation report signed by the Verification Service. If the signature matches a registered SAML key, the Broker will then look at the actual report to ensure the server requesting the key matches the image policy (currently only overall system trust is supported as a policy requirement). If the report indicates the policy requirements are met, the image decryption key is wrapped using a public key unique to the TPM of the host that was attested in the report, such that only the host that was attested can unseal the decryption key and gain access to the image.
 
 
 
@@ -248,7 +249,7 @@ Intel® Security Libraries is distributed as open source code, and must be compi
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here:
 
-https://01.org/intel-secl/documentation/build-installation-scripts
+https://github.com/intel-secl/build-manifest
 
 After the components have been built, the installation binaries can be found in the directories created by the build scripts. 
 
@@ -262,7 +263,13 @@ create_db: `authservice/out/create_db.sh`
 
 install_pgdb: `authservice/out/install_pgdb.sh`
 
+In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
+https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role
+
+Also provided are sample API calls organized by workflows for Postman:
+
+https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections
 
 ## 3.2  Hardware Considerations
 
