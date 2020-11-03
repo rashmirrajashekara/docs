@@ -2632,6 +2632,8 @@ On the Enterprise VM, where Key broker service is running
 
 ​	Update KBS and AAS IP addresses in run.sh
 
+​	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
+
 **Create RSA Key**
 
 ​	Execute the command
