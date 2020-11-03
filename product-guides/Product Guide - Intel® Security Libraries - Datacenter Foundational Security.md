@@ -2,7 +2,7 @@
 # Intel® Security Libraries - Datacenter Foundational Security
 
 ## Product Guide
-### August 2020
+### October 2020
 
 ### Revision 3.2
 
@@ -50,124 +50,22 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 Copyright © 2020, Intel Corporation. All Rights Reserved.
 
-Revision History
+# Revision History
 
-<table>
-<tbody>
-<tr class="odd">
-<td>Document Number</td>
-<td>Revision<br /> Number</td>
-<td>Description</td>
-<td>Date</td>
-</tr>
-<tr class="even">
-<td>&nbsp;</td>
-<td>1</td>
-<td>
-<ul>
-<li>
-<p>Updated for all GA Failures</p>
-</li>
-</ul>
-</td>
-<td>May 2019</td>
-</tr>
-<tr class="odd">
-<td>&nbsp;</td>
-<td>1.5</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 1.5 release</p>
-</li>
-</ul>
-</td>
-<td>July 2019</td>
-</tr>
-<tr class="even">
-<td>&nbsp;</td>
-<td>1.6 BETA</td>
-<td>
-<ul>
-<li>
-<p>Updated for 1.6 BETA release</p>
-</li>
-</ul>
-</td>
-<td>November 2019</td>
-</tr>
-<tr class="odd">
-<td>&nbsp;</td>
-<td>1.6</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 1.6 release</p>
-</li>
-</ul>
-</td>
-<td>December 2019</td>
-</tr>
-<tr class="even">
-<td>&nbsp;</td>
-<td>2.0</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 2.0 release</p>
-</li>
-</ul>
-</td>
-<td>February 2020</td>
-</tr>
-<tr class="odd">
-<td>&nbsp;</td>
-<td>2.1</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 2.1 release</p>
-</li>
-</ul>
-</td>
-<td>April 2020</td>
-</tr>
-<tr class="even">
-<td>&nbsp;</td>
-<td>2.2</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 2.2 release</p>
-</li>
-</ul>
-</td>
-<td>June 2020</td>
-</tr>
-<tr class="odd">
-<td>&nbsp;</td>
-<td>3.0</td>
-<td>
-<ul>
-<li>
-<p>Updated for version 3.0 release</p>
-</li>
-</ul>
-</td>
-<td>August 2020</td>
-</tr>
-<tr class="even">
-<td>&nbsp;</td>
-<td>&nbsp;3.1</td>
-<td>
-<ul>
-<li>Updated for version 3.1 release</li>
-</ul>
-</td>
-<td>&nbsp;October 2020</td>
-</tr>
-</tbody>
-</table>
+| Revision  Number | Description                     | Date          |
+| ---------------- | ------------------------------- | ------------- |
+| 1                | Updated for all GA Failures     | May 2019      |
+| 1.5              | Updated for version 1.5 release | July 2019     |
+| 1.6 BETA         | Updated for 1.6 BETA release    | November 2019 |
+| 1.6              | Updated for version 1.6 release | December 2019 |
+| 2.0              | Updated for version 2.0 release | February 2020 |
+| 2.1              | Updated for version 2.1 release | April 2020    |
+| 2.2              | Updated for version 2.2 release | June 2020     |
+| 3.0              | Updated for version 3.0 release | August 2020   |
+| 3.1              | Updated for version 3.1 release | October 2020  |
+| 3.2              | Updated for version 3.2 release | November 2020 |
+
+
 
 
 # Table of Contents
