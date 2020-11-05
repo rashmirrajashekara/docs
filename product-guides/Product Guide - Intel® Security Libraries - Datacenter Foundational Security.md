@@ -1294,8 +1294,8 @@ To install the Integration Hub, follow these steps:
 ```shell
 # Authentication URL and service account credentials
 AAS_API_URL=https://isecl-aas:8444/aas
-IHUB_SERVICE_USERNAME=<Integration Hub Service User username>
-IHUB_SERVICE_PASSWORD=<Integration Hub Service User password>
+IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
 # CMS URL and CMS webserivce TLS hash for server verification
 CMS_BASE_URL=https://isecl-cms:8445/cms/v1
@@ -3030,8 +3030,8 @@ See section 3.15.7 on Installing the Integration Hub.  Use the following variabl
 ```
 # Authentication URL and service account credentials
 AAS_API_URL=https://isecl-aas:8444/aas
-IHUB_SERVICE_USERNAME=<Integration Hub Service User username>
-IHUB_SERVICE_PASSWORD=<Integration Hub Service User password>
+IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
 # CMS URL and CMS webserivce TLS hash for server verification
 CMS_BASE_URL=https://isecl-cms:8445/cms/v1
