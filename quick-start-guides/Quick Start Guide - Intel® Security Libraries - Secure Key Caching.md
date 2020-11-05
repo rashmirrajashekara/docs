@@ -1,3 +1,5 @@
+​	
+
 # **Secure Key Caching (SKC) Quick Start Guide**
 
 [[_TOC_]]
@@ -11,7 +13,7 @@
    b.    CSP managed Services 
 
    c.    Enterprise Managed Services
-   
+
    d.    K8S Master Node Setup
 
 2. **SGX Enabled Host**
@@ -156,6 +158,7 @@ repo sync
   ```
 
 **Building All SKC Components**
+
 ```
 make
 
@@ -339,9 +342,9 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Usecase Setup Options
 
-| Usecase            | Variable                                                     |
-| ------------------ | ------------------------------------------------------------ |
-| Secure Key Caching | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
+| Usecase                      | Variable                                                     |
+| ---------------------------- | ------------------------------------------------------------ |
+| Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
 | Security Aware Orchestration | `setup: security-aware-orchestration` in playbook or via `--extra-vars` as `setup=security-aware-orchestration`in CLI |
 
 
@@ -437,7 +440,7 @@ Create role bindings on the Kubernetes Master.
     kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
     kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
 ```
-	
+
 Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in /root/binaries/env/ihub.env on CSP VM with kubernetes certificate path.
 
 Get k8s token in master, using below commands.
@@ -466,19 +469,19 @@ Copy IHUB public key to the master node and restart kubelet.
     scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
     systemctl restart kubelet
 ```
-	
+
 Run this command to validate if the data has been pushed to CRD: 
 
 ```
     kubectl get -o json hostattributes.crd.isecl.intel.com
 ```
-	
+
 Run this command to validate that the labels have been populated:
 
 ```
     kubectl get nodes --show-labels.
 ```
-	
+
 Sample labels:
 
 ```
@@ -514,7 +517,7 @@ spec:
     ports:
     - containerPort: 80
 ```
-           
+
 Validate if pod can be launched on the node. Run following commands:
 
 ```
@@ -526,6 +529,7 @@ Validate if pod can be launched on the node. Run following commands:
 Pod should be in running state and launched on the host as per values in pod.yml.
 	
     
+
 #### Deploy Enterprise SKC Services
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
@@ -595,17 +599,17 @@ GIT Configuration**
 
 **Configuration Update to create Keys in KBS**
 
-​	cd into /root/binaries/kbs_script folder
-
-​	Update KBS and AAS IP addresses in run.sh
-
-​	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
+	cd into /root/binaries/kbs_script folder
+	
+	Update KBS and AAS IP addresses in run.sh
+	
+	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
 
 **Create RSA Key**
 
-​	Execute the command
-
-​	./run.sh reg
+	Execute the command
+	
+	./run.sh reg
 
 - copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
@@ -650,7 +654,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
-​ Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
+ Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
 
   Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
 
@@ -658,27 +662,27 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
   The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
 
-​	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
-
-​	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
-
-​	**[core]**
-
-​	preload_keys=/tmp/keys.txt
-
-​	keyagent_conf=/opt/skc/etc/key-agent.ini
-
-​	mode=SGX
-
-​	debug=true
-
-​	**[SW]**
-
-​	module=/usr/lib64/pkcs11/libsofthsm2.so
-
-​	**[SGX]**
-
-​	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+	
+	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
+	
+	**[core]**
+	
+	preload_keys=/tmp/keys.txt
+	
+	keyagent_conf=/opt/skc/etc/key-agent.ini
+	
+	mode=SGX
+	
+	debug=true
+	
+	**[SW]**
+	
+	module=/usr/lib64/pkcs11/libsofthsm2.so
+	
+	**[SGX]**
+	
+	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 # KBS key-transfer flow validation
 
@@ -700,7 +704,7 @@ Initiate Key transfer from KBS
     systemctl restart nginx
 ```
 
-Establish ssh session with the nginx using the key transferred inside the enclave
+Establish a tls session with the nginx using the key transferred inside the enclave
 
 ```
     wget https://localhost:2443 --no-check-certificate
