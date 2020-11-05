@@ -237,7 +237,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   ```shell
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
-  ./ws-prereq.sh -s
+  ./ws-prereq.sh -v
   ```
   
 * Build repo
@@ -267,7 +267,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   ```shell
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
-  ./ws-prereq.sh -s
+  ./ws-prereq.sh -d
   ```
 
 * Enable and start the Docker daemon
@@ -324,7 +324,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   ```shell
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
-  ./ws-prereq.sh -s
+  ./ws-prereq.sh -c
   ```
 
 * Download go dependencies
@@ -674,16 +674,101 @@ for the Control Plane nodes, and a scheduler extension. A single installer will
 deploy both of these CRDs. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
-To deploy the Kubernetes integration CRDs for Intel® SecL:
 
-1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node
-    and execute the installer
+#### Deploy Intel® SecL Custom Controller
+
+1.  Copy tar output isecl-k8s-extensions-*.tar.gz to /opt/ directory and extract the contents
     
     ```shell
-    ./isecl-k8s-extensions-v3.0.0.bin
+    cd /opt/
+    tar -xvzf isecl-k8s-extensions-*.tar.gz
     ```
     
-2.  Add a mount path to the
+2.  Create hostattributes.crd.isecl.intel.com crd
+    
+    ```shell
+    kubectl apply -f yamls/crd-1.17.yaml
+    ```
+
+3. Check whether the crd is created
+
+   ```shell
+   kubectl get crds
+   ```
+
+4. Fields for isecl-scheduler configuration in isecl-scheduler.yaml
+
+
+5. Deploy isecl-controller
+
+   ```shell
+   kubectl apply -f yamls/isecl-controller.yaml
+   ```
+
+6. Check whether the isecl-controller is up and running
+   
+   ```shell
+   kubectl get deploy -n isecl
+   ```
+
+7. Create clusterrolebinding for ihub to get access to cluster nodes
+   
+   ```shell
+   kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+   ```
+
+8. Fetch token required for ihub installation
+
+   ```shell
+   kubectl get secrets -n isecl
+   kubectl describe secret default-token-<name> -n isecl
+   ```
+
+#### Deploy Intel® SecL Extended Scheduler
+
+1. Create tls key pair for isecl-scheduler service, which is signed by k8s `apiserver.crt`
+
+   ```shell
+   cd /opt/isecl-k8s-extensions/
+   chmod +x create_k8s_extsched_cert.sh
+   ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+   ```
+
+2. Copy `ihub_public_key.pem` from integration hub with hvs attestation master vm and also tls key pair generated in previous step to secrets directory
+
+  ```shell
+  mkdir secrets
+  cp /opt/isecl-k8s-extensions/server.key secrets/
+  cp /opt/isecl-k8s-extensions/server.crt secrets/
+  cp ihub_public_key.pem secrets/hvs_ihub_public_key.pem 
+  ```
+  > **Note:** Prefix the attestation type for ihub_public_key.pem before copying to secrets folder. Supported attestation types hvs only
+
+3. Create kubernetes secrets scheduler-secret for isecl-scheduler
+
+  ```shell
+  kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+  ```
+
+4. Fields for isecl-scheduler configuration in isecl-scheduler.yaml
+
+
+5. Deploy isecl-scheduler
+   
+   ```shell
+   kubectl apply -f yamls/isecl-scheduler.yaml
+   ```
+
+6. Check whether the isecl-scheduler is up and running
+  
+   ```shell
+  kubectl get deploy -n isecl
+  ```
+
+
+#### Configure kube-scheduler to establish communication with isecl-scheduler
+
+1.  Add a mount path to the
     `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
     SecL scheduler extension:
 
@@ -693,7 +778,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
       readOnly: true
     ```
 
-3.  Add a volume path to the
+2.  Add a volume path to the
     `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
     SecL scheduler extension:
 
@@ -704,7 +789,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
       name: extendedsched
     ```
 
-4.  Add `policy-config-file` path in the
+3.  Add `policy-config-file` path in the
     `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
 
     ```yaml
@@ -716,32 +801,23 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
       - --leader-elect=true
     ```
 
-5.  Wait for the isecl-controller and isecl-scheduler pods to be into
+4.  Wait for the isecl-controller and isecl-scheduler pods to be into
     running state
 
     ```shell
-kubectl get pods -n isecl
+    kubectl get pods -n isecl
     ```
-    
-6. Create role bindings on the Kubernetes Control Plane Node:
 
-```
-kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+5. Run the command `systemctl restart kubelet` to restart all the control
+   plane container services, including the base scheduler.
 
-kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-controller --user=system:serviceaccount:isecl:isecl
-```
-
-
-
+<!-- 
 7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
 
 ```shell
 scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-```
-
-8. Run the command `systemctl restart kubelet` to restart all the control
-   plane container services, including the base scheduler.
-
+``` -->
+<!-- 
 The scheduler yaml is present under
 `/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
 
@@ -789,7 +865,7 @@ To verify the Intel SecL CRDs have been deployed:
 
 ```shell
 kubectl get crds
-```
+``` -->
 
 
 
