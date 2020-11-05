@@ -1222,7 +1222,7 @@ POST https://verification.service.com:8443/hvs/v2/flavors
 
 The Hub is REQUIRED for the following use cases.
 
--   Workload Confidentiality (both VMs and Docker Containers)
+-   Workload Confidentiality (both VMs and Containers)
 
 The Hub is OPTIONAL for the following use cases (used only if
 orchestration or other integration support is needed):
@@ -1354,18 +1354,17 @@ The following must be completed before installing the Key Broker:
 
 -   The Certificate Management Service must be installed and available
 
--   (Recommended; Required if a 3^rd^-party Key Management Server will
-    be used) A KMIP 2.0-compliant 3^rd^-party Key management Server must
+-   (Recommended; Required if a 3rd-party Key Management Server will
+    be used) A KMIP 2.0-compliant 3rd-party Key management Server must
     be available.
-
-    -   The Key Broker will require the KMIP server’s client
+-   The Key Broker will require the KMIP server’s client
         certificate, client key and root ca certificate.
-
-    -   The Key Broker uses the libkmip client to connect to a KMIP
+    
+-   The Key Broker uses the libkmip client to connect to a KMIP
         server
-
-    -   The Key Broker has been validated using the pykmip 0.9.1 KMIP
-        server as a 3^rd^-party Key Management Server. While any general
+    
+-   The Key Broker has been validated using the pykmip 0.9.1 KMIP
+        server as a 3rd-party Key Management Server. While any general
         KMIP 2.0-compliant Key Management Server should work,
         implementation differences among KMIP providers may prevent
         functionality with specific providers.
@@ -1383,16 +1382,25 @@ Enterprise Linux 8.2
 
 1.  Copy the Key Broker installation binary to the /root/ directory.
 
-2.  Create the installation answer file kms.env:
+2. Create the installation answer file kbs.env:
 
-    ```shell
-    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
-    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
-    KMS_TLS_CERT_IP=<comma-separated list of IP addresses for the Key Broker>
-    KMS_TLS_CERT_DNS=<comma-separated list of hostnames for the Key Broker>
-    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
-    BEARER_TOKEN=<Installation token from populate-users script>
-    ```
+   ```shell
+   AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+   CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
+   ENDPOINT_URL=https://<KBS IP or hostname>:9443/kbs/v1/
+   TLS_SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
+   CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
+   BEARER_TOKEN=<Installation token from populate-users script>
+   
+   ### OPTIONAL - KMIP configuration only
+   KEY_MANAGER=KMIP
+   KMIP_SERVER_IP=<IP address of KMIP server>
+   KMIP_SERVER_PORT=<Port number of KMIP server>
+   ### Retrieve the following certificates and keys from the KMIP server
+   KMIP_CLIENT_KEY_PATH=/etc/kbs/client_key.pem
+   KMIP_ROOT_CERT_PATH=/etc/kbs/root_certificate.pem
+   KMIP_CLIENT_CERT_PATH=/etc/kbs/client_certificate.pem
+   ```
 
 3.  Execute the KBS installer.
 
@@ -1402,36 +1410,35 @@ Enterprise Linux 8.2
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
 
-The Key Broker immediately after installation will be configured to use
-a filesystem key management solution. This should be used only for
-testing and POC purposes; using a secure 3rd-party Key management
-Server should be used for production deployments. To configure the Key
-Broker to point to a 3rd-party KMIP-compliant Key Management Server:
+The Key Broker can be configured to use a 3rd-party KMIP key manager as part of installation using optional kbs.env installation variables.  Without using these variables, the Key Broker will be configured to use a filesystem key management solution. This should be used only for testing and POC purposes; using a secure 3rd-party Key management Server should be used for production deployments. 
+
+To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
 1.  Copy the KMIP server’s client certificate, client key and root ca
-    certificate into `/opt/kms/configuration/` on the Key Broker
+    certificate into `/opt/kbs/configuration/` on the Key Broker
 
 2.  Change the ownership of these files to `kms:kms`
 
     ```shell
-    chown kms:kms /opt/kms/configuration/*
+    chown kms:kms /opt/kbs/configuration/*
     ```
 
 3.  Configure the variables for kmip support as below
 
     ```shell
-    kms config key.manager.provider com.intel.kms.keystore.kmip.KMIPKeyManager
-    kms config kmip.server.address <IP>
-    kms config kmip.server.port <PORT>
-    kms config kmip.ca.certificates.path <path to kmip ca certificate>
-    kms config kmip.client.certificate.path <path to kmip client certificate>
-    kms config kmip.client.key.path <path to kmip client key>
+    kbs config key.manager.provider com.intel.kbs.keystore.kmip.KMIPKeyManager
+    kbs config kmip.server.address <IP>
+    kbs config kmip.server.port <PORT>
+    kbs config kmip.ca.certificates.path <path to kmip ca certificate>
+    kbs config kmip.client.certificate.path <path to kmip client certificate>
+    kbs config kmip.client.key.path <path to kmip client key>
     ```
 
 4.  Restart the Key Broker for the settings to take effect
 
     ```shell
-    kms restart
+    kbs stop
+    kbs start
     ```
 
 ### 3.16.7  Importing Verification Service Certificates
@@ -1454,7 +1461,7 @@ Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```
-POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:9443/kbs/v1/saml-certificates
 Content-Type: application/x-pem-file 
 -----BEGIN CERTIFICATE-----
 MIID9TCCAl2gAwIBAgIBCTANBgkqhkiG9w0BAQwFADBQMQswCQYDVQQGEwJVUzEL
@@ -1494,7 +1501,7 @@ Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```
-POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:9443/kbs/v1/tpm-identity-certificates
 Content-Type: application/x-pem-file 
 -----BEGIN CERTIFICATE-----
 MIIHaDCCBdCgAwIBAgIGAW72eWZ9MA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMT
@@ -14845,163 +14852,7 @@ typically these are the same variables set in the service installation
         default specified in config
 
 <div style="page-break-after: always"></div> 
-# 13  TLS Policies
-
-The Intel Security Libraries Verification Service validates the
-authenticity of connections through the use of various TLS verification
-policies.
-
-## 13.1  TLS Policy Types
-
-Intel Security Libraries Verification Service uses six types of TLS
-policies.
-
-<table>
-<thead>
-<tr class="header">
-<th>Policy Type</th>
-<th>Behavior</th>
-<th>Shared</th>
-<th>Per-Host</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Certificate</td>
-<td><p>The certificate policy requires one or more trusted certificates or CA certificates and only connects to a peer whose certificate either is a trusted certificate or is signed by a CA that is trusted. This policy type also performs hostname verification.</p>
-<p><strong>Note:</strong> The remote server's hostname must be resolvable from the Mt. Wilson server).</p></td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td>Certificate Fingerprint</td>
-<td>This policy stores the SHA384 hash of the certificate for validation rather than the entire certificate itself.</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td>Public Key</td>
-<td>The public key policy requires one public key parameter and only connects to a peer using that key. This is similar to SSH public key authentication of clients and hosts. Hostname verification is NOT performed when using Public Key TLS policies.</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td>Public Key Fingerprint</td>
-<td>This policy stores the SHA384 hash of the public key for validation rather than the public key itself.</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td>TRUST_FIRST_CERTIFICATE</td>
-<td>This policy stores the first certificate encountered when connecting to a host, and uses that certificate for all future TLS validation with that host.</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-<tr class="even">
-<td>INSECURE</td>
-<td>This policy disables all TLS validation. All connections are accepted regardless of TLS certificates. This policy should be used for troubleshooting and development only, and should never be used in a production environment.</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-
-## 13.2  Policy Scope
-
-
-TLS policies can be per-host or shared across multiple hosts.
-
-### 13.2.1  Per-Host 
-
-A per-host TLS policy is an individual, per-host TLS policy. When the
-host is deleted, its per-host TLS policy is automatically deleted as
-well.
-
-### 13.2.2  Shared 
-
-A shared TLS policy may be referenced by multiple host records. When a
-host that referenced a shared TLS policy is deleted, the shared policy
-continues to exist regardless if there are any remaining hosts that are
-referencing it. Shared policies must be explicitly deleted by the user.
-
-The Verification Service requires a TLS policy to be defined for any
-remote host to which it connects. If no TLS policy is defined, or if the
-TLS information does not match the TLS policy, the connection fails.
-
-
-
-## 13.3  Default Policy Selection
-
-
-Any shared-scope policy can be defined as the “default” TLS policy for a
-given Verification Service environment. For example, if all TLS
-certificates for all hosts in the attestation environment have been
-signed by the same CA certificate, that CA certificate can be used to
-create a shared-scope certificate policy, and this same policy could be
-used to validate all TLS connections with all attested hosts. By
-configuring this policy as the default TLS policy, the Verification
-Service uses this specific policy for all hosts unless another policy is
-specified.
-
-In the Verification Service UI, this mostly means that the default
-policy is automatically selected from the drop-down when registering
-hosts. From an API perspective, it means that, when calling a
-registration API, if no TLS policy is specifically defined in the call,
-the default TLS policy is used. Using a shared default policy that is
-valid across all hosts in the attestation environment can greatly
-simplify TLS policy and host management.
-
-> ***Note:*** *During installation, the only two shared-scope policies that might
-> be available are TRUST\_FIRST\_CERTIFICATE and INSECURE, and these
-> only if they have actually been enabled. All other policies must be
-> user-created after installation. To define a default TLS policy,
-> edit the mtwilson.properties file and set the value of
-> mtwilson.default.tls.policy.id to either the UUID or the name of the
-> shared-scope TLS policy to be set as the default. Restart Mt. Wilson
-> to affect the change.*
-
-
-
-## 13.4  Default TLS Policies
-
-At the time the Verification Service is installed, two TLS policies are
-created.
-
-### 13.4.1  TRUST\_FIRST\_CERTIFICATE 
-
-This policy creates a new TLS policy the first time that a new host is
-registered to the Verification Service, and uses that policy for all
-future interactions with that host.
-
-### 13.4.2  INSECURE
-
-This policy turned off all TLS certificate validation entirely (all
-connections were trusted, regardless of TLS certificates). This policy
-should only be used for development or troubleshooting, and should never
-be used in a production environment.
-
-To configure the Verification Service to use TRUST\_FIRST\_CERTIFICATE
-as the default TLS Policy (and disallow the use of INSECURE), use the
-following settings:
-
-```shell
-mtwilson.tls.policy.allow=TRUST_FIRST_CERTIFICATE
-```
-
-```shell
-mtwilson.default.tls.policy.id=TRUST_FIRST_CERTIFICATE
-```
-
-This can be done automatically during installation by setting the
-following variables in `mtwilson.env`:
-
-```shell
-export MTW_TLS_POLICY_ALLOW= TRUST_FIRST_CERTIFICATE
-export MTW_DEFAULT_TLS_POLICY_ID=TRUST_FIRST_CERTIFICATE
-```
-
-<div style="page-break-after: always"></div>
-# 14  Uninstallation
+# 13  Uninstallation
 
 This section describes steps used for uninstalling Intel SecL-DC
 services.
@@ -15010,7 +14861,7 @@ services.
     uninstall a containerized deployment, simply shut down the container
     and delete the persistence volumes.
 
-## 14.1 Host Verification Service
+## 13.1 Host Verification Service
 
 To uninstall the Verification Service, run the following command:
 
@@ -15034,7 +14885,7 @@ the following:
 
 
 
-## 14.2  Trust Agent
+## 13.2  Trust Agent
 
 To uninstall the Trust Agent, run the following command:
 
@@ -15067,7 +14918,7 @@ reinstallation will require clearing TPM ownership.
 
 
 
-## 14.3  Integration Hub
+## 13.3  Integration Hub
 
 To uninstall the Integration Hub, run the following command:
 
@@ -15097,7 +14948,7 @@ without the –purge option):
 3.  Removes integration hub tenant configuration path
 
 <div style="page-break-after: always"></div>
-## 14.4 Kubernetes CRDs
+## 13.4 Kubernetes CRDs
 
 Uninstalling the Intel® SecL Custom Resource Definitions 
 
@@ -15113,13 +14964,13 @@ rm -rf /var/log/isecl-k8s-extensions
 
 
 
-# 15  Appendix
+# 14  Appendix
 
-## 15.1  PCR Definitions
+## 14.1  PCR Definitions
 
-### 15.1.1  Microsoft Windows Server 2016 Datacenter
+### 14.1.1  Microsoft Windows Server 2016 Datacenter
 
-#### 15.1.1.1  TPM 2.0
+#### 14.1.1.1  TPM 2.0
 
 <table>
 <thead>
@@ -15166,9 +15017,9 @@ rm -rf /var/log/isecl-k8s-extensions
 </tbody>
 </table>
 
-### 15.1.2  Red Had Enterprise Linux
+### 14.1.2  Red Had Enterprise Linux
 
-#### 15.1.2.1  TPM 2.0
+#### 14.1.2.1  TPM 2.0
 
 <table>
 <thead>
@@ -15247,9 +15098,9 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-### 15.1.3  VMWare ESXi
+### 14.1.3  VMWare ESXi
 
-#### 15.1.3.1  TPM 1.2
+#### 14.1.3.1  TPM 1.2
 
 <table>
 <thead>
@@ -15325,7 +15176,7 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-#### 15.1.3.2  TPM 2.0
+#### 14.1.3.2  TPM 2.0
 
 VMWare supports TPM 2.0 with Intel TXT starting in vSphere 6.7 Update 1.
 Earlier versions will support TPM 1.2 only.
@@ -15527,8 +15378,4 @@ Earlier versions will support TPM 1.2 only.
 </tbody>
 </table>
 
-
-## A.2  Intel TXT and the Trusted Boot Process
-
-<img src="images\trustedbootprocess" alt="image-20200622105132912" style="zoom:150%;" />
->>>>>>> c58f1e2bd98b945b9d3f5b2c45f7829762e6f7ed
+>>>>>>> 
