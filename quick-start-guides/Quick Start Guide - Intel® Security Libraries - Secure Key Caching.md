@@ -122,7 +122,7 @@ rm -rf go1.14.2.linux-amd64.tar.gz
 
 Note: currently, the repos contain the source code of both the SGX Attestation Infrastructure and SKC. Make will build and package all the binaries and installation scripts  but the SGX Attestation Infrastructure can be installed and deployed separately. SKC cannot be installed without the SGX Attestation Infrastructure. 
 
-The rest of this document will indicate components that are not needed if the user wants to only install the SGX Attestation Infrastructure. 
+The rest of this document will indicate steps that are only needed for SKC. 
 
 **Pulling Source Code**
 
