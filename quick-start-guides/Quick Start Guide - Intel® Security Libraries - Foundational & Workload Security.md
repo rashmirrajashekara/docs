@@ -755,7 +755,7 @@ deployment in the `isecl` namespace.
    ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c <k8s_ca_authority_cert> -k <k8s_ca_authority_key>
    ```
 
-   > **Note:**  In most  Kubernetes distributions the API Server certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions
+   > **Note:**  In most  Kubernetes distributions the Kubernetes certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions.
 
 3. Copy the TLS key-pair generated to `/<path>/secrets/` directory
 
