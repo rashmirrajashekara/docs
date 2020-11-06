@@ -4,6 +4,7 @@ Table of Contents
 -----------------
 
    * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+      * [Table of Contents](#table-of-contents)
       * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
          * [Physical Server requirements](#physical-server-requirements)
          * [OS Requirements](#os-requirements)
@@ -25,6 +26,10 @@ Table of Contents
          * [Update Ansible Inventory](#update-ansible-inventory)
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
+            * [TPM is already owned](#tpm-is-already-owned)
+            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
+            * [Using Docker Notary](#using-docker-notary)
+            * [In case of Misconfigurations](#in-case-of-misconfigurations)
       * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-2)
          * [Use Case Collections](#use-case-collections)
@@ -34,7 +39,11 @@ Table of Contents
          * [Running behind Proxy](#running-behind-proxy)
          * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
          * [Rebuilding Repos](#rebuilding-repos)
-         * [Installing the Intel® SecL Custom Resource Definitions(isecl-k8s-extensions)](#installing-the-intel-secl-custom-resource-definitionsisecl-k8s-extensions)
+         * [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
+            * [Deploy Intel® SecL Custom Controller](#deploy-intel-secl-custom-controller)
+            * [Installing the Intel® SecL Integration Hub](#installing-the-intel-secl-integration-hub)
+            * [Deploy Intel® SecL Extended Scheduler](#deploy-intel-secl-extended-scheduler)
+            * [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
 
 
 
