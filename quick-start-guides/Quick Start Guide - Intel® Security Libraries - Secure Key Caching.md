@@ -1,6 +1,6 @@
 ​	
 
-# **Secure Key Caching (SKC) Quick Start Guide**
+# **SGX Attestation Infrastructure and Secure Key Caching (SKC) Quick Start Guide**
 
 [[_TOC_]]
 
