@@ -108,13 +108,13 @@ PKCS\#11 is the standard cryptographic programming interface supported by HSMs. 
 
 The SGX Attestation Infrastructure allows to fetch PCK certificates and SGX collateral from Intel SGX Provisioning Certification Service (PCS). It makes the PCK certificates available to workloads that use the SKC Client, which allows them to generate SGX quotes. The SGX Attestation Infrastructure also includes components that perform the verification of SGX quotes.
 
-### Key Protection
-
-SKC allows to protect keys in an SGX enclave at rest and in use. Applications use the SKC Client -- a set of libraries -- to retrieves keys at runtime from KBS. KBS performs an SGX enclave attestation. If the attestation is successful, KBS generates a Symmetric Wrapping Key (SWK), wraps it with the enclave public key and provisions it into the enclave, which can unwrap it since it has the corresponding private key. Application can then be provisioned into the SGX enclave after being wrapped with the SWK. Application keys are therefore never exposed to any software outside of the enclave.
-
 ### SGX Support in Orchestrators
 
 The SGX Attestation Infrastructure can optionally push the SGX information about compute nodes to cloud orchestrators so that SGX workloads (like SKC) can be scheduled on compute nodes that support SGX. Currently, the Kubernetes orchestrator is supported.
+
+### Key Protection
+
+SKC leverages the SGX Attestation Infrastructure to protect keys in an SGX enclave at rest and in use. Applications use the SKC Client -- a set of libraries -- to retrieves keys at runtime from KBS. KBS performs an SGX enclave attestation. If the attestation is successful, KBS generates a Symmetric Wrapping Key (SWK), wraps it with the enclave public key and provisions it into the enclave, which can unwrap it since it has the corresponding private key. Application can then be provisioned into the SGX enclave after being wrapped with the SWK. Application keys are therefore never exposed to any software outside of the enclave.
 
 # SGX Attestation Infrastructure and SKC Components
 
@@ -156,7 +156,7 @@ The SGX Agent resides on physical servers and reports on platform SGX-related in
 
 The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts deails from Kubernetes and then using the host infomration it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
-## Key Broker Service
+## Key Broker Service (SKC Only)
 
 The Key Broker Service (KBS) is typically deployed in the tenant environment, not the Cloud Service Provider (CSP) environment. KBS is effectively a policy compliance engine. Its job is to manage key transfer requests from SKC Clients, releasing keys only to those that meet policy requirements. A user admin can create and register keys in KBS. He can also create key policies and assign them to keys. A key policy specifies the conditions that the SKC Client must fulfill for keys that have the policy assigned to them to be released. Most of the information about an SKC Client is contained in the SGX quote that it sends to KBS. The SGX quote also contains a hash of the enclave's public key. KBS gets the public key along the quote so the hash in the quote allows to verify that the public key is genuine. If the SGX quote verification (attestation) is successful, KBS generates a Symmetric Wrapping Key (SWK), wraps it with the enclave public key and provisions it into the enclave, which can unwrap it since it has the corresponding private key. Application can then be provisioned into the SGX enclave after being wrapped with the SWK. Application keys are therefore never exposed to any software outside of the enclave. 
 
@@ -166,9 +166,13 @@ KBS is shared with other Intel® SecL-DC components.
 
 The SGX Quote Verification Service (SQVS) is typically deployed in the tenant environment, not the Cloud Service Provider (CSP) environment. SQVS performs the verification of SGX quotes on behalf of KBS. SQVS determines if the SGX quote signature is valid. It also determines if the SGX quote has been generated on a platform that is up to date on security patches (TCB). For the latter, SQVS uses the SGX Caching Service, which caches the SGX collateral information about Intel platform models. SQVS also parses the SGX quote and extracts the entities and returns them to KBS, which can then make additional policy decisions based on the values of the theses entities.
 
-## The SKC Client
+## The Workload SGX Dependencies
 
-The SKC Client refers to a suite of libraries that applications that require key protection must link with. It's comprised of the SKC Library, which is an Intel® SecL-DC component and other Intel dependency libraries. The SKC Library supports the PKCS\#11 interface and is therefore considered as a PKCS\#11 module from the host application perspective. The SKC Library uses the Intel Crypto Toolkit to protect keys in an SGX enclave. When a key is requested by the host application, the SKC Library sends a request to the Key Broker Service (KBS) along with an SGX quote that is generated by the Crypto Toolkit. KBS releases the key after verifying the quote and evaluating the attributes contained in the quote. The key policy can also specify conditions that can't be verified with the SGX quote alone.
+This is a set of dependencies needed by SGX workloads. 
+
+## The SKC Client (SKC Only)
+
+The SKC Client refers to a suite of libraries that applications that require key protection must link with. It's comprised of the SKC Library, which is an Intel® SecL-DC component and the Intel Crypto Toolkit. the SKC Client uses the workload SGX dependencies component.  The SKC Library supports the PKCS\#11 interface and is therefore considered as a PKCS\#11 module from the host application perspective. The SKC Library uses Intel Crypto Toolkit to protect keys in an SGX enclave. When a key is requested by the host application, the SKC Library sends a request to the Key Broker Service (KBS) along with an SGX quote that is generated by the Crypto Toolkit. KBS releases the key after verifying the quote and evaluating the attributes contained in the quote. The key policy can also specify conditions that can't be verified with the SGX quote alone.
 
 The SKC Client is typically deployed inside a tenant VM or container. It can also be used on bare metal. In all these deployments, the underlying platform is typically owned by a Cloud Service Provider (CSP) and is considered untrusted.
 
@@ -587,39 +591,39 @@ copy install_pgscsdb.sh to /root/ directory
 
 2. Create the scs.env installation answer file in /root/ directory as below:
 
-          SCS_DB_USERNAME=\<database username\>
-       
-          SCS_DB_PASSWORD=\<database password\>
-       
-          SCS_DB_HOSTNAME=\<IP or hostname of database server\>
-       
-          SCS_DB_PORT=\<Database port; 5432 by default\>
-       
-          SCS_DB_NAME=\<name of the SCS database; pgscsdb by default\>
-       
-          SCS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically
-       
-          /usr/local/pgsql/data/server.crt \>
-       
-          INTEL_PROVISIONING_SERVER=\<hostname of INTEL PCS Server\>
-       
-          INTEL_PROVISIONING_SERVER_API_KEY=\<subscription key\>
-       
-          SCS_REFRESH_HOURS=\<time in hours to refresh SGX collaterals; 1 hour by default\>
-       
-          SCS_ADMIN \_USERNAME=\<username for SCS service account\>
-       
-          SCS_ADMIN_PASSWORD=\<password for SCS service account\>
-       
-          CMS_BASE_URL=https://\<IP or hostname to CMS\>:8445/cms/v1/
-       
-          CMS_TLS_CERT_SHA384=\<sha384 of CMS TLS certificate\>
-       
-          AAS_API_URL=https://\<IP or hostname to AAS\>:8444/aas/
-       
-          SAN_LIST=\<comma-separated list of IPs and hostnames for the SCS\>
-       
-          BEARER_TOKEN=< Installation token from AAS > 
+       SCS_DB_USERNAME=\<database username\>
+        
+       SCS_DB_PASSWORD=\<database password\>
+        
+       SCS_DB_HOSTNAME=\<IP or hostname of database server\>
+        
+       SCS_DB_PORT=\<Database port; 5432 by default\>
+        
+       SCS_DB_NAME=\<name of the SCS database; pgscsdb by default\>
+        
+       SCS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically
+        
+       /usr/local/pgsql/data/server.crt \>
+        
+       INTEL_PROVISIONING_SERVER=\<hostname of INTEL PCS Server\>
+        
+       INTEL_PROVISIONING_SERVER_API_KEY=\<subscription key\>
+        
+       SCS_REFRESH_HOURS=\<time in hours to refresh SGX collaterals; 1 hour by default\>
+        
+       SCS_ADMIN \_USERNAME=\<username for SCS service account\>
+        
+       SCS_ADMIN_PASSWORD=\<password for SCS service account\>
+        
+       CMS_BASE_URL=https://\<IP or hostname to CMS\>:8445/cms/v1/
+        
+       CMS_TLS_CERT_SHA384=\<sha384 of CMS TLS certificate\>
+        
+       AAS_API_URL=https://\<IP or hostname to AAS\>:8444/aas/
+        
+       SAN_LIST=\<comma-separated list of IPs and hostnames for the SCS\>
+        
+       BEARER_TOKEN=< Installation token from AAS > 
 
 Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
 
@@ -937,35 +941,35 @@ To install the SGX Integration Hub, follow these steps:
 
 2. Create the ihub.env installation answer file in /root/ directory as below
 
-          IHUB_SERVICE_USERNAME =< IHUB service user username > 
-       
-          IHUB_SERVICE_PASSWORD=< IHUB service user password > 
-       
-          ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
-       
-          ATTESTATION_TYPE = SGX
-       
-          TENANT=< tenant-type e.g. KUBERNETES >
-       
-          KUBERNETES_URL =< https://< Kubernetes IP >:6443/
-       
-          KUBERNETES_CRD = custom-isecl
-       
-          KUBERNETES_TOKEN = < K8S token >
-       
-          KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
-       
-          CMS_TLS_CERT_SHA384=< CMS TLS digest > 
-       
-          BEARER_TOKEN=< Installation token from AAS > 
-       
-          AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
-       
-          CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
-       
-          POLL_INTERVAL_MINUTES=2
-       
-          TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
+       IHUB_SERVICE_USERNAME =< IHUB service user username > 
+        
+       IHUB_SERVICE_PASSWORD=< IHUB service user password > 
+        
+       ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+        
+       ATTESTATION_TYPE = SGX
+        
+       TENANT=< tenant-type e.g. KUBERNETES >
+        
+       KUBERNETES_URL =< https://< Kubernetes IP >:6443/
+        
+       KUBERNETES_CRD = custom-isecl
+        
+       KUBERNETES_TOKEN = < K8S token >
+        
+       KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
+        
+       CMS_TLS_CERT_SHA384=< CMS TLS digest > 
+        
+       BEARER_TOKEN=< Installation token from AAS > 
+        
+       AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
+        
+       CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+        
+       POLL_INTERVAL_MINUTES=2
+        
+       TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
 
 
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
@@ -1075,23 +1079,23 @@ NA
 
 2. Create the installation answer file kbs.env /root/ directory as below:
 
-          KBS_SERVICE_USERNAME =< KBS service user username > 
-       
-          KBS_SERVICE_PASSWORD=< KBS service user password > 
-       
-          AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
-       
-          CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
-       
-          SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
-       
-          KEY_MANAGER=Directory
-       
-          CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
-       
-          TLS_SAN_LIST=\<KBS Hostname/IP>
-       
-          BEARER_TOKEN=\<Installation token from AAS\>
+       KBS_SERVICE_USERNAME =< KBS service user username > 
+        
+       KBS_SERVICE_PASSWORD=< KBS service user password > 
+        
+       AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
+        
+       CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+        
+       SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
+        
+       KEY_MANAGER=Directory
+        
+       CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
+        
+       TLS_SAN_LIST=\<KBS Hostname/IP>
+        
+       BEARER_TOKEN=\<Installation token from AAS\>
 
 
 3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
