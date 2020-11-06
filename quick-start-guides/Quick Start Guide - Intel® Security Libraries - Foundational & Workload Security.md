@@ -2,7 +2,7 @@
 
 Table of Contents
 -----------------
-   
+
    * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
       * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
          * [Physical Server requirements](#physical-server-requirements)
@@ -60,7 +60,8 @@ Table of Contents
 ### User Access
 
 * The services need to be built & installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC.
-  > **Note:** When using Ansible role for deployment, Ansible needs to be able to talk to remote machines as root user for successful deployment
+  
+> **Note:** When using Ansible role for deployment, Ansible needs to be able to talk to remote machines as root user for successful deployment
 
 * All Intel® SecL-DC service & agent ports should be allowed in firewall rules. 
 
@@ -122,70 +123,6 @@ The below steps needs to be carried out on the Build and Deployment VM
   export GOROOT=<path_to_go>
   export PATH=$GOROOT/bin:$PATH
   ```
-  
-* Extract and Install `Maven` & set in `PATH`
-
-  ```shell
-  wget https://archive.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-  tar -xf apache-maven-3.6.3-bin.tar.gz
-  export M2_HOME=<path_to_maven>
-  export PATH=$M2_HOME/bin:$PATH
-  ```
-
-  - Add the below profile element under the `<profiles>` section of `settings.xml` located under `<path_to_maven>/conf/` folder
-
-    ```xml
-    <profile>
-        <id>artifacts</id>
-        <repositories>
-        <repository>
-            <id>mulesoft-releases</id>
-            <name>MuleSoft Repository</name>
-            <url>http://repository.mulesoft.org/releases/</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
-            <id>maven-central</id>
-            <snapshots><enabled>false</enabled></snapshots>
-            <url>http://central.maven.org/maven2</url>
-        </repository>
-        </repositories>
-    </profile>
-    ```
-
-  - Enable `<activeProfiles>` to include the above profile.
-
-    ```xml
-    <activeProfiles>
-        <activeProfile>artifacts</activeProfile>
-    </activeProfiles>
-    ```
-
-  - If you are behind a proxy, enable proxy setting under maven `settings.xml`
-
-    ```xml
-    <!-- proxies
-    | This is a list of proxies which can be used on this machine to connect to the network.
-    | Unless otherwise specified (by system property or command-line switch), the first proxy
-    | specification in this list marked as active will be used.
-    |-->
-    <proxies>
-        <!-- proxy
-        | Specification for one proxy, to be used in connecting to the network.
-        |
-        <proxy>
-        <id>optional</id>
-        <active>true</active>
-        <protocol>http</protocol>
-        <username>proxyuser</username>
-        <password>proxypass</password>
-        <host>proxy.host.net</host>
-        <port>80</port>
-        <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
-        </proxy>
-        -->
-    </proxies> 
-    ```
   
 ### Building
 
@@ -342,7 +279,10 @@ The below steps needs to be carried out on the Build and Deployment VM
   make all
   ```
   
+  > **Note:** The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.3.7`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.3.7 in that case.
+  
 * Built binaries
+  
   ```shell
   /root/intel-secl/build/cc-crio/binaries/
   ```
@@ -499,64 +439,85 @@ OR
 and
 
 ```shell
-ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to>
 ```
 
 ### Additional Examples & Tips
 
-* If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
-  
-  ```shell
-  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars tpm_secret=<tpm owner secret>
-  ```
-  or
+#### TPM is already owned
 
-  Update the following vars in `defaults/main.yml`
+If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
 
-  ```yaml
-  # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
-  tpm_owner_secret: <tpm_secret>
-  ```
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars tpm_secret=<tpm owner secret>
+```
+or
 
-* If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtime` , following option can be provided during runtime in playbook
+Update the following vars in `defaults/main.yml`
 
-  ```shell
-  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars skip_sdd=yes
-  ```
-  or
+```yaml
+# The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
+tpm_owner_secret: <tpm_secret>
+```
 
-  Update the following vars in `defaults/main.yml`
+#### Deploying for Workload Confidentiality with CRIO Runtime
 
-  ```yaml
-  #Enable/disable container security for CRIO runtime
-  # [yes - Launch Time Protection with CRIO Containers, NA - others]
-  skip_secure_docker_daemon: <skip_sdd>
-  ```
+If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtime` , following option can be provided during runtime in playbook. By default, the playbook is configured to install for `Launch Time Protection - Workload Confidentiality with Docker Runtime`
 
-* If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars skip_sdd=yes
+```
+or
 
-  ```shell
-  ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> --extra-vars registry_ipaddr=<registry ipaddr> --extra-vars registry_scheme=<registry scheme[http/https]>
-  ```
-  or
+Update the following vars in `defaults/main.yml`
 
-  Update the following vars in `defaults/main.yml`
+```yaml
+#Enable/disable container security for CRIO runtime
+# [yes - Launch Time Protection with CRIO Containers, NA - others]
+skip_secure_docker_daemon: <skip_sdd>
+```
 
-  ```yaml
-  # [TRUE/FALSE based on registry configured with http/https respectively]
-  # Required for Workload Integrity with containers
-  insecure_skip_verify: <insecure_skip_verify>
+#### Using Docker Notary
 
-  # The registry IP for the Docker registry from where container images are pulled
-  # Required for Workload Integrity with containers
-  registry_ip: <registry_ipaddr>
+If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
 
-  # The registry protocol for talking to the remote registry [http/https]
-  # Required for Workload Integrity with containers
-  registry_scheme_type: <registry_scheme>
-  ```
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> \
+--extra-vars registry_ipaddr=<registry ipaddr> \
+--extra-vars registry_scheme=<registry scheme[http/https]>
+```
+or
 
-* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
+Update the following vars in `defaults/main.yml`
+
+```yaml
+# [TRUE/FALSE based on registry configured with http/https respectively]
+# Required for Workload Integrity with containers
+insecure_skip_verify: <insecure_skip_verify>
+
+# The registry IP for the Docker registry from where container images are pulled
+# Required for Workload Integrity with containers
+registry_ip: <registry_ipaddr>
+
+# The registry protocol for talking to the remote registry [http/https]
+# Required for Workload Integrity with containers
+registry_scheme_type: <registry_scheme>
+```
+
+#### In case of Misconfigurations 
+
+If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
 
 
 ## **5. Usecase Workflows API Collections**
@@ -660,7 +621,7 @@ cd /root/isec/fs
 rm -rf * .repo
 ```
 
-### Installing the Intel® SecL isecl-k8s-extensions
+### Installing the Intel® SecL Kubernetes Extensions and Integration Hub
 
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
@@ -670,49 +631,59 @@ Node will schedule those pods only on Worker Nodes that match the
 specified attributes.
 
 Two CRDs are required for integration with Intel® SecL – an extension
-for the Control Plane nodes, and a scheduler extension. A single installer will
-deploy both of these CRDs. The extensions are deployed as a Kubernetes
+for the Control Plane nodes, and a scheduler extension. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
 
 #### Deploy Intel® SecL Custom Controller
 
-1.  Copy tar output isecl-k8s-extensions-*.tar.gz to /opt/ directory and extract the contents
+1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
     
     ```shell
-    cd /opt/
-    tar -xvzf isecl-k8s-extensions-*.tar.gz
+    #Copy
+    scp /<build_path>/binaries/isecl-k8s-extensions-*.tar.gz <user>@<k8s_master_machine>:/<path>/
+    
+    #Extract
+    tar -xvzf /<path>/isecl-k8s-extensions-*.tar.gz
+    cd /<path>/isecl-k8s-extensions/
     ```
     
-2.  Create hostattributes.crd.isecl.intel.com crd
+2.  Create `hostattributes.crd.isecl.intel.com` CRD
     
     ```shell
+    #1.14<=k8s_version<=1.16
+    kubectl apply -f yamls/crd-1.14.yaml
+
+    #1.16<=k8s_version<=1.18
     kubectl apply -f yamls/crd-1.17.yaml
     ```
-
-3. Check whether the crd is created
+    
+3. Check whether the CRD is created
 
    ```shell
    kubectl get crds
    ```
 
-4. Fields for isecl-scheduler configuration in isecl-scheduler.yaml
+4. Load the `isecl-controller` docker image
 
+   ```shell
+   docker load -i docker-isecl-controller-*.tar
+   ```
 
-5. Deploy isecl-controller
+5. Deploy `isecl-controller`
 
    ```shell
    kubectl apply -f yamls/isecl-controller.yaml
    ```
 
 6. Check whether the isecl-controller is up and running
-   
+
    ```shell
    kubectl get deploy -n isecl
    ```
 
-7. Create clusterrolebinding for ihub to get access to cluster nodes
-   
+7. Create clusterRoleBinding for ihub to get access to cluster nodes
+
    ```shell
    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
    ```
@@ -721,52 +692,132 @@ deployment in the `isecl` namespace.
 
    ```shell
    kubectl get secrets -n isecl
+   
+   #The below token will be used for ihub installation when configured with Kubernetes Tenant
    kubectl describe secret default-token-<name> -n isecl
    ```
 
-#### Deploy Intel® SecL Extended Scheduler
+9. Additional Optional Configurable fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-1. Create tls key pair for isecl-scheduler service, which is signed by k8s `apiserver.crt`
+   | Field                 | Required   | Type     | Default | Description                                                  |      |
+   | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
+   | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |      |
+   | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
+   | TAG_PREFIX            | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
+   | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |      |
+
+
+
+#### Installing the Intel® SecL Integration Hub
+
+1. Copy the API Server certificate of K8s Master to machine where Integration Hub will be installed to `/root/` directory
+
+2. Update the token obtained in  Step 8 of `Deploy Intel® SecL Custom Controller` along with other relevant tenant configuration options in `ihub.env`
+
+3.  Install Integration Hub
+
+4. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Master machine to `/<path>/secrets/` directory
 
    ```shell
-   cd /opt/isecl-k8s-extensions/
-   chmod +x create_k8s_extsched_cert.sh
-   ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+   #On K8s-Master machine
+   mkdir -p /<path>/secrets
+   
+   #Copy
+   scp /etc/ihub/ihub_public_key.pem <user>@<k8s_master_machine>:/<path>/secrets/hvs_ihub_public_key.pem
    ```
 
-2. Copy `ihub_public_key.pem` from integration hub with hvs attestation master vm and also tls key pair generated in previous step to secrets directory
-
-  ```shell
-  mkdir secrets
-  cp /opt/isecl-k8s-extensions/server.key secrets/
-  cp /opt/isecl-k8s-extensions/server.crt secrets/
-  cp ihub_public_key.pem secrets/hvs_ihub_public_key.pem 
-  ```
-  > **Note:** Prefix the attestation type for ihub_public_key.pem before copying to secrets folder. Supported attestation types hvs only
-
-3. Create kubernetes secrets scheduler-secret for isecl-scheduler
-
-  ```shell
-  kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
-  ```
-
-4. Fields for isecl-scheduler configuration in isecl-scheduler.yaml
 
 
-5. Deploy isecl-scheduler
-   
+#### Deploy Intel® SecL Extended Scheduler
+
+1. Install `cfssl` and `cfssljson` on Kubernetes Control Plane
+
    ```shell
+   #Install wget
+   dnf install wget -y
+   
+   #Download cfssl to /usr/local/bin/
+   wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+   chmod +x /usr/local/bin/cfssl
+   
+   #Download cfssljson to /usr/local/bin
+   wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+   chmod +x /usr/local/bin/cfssljson
+   ```
+
+2. Create TLS key-pair for `isecl-scheduler` service which is signed by Kubernetes `apiserver.crt`
+
+   ```shell
+   cd /<path>/isecl-k8s-extensions/
+   chmod +x create_k8s_extsched_cert.sh
+   
+   #Create TLS key-pair
+   ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c <k8s_ca_authority_cert> -k <k8s_ca_authority_key>
+   ```
+
+   > **Note:**  In most  Kubernetes distributions the API Server certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions
+
+3. Copy the TLS key-pair generated to `/<path>/secrets/` directory
+
+   ```shell
+   cp /<path>/isecl-k8s-extensions/server.key /<path>/secrets/
+   cp /<path>/isecl-k8s-extensions/server.crt /<path>/secrets/
+   ```
+
+4. Load the `isecl-scheduler` docker image
+
+   ```shell
+   cd /<path>/isecl-k8s-extensions/
+   docker load -i docker-isecl-scheduler-*.tar
+   ```
+   
+5. Create scheduler-secret for isecl-scheduler
+
+   ```shell
+   cd /<path>/
+   kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+   ```
+
+
+5. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file
+   
+   ```yaml
+    - name: SGX_IHUB_PUBLIC_KEY_PATH
+      value: "" 
+```
+   
+6. Deploy `isecl-scheduler`
+
+   ```shell
+   cd /<path>/isecl-k8s-extensions/
    kubectl apply -f yamls/isecl-scheduler.yaml
    ```
 
-6. Check whether the isecl-scheduler is up and running
-  
+7. Check whether the `isecl-scheduler` is up and running
+
    ```shell
-  kubectl get deploy -n isecl
-  ```
+   kubectl get deploy -n isecl
+   ```
+
+8. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
+
+   | Field                         | Required   | Type     | Default | Description                                                  |      |
+   | ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
+   | LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |      |
+   | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
+   | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
+   | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |      |
+   | HVS_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |      |
+   | SGX_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |      |
+   | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |      |
+   | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |      |
+
+   
 
 
-#### Configure kube-scheduler to establish communication with isecl-scheduler
+#### Configuring kube-scheduler to establish communication with isecl-scheduler
+
+> **Note:** The below is a sample when using `kubeadm` as the Kubernetes distribution, the scheduler configuration files would be different for any other Kubernetes distributions being used.
 
 1.  Add a mount path to the
     `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
@@ -778,126 +829,67 @@ deployment in the `isecl` namespace.
       readOnly: true
     ```
 
-2.  Add a volume path to the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
-    SecL scheduler extension:
+2. Add a volume path to the
+   `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
+   SecL scheduler extension:
 
-    ```yaml
-    - hostPath:
-        path: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-        type: ""
-      name: extendedsched
-    ```
+   ```yaml
+   - hostPath:
+       path: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+       type: ""
+     name: extendedsched
+   ```
 
-3.  Add `policy-config-file` path in the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
+3. Add `policy-config-file` path in the
+   `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
 
-    ```yaml
-    - command:
-      - kube-scheduler
-      - --policy-config-file=/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/scheduler-policy.json
-      - --bind-address=127.0.0.1
-      - --kubeconfig=/etc/kubernetes/scheduler.conf
-      - --leader-elect=true
-    ```
+   ```yaml
+   - command:
+     - kube-scheduler
+     - --policy-config-file=/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/scheduler-policy.json
+     - --bind-address=127.0.0.1
+     - --kubeconfig=/etc/kubernetes/scheduler.conf
+     - --leader-elect=true
+   ```
 
-4.  Wait for the isecl-controller and isecl-scheduler pods to be into
-    running state
+4. Restart kubelet 
 
-    ```shell
-    kubectl get pods -n isecl
-    ```
+   ```shell
+   systemctl restart kubelet
+   ```
 
-5. Run the command `systemctl restart kubelet` to restart all the control
-   plane container services, including the base scheduler.
 
-<!-- 
-7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
 
-```shell
-scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-``` -->
-<!-- 
-The scheduler yaml is present under
-`/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
 
-9. If the Controller and/or Scheduler deployments are deleted, the
-   following steps need to be performed:
 
-a. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
-remove/comment the following content and restart kubelet
 
-​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
 
-​	`systemctl restart kubelet`
 
-b. Redeploy scheduler and controller
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ```
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml
+
 ```
-
-c. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
-add/uncomment the following content and restart kubelet
-
-​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
-
-​	`systemctl restart kubelet`
-
-d. Logs will be appended to older logs in
-/var/log/isecl-k8s-extensions
-
-10. Whenever the CRD's are deleted and restarted for updates, the CRD's
-    using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
-    Kubernetes Version 1.14-1.15 uses crd-1.14.yaml and 1.16-1.17 uses
-    crd-1.17.yaml
-
-```shell
-kubectl delete hostattributes.crd.isecl.intel.com
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
-```
-
-11. (Optional) Verify that the Intel ® SecL Custom Resource Definitions
-    have been started:
-
-To verify the Intel SecL CRDs have been deployed:
-
-```shell
-kubectl get crds
-``` -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
