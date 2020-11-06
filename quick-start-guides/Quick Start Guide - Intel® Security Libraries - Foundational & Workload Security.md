@@ -778,41 +778,38 @@ deployment in the `isecl` namespace.
    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
    ```
 
+6. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file
 
-5. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file
-   
    ```yaml
-    - name: SGX_IHUB_PUBLIC_KEY_PATH
-      value: "" 
-```
-   
-6. Deploy `isecl-scheduler`
+   - name: SGX_IHUB_PUBLIC_KEY_PATH
+     value: ""
+   ```
+
+7. Deploy `isecl-scheduler`
 
    ```shell
    cd /<path>/isecl-k8s-extensions/
-   kubectl apply -f yamls/isecl-scheduler.yaml
+   kubectl apply -f yamls/isecl-scheduler.yaml      
    ```
 
-7. Check whether the `isecl-scheduler` is up and running
+8. Check whether the `isecl-scheduler` is up and running
 
    ```shell
    kubectl get deploy -n isecl
    ```
 
-8. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
+9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
    | Field                         | Required   | Type     | Default | Description                                                  |      |
-   | ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
-   | LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |      |
-   | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
-   | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
-   | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |      |
-   | HVS_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |      |
-   | SGX_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |      |
-   | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |      |
-   | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |      |
-
-   
+| ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
+| LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |      |
+| LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
+| TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
+| PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |      |
+| HVS_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |      |
+| SGX_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |      |
+| TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |      |
+| TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |      |
 
 
 #### Configuring kube-scheduler to establish communication with isecl-scheduler
@@ -824,7 +821,7 @@ deployment in the `isecl` namespace.
     SecL scheduler extension:
 
     ```yaml
-    - mountPath: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+    - mountPath: /<path>/isecl-k8s-extensions/
       name: extendedsched
       readOnly: true
     ```
@@ -835,7 +832,7 @@ deployment in the `isecl` namespace.
 
    ```yaml
    - hostPath:
-       path: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+       path: /<path>/isecl-k8s-extensions/
        type: ""
      name: extendedsched
    ```
@@ -846,7 +843,7 @@ deployment in the `isecl` namespace.
    ```yaml
    - command:
      - kube-scheduler
-     - --policy-config-file=/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/scheduler-policy.json
+     - --policy-config-file=/<path>/isecl-k8s-extensions/scheduler-policy.json
      - --bind-address=127.0.0.1
      - --kubeconfig=/etc/kubernetes/scheduler.conf
      - --leader-elect=true
