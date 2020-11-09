@@ -252,7 +252,7 @@ https://github.com/intel-secl/docs/blob/v3.2/develop/quick-start-guides/Quick%20
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
-For components written in GO (Authentication and Authorization Service, Certificate Management Service, SGXAgent, Integration HUB, SGX Caching Service, SGX Quote Verfication Service, SGX Host Verification Service):
+For components written in GO (Authentication and Authorization Service, Certificate Management Service, SGXAgent, Integration HUB, Key Broker Service, SGX Caching Service, SGX Quote Verfication Service, SGX Host Verification Service):
 
 \<servicename\>/out/\<servicename\>.bin
 
@@ -332,6 +332,8 @@ ISECL_PGDB_SAVE_DB_INSTALL_LOG=true
 ISECL_PGDB_CERT_DNS=localhost
 
 ISECL_PGDB_CERT_IP=127.0.0.1
+
+ISECL_PGDB_DBNAME=aasdb
 
 ISECL_PGDB_USERNAME=aasdbuser
 
