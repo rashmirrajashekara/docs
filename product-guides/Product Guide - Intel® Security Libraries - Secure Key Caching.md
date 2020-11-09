@@ -1084,6 +1084,8 @@ NA
        KBS_SERVICE_USERNAME =< KBS service user username > 
         
        KBS_SERVICE_PASSWORD=< KBS service user password > 
+       
+       SERVER_PORT=9443
         
        AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
         
@@ -1092,6 +1094,12 @@ NA
        SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
         
        KEY_MANAGER=Directory
+       
+       ENDPOINT_URL=https://kbshostname:9443/v1
+       
+       TLS_COMMON_NAME="KBS TLS Certificate"
+       
+       SKC_CHALLENGE_TYPE="SGX"
         
        CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
         
@@ -1927,6 +1935,10 @@ Contains database scripts.
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
 | KBS_SERVICE_USERNAME | admin@kms                                     | KBS Service Username                               |
 | KBS_SERVICE_PASSWORD | kmsAdminPass                                  | KBS Service User Password                          |
+| ENDPOINT_URL         | https://kbshostname:9443/v1                   | KBS Endpoint URL                                   |
+| TLS_COMMON_NAME      | KBS TLS Certificate                           | KBS TLS Certificate common-name                    |
+| SERVER_PORT          | 9443                                          | KBS Secure Port                                    |
+| SKC_CHALLENGE_TYPE   | SGX                                           | Challenge Type                                     |
 | TLS_SAN_LIST         | < KBS IP/Hostname >                           | IP addresses/hostnames to be included in SAN list. |
 | KEY_MANAGER          | Directory                                     | Key Manager Backend to store keys                  |
 
