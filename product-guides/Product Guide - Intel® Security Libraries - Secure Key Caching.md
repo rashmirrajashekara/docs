@@ -849,44 +849,118 @@ When the installation completes, the SGX Quote Verification Service is available
 
 ## Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
-Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be setup on any VM.
+* Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+* Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+* Once the master/worker setup is done, follow below steps:
 
-Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
-
-Once the master/worker setup is done, copy the binaries directory generated in the build system VM to the /root/ directory on the Master Node.
-
-Go to /root/binaries directory and run ./isecl-k8s-extensions-* .
-
-Edit /etc/kubernetes/manifests/kube-scheduler.yaml and remove/comment the following content and restart kubelet.
-
+##### Untar packages and load docker images
+* Copy tar output isecl-k8s-extensions-*.tar.gz from build VM binaries folder to /opt/ directory on the Master Node and extract the contents.
 ```
-    --policy-config-file=/opt/isecl-k8s-extensions/iseclk8sscheduler/config/scheduler-policy.json
-    systemctl restart kubelet
+    cd /opt/
+    tar -xvzf isecl-k8s-extensions-*.tar.gz
 ```
-
-Wait for the isecl-controller and isecl-scheduler pods to be into running state.
-
+* Load the docker images
 ```
-    kubectl get pods -n isecl
+    cd isecl-k8s-extensions
+    docker load -i docker-isecl-controller-v*.tar
+    docker load -i docker-isecl-scheduler-v*.tar
 ```
 
-Create role bindings on the Kubernetes Master.
-
+##### Deploy isecl-controller
+* Create hostattributes.crd.isecl.intel.com crd
 ```
-    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:default
-    kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=iseclcontroller --user=system:serviceaccount:isecl:default
+    kubectl apply -f yamls/crd-1.17.yaml
 ```
-
-Copy /etc/kubernetes/pki/apiserver.crt from master node to CSP VM. Update KUBERNETES_CERT_FILE in ihub.env on CSP VM with kubernetes certificate path.
-
-Get k8s token in master, using below commands.
-
+* Check whether the crd is created
+```
+    kubectl get crds
+```
+* Deploy isecl-controller
+```
+    kubectl apply -f yamls/isecl-controller.yaml
+```
+* Check whether the isecl-controller is up and running
+```
+    kubectl get deploy -n isecl
+```
+* Create clusterrolebinding for ihub to get access to cluster nodes
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+```
+* Fetch token required for ihub installation and follow below steps to update ihub.env,
 ```
     kubectl get secrets -n isecl
-    kubectl describe secret <ouput-secret-name> -n isecl.
+    kubectl describe secret default-token-<name> -n isecl
 ```
 
-Update KUBERNETES_TOKEN in ihub.env on CSP VM with above kubernetes token.
+For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP VM:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP VM. Update KUBERNETES_CERT_FILE.
+* Get k8s token in master, using above commands and update KUBERNETES_TOKEN
+* Update the value of CRD name
+```
+	KUBERNETES_CRD=custom-isecl-sgx
+```
+
+##### Deploy isecl-scheduler
+* Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
+```
+    cd /opt/isecl-k8s-extensions/
+    chmod +x create_k8s_extsched_cert.sh
+    ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "<K8_MASTER_IP>","<K8_MASTER_HOST>" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+```
+* After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master vm. Also, copy tls key pair generated in previous step to secrets directory.
+```
+    mkdir secrets
+    cp /opt/isecl-k8s-extensions/server.key secrets/
+    cp /opt/isecl-k8s-extensions/server.crt secrets/
+	mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
+    cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
+```
+Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.
+* Create kubernetes secrets scheduler-secret for isecl-scheduler
+```
+    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+```
+* Deploy isecl-scheduler
+```
+    kubectl apply -f yamls/isecl-scheduler.yaml
+```
+* Check whether the isecl-scheduler is up and running
+```
+    kubectl get deploy -n isecl
+```
+
+##### Configure kube-scheduler to establish communication with isecl-scheduler
+* Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
+```
+spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+```
+
+```
+  containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+```
+
+```
+  volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+```
+
+Note: Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+* Restart Kubelet which restart all the k8s services including kube base schedular
+```
+	systemctl restart kubelet
+```
 
 ##  Installing the Integration Hub
 
@@ -955,7 +1029,7 @@ To install the SGX Integration Hub, follow these steps:
         
        KUBERNETES_URL =< https://< Kubernetes IP >:6443/
         
-       KUBERNETES_CRD = custom-isecl
+       KUBERNETES_CRD = custom-isecl-sgx
         
        KUBERNETES_TOKEN = < K8S token >
         
@@ -985,7 +1059,7 @@ Update the BEARER_TOKEN value in the ihub.env file
 Copy IHUB public key to the master node and restart kubelet.
 
 ```
-    scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
+    scp -r /etc/ihub/ihub_public_key.pem <master-node IP>:/opt/isecl-k8s-extensions/
     systemctl restart kubelet
 ```
 
@@ -1004,7 +1078,7 @@ Run this command to validate that the labels have been populated:
 Sample labels:
 
 ```
-    EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,TCBUpToDate=true,TrustTagExpiry=2020-08-28T15.28.41Z
+    EPC-Memory=2.0GB,FLC-Enabled=true,SGX-Enabled=true,SGX-Supported=true,SgxTrustExpiry=2020-11-09T08.07.43Z,TCBUpToDate=true
 ```
 
 Create sample yml file for nginx workload and add SGX labels to it such as:
@@ -1045,7 +1119,10 @@ Validate if pod can be launched on the node. Run following commands:
     kubectl describe pods nginx 
 ```
 
-Pod should be in running state and launched on the host as per values in pod.yml.
+Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+```
+	docker ps
+```
 
 ##  Installing the Key Broker Service
 
@@ -2270,6 +2347,18 @@ Removes the following directories:
 
    /opt/skc
 
+
+## isecl-k8s-extensions
+
+Cluster admin can uninstall the isecl-k8s-extensions by running following commands:
+```
+    kubectl delete svc isecl-scheduler-svc -n isecl
+    kubectl delete deployment isecl-controller isecl-scheduler -n isecl
+    kubectl delete crds hostattributes.crd.isecl.intel.com
+    rm -rf /opt/isecl-k8s-extensions
+    rm -rf /var/log/isecl-k8s-extensions
+```
+   
 
 # Appendix 
 
