@@ -455,14 +455,22 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 ```
     kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
 ```
-* Fetch token required for ihub installation and install IHub
+* Fetch token required for ihub installation and follow below IHUB installation steps,
 ```
     kubectl get secrets -n isecl
     kubectl describe secret default-token-<name> -n isecl
 ```
 
+For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP VM:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP VM. Update KUBERNETES_CERT_FILE.
+* Get k8s token in master, using above commands and update KUBERNETES_TOKEN
+* Update the value of CRD name
+```
+	KUBERNETES_CRD=custom-isecl-sgx
+```
+
 ##### Deploy isecl-scheduler
-* Create tls key pair for isecl-scheduler service, which is signed by k8s apisercer.crt
+* Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
 ```
     cd /opt/isecl-k8s-extensions/
     chmod +x create_k8s_extsched_cert.sh
@@ -525,19 +533,10 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 
 #### Deploy CSP SKC Services
 Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
+
 Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
+
 Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
-For IHUB deployment, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP VM:
-* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP VM. Update KUBERNETES_CERT_FILE.
-* Get k8s token in master, using below commands and update KUBERNETES_TOKEN
-```
-    kubectl get secrets -n isecl
-    kubectl describe secret default-token-<name> -n isecl
-```
-* Update the value of CRD name
-```
-	KUBERNETES_CRD=custom-isecl-sgx
-```
 
 ./install_csp_skc.sh
 
