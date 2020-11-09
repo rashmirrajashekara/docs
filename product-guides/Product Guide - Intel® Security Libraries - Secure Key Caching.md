@@ -1646,7 +1646,7 @@ Contains the config.yml configuration file.
 | BEARER_TOKEN            |                                                              | Installation token                                           |
 | TENANT                  | KUBERNETES                                                   | Tenant Orchaestrator                                         |
 | KUBERNETES_URL          | https://< Kubernetes Master Node IP or  Hostname> :6443      | Kubernetes Master node URL                                   |
-| KUBERNETES_CRD          | custom-isecl                                                 | CRD Name to be used                                          |
+| KUBERNETES_CRD          | custom-isecl-sgx                                             | CRD Name to be used                                          |
 | TLS_SAN_LIST            | 127.0.0.1, localhost                                         | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | KUBERNETES_TOKEN        |                                                              | Token from Kubernetes Master Node                            |
 | KUBERNETES_CERT_FILE    | /root/apiserver.crt                                          | Kubernetes server certificate path                           |
