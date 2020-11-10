@@ -60,7 +60,7 @@ Optionally, the SGX Attestation Infrastructure allows to integrate with Cloud Or
 
 The SGX Attestation infrastructure does not make any assumption on the user SGX workload and enclave policy. 
 
-[Secure Key Caching Product Guide](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md)
+[Secure Key Caching Product Guide](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md)
 
 [Secure Key Caching Quick Start Guide](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.2/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md)
 
