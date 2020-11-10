@@ -1,5 +1,23 @@
 # Intel® Security Libraries for Data Center (Intel® SecL-DC)
 
+Table of Contents
+=================
+
+   * [Intel® Security Libraries for Data Center (Intel® SecL-DC)](#intel-security-libraries-for-data-center-intel-secl-dc)
+      * [Overview](#overview)
+      * [Architecture](#architecture)
+      * [Use Cases](#use-cases)
+         * [Foundational Security &amp; Launch Time Protection](#foundational-security--launch-time-protection)
+         * [SGX Attestation Infrastructure](#sgx-attestation-infrastructure)
+         * [Secure Key Caching](#secure-key-caching)
+      * [Building all components](#building-all-components)
+         * [Pre-requisites](#pre-requisites)
+         * [Building](#building)
+      * [License](#license)
+      * [Support](#support)
+      * [Reporting Issues](#reporting-issues)
+      * [Contributing](#contributing)
+      * [Legalities](#legalities)
 
 
 ## Overview
