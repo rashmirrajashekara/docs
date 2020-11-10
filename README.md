@@ -96,6 +96,28 @@ Following steps facilitate the building of all components:
 
 * The services need to be built and installed as `root` user. Ensure root privileges are present for the user to work with Intel® SecL-DC. All Intel® SecL-DC service & agent ports should be allowed in firewall rules.
 
+* Install basic utilities for getting started
+
+  ```shell
+  dnf install git wget tar python3 yum-utils
+  ```
+
+* Create symlink for python3
+
+  ```shell
+  ln -s /usr/bin/python3 /usr/bin/python
+  ln -s /usr/bin/pip3 /usr/bin/pip
+  ```
+
+* Install repo tool
+
+  ```shell
+  tmpdir=$(mktemp -d)
+  git clone https://gerrit.googlesource.com/git-repo $tmpdir
+  install -m 755 $tmpdir/repo /usr/local/bin
+  rm -rf $tmpdir
+  ```
+
 * Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` and set `GOROOT` & `PATH`
 
   ```
