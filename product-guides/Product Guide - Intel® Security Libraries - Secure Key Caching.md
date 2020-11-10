@@ -830,6 +830,14 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
     
        SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
+       
+       SQVS_NOSETUP=false
+       
+       SQVS_PORT=12000
+       
+       SQVS_LOGLEVEL=info
+       
+       SQVS_INCLUDE_TOKEN=true
 
 
 Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
@@ -2149,6 +2157,7 @@ Contains database scripts
 | SQVS_LOG_LEVEL           | INFO (default), DEBUG                                        | Defines the log level  for the SQVS. Defaults to INFO.       |
 | SQVS_PASSWORD            | sqvsuser@sqvs                                                | Defines the credentials for the  SQVS user                   |
 | SQVS_USERNAME            | sqvspassword                                                 | Defines the credentials for the  SQVS User                   |
+| SQVS_PORT                | 12000                                                        | SQVS Secure Port                                             |
 | SQVS_NOSETUP             | false                                                        | Skips setup during installation if set to true               |
 | SAN_LIST                 | 127.0.0.1,localhost                                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | SQVS_INCLUDE_TOKEN       | true                                                         | If true, SQVS will authenticate KBS before Quote Verifiation |
