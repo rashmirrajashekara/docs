@@ -383,8 +383,6 @@ The database client for Intel® SecL services will validate that the Subject Alt
 
 The CMS is REQUIRED for all use cases.
 
-skc discovery and provisioning
-
 ### Supported Operating System 
 
 The Intel® Security Libraries Certificate Management Service supports Red Hat Enterprise Linux 8.2.
@@ -440,8 +438,6 @@ cms tlscertsha384
 ### Required For
 
 The AAS is REQUIRED for all use cases.
-
-skc discovery and provisioning
 
 ### Prerequisites
 
@@ -547,10 +543,6 @@ The output of these scripts is a bearer-token which needs to be updated in the B
 
 The SCS is REQUIRED for the following use cases.
 
-\- SGX discovery and provisioning
-
-\- SGX Quote Verification
-
 ### Prerequisites (CSP & Enterprise)
 
 The following must be completed before installing the SGX Caching Service
@@ -650,7 +642,7 @@ Execute the SCS installer binary:
 
 ### Required For
 
-The SGX Host Verification Service is REQUIRED for SGX Discovery and Provisioning
+The SGX Host Verification Service is REQUIRED in the default orchestrator SGX Agent mode.  
 
 ### Prerequisites
 
@@ -751,7 +743,13 @@ When the installation completes, the SGX Host Verification Service is available.
 
 ### Required for
 
-The SGX Agent is REQUIRED for SGX Discovery and Provisioning. SGX Agent registers with SGX-Host Verification service and provides all platform details needed for SGX discovery.
+The SGX Agent is REQUIRED for all use cases. 
+
+The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported. 
+
+In the orchestrator mode, SGX Agent is registered with SGX Host Verification Service (SHVS), which then pulls all SGX platform data. SHVS, in turn, pushes the data to the SGX Caching Service (SCS).
+
+In the registration-only mode, the SGX Agent pushes the SGX platform data directly to SCS and SHVS is not involved in the flow. 
 
 ### Prerequisites 
 
@@ -1018,9 +1016,7 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 
 ### Required For
 
-The Integration Hub is REQUIRED for the following use case.
-
-Orchestration or other integration support.
+The Integration Hub is REQUIRED the default orchestrator SGX Agent mode.
 
 ### Prerequisites
 
