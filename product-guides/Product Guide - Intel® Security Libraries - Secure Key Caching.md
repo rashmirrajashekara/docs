@@ -206,14 +206,10 @@ CRDs -- Custom Resource Definitions
 
 # Architecture Overview 
 
-As indicated in section 1.4, SKC provides 3 features essentially:
-
--   Key Protection: this is the feature used by tenants using a CSP to run workloads with key protection requirements.
+As indicated in the Features section, SKC provides 3 features essentially:
 
 -   SGX Attestation Support: this is the feature that CSPs provide to tenants who need to run SGX workloads that require attestation.
-
 -   SGX Support  in Orchestrators: this feature allows to discover SGX support in physical servers and related information:
-
     -   SGX supported.
 
     -   SGX enabled.
@@ -221,14 +217,23 @@ As indicated in section 1.4, SKC provides 3 features essentially:
     -   Size of RAM reserved for SGX. It's called Enclave Page Cache (EPC).
 
     -   Flexible Launch Control enabled.
+-   Key Protection: this is the feature used by tenants using a CSP to run workloads with key protection requirements.
 
 The high-level architectures of these features are presented in the next sub-sections.
 
 ## SGX Attestation Support and SGX Support in Orchestrators
 
-The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). The SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
+The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). 
 
-The platform information can optionally be made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
+The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported. 
+
+In the orchestrator mode, the SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
+
+In the orchestrator mode, the platform information is made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
+
+In the registration-only mode, the SGX Agent pushes the SGX information directly to the SGX Caching Service and SHVS is not involved in the flow. PCK certificates are obtained and made available to workloads the same way as in the in the orchestrator mode. 
+
+The SGX Quote Verification Service (SQVS) allows attesting applications to verify SGX quotes and extract the SGX quote attributes to verify compliance with a user-defined SGX enclave policy. SQVS uses the SGX Caching Service to retrieve SGX collateral needed to verify SGX quotes from the Intel SGX Provisioning Certification Service (PCS). SQVS typically runs in the the attesting application owner network environment. Typically, a separate instance of the SGX Caching Service is set setup in the attesting application owner network environment. 
 
 ![](Images/image-20200727163158892.png)
 
