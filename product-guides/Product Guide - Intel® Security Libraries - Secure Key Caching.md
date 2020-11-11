@@ -230,7 +230,7 @@ The diagram below shows the infrastructure that CSPs need to deploy to support S
 
 The platform information can optionally be made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
 
-![](C:/Program Files/Typora/Images/image-20200727163158892.png)
+![](Images/image-20200727163158892.png)
 
 The SGX Agent and the SGX services integrate with the Authentication and Authorization Service (AAS) and the Certificate Management Service (CMS). AAS and CMS are not represented on the diagram for clarity.
 
