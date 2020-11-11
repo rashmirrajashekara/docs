@@ -110,7 +110,7 @@ The SGX Attestation Infrastructure allows to fetch PCK certificates and SGX coll
 
 ### SGX Support in Orchestrators
 
-The SGX Attestation Infrastructure can optionally push the SGX information about compute nodes to cloud orchestrators so that SGX workloads (like SKC) can be scheduled on compute nodes that support SGX. Currently, the Kubernetes orchestrator is supported.
+The SGX Attestation Infrastructure can optionally push the SGX information on compute nodes to cloud orchestrators so that SGX workloads (like SKC) can be scheduled on compute nodes that support SGX. Currently, the Kubernetes orchestrator is supported.
 
 ### Key Protection
 
@@ -151,6 +151,8 @@ SHVS pushes the SGX platform hardware and software information to the SGX Cachin
 ## SGX Agent
 
 The SGX Agent resides on physical servers and reports on platform SGX-related information to the SGX Host Verification Service (SHVS).
+
+The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported.
 
 ## Integration Hub
 
@@ -222,23 +224,25 @@ As indicated in section 1.4, SKC provides 3 features essentially:
 
 The high-level architectures of these features are presented in the next sub-sections.
 
-##  Key Protection
-
-Key Protection is implemented by the SKC Client -- a set of libraries - which must be linked with a tenant workload, like Nginx, deployed in a CSP environment and the Key Broker Service (KBS) deployed in the tenant's enterprise environment. The SKC Client retrieves the keys needed by the workload from KBS after proving that the key can be protected in an SGX enclave as shown in the diagram below.
-
-![](Images/image-20200727163116765.png)
-
-Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are called Key Transfer Policies and are created by an Admin and assigned to Application keys.
-
 ## SGX Attestation Support and SGX Support in Orchestrators
 
 The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). The SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
 The platform information can optionally be made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
 
-![](Images/image-20200727163158892.png)
+![](C:/Program Files/Typora/Images/image-20200727163158892.png)
 
 The SGX Agent and the SGX services integrate with the Authentication and Authorization Service (AAS) and the Certificate Management Service (CMS). AAS and CMS are not represented on the diagram for clarity.
+
+##  Key Protection
+
+Key Protection leverages the SGX Attestation support and optionally, the SGX support in orchestrators.
+
+Key Protection is implemented by the SKC Client -- a set of libraries - which must be linked with a tenant workload, like Nginx, deployed in a CSP environment and the Key Broker Service (KBS) deployed in the tenant's enterprise environment. The SKC Client retrieves the keys needed by the workload from KBS after proving that the key can be protected in an SGX enclave as shown in the diagram below.
+
+![](Images/image-20200727163116765.png)
+
+Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are called Key Transfer Policies and are created by an Admin and assigned to Application keys.
 
 # Intel® Security Libraries Installation
 
@@ -862,12 +866,16 @@ When the installation completes, the SGX Quote Verification Service is available
 * Once the master/worker setup is done, follow below steps:
 
 ##### Untar packages and load docker images
+
 * Copy tar output isecl-k8s-extensions-*.tar.gz from build VM binaries folder to /opt/ directory on the Master Node and extract the contents.
+
 ```
     cd /opt/
     tar -xvzf isecl-k8s-extensions-*.tar.gz
 ```
+
 * Load the docker images
+
 ```
     cd isecl-k8s-extensions
     docker load -i docker-isecl-controller-v*.tar
@@ -875,48 +883,66 @@ When the installation completes, the SGX Quote Verification Service is available
 ```
 
 ##### Deploy isecl-controller
+
 * Create hostattributes.crd.isecl.intel.com crd
+
 ```
     kubectl apply -f yamls/crd-1.17.yaml
 ```
+
 * Check whether the crd is created
+
 ```
     kubectl get crds
 ```
+
 * Deploy isecl-controller
+
 ```
     kubectl apply -f yamls/isecl-controller.yaml
 ```
+
 * Check whether the isecl-controller is up and running
+
 ```
     kubectl get deploy -n isecl
 ```
+
 * Create clusterrolebinding for ihub to get access to cluster nodes
+
 ```
     kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
 ```
+
 * Fetch token required for ihub installation and follow below steps to update ihub.env,
+
 ```
     kubectl get secrets -n isecl
     kubectl describe secret default-token-<name> -n isecl
 ```
 
 For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP VM:
+
 * Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP VM. Update KUBERNETES_CERT_FILE.
 * Get k8s token in master, using above commands and update KUBERNETES_TOKEN
 * Update the value of CRD name
+
 ```
 	KUBERNETES_CRD=custom-isecl-sgx
 ```
 
 ##### Deploy isecl-scheduler
+
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
+
 ```
     cd /opt/isecl-k8s-extensions/
     chmod +x create_k8s_extsched_cert.sh
     ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "<K8_MASTER_IP>","<K8_MASTER_HOST>" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
 ```
+
 * After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master vm. Also, copy tls key pair generated in previous step to secrets directory.
+
 ```
     mkdir secrets
     cp /opt/isecl-k8s-extensions/server.key secrets/
@@ -924,22 +950,31 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 	mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
     cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
 ```
+
 Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.
+
 * Create kubernetes secrets scheduler-secret for isecl-scheduler
+
 ```
     kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
 ```
+
 * Deploy isecl-scheduler
+
 ```
     kubectl apply -f yamls/isecl-scheduler.yaml
 ```
+
 * Check whether the isecl-scheduler is up and running
+
 ```
     kubectl get deploy -n isecl
 ```
 
 ##### Configure kube-scheduler to establish communication with isecl-scheduler
+
 * Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
+
 ```
 spec:
   containers:
@@ -965,7 +1000,9 @@ spec:
 ```
 
 Note: Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+
 * Restart Kubelet which restart all the k8s services including kube base schedular
+
 ```
 	systemctl restart kubelet
 ```
@@ -1128,6 +1165,7 @@ Validate if pod can be launched on the node. Run following commands:
 ```
 
 Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+
 ```
 	docker ps
 ```
@@ -2360,6 +2398,7 @@ Removes the following directories:
 ## isecl-k8s-extensions
 
 Cluster admin can uninstall the isecl-k8s-extensions by running following commands:
+
 ```
     kubectl delete svc isecl-scheduler-svc -n isecl
     kubectl delete deployment isecl-controller isecl-scheduler -n isecl
@@ -2367,7 +2406,7 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
     rm -rf /opt/isecl-k8s-extensions
     rm -rf /var/log/isecl-k8s-extensions
 ```
-   
+
 
 # Appendix 
 
