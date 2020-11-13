@@ -710,12 +710,12 @@ deployment in the `isecl` namespace.
 
 9. Additional Optional Configurable fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                 | Required   | Type     | Default | Description                                                  |      |
-   | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
-   | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |      |
-   | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
-   | TAG_PREFIX            | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
-   | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |      |
+   | Field                 | Required   | Type     | Default | Description                                                  |
+   | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
+   | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
+   | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+   | TAG_PREFIX            | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
+   | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
 
@@ -723,9 +723,11 @@ deployment in the `isecl` namespace.
 
 1. Copy the API Server certificate of K8s Master to machine where Integration Hub will be installed to `/root/` directory
 
+   >  **Note:**  In most  Kubernetes distributions the Kubernetes certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions.
+
 2. Update the token obtained in  Step 8 of `Deploy Intel® SecL Custom Controller` along with other relevant tenant configuration options in `ihub.env`
 
-3.  Install Integration Hub
+3. Install Integration Hub
 
 4. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Master machine to `/<path>/secrets/` directory
 
@@ -733,7 +735,7 @@ deployment in the `isecl` namespace.
    #On K8s-Master machine
    mkdir -p /<path>/secrets
    
-   #Copy
+   #On IHUB machine, copy
    scp /etc/ihub/ihub_public_key.pem <user>@<k8s_master_machine>:/<path>/secrets/hvs_ihub_public_key.pem
    ```
 
@@ -762,6 +764,10 @@ deployment in the `isecl` namespace.
    cd /<path>/isecl-k8s-extensions/
    chmod +x create_k8s_extsched_cert.sh
    
+   #Set K8s_MASTER_IP,HOSTNAME
+   export MASTER_IP=<k8s_machine_ip>
+   export HOSTNAME=<k8s_machine_hostname>
+   
    #Create TLS key-pair
    ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c <k8s_ca_authority_cert> -k <k8s_ca_authority_key>
    ```
@@ -789,7 +795,7 @@ deployment in the `isecl` namespace.
    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
    ```
 
-6. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file
+6. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file. The scheduler and controller yaml files are located under `/<path>/isecl-k8s-extensions/yamls`
 
    ```yaml
    - name: SGX_IHUB_PUBLIC_KEY_PATH
@@ -811,16 +817,12 @@ deployment in the `isecl` namespace.
 
 9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                         | Required   | Type     | Default | Description                                                  |      |
-| ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ | ---- |
-| LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |      |
-| LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |      |
-| TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |      |
-| PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |      |
-| HVS_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |      |
-| SGX_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |      |
-| TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |      |
-| TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |      |
+   | Field                 | Required    | Type     | Default | Description                                                  |
+   | --------------------- | ----------- | -------- | ------- | ------------------------------------------------------------ |
+   | LOG_LEVEL             | ``Optional` | `string` | INFO    | Determines the log level                                     |
+   | LOG_MAX_LENGTH        | `Optional`  | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+   | TAG_PREFIX            | `Optional`  | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
+   | TAINT_UNTRUSTED_NODES | `Optional`  | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
 #### Configuring kube-scheduler to establish communication with isecl-scheduler
