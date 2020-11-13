@@ -708,13 +708,13 @@ deployment in the `isecl` namespace.
    kubectl describe secret default-token-<name> -n isecl
    ```
 
-9. Additional Optional Configurable fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
+9. Additional Optional Configurable fields for isecl-controller configuration in `isecl-controller.yaml`
 
    | Field                 | Required   | Type     | Default | Description                                                  |
    | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
    | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
    | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX            | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
+   | TAG_PREFIX            | `Optional` | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
    | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
@@ -816,14 +816,15 @@ deployment in the `isecl` namespace.
    ```
 
 9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
+
    | Field                         | Required   | Type     | Default | Description                                                  |
    | ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
    | LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |
    | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
    | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
    | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+   | HVS_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+   | SGX_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
    | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
    | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |
 
