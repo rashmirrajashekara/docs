@@ -822,8 +822,8 @@ deployment in the `isecl` namespace.
    | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
    | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
    | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_FILE_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
    | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
    | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |
 
