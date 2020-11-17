@@ -143,7 +143,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.1.0 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/fs.xml
   repo sync
   ```
 
