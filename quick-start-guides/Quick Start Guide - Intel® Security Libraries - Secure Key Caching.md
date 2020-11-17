@@ -546,9 +546,11 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 #### Deploy CSP SKC Services
 Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
 
-Update the IP addresses for CMS/AAS/SCS/SHVS/IHUB/K8S services in csp_skc.conf
+Update the IP addresses for CMS, AAS, SCS, SHVS, IHUB and K8S services in csp_skc.conf
 
-Also update the Intel PCS Server API URL and API Keys in csp_skc.conf
+Update the Database name, Database username and passwords for AAS, SCS and SHVS services
+
+Update the Intel PCS Server API URL and API Keys in csp_skc.conf
 
 ./install_csp_skc.sh
 
@@ -601,9 +603,11 @@ Pod should be in running state and launched on the host as per values in pod.yml
 
 Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
 
-Update the IP addresses for CMS/AAS/SCS/SQVS/KBS services in enterprise_skc.conf
+Update the IP addresses for CMS, AAS, SCS, SQVS and KBS services in enterprise_skc.conf
 
-Also update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
+Update the Database name, Database username and passwords for AAS and SCS services
+
+Update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
 
 ./install_enterprise_skc.sh
 
