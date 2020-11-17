@@ -529,8 +529,6 @@ SCS: scs_aas_curl.sh
 
 SHVS: shvs_aas_curl.sh
 
-SGX-AGENT: sgx_agent_aas.sh
-
 SQVS: sqvs_aas_curl.sh
 
 For Key Broker Service and Integration Hub User/Roles creation, Please refer to the appendix section for sample scripts
@@ -614,7 +612,7 @@ copy install_pgscsdb.sh to /root/ directory
         
        SCS_REFRESH_HOURS=\<time in hours to refresh SGX collaterals; 1 hour by default\>
         
-       SCS_ADMIN \_USERNAME=\<username for SCS service account\>
+       SCS_ADMIN_USERNAME=\<username for SCS service account\>
         
        SCS_ADMIN_PASSWORD=\<password for SCS service account\>
         
@@ -630,9 +628,11 @@ copy install_pgscsdb.sh to /root/ directory
 
 Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
 
+cd sgx-caching-service/dist/linux/
+
 ./scs_aas_curl.sh
 
-Update the BEARER_TOKEN value in the scs.env file
+Update the BEARER_TOKEN value in /root/scs.env file
 
 Execute the SCS installer binary:
 
@@ -722,14 +722,16 @@ A sample minimal shvs.env file is provided below. For all configuration options 
     
      SCS_BASE_URL= https://< SGX Caching Service IP or Hostname >:9000/scs/sgx/
 
-SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SHVS* > 
+     SAN_LIST =< Comma-separated list of IP addresses and hostnames for the SHVS > 
 
 
 Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
 
+cd sgx-hvs/dist/linux/
+
 ./shvs_aas_curl.sh
 
-Update the BEARER_TOKEN value in the shvs.env file
+Update the BEARER_TOKEN value in /root/shvs.env file
 
 Execute the installer binary.
 
@@ -849,9 +851,11 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 
 Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
 
+cd sgx-verification-service/dist/linux/
+
 ./sqvs_aas_curl.sh
 
-Update the BEARER_TOKEN value in the sqvs.env file
+Update the BEARER_TOKEN value in /root/sqvs.env file
 
 3.  Execute the sqvs installer binary.
 
@@ -935,6 +939,14 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 ```
 
 ##### Deploy isecl-scheduler
+
+The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml.
+
+Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. 
+
+Please use and set only required variables based on the use case.
+
+For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
 
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
 
@@ -1794,26 +1806,6 @@ cms help
 Displays the list of available CLI commands.
 
 #### Start 
-
- port: 8445
-
- loglevel: info   
-
-authserviceurl: https://< AAS IP or 
-
-hostname>:8444/aas/ cacertvalidity: 5 organization: 
-
-INTEL locality: SC province: CA country: US 
-
-keyalgorithm: rsa keyalgorithmlength: 3072
-
-rootcacertdigest: < sha384> tlscertdigest: < sha384> 
-
-tokendurationmins: 20 aasjwtcn: "" aastlscn: ""
-
- aastlssan: "" authdefender:  maxattempts: 5 
-
- intervalmins: 5  lockoutdurationmins: 15 
 
 cms start
 
