@@ -717,7 +717,7 @@
       "x-go-name" : "QeId"
     }
   },
-  "x-go-package" : "intel/isecl/scs/swagger/docs"
+  "x-go-package" : "intel/isecl/scs/v3/swagger/docs"
 };
             defs.Response = {
   "type" : "object",
@@ -729,7 +729,7 @@
       "type" : "string"
     }
   },
-  "x-go-package" : "intel/isecl/scs/resource"
+  "x-go-package" : "intel/isecl/scs/v3/resource"
 };
             defs.TcbInfoJson = {
   "type" : "object",
@@ -742,7 +742,7 @@
       "x-go-name" : "Signature"
     }
   },
-  "x-go-package" : "intel/isecl/scs/resource"
+  "x-go-package" : "intel/isecl/scs/v3/resource"
 };
             defs.TcbInfoType = {
   "type" : "object",
@@ -785,7 +785,7 @@
       "x-go-name" : "Version"
     }
   },
-  "x-go-package" : "intel/isecl/scs/resource"
+  "x-go-package" : "intel/isecl/scs/v3/resource"
 };
             defs.TcbLevels = {
   "type" : "object",
@@ -875,7 +875,7 @@
       "x-go-name" : "SgxTcbComp16Svn"
     }
   },
-  "x-go-package" : "intel/isecl/scs/resource"
+  "x-go-package" : "intel/isecl/scs/v3/resource"
 };
             defs.TcbLevelsType = {
   "type" : "object",
@@ -890,7 +890,7 @@
       "type" : "string"
     }
   },
-  "x-go-package" : "intel/isecl/scs/resource"
+  "x-go-package" : "intel/isecl/scs/v3/resource"
 };
   </script>
 
@@ -1100,7 +1100,7 @@ UYU+3g==
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the latest PCK Certificate Revocation List (CRL) for any SGX enabled platforms.
+                        <p class="marked">Retrieves the base64 encoded latest PCK Certificate Revocation List (CRL) for any SGX enabled platforms.
 A CRL is a list of revoked SGX PCK Certificates that are issued by Intel SGX Processor CA.
 The query parameter &#x27;ca&#x27; should be provided as mandatory for this REST call.
 </p>
@@ -1138,7 +1138,7 @@ The query parameter &#x27;ca&#x27; should be provided as mandatory for this REST
 
     			  <h2>Produces</h2>
     			    <ul>
-      			    <li>application/x-pem-file</li>
+      			    <li>application/x-x509-ca-cert</li>
     			    </ul>
 
                           <h2>Response</h2>
@@ -1156,14 +1156,7 @@ The query parameter &#x27;ca&#x27; should be provided as mandatory for this REST
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Certificates-getPckCrl-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/pckcrl?ca=processor" -H "Accept: application/x-pem-file"</br></br>Output: </br>-----BEGIN X509 CRL-----
-MIIBKjCB0QIBATAKBggqhkjOPQQDAjBxMSMwIQYDVQQDDBpJbnRlbCBTR1ggUENLIFByb2Nlc3Nv
-ciBDQTEaMBgGA1UECgwRSW50ZWwgQ29ycG9yYXRpb24xFDASBgNVBAcMC1NhbnRhIENsYXJhMQsw
-CQYDVQQIDAJDQTELMAkGA1UEBhMCVVMXDTIwMDQyODE2NTkyM1oXDTIwMDUyODE2NTkyM1qgLzAt
-MAoGA1UdFAQDAgEBMB8GA1UdIwQYMBaAFNDoqtp11/kuSReYPHsUZdDV8llNMAoGCCqGSM49BAMC
-A0gAMEUCIAKZ+B0OOFZgzMrwQ0T0GlIritTNKNr0ayW7wchYlgdlAiEAuQifgQcxCYU/lkOUgNcl
-gG6ZSVMMjfliJZK2q6fnM6s=
------END X509 CRL-----
+			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/pckcrl?ca=processor" -H "Accept: application/x-x509-ca-cert"</br></br>Output: </br>MIIBKTCB0QIBATAKBggqhkjOPQQDAjBxMSMwIQYDVQQDDBpJbnRlbCBTR1ggUENLIFByb2Nlc3NvciBDQTEaMBgGA1UECgwRSW50ZWwgQ29ycG9yYXRpb24xFDASBgNVBAcMC1NhbnRhIENsYXJhMQswCQYDVQQIDAJDQTELMAkGA1UEBhMCVVMXDTIwMTExMzA0Mzc1NVoXDTIwMTIxMzA0Mzc1NVqgLzAtMAoGA1UdFAQDAgEBMB8GA1UdIwQYMBaAFMHp3Hk19b3/LlphIQ0b13g7pUxaMAoGCCqGSM49BAMCA0cAMEQCIGWhZDw8yQ56EfFYNaIX96ZaEEurMTcyGlxsNYBjBUXAAiBNRVW27AQvV04YimDhB+evEHvgbyOjj1+7bemmpQZoOg==
 </code></pre> 
 			  </div>
 			  <div class="tab-pane" id="examples-Certificates-getPckCrl-0-support">

@@ -21,7 +21,7 @@ definitions:
         type: string
         x-go-name: QeId
     type: object
-    x-go-package: intel/isecl/scs/swagger/docs
+    x-go-package: intel/isecl/scs/v3/swagger/docs
   Response:
     properties:
       Message:
@@ -29,7 +29,7 @@ definitions:
       Status:
         type: string
     type: object
-    x-go-package: intel/isecl/scs/resource
+    x-go-package: intel/isecl/scs/v3/resource
   TcbInfoJson:
     properties:
       TcbInfo:
@@ -38,7 +38,7 @@ definitions:
         type: string
         x-go-name: Signature
     type: object
-    x-go-package: intel/isecl/scs/resource
+    x-go-package: intel/isecl/scs/v3/resource
   TcbInfoType:
     properties:
       TcbEvaluationDataNumber:
@@ -70,7 +70,7 @@ definitions:
         type: integer
         x-go-name: Version
     type: object
-    x-go-package: intel/isecl/scs/resource
+    x-go-package: intel/isecl/scs/v3/resource
   TcbLevels:
     properties:
       PceSvn:
@@ -141,7 +141,7 @@ definitions:
         type: integer
         x-go-name: SgxTcbComp16Svn
     type: object
-    x-go-package: intel/isecl/scs/resource
+    x-go-package: intel/isecl/scs/v3/resource
   TcbLevelsType:
     properties:
       Tcb:
@@ -151,7 +151,7 @@ definitions:
       TcbStatus:
         type: string
     type: object
-    x-go-package: intel/isecl/scs/resource
+    x-go-package: intel/isecl/scs/v3/resource
 host: scs.server.com:9000
 info:
   description: |-
@@ -231,7 +231,7 @@ paths:
   /sgx/certification/v1/pckcrl:
     get:
       description: |
-        Retrieves the latest PCK Certificate Revocation List (CRL) for any SGX enabled platforms.
+        Retrieves the base64 encoded latest PCK Certificate Revocation List (CRL) for any SGX enabled platforms.
         A CRL is a list of revoked SGX PCK Certificates that are issued by Intel SGX Processor CA.
         The query parameter 'ca' should be provided as mandatory for this REST call.
       operationId: getPckCrl
@@ -242,7 +242,7 @@ paths:
         name: ca
         type: string
       produces:
-      - application/x-pem-file
+      - application/x-x509-ca-cert
       responses:
         "200":
           description: Successfully retrieved the PCK CRL for a platform.
@@ -252,14 +252,7 @@ paths:
       - Certificates
       x-sample-call-endpoint: https://scs.server.com:9000/scs/sgx/certification/v1/pckcrl?ca=processor
       x-sample-call-output: |
-        -----BEGIN X509 CRL-----
-        MIIBKjCB0QIBATAKBggqhkjOPQQDAjBxMSMwIQYDVQQDDBpJbnRlbCBTR1ggUENLIFByb2Nlc3Nv
-        ciBDQTEaMBgGA1UECgwRSW50ZWwgQ29ycG9yYXRpb24xFDASBgNVBAcMC1NhbnRhIENsYXJhMQsw
-        CQYDVQQIDAJDQTELMAkGA1UEBhMCVVMXDTIwMDQyODE2NTkyM1oXDTIwMDUyODE2NTkyM1qgLzAt
-        MAoGA1UdFAQDAgEBMB8GA1UdIwQYMBaAFNDoqtp11/kuSReYPHsUZdDV8llNMAoGCCqGSM49BAMC
-        A0gAMEUCIAKZ+B0OOFZgzMrwQ0T0GlIritTNKNr0ayW7wchYlgdlAiEAuQifgQcxCYU/lkOUgNcl
-        gG6ZSVMMjfliJZK2q6fnM6s=
-        -----END X509 CRL-----
+        MIIBKTCB0QIBATAKBggqhkjOPQQDAjBxMSMwIQYDVQQDDBpJbnRlbCBTR1ggUENLIFByb2Nlc3NvciBDQTEaMBgGA1UECgwRSW50ZWwgQ29ycG9yYXRpb24xFDASBgNVBAcMC1NhbnRhIENsYXJhMQswCQYDVQQIDAJDQTELMAkGA1UEBhMCVVMXDTIwMTExMzA0Mzc1NVoXDTIwMTIxMzA0Mzc1NVqgLzAtMAoGA1UdFAQDAgEBMB8GA1UdIwQYMBaAFMHp3Hk19b3/LlphIQ0b13g7pUxaMAoGCCqGSM49BAMCA0cAMEQCIGWhZDw8yQ56EfFYNaIX96ZaEEurMTcyGlxsNYBjBUXAAiBNRVW27AQvV04YimDhB+evEHvgbyOjj1+7bemmpQZoOg==
   /sgx/certification/v1/qe/identity:
     get:
       description: |
