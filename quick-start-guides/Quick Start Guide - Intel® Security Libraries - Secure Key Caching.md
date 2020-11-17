@@ -470,6 +470,18 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 ```
 
 ##### Deploy isecl-scheduler
+* Install cfssl and cfssljson on Kubernetes Control Plane
+```
+    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+
+```
+
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
 ```
     cd /opt/isecl-k8s-extensions/
