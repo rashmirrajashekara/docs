@@ -1388,7 +1388,7 @@ Enterprise Linux 8.2
    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
    ENDPOINT_URL=https://<KBS IP or hostname>:9443/kbs/v1/
-   TLS_SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
+   SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
    BEARER_TOKEN=<Installation token from populate-users script>
    
@@ -1397,15 +1397,15 @@ Enterprise Linux 8.2
    KMIP_SERVER_IP=<IP address of KMIP server>
    KMIP_SERVER_PORT=<Port number of KMIP server>
    ### Retrieve the following certificates and keys from the KMIP server
-   KMIP_CLIENT_KEY_PATH=/etc/kbs/client_key.pem
-   KMIP_ROOT_CERT_PATH=/etc/kbs/root_certificate.pem
-   KMIP_CLIENT_CERT_PATH=/etc/kbs/client_certificate.pem
+   KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
+   KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
+   KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
    ```
 
 3.  Execute the KBS installer.
 
     ```shell
-    ./kbs-6.2-SNAPSHOT.bin
+    ./kbs-3.1.0.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -1451,10 +1451,10 @@ can be found on the Verification Service.
 
 #### 3.16.7.1  Importing a SAML certificate
 
-Use OpenSSL to display the SAML certificate content:
+Display the SAML certificate:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/saml.crt.pem
+cat /etc/hvs/certs/trustedca/saml-crt.pem
 ```
 
 Use the SAML certificate output in the following POST call to the Key
@@ -1494,7 +1494,7 @@ JAF53vmU+1jE
 Use OpenSSL to display the PrivacyCA certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/PrivacyCA.pem
+openssl x509 -in /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
 ```
 
 Use the PrivacyCA certificate output in the following POST call to the
