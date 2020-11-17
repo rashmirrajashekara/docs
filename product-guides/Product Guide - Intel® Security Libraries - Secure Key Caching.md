@@ -2008,19 +2008,21 @@ Certificate Subject
 
 #### Start 
 
+authservice start
+
 Starts the service.
 
 #### Status 
+
+authservice status
 
 Displays the current status of the service.
 
 #### Stop 
 
+authservice stop
+
 Stops the service.
-
-#### tlscertsha384 
-
-Shows the SHA384 digest of the TLS certificate.
 
 #### Uninstall
 
@@ -2078,9 +2080,19 @@ kbs \<command\>
 
 #### Start 
 
+kbs start
+
 Starts the service
 
+#### Status 
+
+kbs status
+
+Displays the current status of the service.
+
 #### Stop 
+
+kbs stop
 
 Stops the service
 
@@ -2090,7 +2102,9 @@ kbs uninstall \[\--purge\]
 
 Removes the service
 
-#### Version 
+#### Version
+
+kbs --version
 
 Displays the version of the service
 
