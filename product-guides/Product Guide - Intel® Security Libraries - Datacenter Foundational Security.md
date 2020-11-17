@@ -117,7 +117,7 @@ Because Intel® BtG only measures/verifies the integrity of the IBB, it’s impo
 Intel® SecL-DC supports several options for Trusted Computing, depending
 on the features available on the platform.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\tboot options.png" style="zoom:150%;" />
+<img src="Images\tboot options.png" style="zoom:150%;" />
 
 
 
@@ -285,7 +285,7 @@ Key points:
 
 Use the chart below for a guide to acceptable configuration options. .
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
+<img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
 
 > ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
 
@@ -332,7 +332,7 @@ Trust Agent (TA)
 
 Workload Agent (WLA)
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\service_layout" alt="image-20200620161752980" style="zoom:150%;" />
+<img src="Images\service_layout" alt="image-20200620161752980" style="zoom:150%;" />
 
 
 
@@ -1166,7 +1166,7 @@ POST <https://verification.service.com:8443/hvs/v2/hosts>
 > registered, but will be in an Untrusted state until/unless
 > appropriate Flavors are added to the Verification Service.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
+<img src="Images\ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
 
 
 
@@ -2717,9 +2717,7 @@ For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B
 
 Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\integration1.png" alt="image-20200621122250278" style="zoom:150%;" />
-
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
+<img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
 ### 6.13.2  Integration with OpenStack 
 
@@ -3189,7 +3187,7 @@ using the KBS, and will output the encrypted image and an Image Flavor.
 The image owner can then upload the encrypted image to the CSP’s image
 storage service, and then upload the Image Flavor to the CSP-hosted WLS.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
+<img src="Images\image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
 
 When a compute host at the CSP attempts to launch a protected image, the
 WLA on the host will detect the launch request, and will issue a key
