@@ -16,7 +16,7 @@ definitions:
         type: string
         x-go-name: HardwareUUID
     type: object
-    x-go-package: intel/isecl/shvs/types
+    x-go-package: intel/isecl/shvs/v3/types
   HostStatusResponse:
     properties:
       agent_retry_count:
@@ -38,12 +38,12 @@ definitions:
         type: integer
         x-go-name: TCBSCSRetryCount
     type: object
-    x-go-package: intel/isecl/shvs/resource
+    x-go-package: intel/isecl/shvs/v3/resource
   Hosts:
     items:
       $ref: '#/definitions/Host'
     type: array
-    x-go-package: intel/isecl/shvs/types
+    x-go-package: intel/isecl/shvs/v3/types
   NewHostSgxData:
     properties:
       epc_size:
@@ -69,12 +69,12 @@ definitions:
         type: string
         x-go-name: ExpiryTime
     type: object
-    x-go-package: intel/isecl/shvs/swagger/docs
+    x-go-package: intel/isecl/shvs/v3/swagger/docs
   NewHostsSgxData:
     items:
       $ref: '#/definitions/NewHostSgxData'
     type: array
-    x-go-package: intel/isecl/shvs/swagger/docs
+    x-go-package: intel/isecl/shvs/v3/swagger/docs
   RegisterHostInfo:
     properties:
       connection_string:
@@ -96,7 +96,7 @@ definitions:
         type: string
         x-go-name: UUID
     type: object
-    x-go-package: intel/isecl/shvs/resource
+    x-go-package: intel/isecl/shvs/v3/resource
   ResponseJson:
     properties:
       Id:
@@ -106,7 +106,7 @@ definitions:
       Status:
         type: string
     type: object
-    x-go-package: intel/isecl/shvs/resource
+    x-go-package: intel/isecl/shvs/v3/resource
 host: sgx-hvs.com:13000
 info:
   description: |-
@@ -186,7 +186,7 @@ paths:
           {
               "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
               "host_name": "kbshostname",
-              "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+              "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
               "uuid": "88888888-8887-1214-0516-3707a5a5a5a5"
           }
         ]
@@ -220,7 +220,7 @@ paths:
       x-sample-call-input: |
         {
             "host_name": "kbshostname",
-            "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+            "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
             "description": "Rhel test host",
             "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
             "overwrite": true
@@ -286,7 +286,7 @@ paths:
         {
           "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
           "host_name": "kbshostname",
-          "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+          "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
           "description": "",
           "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
           "overwrite": false

@@ -710,7 +710,7 @@
     }
   },
   "description" : "Host struct is the database schema of a Host table",
-  "x-go-package" : "intel/isecl/shvs/types"
+  "x-go-package" : "intel/isecl/shvs/v3/types"
 };
             defs.HostStatusResponse = {
   "type" : "object",
@@ -739,14 +739,14 @@
       "x-go-name" : "TCBSCSRetryCount"
     }
   },
-  "x-go-package" : "intel/isecl/shvs/resource"
+  "x-go-package" : "intel/isecl/shvs/v3/resource"
 };
             defs.Hosts = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/Host"
   },
-  "x-go-package" : "intel/isecl/shvs/types"
+  "x-go-package" : "intel/isecl/shvs/v3/types"
 };
             defs.NewHostSgxData = {
   "type" : "object",
@@ -781,14 +781,14 @@
       "x-go-name" : "ExpiryTime"
     }
   },
-  "x-go-package" : "intel/isecl/shvs/swagger/docs"
+  "x-go-package" : "intel/isecl/shvs/v3/swagger/docs"
 };
             defs.NewHostsSgxData = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/NewHostSgxData"
   },
-  "x-go-package" : "intel/isecl/shvs/swagger/docs"
+  "x-go-package" : "intel/isecl/shvs/v3/swagger/docs"
 };
             defs.RegisterHostInfo = {
   "type" : "object",
@@ -818,7 +818,7 @@
       "x-go-name" : "UUID"
     }
   },
-  "x-go-package" : "intel/isecl/shvs/resource"
+  "x-go-package" : "intel/isecl/shvs/v3/resource"
 };
             defs.ResponseJson = {
   "type" : "object",
@@ -833,7 +833,7 @@
       "type" : "string"
     }
   },
-  "x-go-package" : "intel/isecl/shvs/resource"
+  "x-go-package" : "intel/isecl/shvs/v3/resource"
 };
   </script>
 
@@ -1093,7 +1093,7 @@ A valid bearer token is required to authorize this REST call.
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
   "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
   "host_name": "kbshostname",
-  "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+  "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
   "description": "",
   "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
   "overwrite": false
@@ -1233,7 +1233,7 @@ A valid bearer token is required to authorize this REST call.
   {
       "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
       "host_name": "kbshostname",
-      "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+      "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
       "uuid": "88888888-8887-1214-0516-3707a5a5a5a5"
   }
 ]
@@ -1395,7 +1395,7 @@ A valid bearer token is required to authorize this REST call.
                           <div class="tab-pane active" id="examples-Host-registerHost-0-curl">
 			  <pre><code class="language-bsh">curl -X POST "https://sgx-hvs.com:13000/sgx-hvs/v1/hosts" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
     "host_name": "kbshostname",
-    "connection_string": "https://10.219.138.66:11001/sgx_agent/v1/host",
+    "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
     "description": "Rhel test host",
     "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
     "overwrite": true
