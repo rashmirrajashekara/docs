@@ -117,7 +117,7 @@ Because Intel® BtG only measures/verifies the integrity of the IBB, it’s impo
 Intel® SecL-DC supports several options for Trusted Computing, depending
 on the features available on the platform.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\tboot options.png" style="zoom:150%;" />
+<img src="Images\tboot options.png" style="zoom:150%;" />
 
 
 
@@ -285,7 +285,7 @@ Key points:
 
 Use the chart below for a guide to acceptable configuration options. .
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
+<img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
 
 > ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
 
@@ -332,7 +332,7 @@ Trust Agent (TA)
 
 Workload Agent (WLA)
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\service_layout" alt="image-20200620161752980" style="zoom:150%;" />
+<img src="Images\service_layout" alt="image-20200620161752980" style="zoom:150%;" />
 
 
 
@@ -1166,7 +1166,7 @@ POST <https://verification.service.com:8443/hvs/v2/hosts>
 > registered, but will be in an Untrusted state until/unless
 > appropriate Flavors are added to the Verification Service.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
+<img src="Images\ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
 
 
 
@@ -1388,7 +1388,7 @@ Enterprise Linux 8.2
    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
    ENDPOINT_URL=https://<KBS IP or hostname>:9443/kbs/v1/
-   TLS_SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
+   SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
    BEARER_TOKEN=<Installation token from populate-users script>
    
@@ -1397,15 +1397,15 @@ Enterprise Linux 8.2
    KMIP_SERVER_IP=<IP address of KMIP server>
    KMIP_SERVER_PORT=<Port number of KMIP server>
    ### Retrieve the following certificates and keys from the KMIP server
-   KMIP_CLIENT_KEY_PATH=/etc/kbs/client_key.pem
-   KMIP_ROOT_CERT_PATH=/etc/kbs/root_certificate.pem
-   KMIP_CLIENT_CERT_PATH=/etc/kbs/client_certificate.pem
+   KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
+   KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
+   KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
    ```
 
 3.  Execute the KBS installer.
 
     ```shell
-    ./kbs-6.2-SNAPSHOT.bin
+    ./kbs-3.1.0.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -1451,10 +1451,10 @@ can be found on the Verification Service.
 
 #### 3.16.7.1  Importing a SAML certificate
 
-Use OpenSSL to display the SAML certificate content:
+Display the SAML certificate:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/saml.crt.pem
+cat /etc/hvs/certs/trustedca/saml-crt.pem
 ```
 
 Use the SAML certificate output in the following POST call to the Key
@@ -1494,7 +1494,7 @@ JAF53vmU+1jE
 Use OpenSSL to display the PrivacyCA certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/PrivacyCA.pem
+openssl x509 -in /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
 ```
 
 Use the PrivacyCA certificate output in the following POST call to the
@@ -2717,9 +2717,7 @@ For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B
 
 Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\integration1.png" alt="image-20200621122250278" style="zoom:150%;" />
-
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
+<img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
 ### 6.13.2  Integration with OpenStack 
 
@@ -3189,7 +3187,7 @@ using the KBS, and will output the encrypted image and an Image Flavor.
 The image owner can then upload the encrypted image to the CSP’s image
 storage service, and then upload the Image Flavor to the CSP-hosted WLS.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
+<img src="Images\image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
 
 When a compute host at the CSP attempts to launch a protected image, the
 WLA on the host will detect the launch request, and will issue a key
