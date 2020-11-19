@@ -487,31 +487,29 @@ cms setup cms_auth_token --force
 
 Create the authservice.env installation answer file in /root/ directory as below:
 
-      CMS_BASE_URL=https://\< CMS IP or hostname\>:8445/cms/v1/
+      CMS_BASE_URL=https://< CMS IP or hostname>:8445/cms/v1/
     
-      CMS_TLS_CERT_SHA384=\<CMS TLS certificate sha384
+      CMS_TLS_CERT_SHA384=<CMS TLS certificate sha384>
     
-      AAS_DB_HOSTNAME=\<IP or hostname of database server\>
+      AAS_DB_HOSTNAME=<IP or hostname of database server>
     
-      AAS_DB_PORT=\<database port number; default is 5432\>
+      AAS_DB_PORT=<database port number; default is 5432>
     
-      AAS_DB_NAME=\<database name\>
+      AAS_DB_NAME=<database name>
     
-      AAS_DB_USERNAME=\<database username\>
+      AAS_DB_USERNAME=<database username>
     
-      AAS_DB_PASSWORD=\<database password\>
+      AAS_DB_PASSWORD=<database password>
     
-      AAS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt \>
+      AAS_DB_SSLCERTSRC=<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt>
     
-      AAS_ADMIN_USERNAME=\<username for AAS administrative user\>
+      AAS_ADMIN_USERNAME=<username for AAS administrative user>
     
-      AAS_ADMIN_PASSWORD=\<password for AAS administrative user\>
+      AAS_ADMIN_PASSWORD=<password for AAS administrative user>
     
-      SAN_LIST=\<comma-separated list of IPs and hostnames for the AAS; this should match the value for the
+      SAN_LIST=<comma-separated list of IPs and hostnames for the AAS; this should match the value for the AAS_TLS_SAN in the cms.env file from the CMS installation>
     
-      AAS_TLS_SAN in the cms.env file from the CMS installation\>
-    
-      BEARER_TOKEN=\<bearer token from CMS installation\>
+      BEARER_TOKEN=<bearer token from CMS installation>
 
 Execute the AAS installer:
 
@@ -592,39 +590,37 @@ copy install_pgscsdb.sh to /root/ directory
 
 2. Create the scs.env installation answer file in /root/ directory as below:
 
-       SCS_DB_USERNAME=\<database username\>
+       SCS_DB_USERNAME=<database username>
         
-       SCS_DB_PASSWORD=\<database password\>
+       SCS_DB_PASSWORD=<database password>
         
-       SCS_DB_HOSTNAME=\<IP or hostname of database server\>
+       SCS_DB_HOSTNAME=<IP or hostname of database server>
         
-       SCS_DB_PORT=\<Database port; 5432 by default\>
+       SCS_DB_PORT=<Database port; 5432 by default>
         
-       SCS_DB_NAME=\<name of the SCS database; pgscsdb by default\>
+       SCS_DB_NAME=<name of the SCS database; pgscsdb by default>
         
-       SCS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically
+       SCS_DB_SSLCERTSRC=<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt>
         
-       /usr/local/pgsql/data/server.crt \>
+       INTEL_PROVISIONING_SERVER=<hostname of INTEL PCS Server>
         
-       INTEL_PROVISIONING_SERVER=\<hostname of INTEL PCS Server\>
+       INTEL_PROVISIONING_SERVER_API_KEY=<subscription key>
         
-       INTEL_PROVISIONING_SERVER_API_KEY=\<subscription key\>
+       SCS_REFRESH_HOURS=<time in hours to refresh SGX collaterals; 1 hour by default>
         
-       SCS_REFRESH_HOURS=\<time in hours to refresh SGX collaterals; 1 hour by default\>
+       SCS_ADMIN_USERNAME=<username for SCS service account>
         
-       SCS_ADMIN_USERNAME=\<username for SCS service account\>
+       SCS_ADMIN_PASSWORD=<password for SCS service account>
         
-       SCS_ADMIN_PASSWORD=\<password for SCS service account\>
+       CMS_BASE_URL=https://<IP or hostname to CMS>:8445/cms/v1/
         
-       CMS_BASE_URL=https://\<IP or hostname to CMS\>:8445/cms/v1/
+       CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
-       CMS_TLS_CERT_SHA384=\<sha384 of CMS TLS certificate\>
+       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas
         
-       AAS_API_URL=https://\<IP or hostname to AAS\>:8444/aas/
+       SAN_LIST=<comma-separated list of IPs and hostnames for the SCS>
         
-       SAN_LIST=\<comma-separated list of IPs and hostnames for the SCS\>
-        
-       BEARER_TOKEN=< Installation token from AAS > 
+       BEARER_TOKEN=<Installation token from AAS> 
 
 Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
 
@@ -696,33 +692,33 @@ To install the SGX Host Verification Service, follow these steps:
 
 A sample minimal shvs.env file is provided below. For all configuration options and their descriptions, refer to the Intel® SecL Configuration section on the SGX Host Verification Service.
 
-     SHVS_DB_HOSTNAME=< hostname or IP address to database server > 
+     SHVS_DB_HOSTNAME=<hostname or IP address to database server> 
     
-     SHVS_DB_USERNAME =< Database administrative username > 
+     SHVS_DB_USERNAME=<Database administrative username> 
     
-     SHVS_DB_PORT =< Database port, default is 5432 >
+     SHVS_DB_PORT=<Database port, default is 5432>
     
-     SHVS_DB_PASSWORD =< Database password > 
+     SHVS_DB_PASSWORD=<Database password> 
     
-     SHVS_DB_NAME =< Database schema >
+     SHVS_DB_NAME=<Database schema>
     
-     SHVS_ADMIN_USERNAME =< SGX Host Verification Service username > 
+     SHVS_ADMIN_USERNAME=<SGX Host Verification Service username> 
     
-     SHVS_ADMIN_PASSWORD =< SGX HostVerification Service password > 
+     SHVS_ADMIN_PASSWORD=<SGX HostVerification Service password> 
     
-     CMS_TLS_CERT_SHA384=< Certificate Management Service TLS digest > 
+     CMS_TLS_CERT_SHA384=<Certificate Management Service TLS digest> 
     
      SHVS_DB_SSLCERTSRC=/usr/local/pgsql/data/server.crt
     
-     BEARER_TOKEN=< Installation token from AAS > 
+     BEARER_TOKEN=<Installation token from AAS> 
     
-     AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas 
+     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
     
-     CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
+     CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1 
     
-     SCS_BASE_URL= https://< SGX Caching Service IP or Hostname >:9000/scs/sgx/
+     SCS_BASE_URL=https://<SGX Caching Service IP or Hostname>:9000/scs/sgx/
 
-     SAN_LIST =< Comma-separated list of IP addresses and hostnames for the SHVS > 
+     SAN_LIST=<Comma-separated list of IP addresses and hostnames for the SHVS> 
 
 
 Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
@@ -838,7 +834,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
     
-       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
+       SAN_LIST=< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
        
        SQVS_NOSETUP=false
        
@@ -947,6 +943,18 @@ Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default s
 Please use and set only required variables based on the use case.
 
 For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
+
+* Install cfssl and cfssljson on Kubernetes Control Plane
+```
+    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+
+```
 
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
 
@@ -1075,21 +1083,21 @@ To install the SGX Integration Hub, follow these steps:
 
 2. Create the ihub.env installation answer file in /root/ directory as below
 
-       IHUB_SERVICE_USERNAME =< IHUB service user username > 
+       IHUB_SERVICE_USERNAME=< IHUB service user username > 
         
        IHUB_SERVICE_PASSWORD=< IHUB service user password > 
         
-       ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+       ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
         
-       ATTESTATION_TYPE = SGX
+       ATTESTATION_TYPE=SGX
         
        TENANT=< tenant-type e.g. KUBERNETES >
         
-       KUBERNETES_URL =< https://< Kubernetes IP >:6443/
+       KUBERNETES_URL=< https://< Kubernetes IP >:6443/
         
-       KUBERNETES_CRD = custom-isecl-sgx
+       KUBERNETES_CRD=custom-isecl-sgx
         
-       KUBERNETES_TOKEN = < K8S token >
+       KUBERNETES_TOKEN=< K8S token >
         
        KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
         
@@ -1103,7 +1111,7 @@ To install the SGX Integration Hub, follow these steps:
         
        POLL_INTERVAL_MINUTES=2
         
-       TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
+       TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
 
 
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
@@ -1217,17 +1225,17 @@ NA
 
 2. Create the installation answer file kbs.env /root/ directory as below:
 
-       KBS_SERVICE_USERNAME =< KBS service user username > 
+       KBS_SERVICE_USERNAME=< KBS service user username > 
         
        KBS_SERVICE_PASSWORD=< KBS service user password > 
        
        SERVER_PORT=9443
         
-       AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
+       AAS_BASE_URL=https://<AAS IP or hostname>:8444/aas
         
-       CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+       CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
-       SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
+       SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1/
         
        KEY_MANAGER=Directory
        
@@ -1237,11 +1245,11 @@ NA
        
        SKC_CHALLENGE_TYPE="SGX"
         
-       CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
+       CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
         
-       TLS_SAN_LIST=\<KBS Hostname/IP>
+       TLS_SAN_LIST=<KBS Hostname/IP>
         
-       BEARER_TOKEN=\<Installation token from AAS\>
+       BEARER_TOKEN=<Installation token from AAS>
 
 
 3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
@@ -1816,12 +1824,6 @@ Starts the services.
 cms stop
 
 Stops the service.
-
-#### Restart 
-
-cms restart
-
-Restarts the services.
 
 #### Status 
 
