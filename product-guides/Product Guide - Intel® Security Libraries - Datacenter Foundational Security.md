@@ -8770,7 +8770,7 @@ To install the Trust Agent for Linux:
   For Platform Attestation only, provide the following in `trustagent.env` 
 
    ```shell
-  MTWILSON_API_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
+  HVS_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
   PROVISION_ATTESTATION=y
   GRUB_FILE=<path to grub.cfg>
   CURRENT_IP=<Trust Agent IP address>
@@ -8804,7 +8804,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.0.0.bin
+  ./trustagent-v3.2.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
