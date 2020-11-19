@@ -9185,55 +9185,55 @@ Enterprise Linux 8.2
 
 1.  Copy the Key Broker installation binary to the `/root` directory.
 
-2.  Create the installation answer file kms.env:
+2.  Create the installation answer file `kbs.env`:
 
     ```shell
-    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+    SAN_LIST=#comma-separated list of IP addresses and hostnames for the KBS to be used in the Subject Alternative Names list in the TLS Certificat
+    ENDPOINT_URL=https://{{ kbs }}:{{ kbs_port }}/v1
     CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
-    KMS_TLS_CERT_IP=<comma-separated list of IP addresses for the Key Broker>
-    KMS_TLS_CERT_DNS=<comma-separated list of hostnames for the Key Broker>
     CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
+    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
     BEARER_TOKEN=<Installation token from populate-users script>
+    ```
+    #OPTIONAL , only when using 3rd-Party KMIP Compliant KMS Server
+    KEY_MANAGER=KMIP
+    KMIP_SERVER_IP=<IP address of the KMIP server>
+    KMIP_SERVER_PORT=<Port where KMIP Server is listening on>
+    KMIP_CLIENT_KEY_PATH=<KMIP Client Key Path>
+    KMIP_ROOT_CERT_PATH=<KMIP Server Root Certificate Path>
+    KMIP_CLIENT_CERT_PATH=<KMIP Client Certificate Path>
     ```
 
 3.  Execute the KBS installer.
 
     ```shell
-    ./kms-6.0-SNAPSHOT.bin
+    ./kbs-v3.2.0.bin
     ```
 
 #### 3.15.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
 
 The Key Broker immediately after installation will be configured to use
-a filesystem key management solution. This should be used only for
-testing and POC purposes; using a secure 3^rd^-party Key management
+a filesystem key management solution if not configured for KMIP. This should be used only for
+testing and POC purposes; using a secure 3rd-party Key management
 Server should be used for production deployments. To configure the Key
 Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
-1.  Copy the KMIP server’s client certificate, client key and root ca
-    certificate into `/opt/kms/configuration/` on the Key Broker
+1.  Ensure the KMIP server’s client certificate, client key and root ca are accessible for reading by Key Broker Service
 
-2.  Change the ownership of these files to `kms:kms`
-
-    ```shell
-    chown kms:kms /opt/kms/configuration/*
-    ```
-
-3.  Configure the variables for kmip support as below
-
-    ```shell
-    kms config key.manager.provider com.intel.kms.keystore.kmip.KMIPKeyManager
-    kms config kmip.server.address <IP>
-    kms config kmip.server.port <PORT>
-    kms config kmip.ca.certificates.path <path to kmip ca certificate>
-    kms config kmip.client.certificate.path <path to kmip client certificate>
-    kms config kmip.client.key.path <path to kmip client key>
+2.  Update the `config.yml` for the following variables under `/etc/kbs/config.yml`
+    ```yaml
+    kmip:
+      server-ip: <IP address of the KMIP server>
+      server-port: <Port where KMIP Server is listening on>
+      client-cert-path: <KMIP Client Certificate Path>
+      client-key-path: <KMIP Client Key Path>
+      root-cert-path: <KMIP Server Root Certificate Path>
     ```
 
 4.  Restart the Key Broker for the settings to take effect
 
     ```shell
-    kms restart
+    kbs stop;kbs start
     ```
 
 ### 3.15.7  Importing Verification Service Certificates
@@ -9241,7 +9241,7 @@ Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 After installation, the Key Broker must import the SAML and PrivacyCA
 certificates from any Verification Services it will trust. This provides
 the Key Broker a way to ensure that only attestations that come from a
-“known” Verification Service. The SAML and PrivacyCA certificates needed
+"known" Verification Service. The SAML and PrivacyCA certificates needed
 can be found on the Verification Service.
 
 #### 3.15.7.1  Importing a SAML certificate
