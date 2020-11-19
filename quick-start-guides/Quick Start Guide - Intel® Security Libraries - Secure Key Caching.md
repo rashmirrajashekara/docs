@@ -251,17 +251,17 @@ The following is the inventory to be used and updated. Ansible requires `ssh` an
 <machine3_ip/hostname>
 
 [CSP:vars]
-isecl_role=CSP
+isecl_role=csp
 ansible_user=root
 ansible_password=<password>
 
 [Enterprise:vars]
-isecl_role=Enterprise
+isecl_role=enterprise
 ansible_user=root
 ansible_password=<password>
 
 [Node:vars]
-isecl_role=Node
+isecl_role=node
 ansible_user=root
 ansible_password=<password>
 ```
@@ -472,6 +472,9 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 ```
 
 ##### Deploy isecl-scheduler
+* The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
+
 * Install cfssl and cfssljson on Kubernetes Control Plane
 ```
     #Download cfssl to /usr/local/bin/
