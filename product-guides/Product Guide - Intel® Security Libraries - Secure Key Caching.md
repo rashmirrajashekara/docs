@@ -616,7 +616,7 @@ copy install_pgscsdb.sh to /root/ directory
         
        CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
-       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/
+       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas
         
        SAN_LIST=<comma-separated list of IPs and hostnames for the SCS>
         
