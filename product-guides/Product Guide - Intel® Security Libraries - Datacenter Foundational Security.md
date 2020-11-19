@@ -6839,39 +6839,21 @@ Available setup tasks:
 
 ### 11.7.4  Directory Layout
 
-The Verification Service installs by default to /opt/kms with the
-following folders.
+The Verification Service installs by default with the following folders:
 
-#### 11.7.4.1  Bin
+#### /opt/kbs/bin
 
-Contains scripts and executable binaries
+Contains KBS binaries
 
-#### 11.7.4.2  Configuration
+#### /etc/kbs/
 
-Contains configuration files
+Contains KBS configuration files
 
-#### 11.7.4.3  Env
+#### /var/log/kbs/
 
-Contains environment details
+Contains KBS logs
 
-#### 11.7.4.4  Features
 
-#### 11.7.4.5  Java
-
-Contains Java artifacts
-
-#### 11.7.4.6  Logs
-
-Contains logs. Primary log file is `kms.log`
-
-#### 11.7.4.7  Repository
-
-Contains the `keys` subdirectory, which is used for storing image
-encryption keys.
-
-#### 11.7.4.8  Script
-
-Contains additional scripts
 
 
 
@@ -9184,24 +9166,27 @@ Enterprise Linux 8.2
 
 1.  Copy the Key Broker installation binary to the `/root` directory.
 
-2.  Create the installation answer file `kbs.env`:
+2. Create the installation answer file `kbs.env`:
 
-    ```shell
-    SAN_LIST=#comma-separated list of IP addresses and hostnames for the KBS to be used in the Subject Alternative Names list in the TLS Certificat
-    ENDPOINT_URL=https://{{ kbs }}:{{ kbs_port }}/v1
-    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
-    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
-    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
-    BEARER_TOKEN=<Installation token from populate-users script>
-    ```
-    #OPTIONAL , only when using 3rd-Party KMIP Compliant KMS Server
-    KEY_MANAGER=KMIP
-    KMIP_SERVER_IP=<IP address of the KMIP server>
-    KMIP_SERVER_PORT=<Port where KMIP Server is listening on>
-    KMIP_CLIENT_KEY_PATH=<KMIP Client Key Path>
-    KMIP_ROOT_CERT_PATH=<KMIP Server Root Certificate Path>
-    KMIP_CLIENT_CERT_PATH=<KMIP Client Certificate Path>
-    ```
+   ```shell
+   SAN_LIST=#comma-separated list of IP addresses and hostnames for the KBS to be used in the Subject Alternative Names list in the TLS Certificat
+   ENDPOINT_URL=https://{{ kbs }}:{{ kbs_port }}/v1
+   CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
+   CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
+   AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+   BEARER_TOKEN=<Installation token from populate-users script>
+   ```
+   #OPTIONAL , only when using 3rd-Party KMIP Compliant KMS Server
+   KEY_MANAGER=KMIP
+   KMIP_SERVER_IP=<IP address of the KMIP server>
+   KMIP_SERVER_PORT=<Port where KMIP Server is listening on>
+   KMIP_CLIENT_KEY_PATH=<KMIP Client Key Path>
+   KMIP_ROOT_CERT_PATH=<KMIP Server Root Certificate Path>
+   KMIP_CLIENT_CERT_PATH=<KMIP Client Certificate Path>
+
+   ```
+   
+   ```
 
 3.  Execute the KBS installer.
 
