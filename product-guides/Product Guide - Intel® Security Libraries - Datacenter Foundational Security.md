@@ -9103,17 +9103,18 @@ ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_IP=<OpenStack Nova IP or hostname>
+OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
+OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
  # Kubernetes Integration Credentials - required for Kubernetes integration only
-ENDPOINT_KUBERNETES_URL=https://kubernetes:6443/
-ENDPOINT_KUBERNETES_CRD=custom-isecl
-ENDPOINT_KUBERNETES_TRUST_FILE_LOCATION=/etc/ihub/root_k8s_trust.pem
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
+TENANT=KUBERNETES
+KUBERNETES_URL=https://kubernetes:6443/
+KUBERNETES_CRD=custom-isecl
+KUBERNETES_CERT_FILE=<path where Kubernetes api_server.crt is copied>
+KUBERNETES_TOKEN=<Token fetched from kubernetes secret of ISECL-Controller>
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -9127,7 +9128,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.0.0.bin
+   ./ihub-v3.2.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
