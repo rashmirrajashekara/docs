@@ -6790,52 +6790,33 @@ folders.
 The Key Broker Service supports several command-line commands that can
 be executed only as the Root user:
 
-Syntax:
+Usage:
+        kbs <command> [arguments]
 
-kms \<command\>
+Available Commands:
+        help|-h|--help         						  	Show this help message
+        version|-v|--version   					 	 Show the version of current kbs build
+        setup <task>           							 Run setup task
+        start                  									   Start kbs
+        status                 							    	 Show the status of kbs
+        stop                   									  Stop kbs
+        uninstall [--purge]    							 Uninstall kbs
+                --purge            								all configuration and data files will be removed if this flag is set
 
-#### 11.7.3.1  Start
+Usage of kbs setup:
+        kbs setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      					 	show help message for setup task
+                --force                     						 existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     	 	the answer file with required arguments
 
-Starts the service
+Available Tasks for setup:
+        all                                 							  Runs all setup tasks
+        server                              						  Setup http server on given port
+        download-ca-cert                    			    Download CMS root CA certificate
+        download-cert-tls                   				 Download CA certificate from CMS for tls
+        create-default-key-transfer-policy  	  Create default key transfer policy for KBS
 
-#### 11.7.3.2  Stop
-
-Stops the service
-
-#### 11.7.3.3  Uninstall
-
-Removes the service
-
-#### 11.7.3.4  version
-
-Displays the version of the service
-
-#### 11.7.3.5  setup
-
-Usage: /usr/local/bin/kms setup \[--force\|--noexec\] \[task1 task2
-...\]
-
-Available setup tasks:
-
-##### 11.7.3.5.1  kms setup jca-security-providers
-
-##### 11.7.3.5.2  kms setup password-vault
-
-##### 11.7.3.5.3  kms setup jetty-ports
-
-##### 11.7.3.5.4  kms setup jetty-tls-keystore
-
-##### 11.7.3.5.5  kms setup shiro-ssl-port
-
-##### 11.7.3.5.6  kms setup notary-key
-
-##### 11.7.3.5.8  kms setup envelope-key
-
-##### 11.7.3.5.9  kms setup storage-key
-
-##### 11.7.3.5.10  kms setup saml-certificates
-
-##### 11.7.3.5.11  kms setup tpm-identity-certificates
+##### 
 
 ### 11.7.4  Directory Layout
 
