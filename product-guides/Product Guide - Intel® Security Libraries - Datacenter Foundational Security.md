@@ -8680,8 +8680,10 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 1. Install tboot
 
    ```shell
-   yum install tboot
+   yum install tboot-1.9.10
    ```
+
+   > **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.2 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
 
 2. Make a backup of your current `grub.cfg` file
 
