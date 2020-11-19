@@ -8415,7 +8415,7 @@ INSTALL_ADMIN_PASSWORD=<Password for the global installation user
 Execute the populate-users script:
 
 ```shell
-./populate-users
+./populate-users.sh
 ```
 
 > ***Note:***  *The script can be executed with the `–output_json` argument to create the `populate-user.json`.This json output file will contain all of the users created by the script, along with usernames, passwords, and role assignments. This file can be used both as a record of the service and administrator accounts, and can be used as alternative inputs to recreate the same users with the same credentials in the future if needed. Be sure to protect this file if the `–output_json` argument is used.*
