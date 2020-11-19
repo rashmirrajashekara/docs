@@ -1610,7 +1610,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.0.0.bin
+    ./wpm-v3.2.0.bin
     ```
 
 
@@ -2343,7 +2343,6 @@ the TPM, due to the low size of the NVRAM.
     ```shell
     cat tag-cert | base64 --decode | openssl dgst -sha1 | awk -F" " '{print $2}'
     ```
-```
     
     This hash value will be what is actually written to the TPM NVRAM.
 
@@ -2363,7 +2362,7 @@ ESXi host using root credentials. Then use the command:
 
 1.  ```shell
     esxcli hardware tpm tag set -d <hash>
-```
+    ```
 
     You can use the following command to verify that the tag was written:
     
@@ -3431,7 +3430,7 @@ If Notary is being used:
 Also, if Notary is being used, set the following environment variable
 before uploading the image to the Registry:
 
-`export DOCKER\_CONTENT\_TRUST=1`
+`export DOCKER_CONTENT_TRUST=1`
 
 After generating the encrypted image with the WPM, the encrypted image
 can be uploaded to a local Docker Registry.
