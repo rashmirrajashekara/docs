@@ -1415,12 +1415,12 @@ The Key Broker can be configured to use a 3rd-party KMIP key manager as part of 
 To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
 1.  Copy the KMIP server’s client certificate, client key and root ca
-    certificate into `/opt/kbs/configuration/` on the Key Broker
+    certificate to the Key Broker system
 
 2.  Change the ownership of these files to `kms:kms`
 
     ```shell
-    chown kms:kms /opt/kbs/configuration/*
+    chown kms:kms <path>/*
     ```
 
 3.  Configure the variables for kmip support as below
