@@ -8798,6 +8798,7 @@ To install the Trust Agent for Linux:
   WA_WITH_CONTAINER_SECURITY=yes
   NO_PROXY=<Registry_ip>
   HTTPS_PROXY=<proxy_url>
+  INSECURE_SKIP_VERIFY=<TRUE/FALSE based on registry configured with http/https respectively>
   REGISTRY_SCHEME_TYPE=https
    ```
 
