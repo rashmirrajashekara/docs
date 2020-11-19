@@ -851,9 +851,9 @@ The following must be completed before installing the Trust Agent:
 
 * Libvirt must be installed
 
-* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.5 must be installed
+* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
 
-> **Note**: The specific Docker-CE version 19.03.5 is required for Docker Container Confidentiality. Only this version is supported for this use case.
+> **Note**: The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.
 
 #### 3.9.4.1  Tboot Installation
 
@@ -1058,9 +1058,9 @@ The following must be completed before installing the Workload Agent:
 -   libvirt must be installed
 
 -   (REQUIRED for Docker Container Confidentiality only): Docker CE
-    19.03.5 must be installed
+    19.03.13 must be installed
 
-    > **Note**: The specific Docker-CE version 19.03.5 is required for
+    > **Note**: The specific Docker-CE version 19.03.13 is required for
     > Docker Container Confidentiality. Only this version is supported for
     > this use case.
 
@@ -1561,7 +1561,7 @@ The WPM is REQUIRED for the following use cases.
 ### 3.17.2  Package Dependencies
 
 -   (Required only if Docker Container encryption is needed) `Docker-ce
-    19.03.5` must be installed. This is needed only if the option
+    19.03.13` must be installed. This is needed only if the option
     `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
     file.
 
@@ -3393,7 +3393,7 @@ Hosts that are not trusted (including servers where there is no trust
 status, like hosts with no Trust Agent) will fail to launch any
 encrypted workloads.
 
-> **Important Note:** Docker version 19.03.5 is specifically required,
+> **Important Note:** Docker version 19.03.13 is specifically required,
 > and other versions are not supported. Installation of the Workload
 > Agent for Docker Container Confidentiality will **replace** the
 > existing Docker binaries (the client and daemon, in /usr/bin/dockerd
@@ -8658,9 +8658,9 @@ The following must be completed before installing the Trust Agent:
 
 * Libvirt must be installed
 
-* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.5 must be installed
+* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
 
-> ***Note***: *The specific Docker-CE version 19.03.5 is required for Docker Container Confidentiality. Only this version is supported for this use case.*
+> ***Note***: *The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.*
 
 #### 3.9.4.1  Tboot Installation
 
@@ -8854,9 +8854,9 @@ The following must be completed before installing the Workload Agent:
 -   libvirt must be installed
 
 -   (REQUIRED for Docker Container Confidentiality only): Docker CE
-    19.03.5 must be installed
+    19.03.13 must be installed
 
-    > ***Note***: *The specific Docker-CE version 19.03.5 is required for
+    > ***Note***: *The specific Docker-CE version 19.03.13 is required for
     > Docker Container Confidentiality. Only this version is supported for
     > this use case.*
 
@@ -9384,7 +9384,7 @@ The WPM is REQUIRED for the following use cases.
 ### 3.16.2  Package Dependencies
 
 (Required only if Docker Container encryption is needed) `Docker-ce
-19.03.5` must be installed. This is needed only if the option
+19.03.13` must be installed. This is needed only if the option
 `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
 file.
 
@@ -11147,7 +11147,7 @@ Hosts that are not trusted (including servers where there is no trust
 status, like hosts with no Trust Agent) will fail to launch any
 encrypted workloads.
 
->***Important Note:*** *Docker version 19.03.5 is specifically required,
+>***Important Note:*** *Docker version 19.03.13 is specifically required,
 >and other versions are not supported. Installation of the Workload
 >Agent for Docker Container Confidentiality will **replace** the
 >existing Docker binaries (the client and daemon, in /usr/bin/dockerd
