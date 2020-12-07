@@ -780,6 +780,16 @@ Initiate Key transfer from KBS
     systemctl restart nginx
 ```
 
+Changing group ownership and permissions of pkcs11 token
+
+```
+    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+```
+
+```
+    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
+```
+
 Establish a tls session with the nginx using the key transferred inside the enclave
 
 ```
