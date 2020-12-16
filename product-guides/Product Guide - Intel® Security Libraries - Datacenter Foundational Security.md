@@ -565,7 +565,7 @@ Creating these required users and roles is facilitated by a script that will acc
 Create the `populate-users.env` file:
 
 ```shell
-ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IH,HVS,WLA,AAS
+ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IHUB,HVS,WLA,AAS
 
 AAS_API_URL=https://<AAS IP address or hostname>:8444/aas
 AAS_ADMIN_USERNAME=<AAS username>
@@ -580,8 +580,8 @@ TA_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the Trust Agent>
 HVS_SERVICE_USERNAME=<Username for the HVS service user>
 HVS_SERVICE_PASSWORD=<Password for the HVS service user>
 
-IH_SERVICE_USERNAME=<Username for the Hub service user>
-IH_SERVICE_PASSWORD=<Password for the Hub service user>
+IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
 WPM_SERVICE_USERNAME=<Username for the WPM service user>
 WPM_SERVICE_PASSWORD=<Password for the WPM service user>
