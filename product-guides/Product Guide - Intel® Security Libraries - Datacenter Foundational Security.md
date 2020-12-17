@@ -8530,32 +8530,6 @@ The following must be completed before installing the Workload Service:
 
 * The Workload Service database must be available
 
-* Libvirt must be configured to set the "remember_owner" property to "0".  
-
-  Edit the qemu.conf configuration file:
-
-  ```
-  vi /etc/libvirt/qemu.conf
-  ```
-
-  Set "remember_owner" to "0":
-
-  ```
-  remember_owner = 0
-  ```
-
-  Restart the libvirtd service:
-
-  ```
-  systemctl restart libvirtd  
-  ```
-
-  If this step is not performed before launching encrypted VMs, on VM restart you will see errors similar to the following:
-
-  ```
-  "Error starting domain: internal error: child reported (status=125): Requested operation is not valid: Setting different SELinux label on /var/lib/nova/instances/15d7ec2f-27ad-41ed-9632-32a83c3d10ef/disk which is already in use"
-  ```
-
   
 
 ### 3.8.3  Supported Operating Systems
@@ -8845,6 +8819,34 @@ The following must be completed before installing the Workload Agent:
 -   QEMU/KVM must be installed
 
 -   libvirt must be installed
+
+- Libvirt must be configured to set the "remember_owner" property to "0".  
+
+  Edit the qemu.conf configuration file:
+
+  ```
+  vi /etc/libvirt/qemu.conf
+  ```
+
+  Set "remember_owner" to "0":
+
+  ```
+  remember_owner = 0
+  ```
+
+  Restart the libvirtd service:
+
+  ```
+  systemctl restart libvirtd  
+  ```
+
+  If this step is not performed before launching encrypted VMs, on VM restart you will see errors similar to the following:
+
+  ```
+  "Error starting domain: internal error: child reported (status=125): Requested operation is not valid: Setting different SELinux label on /var/lib/nova/instances/15d7ec2f-27ad-41ed-9632-32a83c3d10ef/disk which is already in use"
+  ```
+
+  
 
 -   (REQUIRED for Docker Container Confidentiality only): Docker CE
     19.03.13 must be installed
