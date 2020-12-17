@@ -274,6 +274,32 @@ The below steps needs to be carried out on the Build and Deployment VM
   chmod +x ws-prereq.sh
   ./ws-prereq.sh -c
   ```
+  
+* Enable and start the Docker daemon
+
+  ```shell
+  systemctl enable docker
+  systemctl start docker
+  ```
+
+* Ignore the below steps if not running behind a proxy
+
+  ```shell
+  mkdir -p /etc/systemd/system/docker.service.d
+  touch /etc/systemd/system/docker.service.d/proxy.conf
+  
+  #Add the below lines in proxy.conf
+  [Service]
+  Environment="HTTP_PROXY=<http_proxy>"
+  Environment="HTTPS_PROXY=<https_proxy>"
+  Environment="NO_PROXY=<no_proxy>"
+  ```
+
+  ```shell
+  #Reload docker
+  systemctl daemon-reload
+  systemctl restart docker
+  ```
 
 * Download go dependencies
 
