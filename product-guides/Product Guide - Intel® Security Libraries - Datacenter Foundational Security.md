@@ -1309,17 +1309,18 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
-# OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
 
- # Kubernetes Integration Credentials - required for Kubernetes integration only (See the Integration section for details on Kubernetes integration)
+# OpenStack Integration Credentials - required for OpenStack integration only
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
+
+# Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
-TENANT=KUBERNETES
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
 KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
@@ -2806,12 +2807,12 @@ openstack image unset --property trait:CUSTOM_ISECL_TRUSTED <image_name>
 
 #### 6.13.2.3  Configuring the Integration Hub for Use with OpenStack
 
-The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "ENDPOINT_OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
+The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "OPENSTACK_..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
 
 However, this configuration can also be performed after installation using CLI commands:
 
 ```
-ihub setup <endpoint name> --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
+ihub setup openstack --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
 ```
 
 Restart the Integration Hub after configuring the endpoint. Note that "endpoint name" should be replaced with any user-friendly name for the OpenStack instance you would prefer.
@@ -5929,19 +5930,20 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
+
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
 # Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
-TENANT=KUBERNETES
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
+KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -8528,6 +8530,34 @@ The following must be completed before installing the Workload Service:
 
 * The Workload Service database must be available
 
+* Libvirt must be configured to set the "remember_owner" property to "0".  
+
+  Edit the qemu.conf configuration file:
+
+  ```
+  vi /etc/libvirt/qemu.conf
+  ```
+
+  Set "remember_owner" to "0":
+
+  ```
+  remember_owner = 0
+  ```
+
+  Restart the libvirtd service:
+
+  ```
+  systemctl restart libvirtd  
+  ```
+
+  If this step is not performed before launching encrypted VMs, on VM restart you will see errors similar to the following:
+
+  ```
+  "Error starting domain: internal error: child reported (status=125): Requested operation is not valid: Setting different SELinux label on /var/lib/nova/instances/15d7ec2f-27ad-41ed-9632-32a83c3d10ef/disk which is already in use"
+  ```
+
+  
+
 ### 3.8.3  Supported Operating Systems
 
 The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linux 8.2
@@ -9152,7 +9182,7 @@ Enterprise Linux 8.2
 
    ```shell
    SAN_LIST=#comma-separated list of IP addresses and hostnames for the KBS to be used in the Subject Alternative Names list in the TLS Certificat
-   ENDPOINT_URL=https://{{ kbs }}:{{ kbs_port }}/v1
+   ENDPOINT_URL=https://<kbs IP or hostname>:<kbs_port>/v1
    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
@@ -10589,15 +10619,9 @@ openstack image unset --property trait:CUSTOM_ISECL_TRUSTED <image_name>
 
 #### 6.13.2.3  Configuring the Integration Hub for Use with OpenStack
 
-The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "ENDPOINT_OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
+The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section). 
 
-However, this configuration can also be performed after installation using CLI commands:
 
-```shell
-ihub setup <endpoint name> --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
-```
-
-Restart the Integration Hub after configuring the endpoint. Note that "endpoint name" should be replaced with any user-friendly name for the OpenStack instance you would prefer.
 
 #### 6.13.2.7  Scheduling Instances
 
@@ -13488,18 +13512,20 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
+
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
 # Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
-ENDPOINT_KUBERNETES_CRD=custom-isecl
-ENDPOINT_KUBERNETES_TRUST_FILE_LOCATION=/etc/ihub/root_k8s_trust.pem
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik
+KUBERNETES_CRD=custom-isecl
+KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
+KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
