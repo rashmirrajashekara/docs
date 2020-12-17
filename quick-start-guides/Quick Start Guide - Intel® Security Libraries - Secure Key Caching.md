@@ -128,7 +128,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.3/develop-gitlab -m manifest/skc.xml
 repo sync
 ```
 
@@ -172,7 +172,8 @@ make
 **Copy Binaries to a clean folder**
 
 ```
-copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
+For CSP/Enterprise Deployment Model, copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
+For Single VM model, copy the generated binaries directory to the /root directory on the deployment VM
 ```
 
 
@@ -214,7 +215,7 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 ## **8. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -547,21 +548,29 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	systemctl restart kubelet
 ```
 
+#### Deploy SKC Services on Single System
+```
+Copy the binaries directory generated in the build system VM to the /root/ directory on the deployment system
+Update skc.conf with the following
+  - System ip address and K8S system ip address in skc.conf
+  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
+./install_skc.sh
+```
 
 #### Deploy CSP SKC Services
+```
 Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
-
-Update the IP addresses for CMS, AAS, SCS, SHVS, IHUB and K8S services in csp_skc.conf
-
-Update the Database name, Database username and passwords for AAS, SCS and SHVS services
-
-Update the Intel PCS Server API URL and API Keys in csp_skc.conf
-
+Update csp_skc.conf with the following
+  - CSP VM IP Address
+  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
 ./install_csp_skc.sh
-
+```
 
 Create sample yml file for nginx workload and add SGX labels to it such as:
-
 ```
 apiVersion: v1
 kind: Pod
@@ -603,52 +612,41 @@ Pod should be in running state and launched on the host as per values in pod.yml
 	docker ps
 ```
 
-
 #### Deploy Enterprise SKC Services
-
+```
 Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
-
-Update the IP addresses for CMS, AAS, SCS, SQVS and KBS services in enterprise_skc.conf
-
-Update the Database name, Database username and passwords for AAS and SCS services
-
-Update the Intel PCS Server API URL and API Keys in enterprise_skc.conf
-
+Update enterprise_skc.conf with the following
+  - Enterprise VM IP address
+  - Database name, Database username and passwords for AAS and SCS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
 ./install_enterprise_skc.sh
-
+```
 
 #### Deploy SGX Agent
-
+```
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
-
 ./agent_untar.sh
-
-Edit agent.conf to update the IP address for CMS/AAS/SHVS services deployed on CSP VM
-
-Update CMS TLS SHA Value (using cms tlscertsha384 on CSP VM where CMS is deployed)
-
-For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
-
+Edit agent.conf with the following
+  - CSP CM IP address for CMS/AAS/SHVS services deployed on CSP VM
+  - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP VM)
+  - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
+Save and Close
 ./deploy_sgx_agent.sh
-
-
+```
 
 #### Deploy SKC Library
-
+```
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
-
 ./skclib_untar.sh
-
-Edit skc_library.conf and Update the IP address for CMS/AAS/KBS services deployed on Enterprise VM
-
-Also update CSP_CMS_IP to point to the IP of CMS service deployed on CSP VM
-
-Also update the IP Address for SGX Caching Service deployed in CSP VM
-
-Update the Hostname of the Enterprise VM where KBS is deployed
-
+Update skc_library.conf with the following
+  - IP address for CMS/AAS/KBS services deployed on Enterprise VM
+  - CSP_CMS_IP should point to the IP of CMS service deployed on CSP VM
+  - CSP VM IP Address where SGX Caching Service deploye
+  - Hostname of the Enterprise VM where KBS is deployed
+Save and Close
 ./deploy_skc_library.sh
-
+```
 
 ## **11. System User Configuration**
 
@@ -734,30 +732,26 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
   Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
 
+  Sample PKCS11 url is as below
+  
+  pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+  
   Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
 
-  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
+  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
 
-	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+  Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
-	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
-	
-	**[core]**
-	
+	[core]
 	preload_keys=/tmp/keys.txt
-	
 	keyagent_conf=/opt/skc/etc/key-agent.ini
-	
 	mode=SGX
-	
 	debug=true
 	
-	**[SW]**
-	
+	[SW]
 	module=/usr/lib64/pkcs11/libsofthsm2.so
 	
-	**[SGX]**
-	
+	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 # KBS key-transfer flow validation
