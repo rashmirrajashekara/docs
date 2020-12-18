@@ -14673,16 +14673,30 @@ executed only as the Root user:
 <div style="page-break-after: always"></div>
 # 12  Certificate and Key Management
 
-## 12.1  Host Verification Service Certificates and Keys
+## 12.1  Authentication and Authorization Service
 
-The Host Verification Service has several unique certificates not present on other services.  These certificates are self-signed and can impact functionality if replaced.
+The AAS uses a JWT signing certificate to generate JWT tokens.  By default this certificate is issued by the CMS signing CA.  Generally, this should not be changed.
 
-### 12.1.1  SAML
+The JWT signing certificate and its private key can be found here:
+
+```
+/etc/authservice/certs/tokensign/jwtsigncert.pem
+/etc/authservice/certs/tokensign/jwt.key
+```
+
+
+
+## 12.2  Host Verification Service 
+
+
+
+### 12.2.1  SAML
 
 The SAML Certificate is used to sign SAML attestation reports, and is itself signed by the intermediate signing CA from the CMS. This certificate is unique to the Verification Service.
 
 ```shell
 /etc/hvs/certs/trustedca/saml-crt.pem
+/etc/hvs/trusted-keys/saml.key
 ```
 Note that, if this certificate is replaced, all existing attestations in the HVS will immediately appear as invalid/untrusted due to a SAML signature mismatch.  
 
@@ -14696,75 +14710,82 @@ To replace this certificate with a new SAML certificate using the CMS self-signe
 hvs setup download-cert-saml
 ```
 
-### 12.1.2  Asset Tag
+### 12.2.2  Asset Tag
 
 The Asset tag Certificate is used to sign all Asset Tag Certificates. This certificate is unique to the Verification Service.
 
 ```shell
 /etc/hvs/certs/trustedca/tag-ca-cert.pem
+/etc/hvs/trusted-keys/tag-ca.key
 ```
 
 If the Asset tag signing certificate is replaced, all existing Asset Tags will be considered invalid, and will need to be recreated. It is recommended to delete any existing Asset Tag certificates and Flavors, and then recreate and deploy new Tags.
 
-### 12.1.3  Privacy CA 
+### 12.2.3  Privacy CA 
 
-The Privacy CA certificate is used as part of the certificate chain for creating the Attestation Identity Key (AIK) during Trust Agent
-provisioning. The Privacy CA must be a self-signed certificate. This certificate is unique to the Verification Service.
+The Privacy CA certificate is used as part of the certificate chain for creating the Attestation Identity Key (AIK) during Trust Agent provisioning. The Privacy CA must be a self-signed certificate. This certificate is unique to the Verification Service.
 
-The Privacy CA certificate is used by Trust Agent nodes during Trust
-Agent provisioning; if the Privacy CA certificate is changed, all Trust
-Agent nodes will need to be re-provisioned.
+The Privacy CA certificate is used by Trust Agent nodes during Trust Agent provisioning; if the Privacy CA certificate is changed, all Trust Agent nodes will need to be re-provisioned.
 
-`/etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem`
+```
+/etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
+/etc/hvs/trusted-keys/privacy-ca.key
+```
 
 If the Privacy CA certificate is replaced, all Trust Agent hosts will need to be re-provisioned with a new AIK:
 
 ```shell
-
+tagent setup provision-attestation
 ```
 
+Any Trust Agent hosts not reprovisioned will result in untrusted attestations, as the validation of the AIK used to sign the hosts' TPM quotes will no longer match the endorsement chain of the HVS.
 
+### 12.2.4  Endorsement CA
 
-### 12.1.4  Endorsement CA
+The Endorsement CA is a self-signed certificate used during Trust Agent provisioning.  
 
-The Endorsement CA is a self-signed certificate used during Trust Agent
-provisioning.
-
-`/etc/hvs/certs/endorsement/EndorsementCA.pem`
-
-`/etc/hvs/certs/endorsement/EndorsementCA-external.pem`
+```
+/etc/hvs/certs/endorsement/EndorsementCA.pem`
+/etc/hvs/trusted-keys/endorsement-ca.key
+/etc/hvs/certs/endorsement/EndorsementCA-external.pem`
+```
 
 If the Endorsement CA certificate is replaced, all Trust Agent hosts will need to be re-provisioned with a new Endorsement Certificate:
 
 ```shell
-
+tagent setup provision-attestation
 ```
 
+Any Trust Agent hosts not reprovisioned will result in untrusted attestations, as the validation of the AIK used to sign the hosts' TPM quotes will no longer match the endorsement chain of the HVS.
+
+## 12.3  Regenerating TLS Certificates
+
+TLS certificates for each service are issued by the Certificate Management Service during installation. If the CMS root certificate is changed, or to regenerate the TLS certificate for a given service, use the following commands (note: environment variables will need to be set; typically these are the same variables set in the service installation .env file):
+
+1. <servicename> download_ca_cert`
+
+2. Set up required environment variables.  These are some of the same variables that would be used in the .env installation file to install the service.  Note that a new/valid bearer token will be needed; this can be generated using the populate-users.sh script with the AAS, or by using the installation admin user credentials to get a token from the AAS API.
+
+   ```
+   CMS_BASE_URL=<CMS API URL>`
+   BEARER_TOKEN=<token>
+   ```
+
+3. Use setup to re-download a new TLS certificate.
+
+   ```
+   <servicename> download-cert-tls --force
+   ```
+
+This generates a new key pair and CSR, gets it signed by the CMS.
 
 
-## 12.2  TLS Certificates
 
-TLS certificates for each service are issued by the Certificate Management Service during installation. If the CMS root certificate is
-changed, or to regenerate the TLS certificate for a given service, use the following commands (note: environment variables will need to be set; typically these are the same variables set in the service installation .env file):
+## 12.4 Replacing Self-Signed Certificates
 
--   `<servicename> download_ca_cert`
--   Download CMS root CA certificate
--   Environment variable `CMS_BASE_URL=<url>` for CMS API url
--   `<servicename> download_cert TLS` 
--   Generates Key pair and CSR, gets it signed from CMS
--   Environment variable `CMS_BASE_URL=<url>` for CMS API url
--   Environment variable `BEARER_TOKEN=<token>` for authenticating
-        with CMS
--   Environment variable `KEY_PATH=<key_path>` to override default
-        specified in config
--   Environment variable `CERT_PATH=<cert_path>` to override
-        default specified in config
+The CMS offers automatic generation of certificates based on a self-signed root CA. Certificates using this root CA may need to be replaced with certificates signed by a recognized CA. This effectively involves replacing the certificates deployed during installation with new certificates that use a hierarchy outside of the CMS.
 
-## 12.3 Replacing Certificates
-
-The CMS offers automatic generation of certificates based on a self-signed root CA.  Certificates using this root CA may need to be replaced with certificates signed by a recognized CA.  This effectively involves replacing the certificates deployed during installation with new certificates that use a hierarchy outside of the CMS.
-
-To replace any non-TLS certificate, 
+To replace any non-TLS certificate, simply replace the existing certificate file with the new certificate and its private key.  Each certificate must include any intermediate certificate chain, excluding the root.  The root CA certificate must also be replaced so that the new hierarchy is used for validation.  
 
 ### TLS Certificates
 
@@ -14774,6 +14795,7 @@ Copy the new TLS certificates to the appropriate directories, overwriting the ex
 
 ```
 /etc/<servicename>/tls-cert.pem
+/etc/<servicename>/tls.key
 ```
 
 Copy the new root CA to each service, overwriting the CMS-created root CA:
