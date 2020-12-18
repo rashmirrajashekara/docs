@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### November 2020
+### December 2020
 
-### Revision 3.2
+### Revision 3.3
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -257,7 +257,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.2/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.3/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -267,7 +267,7 @@ For components written in GO (Authentication and Authorization Service, Certific
 
 In addition, the build script will produce some sample database scripts that can be used during installation to setup postgres and create database.
 
-Install_pgdb: authservice/out/install_pgdb.sh
+Install_pgdb: intel-secl/deployments/installer/install_pgdb.sh
 
 Install_pgscsdb: sgx-caching-service/out/install_pgscsdb.sh
 
@@ -419,7 +419,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.2.0.bin
+./cms-v3.3.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -490,7 +490,9 @@ Create the authservice.env installation answer file in /root/ directory as below
       CMS_BASE_URL=https://< CMS IP or hostname>:8445/cms/v1/
     
       CMS_TLS_CERT_SHA384=<CMS TLS certificate sha384>
-    
+      
+      AAS_DB_SSLMODE=verify-full
+
       AAS_DB_HOSTNAME=<IP or hostname of database server>
     
       AAS_DB_PORT=<database port number; default is 5432>
@@ -507,13 +509,15 @@ Create the authservice.env installation answer file in /root/ directory as below
     
       AAS_ADMIN_PASSWORD=<password for AAS administrative user>
     
+      AAS_JWT_TOKEN_DURATION_MINS=2880
+    
       SAN_LIST=<comma-separated list of IPs and hostnames for the AAS; this should match the value for the AAS_TLS_SAN in the cms.env file from the CMS installation>
     
       BEARER_TOKEN=<bearer token from CMS installation>
 
 Execute the AAS installer:
 
-./authservice-v3.2.0.bin
+./authservice-v3.3.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -632,7 +636,7 @@ Update the BEARER_TOKEN value in /root/scs.env file
 
 Execute the SCS installer binary:
 
-./scs-v3.2.0.bin
+./scs-v3.3.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -731,7 +735,7 @@ Update the BEARER_TOKEN value in /root/shvs.env file
 
 Execute the installer binary.
 
-./shvs-v3.2.0.bin
+./shvs-v3.3.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -855,7 +859,7 @@ Update the BEARER_TOKEN value in /root/sqvs.env file
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.2.0.bin
+sqvs-v3.3.0.bin
 
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
@@ -1030,6 +1034,12 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	systemctl restart kubelet
 ```
 
+* Check if CRD Data is populated
+
+```
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+
 ##  Installing the Integration Hub
 
 **Note:** The Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as Kubernetes. The Integration Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
@@ -1120,7 +1130,7 @@ Update the BEARER_TOKEN value in the ihub.env file
 
 4.  Execute the installer binary.
 
-./ihub-v3.2.0.bin
+./ihub-v3.3.0.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
@@ -1256,7 +1266,7 @@ NA
 
 4.  Execute the KBS installer.
 
-./kbs-3.2.0.bin
+./kbs-3.3.0.bin
 
 ##  Installing the SKC Library
 
@@ -2595,8 +2605,6 @@ rm -rf $tmpdir
 The printed token needs to be added in BEARER_TOKEN section in kbs.env
 
 
-
-
 #### Sample Script to Create Integrated Hub User account and Roles
 
 ```
@@ -2840,8 +2848,6 @@ init = 0
 
 Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
-user root;
-
 ssl_engine pkcs11;
 
 Update the location of certificate with the location where it was copied into the SGX compute node. 
@@ -2862,31 +2868,25 @@ Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
 
 The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
 
-	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
 	
-	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
+    Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
-	**[core]**
-	
+	[core]
 	preload_keys=/tmp/keys.txt
-	
 	keyagent_conf=/opt/skc/etc/key-agent.ini
-	
 	mode=SGX
-	
 	debug=true
 	
-	**[SW]**
-	
+    [SW]
 	module=/usr/lib64/pkcs11/libsofthsm2.so
-	
-	**[SGX]**
-	
+
+	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 # KBS key-transfer flow validation
 
-Execute below commands for KBS key-transfer:
+On SGX compute node, Execute below commands for KBS key-transfer:
 
 ```
     pkill nginx
@@ -2904,7 +2904,15 @@ Initiate Key tranfer from KBS
     systemctl restart nginx
 ```
 
-Establish ssh session with the nginx using the key transferred inside the enclave
+Changing group ownership and permissions of pkcs11 token
+```
+    groupadd intel
+    usermod -G intel nginx
+    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
+```
+
+Establish tls session with the nginx using the key transferred inside the enclave
 
 ```
     wget https://localhost:2443 --no-check-certificate
