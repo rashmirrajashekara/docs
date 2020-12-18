@@ -49,7 +49,7 @@
 ```
 export http_proxy=http://<proxy-url>:<proxy-port>
 export https_proxy=http://<proxy-url>:<proxy-port>
-export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP_VM IP>,<Enterprise VM IP>, <SGX Compute Node IP>, <KBS VM Hostname>
+export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP IP>,<Enterprise IP>, <SGX Compute Node IP>, <KBS VM Hostname>
 ```
 
 **Firewall Settings**
@@ -109,12 +109,12 @@ rm -rf $tmpdir
 ***Golang Installation***
 
 ```
-wget https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz
-tar -xzf go1.14.2.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
+tar -xzf go1.14.1.linux-amd64.tar.gz
 sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.2.linux-amd64.tar.gz
+rm -rf go1.14.1.linux-amd64.tar.gz
 ```
 
 
@@ -168,14 +168,12 @@ make
 
 ```
 
-
 **Copy Binaries to a clean folder**
 
 ```
 For CSP/Enterprise Deployment Model, copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
 For Single VM model, copy the generated binaries directory to the /root directory on the deployment VM
 ```
-
 
 ## **7. Deployment & Usecase Workflow Tools Installation**
 
@@ -235,7 +233,6 @@ cd tools/ansible-role
 
 #Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/utils/tools/)
 ```
-
 
 ### Update Ansible Inventory
 
@@ -393,7 +390,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 >  **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
 
 
-
 ### Running API Collections
 
 * Import the collection into Postman API Client
@@ -413,7 +409,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 * Run the workflow
 
   ![running-collection](./images/running_collection.gif)
-
 
 
 ## **10. Deployment Using Binaries**
@@ -485,7 +480,6 @@ For example, if only sgx based attestation is required then remove/comment HVS_I
     #Download cfssljson to /usr/local/bin
     wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
     chmod +x /usr/local/bin/cfssljson
-
 ```
 
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
@@ -499,7 +493,7 @@ For example, if only sgx based attestation is required then remove/comment HVS_I
     mkdir secrets
     cp /opt/isecl-k8s-extensions/server.key secrets/
     cp /opt/isecl-k8s-extensions/server.crt secrets/
-	mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
+    mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
     cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
 ```
 Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.
@@ -548,11 +542,18 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	systemctl restart kubelet
 ```
 
-#### Deploy SKC Services on Single System
+* Check if CRD data is populated
 ```
-Copy the binaries directory generated in the build system VM to the /root/ directory on the deployment system
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+
+#### Deploying SKC Services on Single System
+```
+Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
 Update skc.conf with the following
-  - System ip address and K8S system ip address in skc.conf
+  - Deployment system IP address
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -561,9 +562,11 @@ Save and Close
 
 #### Deploy CSP SKC Services
 ```
-Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP VM
+Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP system
 Update csp_skc.conf with the following
-  - CSP VM IP Address
+  - CSP system IP Address
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -604,7 +607,7 @@ Validate if pod can be launched on the node. Run following commands:
 ```
     kubectl apply -f pod.yml
     kubectl get pods
-    kubectl describe pods nginx 
+    kubectl describe pods nginx
 ```
 
 Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
@@ -614,9 +617,9 @@ Pod should be in running state and launched on the host as per values in pod.yml
 
 #### Deploy Enterprise SKC Services
 ```
-Copy the binaries directory generated in the build system VM to the /root/ directory on Enterprise VM
+Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
 Update enterprise_skc.conf with the following
-  - Enterprise VM IP address
+  - Enterprise system IP address
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -628,8 +631,8 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
-  - CSP CM IP address for CMS/AAS/SHVS services deployed on CSP VM
-  - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP VM)
+  - CSP system IP address where CMS/AAS/SHVS services deployed
+  - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
   - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
 Save and Close
 ./deploy_sgx_agent.sh
@@ -640,10 +643,10 @@ Save and Close
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 ./skclib_untar.sh
 Update skc_library.conf with the following
-  - IP address for CMS/AAS/KBS services deployed on Enterprise VM
-  - CSP_CMS_IP should point to the IP of CMS service deployed on CSP VM
-  - CSP VM IP Address where SGX Caching Service deploye
-  - Hostname of the Enterprise VM where KBS is deployed
+  - IP address for CMS/AAS/KBS services deployed on Enterprise system
+  - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
+  - CSP VM system address where SGX Caching Service deployed
+  - Hostname of the Enterprise system where KBS is deployed
 Save and Close
 ./deploy_skc_library.sh
 ```
@@ -665,7 +668,6 @@ GIT Configuration**
  [push]
         default = matching 
 ```
-
 
 ## Appendix
 
@@ -714,8 +716,6 @@ init = 0
 
 Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
-user root;
-
 ssl_engine pkcs11;
 
 Update the location of certificate with the loaction where it was copied into the skc_library machine. 
@@ -756,7 +756,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 # KBS key-transfer flow validation
 
-Execute below commands for KBS key-transfer:
+On SGX Compute node, Execute below commands for KBS key-transfer:
 
 ```
     pkill nginx
