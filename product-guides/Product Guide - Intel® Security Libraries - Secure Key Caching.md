@@ -587,6 +587,8 @@ Before SCS is installed, Database needs to be created. Use the following command
 
 copy install_pgscsdb.sh to /root/ directory
 
+Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PGDB_USERNAME with SCS db username and ISECL_PGDB_USERPASSWORD with SCS db password
+
 ./install_pgscsdb.sh
 
 
@@ -621,10 +623,16 @@ copy install_pgscsdb.sh to /root/ directory
        CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
        AAS_API_URL=https://<IP or hostname to AAS>:8444/aas
+       
+       RETRY_COUNT=3
+       
+       WAIT_TIME=1
         
        SAN_LIST=<comma-separated list of IPs and hostnames for the SCS>
         
        BEARER_TOKEN=<Installation token from AAS> 
+
+BEARER_TOKEN above can be obtained from running scs_aas_curl.sh script below
 
 Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
 
@@ -685,6 +693,8 @@ Before SHVS is installed, Database needs to be created. Use the following comman
 
 copy install_pgshvsdb.sh to /root/ directory
 
+Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SHVS db name, ISECL_PGDB_USERNAME with SHVS db username and ISECL_PGDB_USERPASSWORD with SHVS db password
+
 ./install_pgshvsdb.sh
 
 
@@ -713,7 +723,13 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      CMS_TLS_CERT_SHA384=<Certificate Management Service TLS digest> 
     
      SHVS_DB_SSLCERTSRC=/usr/local/pgsql/data/server.crt
-    
+     
+     SHVS_SCHEDULER_TIMER=10
+     
+     SHVS_HOST_PLATFORM_EXPIRY_TIME=4
+     
+     SHVS_AUTO_REFRESH_TIMER=120
+
      BEARER_TOKEN=<Installation token from AAS> 
     
      AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
@@ -724,6 +740,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
      SAN_LIST=<Comma-separated list of IP addresses and hostnames for the SHVS> 
 
+BEARER_TOKEN above can be obtained from running shvs_aas_curl.sh script below
 
 Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
 
@@ -777,7 +794,9 @@ Intel® Xeon® SP (Ice Lake-SP)
 
     Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
-    Update the IP address for all the services mentioned in agent.conf
+    Update the following in agent.conf
+     - IP address for all the services
+     - Certificate Management Service TLS digest value (CMS running on CSP system)
     ./deploy_sgx_agent.sh
 
 ##  Installing the SQVS
@@ -848,6 +867,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        
        SQVS_INCLUDE_TOKEN=true
 
+BEARER_TOKEN above can be obtained from running sqvs_aas_curl.sh script below
 
 Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
 
@@ -1241,7 +1261,7 @@ NA
        
        SERVER_PORT=9443
         
-       AAS_BASE_URL=https://<AAS IP or hostname>:8444/aas
+       AAS_API_URL=https://<AAS IP or hostname>:8444/aas
         
        CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
@@ -1261,6 +1281,7 @@ NA
         
        BEARER_TOKEN=<Installation token from AAS>
 
+BEARER_TOKEN above can be obtained form Step 3 below
 
 3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
 
@@ -2059,7 +2080,7 @@ Contains database scripts.
 | Variable Name        | Default Value                                 | Notes                                              |
 | -------------------- | --------------------------------------------- | -------------------------------------------------- |
 | CMS_BASE_URL         | https://< CMS IP or hostname >:8445/cms/v1/   | Required for generating TLS certificate            |
-| AAS_BASE_URL         | https://< AAS IP or hostname >:8444/aas       | AAS baseurl                                        |
+| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas       | AAS service url                                        |
 | SQVS_URL             | https://< SQVS IP or hostname >:12000/svs/v1/ | Required to get the SGX Quote verified             |
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest > | SHA384 digest of CMS TLS certificate               |
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
@@ -2439,7 +2460,7 @@ echo "Setting up Key Broker Service Related roles and user in AAS Database"
 
 source ~/kbs.env 2> /dev/null
 
-aas_hostname=${AAS_BASE_URL:-"https://<aas.server.com>:8444/aas"}
+aas_hostname=${AAS_API_URL:-"https://<aas.server.com>:8444/aas"}
 CURL_OPTS="-s -k"
 CONTENT_TYPE="Content-Type: application/json"
 ACCEPT="Accept: application/jwt"
