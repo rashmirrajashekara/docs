@@ -1870,11 +1870,13 @@ Uninstalls the service, including the deletion of all files and folders.
 
 #### Version 
 
-cms --version
+cms version
 
 Reports the version of the service.
 
-#### Tlscertsha384 
+#### Tlscertsha384
+
+cms tlscertsha384
 
 Shows the SHA384 digest of the TLS certificate.
 
@@ -2057,7 +2059,7 @@ Removes the service. Use the "\--purge" flag to also delete all data.
 
 #### Version
 
-authservice --version
+authservice version
 
 Shows the version of the service.
 
@@ -2129,7 +2131,7 @@ Removes the service
 
 #### Version
 
-kbs --version
+kbs version
 
 Displays the version of the service
 
@@ -2204,7 +2206,7 @@ uninstall the SGX Caching Service. \--purge option needs to be applied to remove
 
 #### version 
 
-scs --version
+scs version
 
 Reports the version of the scs
 
@@ -2283,7 +2285,7 @@ uninstalls the SGX Quote Verification Service. \--purge option needs to be appli
 
 #### version 
 
-sqvs --version
+sqvs version
 
 Reports the version of the sqvs
 
