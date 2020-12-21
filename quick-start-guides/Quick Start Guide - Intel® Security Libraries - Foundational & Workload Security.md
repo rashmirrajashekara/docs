@@ -573,11 +573,13 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | ---------------------- | --------------------------------------------- | ------------------ |
 | Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
 |                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
-|                        | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
+|                        | Trusted Workload Placement (VM & Containers)  | ✔️ |
 |                        | Application Integrity                         | ✔️                  |
-| Launch Time Protection | VM Confidentiality                            | ❌                  |
+| Launch Time Protection | VM Confidentiality                            | ✔️                  |
 |                        | Container Confidentiality with Docker Runtime | ✔️                  |
 |                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
+
+> **Note: ** `Foundational Security - Host Attestation` is a pre-requisite for all usecases beyond Host Attestation. E.g: For working with `Launch Time Protection - VM Confidentiality` , Host Attestation flow must be run as a pre-req before trying VM Confidentiality
 
 ### Downloading API Collections
 
@@ -843,16 +845,16 @@ deployment in the `isecl` namespace.
 
 9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                         | Required   | Type     | Default | Description                                                  |
-   | ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
-   | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
-   | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
-   | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |
+   | Field                    | Required   | Type     | Default | Description                                                  |
+   | ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
+   | LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
+   | LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+   | TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
+   | PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
+   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+   | TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
+   | TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
 
 
 
