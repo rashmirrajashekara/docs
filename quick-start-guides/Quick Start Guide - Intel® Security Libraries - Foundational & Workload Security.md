@@ -59,11 +59,11 @@ Table of Contents
 
 > **Note:** A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.2 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
+> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
 
 ### OS Requirements
 
-* `RHEL 8.2` OS
+* `RHEL 8.3` OS
 * `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on build machine and remote machines
 * Date and time should be in sync across the machines
 
@@ -98,7 +98,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 * The repos can be built only as `root` user
 
-* RHEL 8.2 Machine for building repos
+* RHEL 8.3 Machine for building repos
 
 * Enable the following RHEL repos:
 
