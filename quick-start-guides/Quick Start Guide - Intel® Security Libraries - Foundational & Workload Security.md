@@ -27,6 +27,7 @@ Table of Contents
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
             * [TPM is already owned](#tpm-is-already-owned)
+            * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
             * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
             * [Using Docker Notary](#using-docker-notary)
             * [In case of Misconfigurations](#in-case-of-misconfigurations)
@@ -503,6 +504,31 @@ Update the following vars in `defaults/main.yml`
 ```yaml
 # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
 tpm_owner_secret: <tpm_secret>
+```
+
+#### UEFI SecureBoot enabled
+
+If UEFI mode and UEFI SecureBoot feature is enabled, the following option can be used to during runtime in the playbook
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars uefi_secureboot=yes \
+-- extra-vars grub_file_path=<uefi mode grub file path>
+```
+
+or
+
+Update the following vars in `defaults/main.yml`
+
+```yaml
+# Enable/disable for UEFI SecureBoot Mode
+# [yes - UEFI SecureBoot mode, no - Legacy mode]
+uefi_secureboot: 'yes'
+
+# The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
+grub_file_path: <uefi mode grub file path>
 ```
 
 #### Deploying for Workload Confidentiality with CRIO Runtime
