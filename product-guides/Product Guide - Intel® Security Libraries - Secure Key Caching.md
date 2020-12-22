@@ -156,7 +156,7 @@ The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In
 
 ## Integration Hub
 
-The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts deails from Kubernetes and then using the host infomration it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
+The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts details from Kubernetes and then using the host information it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Openstack. This integration allows Kubernetes and Openstack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
 ## Key Broker Service (SKC Only)
 
@@ -1112,37 +1112,32 @@ To install the SGX Integration Hub, follow these steps:
 1. Copy the Integration Hub installation binary to the /root/ directory.
 
 2. Create the ihub.env installation answer file in /root/ directory as below
+```
+    IHUB_SERVICE_USERNAME=< IHUB service user username > 
+    IHUB_SERVICE_PASSWORD=< IHUB service user password > 
+    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+    ATTESTATION_TYPE=SGX
+    CMS_TLS_CERT_SHA384=< CMS TLS digest > 
+    BEARER_TOKEN=< Installation token from AAS > 
+ 
+    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
+    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+    POLL_INTERVAL_MINUTES=2
+    TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
+    TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK>
 
-       IHUB_SERVICE_USERNAME=< IHUB service user username > 
-        
-       IHUB_SERVICE_PASSWORD=< IHUB service user password > 
-        
-       ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
-        
-       ATTESTATION_TYPE=SGX
-        
-       TENANT=< tenant-type e.g. KUBERNETES >
-        
-       KUBERNETES_URL=< https://< Kubernetes IP >:6443/
-        
-       KUBERNETES_CRD=custom-isecl-sgx
-        
-       KUBERNETES_TOKEN=< K8S token >
-        
-       KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
-        
-       CMS_TLS_CERT_SHA384=< CMS TLS digest > 
-        
-       BEARER_TOKEN=< Installation token from AAS > 
-        
-       AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
-        
-       CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
-        
-       POLL_INTERVAL_MINUTES=2
-        
-       TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
+    # Kubernetes Integration Credentials - required for Kubernetes integration only
+    KUBERNETES_URL=< https://< Kubernetes IP >:6443/>
+    KUBERNETES_CRD=custom-isecl-sgx
+    KUBERNETES_TOKEN=< K8S token >
+    KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
 
+    # OpenStack Integration Credentials - required for OpenStack integration only
+    OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+    OPENSTACK_PLACEMENT_URL=<OpenStack Nova Placement API URL; typically http://openstack-ip:8778/>
+    OPENSTACK_USERNAME=<OpenStack username>
+    OPENSTACK_PASSWORD=<OpenStack password>
+```
 
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
@@ -1220,6 +1215,41 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 	docker ps
 ```
+Integration with OpenStack
+OpenStack can now use “Traits” to provide qualitative data about Nova Compute hosts to establish Trait requirements. The Integration Hub continually push SGX data to the OpenStack Traits resources. This means OpenStack scheduler natively supports workload scheduling incorporating SGX Host information, including SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status upto date/not. The OpenStack Placement Service will automatically attempt to place images with Trait requirements on compute nodes that have those Traits.
+NOTE: This control only applies to instances launched using the OpenStack scheduler, and the Traits functions will not affect manually-launched instances where a specific Compute Node is defined (since this does not use the scheduler at all). Intel SecL-DC uses existing OpenStack interfaces and does not modify OpenStack code.  The datacenter owner or OpenStack administrator is responsible for the security of the OpenStack workload scheduling process in general, and Intel recommends following published OpenStack security best practices.
+Setting Image Traits
+Image Traits define the policy for which Traits are required for that instance to be launched on a Nova Compute node.By setting these Traits to “required” the OpenStack scheduler will require the same Traits to be present on a Nova Compute node in order to launch instances. To set the Image Traits for Intel SecL-DC,a specific naming convention is used. This naming convention will match the Traits that the Integration Hub will automatically push to OpenStack. Two types of Traits are currently supported – one Trait is used to require that the Compute Node must be SGX supported and the other Trait is used to require specific SGXkey/value pairs.
+Required Image trait for SGX Enabled Host:
+```
+CUSTOM_ISECL_SGX_ENABLED_TRUE=required
+```
+These Traits can be set using CLI commands for OpenStack Glance:
+```
+openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required 
+```
+To veiw the Traits that has been set:
+```
+openstack image show
+```
+List the set of resources mapped to the Openstack
+```
+openstack resource provider list
+```
+To view the traits enabled for the SGX Host:
+```
+openstack resource provider trait list 
+```
+To remove a Trait that is not required for an Image:
+```
+openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE 
+openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_FALSE 
+```
+Scheduling Instances
+Once Trait requirements are set for Images and the Integration Hub is configured to push attributes to OpenStack, instances can be launched in OpenStack as normal. As long as the OpenStack Nova scheduler is used to schedule the workloads, only compliant Compute Nodes will be scheduled to run instances of controlled Images.
+NOTE: This control only applies to instances launched using the OpenStack scheduler and the Traits functions will not affect manually-launched instances where a specific Compute Node is defined (since this does not use the scheduler at all). Intel SecL-DC uses existing OpenStack interfaces and does not modify OpenStack code. The datacenter owner or OpenStack administrator is responsible for the security of the
+OpenStack workload scheduling process in general and Intel recommends following published OpenStack security best practices.
+
 
 ##  Installing the Key Broker Service
 
