@@ -1124,7 +1124,7 @@ To install the SGX Integration Hub, follow these steps:
     CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
     POLL_INTERVAL_MINUTES=2
     TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
-    TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK>
+    TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK >
 
     # Kubernetes Integration Credentials - required for Kubernetes integration only
     KUBERNETES_URL=< https://< Kubernetes IP >:6443/>
@@ -1135,8 +1135,8 @@ To install the SGX Integration Hub, follow these steps:
     # OpenStack Integration Credentials - required for OpenStack integration only
     OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
     OPENSTACK_PLACEMENT_URL=<OpenStack Nova Placement API URL; typically http://openstack-ip:8778/>
-    OPENSTACK_USERNAME=<OpenStack username>
-    OPENSTACK_PASSWORD=<OpenStack password>
+    OPENSTACK_USERNAME=< OpenStack username >
+    OPENSTACK_PASSWORD=< OpenStack password >
 ```
 
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
