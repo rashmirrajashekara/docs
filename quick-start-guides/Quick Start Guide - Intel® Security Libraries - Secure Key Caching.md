@@ -619,7 +619,69 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 	docker ps
 ```
+#### Openstack Setup and Associate Traits
 
+* Setup Compute and Controller node for Openstack. Compute node should be setup on SGX host machine, Controller node can be any VM machine. After the compute/controller setup is done, follow the below steps:
+
+* IHUB should be installed and configured with Openstack
+
+  Note: While using deployment scripts to install the components, in the env directory of the binaries folder comment "KUBERNETES_TOKEN" in the ihub.env before installation.
+
+* On the openstack controller, if resource provider is not listing the resources then install the "osc-placement"
+```
+  pip3 install osc-placement
+```
+* source the admin-openrc credentials to gain access to user-only CLI commands and export the os_placement_API_version
+```
+   source admin-openrc
+```
+* List the set of resources mapped to the Openstack
+```
+  openstack resource provider list
+```
+* Set the required traits for SGX Hosts
+```
+  openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required <image name>
+  For example 'cirros' image can be used for the instances.
+```
+* Veiw the Traits that has been set:
+```
+  openstack image show <image name>
+
+  The trait should be set and assinged to the respective image successfully. For example 'cirros' image can be used for the instances.
+```
+* Verify the trait is enabled for the SGX Host:
+```
+  openstack resource provider trait list <uuid of the host which the openstack resoruce provider lists>
+
+  SGX Supported, SGX TCB upto Date, SGX FLC enabled, SGX EPC size attritubes of the SGX host for which the 'required' trait set to TRUE or FALSE is displayed. For example,if required trait is set as TRUE:
+
+  CUSTOM_ISECL_SGX_ENABLED_TRUE
+  CUSTOM_ISECL_SGX_SUPPORTED_TRUE
+  CUSTOM_ISECL_SGX_TCBUPTODATE_FALSE
+  CUSTOM_ISECL_SGX_FLC_ENABLED_TRUE
+  CUSTOM_ISECL_SGX_EPC_SIZE_2_0_GB
+
+  For example, if the required trait is set as FALSE
+  CUSTOM_ISECL_SGX_ENABLED_FALSE
+  CUSTOM_ISECL_SGX_SUPPORTED_TRUE
+  CUSTOM_ISECL_SGX_TCBUPTODATE_FALSE
+  CUSTOM_ISECL_SGX_FLC_ENABLED_FALSE
+  CUSTOM_ISECL_SGX_EPC_SIZE_0_B
+```
+* Create the instances
+```
+  openstack server create --flavor tiny --image <image name> --net vmnet <vm instance name>
+
+  Instances should be created and the status should be "Active". Instance should be launched successfully.
+  openstack server list
+```
+ Note : To unset the trait, use the following CLI commands:
+```
+ openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE <image name>
+
+ openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_FALSE <image name>
+```
 #### Deploy Enterprise SKC Services
 ```
 Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
