@@ -396,7 +396,7 @@ cd tools/ansible-role
 
 ### Update Ansible Inventory
 
-The following is the inventory to be used and updated. 
+In order to deploy Intel® SecL-DC binaries, the following inventory can be used and the required inventory vars as below need to be set. The below example inventory can be created under `/etc/ansible/hosts`
 
 > **Note:** Ansible requires `ssh` and `root` user access to remote machines.
 
@@ -428,7 +428,7 @@ ansible_password=<password>
 
 ### Create and Run Playbook
 
-The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
+The following are playbook and CLI example for deploying Intel® SecL-DC binaries based on the supported deployment models and usecases. The below example playbooks can be created as `site-bin-isecl.yml`
 
 > **Note :** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
 
