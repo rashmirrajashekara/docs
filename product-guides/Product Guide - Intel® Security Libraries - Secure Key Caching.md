@@ -1138,7 +1138,6 @@ To install the SGX Integration Hub, follow these steps:
     OPENSTACK_USERNAME=< OpenStack username >
     OPENSTACK_PASSWORD=< OpenStack password >
 ```
-
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
 Update the BEARER_TOKEN value in the ihub.env file
@@ -1238,7 +1237,15 @@ openstack resource provider list
 ```
 To view the traits enabled for the SGX Host:
 ```
-openstack resource provider trait list 
+openstack resource provider trait list <uuid of the host which the openstack resoruce provider lists>
+```
+Create the instances
+```
+openstack server create --flavor tiny --image <image name> --net vmnet <vm instance name>
+```
+Instances should be created and the status should be "Active". Instance should be launched successfully.
+```
+openstack server list
 ```
 To remove a Trait that is not required for an Image:
 ```
