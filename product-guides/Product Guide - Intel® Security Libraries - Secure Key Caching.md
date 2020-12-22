@@ -1254,6 +1254,7 @@ openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_FALSE
 ```
 Scheduling Instances
 Once Trait requirements are set for Images and the Integration Hub is configured to push attributes to OpenStack, instances can be launched in OpenStack as normal. As long as the OpenStack Nova scheduler is used to schedule the workloads, only compliant Compute Nodes will be scheduled to run instances of controlled Images.
+
 NOTE: This control only applies to instances launched using the OpenStack scheduler and the Traits functions will not affect manually-launched instances where a specific Compute Node is defined (since this does not use the scheduler at all). Intel SecL-DC uses existing OpenStack interfaces and does not modify OpenStack code. The datacenter owner or OpenStack administrator is responsible for the security of the
 OpenStack workload scheduling process in general and Intel recommends following published OpenStack security best practices.
 
