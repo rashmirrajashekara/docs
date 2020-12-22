@@ -34,11 +34,11 @@
 
 2. **CSP Managed Services** 
 
-   Internet access required for SGX Caching Service deployed on CSP VM/SGX Compute Node;
+   Internet access required for SGX Caching Service deployed on CSP system/SGX Compute Node;
 
 3. **Enterprise Managed Services**
 
-   Internet access required for SGX Caching Service deployed on Enterprise VM;
+   Internet access required for SGX Caching Service deployed on Enterprise system;
 
 4. **SGX Enabled Host**
 
@@ -49,7 +49,7 @@
 ```
 export http_proxy=http://<proxy-url>:<proxy-port>
 export https_proxy=http://<proxy-url>:<proxy-port>
-export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP IP>,<Enterprise IP>, <SGX Compute Node IP>, <KBS VM Hostname>
+export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP IP>,<Enterprise IP>, <SGX Compute Node IP>, <KBS system Hostname>
 ```
 
 **Firewall Settings**
@@ -128,7 +128,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.3/develop-gitlab -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/skc.xml
 repo sync
 ```
 
@@ -171,13 +171,13 @@ make
 **Copy Binaries to a clean folder**
 
 ```
-For CSP/Enterprise Deployment Model, copy the generated binaries directory to the /root directory on the CSP/Enterprise VM
-For Single VM model, copy the generated binaries directory to the /root directory on the deployment VM
+For CSP/Enterprise Deployment Model, copy the generated binaries directory to the /root directory on the CSP/Enterprise system
+For Single system model, copy the generated binaries directory to the /root directory on the deployment system
 ```
 
 ## **7. Deployment & Usecase Workflow Tools Installation**
 
-The below installation is required on the Build & Deployment VM only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
+The below installation is required on the Build & Deployment system only and the Platform(Windows,Linux or MacOS) for Usecase Workflow Tool Installation
 
 **Deployment Tools Installation**
 
@@ -208,12 +208,12 @@ The below installation is required on the Build & Deployment VM only and the Pla
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections)
+  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections)
 
 
 ## **8. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -361,7 +361,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ## **9. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections) repository
 
 ### Use Case Collections
 
@@ -420,12 +420,12 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 #### Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
-* Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
+* Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.
 * Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
 * Once the master/worker setup is done, follow below steps:
 
 ##### Untar packages and load docker images
-* Copy tar output isecl-k8s-extensions-*.tar.gz from build VM binaries folder to /opt/ directory on the Master Node and extract the contents.
+* Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Master Node and extract the contents.
 ```
     cd /opt/
     tar -xvzf isecl-k8s-extensions-*.tar.gz
@@ -464,8 +464,8 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
     kubectl describe secret default-token-<name> -n isecl
 ```
 
-For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP VM:
-* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP VM. Update KUBERNETES_CERT_FILE.
+For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP system:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP system. Update KUBERNETES_CERT_FILE.
 * Get k8s token in master, using above commands and update KUBERNETES_TOKEN
 * Update the value of CRD name
 ```
@@ -493,7 +493,7 @@ For example, if only sgx based attestation is required then remove/comment HVS_I
     chmod +x create_k8s_extsched_cert.sh
     ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "<K8_MASTER_IP>","<K8_MASTER_HOST>" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
 ```
-* After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master vm. Also, copy tls key pair generated in previous step to secrets directory.
+* After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master system. Also, copy tls key pair generated in previous step to secrets directory.
 ```
     mkdir secrets
     cp /opt/isecl-k8s-extensions/server.key secrets/
@@ -567,7 +567,7 @@ Save and Close
 
 #### Deploy CSP SKC Services
 ```
-Copy the binaries directory generated in the build system VM to the /root/ directory on the CSP system
+Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
 Update csp_skc.conf with the following
   - CSP system IP Address
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
@@ -621,7 +621,7 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 #### Openstack Setup and Associate Traits
 
-* Setup Compute and Controller node for Openstack. Compute node should be setup on SGX host machine, Controller node can be any VM machine. After the compute/controller setup is done, follow the below steps:
+* Setup Compute and Controller node for Openstack. Compute node should be setup on SGX host machine, Controller node can be any system. After the compute/controller setup is done, follow the below steps:
 
 * IHUB should be installed and configured with Openstack
 
@@ -712,7 +712,7 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 Update skc_library.conf with the following
   - IP address for CMS/AAS/KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
-  - CSP VM system address where SGX Caching Service deployed
+  - CSP system IP address where SGX Caching Service deployed
   - Hostname of the Enterprise system where KBS is deployed
 Save and Close
 ./deploy_skc_library.sh
