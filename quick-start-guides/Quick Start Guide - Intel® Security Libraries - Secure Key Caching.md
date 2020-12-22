@@ -236,7 +236,7 @@ cd tools/ansible-role
 
 ### Update Ansible Inventory
 
-The following is the inventory to be used and updated. Ansible requires `ssh` and `root` user access to remote machines.
+The following inventory can be used and created under `/etc/ansible/hosts`.
 
 ```
 [CSP]
@@ -264,10 +264,15 @@ ansible_user=root
 ansible_password=<password>
 ```
 
+> **Note:** Ansible requires `ssh` and `root` user access to remote machines. The following command can be used to ensure ansible can connect to remote machines with host key check `
+  ```shell
+  ssh-keyscan -H <ip_address> >> /root/.ssh/known_hosts
+  ```
+
 
 ### Create and Run Playbook
 
-The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
+The following are playbook and CLI example for deploying Intel® SecL-DC binaries based on the supported deployment models and usecases. The below example playbooks can be created as `site-bin-isecl.yml`
 
 > **Note:** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
 
