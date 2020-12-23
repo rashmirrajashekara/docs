@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### November 2020
+### December 2020
 
-### Revision 3.2
+### Revision 3.3
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -156,7 +156,7 @@ The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In
 
 ## Integration Hub
 
-The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts deails from Kubernetes and then using the host infomration it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Open stack. This integration allows Kubernetes and Open stack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
+The Integration Hub (IHUB) allows to support SGX in Kubernetes and Open stack. IHUB pulls the list of hosts details from Kubernetes and then using the host information it pulls the SGX Data from SGX Host Verification Service and pushes it to Kubernetes. IHUB performs these steps on a regular basis so that the most recent SGX information about nodes is reflected in Kubernetes and Openstack. This integration allows Kubernetes and Openstack to schedule VMs and containers that need to run SGX workloads on compute nodes that support SGX. The SGX data that IHUB pushes to Kubernetes consists of SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status up to date/not up to date and platform-data expiry time.
 
 ## Key Broker Service (SKC Only)
 
@@ -257,7 +257,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.2/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.3/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -267,7 +267,7 @@ For components written in GO (Authentication and Authorization Service, Certific
 
 In addition, the build script will produce some sample database scripts that can be used during installation to setup postgres and create database.
 
-Install_pgdb: authservice/out/install_pgdb.sh
+Install_pgdb: intel-secl/deployments/installer/install_pgdb.sh
 
 Install_pgscsdb: sgx-caching-service/out/install_pgscsdb.sh
 
@@ -419,7 +419,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.2.0.bin
+./cms-v3.3.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -487,35 +487,37 @@ cms setup cms_auth_token --force
 
 Create the authservice.env installation answer file in /root/ directory as below:
 
-      CMS_BASE_URL=https://\< CMS IP or hostname\>:8445/cms/v1/
+      CMS_BASE_URL=https://< CMS IP or hostname>:8445/cms/v1/
     
-      CMS_TLS_CERT_SHA384=\<CMS TLS certificate sha384
+      CMS_TLS_CERT_SHA384=<CMS TLS certificate sha384>
+      
+      AAS_DB_SSLMODE=verify-full
+
+      AAS_DB_HOSTNAME=<IP or hostname of database server>
     
-      AAS_DB_HOSTNAME=\<IP or hostname of database server\>
+      AAS_DB_PORT=<database port number; default is 5432>
     
-      AAS_DB_PORT=\<database port number; default is 5432\>
+      AAS_DB_NAME=<database name>
     
-      AAS_DB_NAME=\<database name\>
+      AAS_DB_USERNAME=<database username>
     
-      AAS_DB_USERNAME=\<database username\>
+      AAS_DB_PASSWORD=<database password>
     
-      AAS_DB_PASSWORD=\<database password\>
+      AAS_DB_SSLCERTSRC=<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt>
     
-      AAS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt \>
+      AAS_ADMIN_USERNAME=<username for AAS administrative user>
     
-      AAS_ADMIN_USERNAME=\<username for AAS administrative user\>
+      AAS_ADMIN_PASSWORD=<password for AAS administrative user>
     
-      AAS_ADMIN_PASSWORD=\<password for AAS administrative user\>
+      AAS_JWT_TOKEN_DURATION_MINS=2880
     
-      SAN_LIST=\<comma-separated list of IPs and hostnames for the AAS; this should match the value for the
+      SAN_LIST=<comma-separated list of IPs and hostnames for the AAS; this should match the value for the AAS_TLS_SAN in the cms.env file from the CMS installation>
     
-      AAS_TLS_SAN in the cms.env file from the CMS installation\>
-    
-      BEARER_TOKEN=\<bearer token from CMS installation\>
+      BEARER_TOKEN=<bearer token from CMS installation>
 
 Execute the AAS installer:
 
-./authservice-v3.2.0.bin
+./authservice-v3.3.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -585,6 +587,8 @@ Before SCS is installed, Database needs to be created. Use the following command
 
 copy install_pgscsdb.sh to /root/ directory
 
+Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PGDB_USERNAME with SCS db username and ISECL_PGDB_USERPASSWORD with SCS db password
+
 ./install_pgscsdb.sh
 
 
@@ -592,39 +596,43 @@ copy install_pgscsdb.sh to /root/ directory
 
 2. Create the scs.env installation answer file in /root/ directory as below:
 
-       SCS_DB_USERNAME=\<database username\>
+       SCS_DB_USERNAME=<database username>
         
-       SCS_DB_PASSWORD=\<database password\>
+       SCS_DB_PASSWORD=<database password>
         
-       SCS_DB_HOSTNAME=\<IP or hostname of database server\>
+       SCS_DB_HOSTNAME=<IP or hostname of database server>
         
-       SCS_DB_PORT=\<Database port; 5432 by default\>
+       SCS_DB_PORT=<Database port; 5432 by default>
         
-       SCS_DB_NAME=\<name of the SCS database; pgscsdb by default\>
+       SCS_DB_NAME=<name of the SCS database; pgscsdb by default>
         
-       SCS_DB_SSLCERTSRC=\<path to database TLS certificate; the default location is typically
+       SCS_DB_SSLCERTSRC=<path to database TLS certificate; the default location is typically /usr/local/pgsql/data/server.crt>
         
-       /usr/local/pgsql/data/server.crt \>
+       INTEL_PROVISIONING_SERVER=<hostname of INTEL PCS Server>
         
-       INTEL_PROVISIONING_SERVER=\<hostname of INTEL PCS Server\>
+       INTEL_PROVISIONING_SERVER_API_KEY=<subscription key>
         
-       INTEL_PROVISIONING_SERVER_API_KEY=\<subscription key\>
+       SCS_REFRESH_HOURS=<time in hours to refresh SGX collaterals; 1 hour by default>
         
-       SCS_REFRESH_HOURS=\<time in hours to refresh SGX collaterals; 1 hour by default\>
+       SCS_ADMIN_USERNAME=<username for SCS service account>
         
-       SCS_ADMIN_USERNAME=\<username for SCS service account\>
+       SCS_ADMIN_PASSWORD=<password for SCS service account>
         
-       SCS_ADMIN_PASSWORD=\<password for SCS service account\>
+       CMS_BASE_URL=https://<IP or hostname to CMS>:8445/cms/v1/
         
-       CMS_BASE_URL=https://\<IP or hostname to CMS\>:8445/cms/v1/
+       CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
-       CMS_TLS_CERT_SHA384=\<sha384 of CMS TLS certificate\>
+       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas
+       
+       RETRY_COUNT=3
+       
+       WAIT_TIME=1
         
-       AAS_API_URL=https://\<IP or hostname to AAS\>:8444/aas/
+       SAN_LIST=<comma-separated list of IPs and hostnames for the SCS>
         
-       SAN_LIST=\<comma-separated list of IPs and hostnames for the SCS\>
-        
-       BEARER_TOKEN=< Installation token from AAS > 
+       BEARER_TOKEN=<Installation token from AAS> 
+
+BEARER_TOKEN above can be obtained from running scs_aas_curl.sh script below
 
 Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
 
@@ -636,7 +644,7 @@ Update the BEARER_TOKEN value in /root/scs.env file
 
 Execute the SCS installer binary:
 
-./scs-v3.2.0.bin
+./scs-v3.3.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -685,6 +693,8 @@ Before SHVS is installed, Database needs to be created. Use the following comman
 
 copy install_pgshvsdb.sh to /root/ directory
 
+Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SHVS db name, ISECL_PGDB_USERNAME with SHVS db username and ISECL_PGDB_USERPASSWORD with SHVS db password
+
 ./install_pgshvsdb.sh
 
 
@@ -696,34 +706,41 @@ To install the SGX Host Verification Service, follow these steps:
 
 A sample minimal shvs.env file is provided below. For all configuration options and their descriptions, refer to the Intel® SecL Configuration section on the SGX Host Verification Service.
 
-     SHVS_DB_HOSTNAME=< hostname or IP address to database server > 
+     SHVS_DB_HOSTNAME=<hostname or IP address to database server> 
     
-     SHVS_DB_USERNAME =< Database administrative username > 
+     SHVS_DB_USERNAME=<Database administrative username> 
     
-     SHVS_DB_PORT =< Database port, default is 5432 >
+     SHVS_DB_PORT=<Database port, default is 5432>
     
-     SHVS_DB_PASSWORD =< Database password > 
+     SHVS_DB_PASSWORD=<Database password> 
     
-     SHVS_DB_NAME =< Database schema >
+     SHVS_DB_NAME=<Database schema>
     
-     SHVS_ADMIN_USERNAME =< SGX Host Verification Service username > 
+     SHVS_ADMIN_USERNAME=<SGX Host Verification Service username> 
     
-     SHVS_ADMIN_PASSWORD =< SGX HostVerification Service password > 
+     SHVS_ADMIN_PASSWORD=<SGX HostVerification Service password> 
     
-     CMS_TLS_CERT_SHA384=< Certificate Management Service TLS digest > 
+     CMS_TLS_CERT_SHA384=<Certificate Management Service TLS digest> 
     
      SHVS_DB_SSLCERTSRC=/usr/local/pgsql/data/server.crt
-    
-     BEARER_TOKEN=< Installation token from AAS > 
-    
-     AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas 
-    
-     CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
-    
-     SCS_BASE_URL= https://< SGX Caching Service IP or Hostname >:9000/scs/sgx/
+     
+     SHVS_SCHEDULER_TIMER=10
+     
+     SHVS_HOST_PLATFORM_EXPIRY_TIME=4
+     
+     SHVS_AUTO_REFRESH_TIMER=120
 
-     SAN_LIST =< Comma-separated list of IP addresses and hostnames for the SHVS > 
+     BEARER_TOKEN=<Installation token from AAS> 
+    
+     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
+    
+     CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1 
+    
+     SCS_BASE_URL=https://<SGX Caching Service IP or Hostname>:9000/scs/sgx/
 
+     SAN_LIST=<Comma-separated list of IP addresses and hostnames for the SHVS> 
+
+BEARER_TOKEN above can be obtained from running shvs_aas_curl.sh script below
 
 Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
 
@@ -735,7 +752,7 @@ Update the BEARER_TOKEN value in /root/shvs.env file
 
 Execute the installer binary.
 
-./shvs-v3.2.0.bin
+./shvs-v3.3.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -777,7 +794,9 @@ Intel® Xeon® SP (Ice Lake-SP)
 
     Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
-    Update the IP address for all the services mentioned in agent.conf
+    Update the following in agent.conf
+     - IP address for all the services
+     - Certificate Management Service TLS digest value (CMS running on CSP system)
     ./deploy_sgx_agent.sh
 
 ##  Installing the SQVS
@@ -838,7 +857,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
     
-       SAN_LIST =< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
+       SAN_LIST=< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
        
        SQVS_NOSETUP=false
        
@@ -848,6 +867,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        
        SQVS_INCLUDE_TOKEN=true
 
+BEARER_TOKEN above can be obtained from running sqvs_aas_curl.sh script below
 
 Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
 
@@ -859,7 +879,7 @@ Update the BEARER_TOKEN value in /root/sqvs.env file
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.2.0.bin
+sqvs-v3.3.0.bin
 
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
@@ -948,6 +968,18 @@ Please use and set only required variables based on the use case.
 
 For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
 
+* Install cfssl and cfssljson on Kubernetes Control Plane
+```
+    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+
+```
+
 * Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
 
 ```
@@ -1022,6 +1054,12 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	systemctl restart kubelet
 ```
 
+* Check if CRD Data is populated
+
+```
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+
 ##  Installing the Integration Hub
 
 **Note:** The Integration Hub is only required to integrate Intel® SecL with third-party scheduler services, such as Kubernetes. The Integration Hub is not required for usage models that do not require Intel® SecL security attributes to be pushed to an integration endpoint.
@@ -1074,45 +1112,39 @@ To install the SGX Integration Hub, follow these steps:
 1. Copy the Integration Hub installation binary to the /root/ directory.
 
 2. Create the ihub.env installation answer file in /root/ directory as below
+```
+    IHUB_SERVICE_USERNAME=< IHUB service user username > 
+    IHUB_SERVICE_PASSWORD=< IHUB service user password > 
+    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+    ATTESTATION_TYPE=SGX
+    CMS_TLS_CERT_SHA384=< CMS TLS digest > 
+    BEARER_TOKEN=< Installation token from AAS > 
+ 
+    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
+    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+    POLL_INTERVAL_MINUTES=2
+    TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
+    TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK >
 
-       IHUB_SERVICE_USERNAME =< IHUB service user username > 
-        
-       IHUB_SERVICE_PASSWORD=< IHUB service user password > 
-        
-       ATTESTATION_SERVICE_URL =< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
-        
-       ATTESTATION_TYPE = SGX
-        
-       TENANT=< tenant-type e.g. KUBERNETES >
-        
-       KUBERNETES_URL =< https://< Kubernetes IP >:6443/
-        
-       KUBERNETES_CRD = custom-isecl-sgx
-        
-       KUBERNETES_TOKEN = < K8S token >
-        
-       KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
-        
-       CMS_TLS_CERT_SHA384=< CMS TLS digest > 
-        
-       BEARER_TOKEN=< Installation token from AAS > 
-        
-       AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
-        
-       CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
-        
-       POLL_INTERVAL_MINUTES=2
-        
-       TLS_SAN_LIST =< comma separated list of IPs and hostnames for the IHUB >
+    # Kubernetes Integration Credentials - required for Kubernetes integration only
+    KUBERNETES_URL=< https://< Kubernetes IP >:6443/>
+    KUBERNETES_CRD=custom-isecl-sgx
+    KUBERNETES_TOKEN=< K8S token >
+    KUBERNETES_CERT_FILE =< Path of Kubernetes master node certificate >
 
-
+    # OpenStack Integration Credentials - required for OpenStack integration only
+    OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+    OPENSTACK_PLACEMENT_URL=<OpenStack Nova Placement API URL; typically http://openstack-ip:8778/>
+    OPENSTACK_USERNAME=< OpenStack username >
+    OPENSTACK_PASSWORD=< OpenStack password >
+```
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
 Update the BEARER_TOKEN value in the ihub.env file
 
 4.  Execute the installer binary.
 
-./ihub-v3.2.0.bin
+./ihub-v3.3.0.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
@@ -1183,6 +1215,54 @@ Pod should be in running state and launched on the host as per values in pod.yml
 	docker ps
 ```
 
+## Integration with OpenStack
+
+OpenStack can now use “Traits” to provide qualitative data about Nova Compute hosts to establish Trait requirements. The Integration Hub continually push SGX data to the OpenStack Traits resources. This means OpenStack scheduler natively supports workload scheduling incorporating SGX Host information, including SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status upto date/not. The OpenStack Placement Service will automatically attempt to place images with Trait requirements on compute nodes that have those Traits.
+
+NOTE: This control only applies to instances launched using the OpenStack scheduler, and the Traits functions will not affect manually-launched instances where a specific Compute Node is defined (since this does not use the scheduler at all). Intel SecL-DC uses existing OpenStack interfaces and does not modify OpenStack code.  The datacenter owner or OpenStack administrator is responsible for the security of the OpenStack workload scheduling process in general, and Intel recommends following published OpenStack security best practices.
+
+Setting Image Traits
+Image Traits define the policy for which Traits are required for that instance to be launched on a Nova Compute node.By setting these Traits to “required” the OpenStack scheduler will require the same Traits to be present on a Nova Compute node in order to launch instances. To set the Image Traits for Intel SecL-DC,a specific naming convention is used. This naming convention will match the Traits that the Integration Hub will automatically push to OpenStack. Two types of Traits are currently supported – one Trait is used to require that the Compute Node must be SGX supported and the other Trait is used to require specific SGXkey/value pairs.
+Required Image trait for SGX Enabled Host:
+```
+CUSTOM_ISECL_SGX_ENABLED_TRUE=required
+```
+These Traits can be set using CLI commands for OpenStack Glance:
+```
+openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required 
+```
+To veiw the Traits that has been set:
+```
+openstack image show
+```
+List the set of resources mapped to the Openstack
+```
+openstack resource provider list
+```
+To view the traits enabled for the SGX Host:
+```
+openstack resource provider trait list <uuid of the host which the openstack resoruce provider lists>
+```
+Create the instances
+```
+openstack server create --flavor tiny --image <image name> --net vmnet <vm instance name>
+```
+Instances should be created and the status should be "Active". Instance should be launched successfully.
+```
+openstack server list
+```
+To remove a Trait that is not required for an Image:
+```
+openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE 
+openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_FALSE 
+```
+Scheduling Instances
+Once Trait requirements are set for Images and the Integration Hub is configured to push attributes to OpenStack, instances can be launched in OpenStack as normal. As long as the OpenStack Nova scheduler is used to schedule the workloads, only compliant Compute Nodes will be scheduled to run instances of controlled Images.
+
+NOTE: This control only applies to instances launched using the OpenStack scheduler and the Traits functions will not affect manually-launched instances where a specific Compute Node is defined (since this does not use the scheduler at all). Intel SecL-DC uses existing OpenStack interfaces and does not modify OpenStack code. The datacenter owner or OpenStack administrator is responsible for the security of the
+OpenStack workload scheduling process in general and Intel recommends following published OpenStack security best practices.
+
+
 ##  Installing the Key Broker Service
 
 ### Required for
@@ -1217,17 +1297,17 @@ NA
 
 2. Create the installation answer file kbs.env /root/ directory as below:
 
-       KBS_SERVICE_USERNAME =< KBS service user username > 
+       KBS_SERVICE_USERNAME=< KBS service user username > 
         
        KBS_SERVICE_PASSWORD=< KBS service user password > 
        
        SERVER_PORT=9443
         
-       AAS_BASE_URL=https://\<AAS IP or hostname\>:8444/aas
+       AAS_API_URL=https://<AAS IP or hostname>:8444/aas
         
-       CMS_BASE_URL=https://\<CMS IP or hostname\>:8445/cms/v1/
+       CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
-       SQVS_URL=https://\<SQVS IP or hostname\>:12000/svs/v1/
+       SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1/
         
        KEY_MANAGER=Directory
        
@@ -1237,18 +1317,19 @@ NA
        
        SKC_CHALLENGE_TYPE="SGX"
         
-       CMS_TLS_CERT_SHA384=\<SHA384 hash of CMS TLS certificate\>
+       CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
         
-       TLS_SAN_LIST=\<KBS Hostname/IP>
+       TLS_SAN_LIST=<KBS Hostname/IP>
         
-       BEARER_TOKEN=\<Installation token from AAS\>
+       BEARER_TOKEN=<Installation token from AAS>
 
+BEARER_TOKEN above can be obtained form Step 3 below
 
 3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
 
 4.  Execute the KBS installer.
 
-./kbs-3.2.0.bin
+./kbs-3.3.0.bin
 
 ##  Installing the SKC Library
 
@@ -1817,12 +1898,6 @@ cms stop
 
 Stops the service.
 
-#### Restart 
-
-cms restart
-
-Restarts the services.
-
 #### Status 
 
 cms status
@@ -1837,11 +1912,13 @@ Uninstalls the service, including the deletion of all files and folders.
 
 #### Version 
 
-cms --version
+cms version
 
 Reports the version of the service.
 
-#### Tlscertsha384 
+#### Tlscertsha384
+
+cms tlscertsha384
 
 Shows the SHA384 digest of the TLS certificate.
 
@@ -2024,7 +2101,7 @@ Removes the service. Use the "\--purge" flag to also delete all data.
 
 #### Version
 
-authservice --version
+authservice version
 
 Shows the version of the service.
 
@@ -2047,7 +2124,7 @@ Contains database scripts.
 | Variable Name        | Default Value                                 | Notes                                              |
 | -------------------- | --------------------------------------------- | -------------------------------------------------- |
 | CMS_BASE_URL         | https://< CMS IP or hostname >:8445/cms/v1/   | Required for generating TLS certificate            |
-| AAS_BASE_URL         | https://< AAS IP or hostname >:8444/aas       | AAS baseurl                                        |
+| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas       | AAS service url                                        |
 | SQVS_URL             | https://< SQVS IP or hostname >:12000/svs/v1/ | Required to get the SGX Quote verified             |
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest > | SHA384 digest of CMS TLS certificate               |
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
@@ -2096,7 +2173,7 @@ Removes the service
 
 #### Version
 
-kbs --version
+kbs version
 
 Displays the version of the service
 
@@ -2171,7 +2248,7 @@ uninstall the SGX Caching Service. \--purge option needs to be applied to remove
 
 #### version 
 
-scs --version
+scs version
 
 Reports the version of the scs
 
@@ -2250,7 +2327,7 @@ uninstalls the SGX Quote Verification Service. \--purge option needs to be appli
 
 #### version 
 
-sqvs --version
+sqvs version
 
 Reports the version of the sqvs
 
@@ -2427,7 +2504,7 @@ echo "Setting up Key Broker Service Related roles and user in AAS Database"
 
 source ~/kbs.env 2> /dev/null
 
-aas_hostname=${AAS_BASE_URL:-"https://<aas.server.com>:8444/aas"}
+aas_hostname=${AAS_API_URL:-"https://<aas.server.com>:8444/aas"}
 CURL_OPTS="-s -k"
 CONTENT_TYPE="Content-Type: application/json"
 ACCEPT="Accept: application/jwt"
@@ -2591,8 +2668,6 @@ rm -rf $tmpdir
 ```
 
 The printed token needs to be added in BEARER_TOKEN section in kbs.env
-
-
 
 
 #### Sample Script to Create Integrated Hub User account and Roles
@@ -2838,8 +2913,6 @@ init = 0
 
 Update nginx configuration file /etc/nginx/nginx.conf with below changes:
 
-user root;
-
 ssl_engine pkcs11;
 
 Update the location of certificate with the location where it was copied into the SGX compute node. 
@@ -2860,31 +2933,25 @@ Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
 
 The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match on pkcs11-apimodule.ini; 
 
-	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
 	
-	**Sample /opt/skc/etc/pkcs11-apimodule.ini file**
+    Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
-	**[core]**
-	
+	[core]
 	preload_keys=/tmp/keys.txt
-	
 	keyagent_conf=/opt/skc/etc/key-agent.ini
-	
 	mode=SGX
-	
 	debug=true
 	
-	**[SW]**
-	
+    [SW]
 	module=/usr/lib64/pkcs11/libsofthsm2.so
-	
-	**[SGX]**
-	
+
+	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 # KBS key-transfer flow validation
 
-Execute below commands for KBS key-transfer:
+On SGX compute node, Execute below commands for KBS key-transfer:
 
 ```
     pkill nginx
@@ -2902,7 +2969,15 @@ Initiate Key tranfer from KBS
     systemctl restart nginx
 ```
 
-Establish ssh session with the nginx using the key transferred inside the enclave
+Changing group ownership and permissions of pkcs11 token
+```
+    groupadd intel
+    usermod -G intel nginx
+    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
+```
+
+Establish tls session with the nginx using the key transferred inside the enclave
 
 ```
     wget https://localhost:2443 --no-check-certificate

@@ -3,9 +3,9 @@
 
 **Product Guide**
 
-**November 2020**
+**December 2020**
 
-**Revision 3.2**
+**Revision 3.3**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -65,6 +65,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.0              | Updated for version 3.0 release | August 2020   |
 | 3.1              | Updated for version 3.1 release | October 2020  |
 | 3.2              | Updated for version 3.2 release | November 2020 |
+| 3.3              | Updated for version 3.3 release | December 2020 |
 
 
 
@@ -265,11 +266,11 @@ install_pgdb: `authservice/out/install_pgdb.sh`
 
 In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
-https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role
+https://github.com/intel-secl/utils/tree/v3.3/develop/tools/ansible-role
 
 Also provided are sample API calls organized by workflows for Postman:
 
-https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections
+https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections
 
 ## 3.2  Hardware Considerations
 
@@ -460,7 +461,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.2.0.bin
+   ./cms-v3.3.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -550,7 +551,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.2.0.bin
+./authservice-v3.3.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
@@ -564,7 +565,7 @@ Creating these required users and roles is facilitated by a script that will acc
 Create the `populate-users.env` file:
 
 ```shell
-ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IH,HVS,WLA,AAS
+ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IHUB,HVS,WLA,AAS
 
 AAS_API_URL=https://<AAS IP address or hostname>:8444/aas
 AAS_ADMIN_USERNAME=<AAS username>
@@ -579,8 +580,8 @@ TA_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the Trust Agent>
 HVS_SERVICE_USERNAME=<Username for the HVS service user>
 HVS_SERVICE_PASSWORD=<Password for the HVS service user>
 
-IH_SERVICE_USERNAME=<Username for the Hub service user>
-IH_SERVICE_PASSWORD=<Password for the Hub service user>
+IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
 WPM_SERVICE_USERNAME=<Username for the WPM service user>
 WPM_SERVICE_PASSWORD=<Password for the WPM service user>
@@ -725,7 +726,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.2.0.bin
+./hvs-v3.3.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -789,7 +790,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.2.0.bin
+  ./wls-v3.3.0.bin
   ```
   
   
@@ -851,9 +852,9 @@ The following must be completed before installing the Trust Agent:
 
 * Libvirt must be installed
 
-* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.5 must be installed
+* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
 
-> **Note**: The specific Docker-CE version 19.03.5 is required for Docker Container Confidentiality. Only this version is supported for this use case.
+> **Note**: The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.
 
 #### 3.9.4.1  Tboot Installation
 
@@ -1010,7 +1011,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.2.0.bin
+  ./trustagent-v3.3.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1058,9 +1059,9 @@ The following must be completed before installing the Workload Agent:
 -   libvirt must be installed
 
 -   (REQUIRED for Docker Container Confidentiality only): Docker CE
-    19.03.5 must be installed
+    19.03.13 must be installed
 
-    > **Note**: The specific Docker-CE version 19.03.5 is required for
+    > **Note**: The specific Docker-CE version 19.03.13 is required for
     > Docker Container Confidentiality. Only this version is supported for
     > this use case.
 
@@ -1078,7 +1079,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.2.0.bin
+  ./workload-agent-v3.3.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1308,17 +1309,18 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
-# OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
 
- # Kubernetes Integration Credentials - required for Kubernetes integration only (See the Integration section for details on Kubernetes integration)
+# OpenStack Integration Credentials - required for OpenStack integration only
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
+
+# Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
-TENANT=KUBERNETES
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
 KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
@@ -1329,7 +1331,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.2.0.bin
+   ./ihub-v3.3.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -1405,7 +1407,7 @@ Enterprise Linux 8.2
 3.  Execute the KBS installer.
 
     ```shell
-    ./kbs-3.1.0.bin
+    ./kbs-3.3.0.bin
     ```
 
 #### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -1415,12 +1417,12 @@ The Key Broker can be configured to use a 3rd-party KMIP key manager as part of 
 To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
 1.  Copy the KMIP server’s client certificate, client key and root ca
-    certificate into `/opt/kbs/configuration/` on the Key Broker
+    certificate to the Key Broker system
 
 2.  Change the ownership of these files to `kms:kms`
 
     ```shell
-    chown kms:kms /opt/kbs/configuration/*
+    chown kms:kms <path>/*
     ```
 
 3.  Configure the variables for kmip support as below
@@ -1561,7 +1563,7 @@ The WPM is REQUIRED for the following use cases.
 ### 3.17.2  Package Dependencies
 
 -   (Required only if Docker Container encryption is needed) `Docker-ce
-    19.03.5` must be installed. This is needed only if the option
+    19.03.13` must be installed. This is needed only if the option
     `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
     file.
 
@@ -1610,7 +1612,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.0.0.bin
+    ./wpm-v3.3.0.bin
     ```
 
 
@@ -2343,7 +2345,6 @@ the TPM, due to the low size of the NVRAM.
     ```shell
     cat tag-cert | base64 --decode | openssl dgst -sha1 | awk -F" " '{print $2}'
     ```
-```
     
     This hash value will be what is actually written to the TPM NVRAM.
 
@@ -2363,7 +2364,7 @@ ESXi host using root credentials. Then use the command:
 
 1.  ```shell
     esxcli hardware tpm tag set -d <hash>
-```
+    ```
 
     You can use the following command to verify that the tag was written:
     
@@ -2806,12 +2807,12 @@ openstack image unset --property trait:CUSTOM_ISECL_TRUSTED <image_name>
 
 #### 6.13.2.3  Configuring the Integration Hub for Use with OpenStack
 
-The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "ENDPOINT_OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
+The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "OPENSTACK_..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
 
 However, this configuration can also be performed after installation using CLI commands:
 
 ```
-ihub setup <endpoint name> --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
+ihub setup openstack --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
 ```
 
 Restart the Integration Hub after configuring the endpoint. Note that "endpoint name" should be replaced with any user-friendly name for the OpenStack instance you would prefer.
@@ -2887,7 +2888,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.0.0.bin
+    ./isecl-k8s-extensions-v3.3.0.bin
     ```
     
 2.  Add a mount path to the
@@ -3393,7 +3394,7 @@ Hosts that are not trusted (including servers where there is no trust
 status, like hosts with no Trust Agent) will fail to launch any
 encrypted workloads.
 
-> **Important Note:** Docker version 19.03.5 is specifically required,
+> **Important Note:** Docker version 19.03.13 is specifically required,
 > and other versions are not supported. Installation of the Workload
 > Agent for Docker Container Confidentiality will **replace** the
 > existing Docker binaries (the client and daemon, in /usr/bin/dockerd
@@ -3431,7 +3432,7 @@ If Notary is being used:
 Also, if Notary is being used, set the following environment variable
 before uploading the image to the Registry:
 
-`export DOCKER\_CONTENT\_TRUST=1`
+`export DOCKER_CONTENT_TRUST=1`
 
 After generating the encrypted image with the WPM, the encrypted image
 can be uploaded to a local Docker Registry.
@@ -5929,19 +5930,20 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
+
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
 # Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
-TENANT=KUBERNETES
 KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
+KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -6791,88 +6793,51 @@ folders.
 The Key Broker Service supports several command-line commands that can
 be executed only as the Root user:
 
-Syntax:
+Usage:
+        kbs <command> [arguments]
 
-kms \<command\>
+Available Commands:
+        help|-h|--help         						  	Show this help message
+        version|-v|--version   					 	 Show the version of current kbs build
+        setup <task>           							 Run setup task
+        start                  									   Start kbs
+        status                 							    	 Show the status of kbs
+        stop                   									  Stop kbs
+        uninstall [--purge]    							 Uninstall kbs
+                --purge            								all configuration and data files will be removed if this flag is set
 
-#### 11.7.3.1  Start
+Usage of kbs setup:
+        kbs setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      					 	show help message for setup task
+                --force                     						 existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     	 	the answer file with required arguments
 
-Starts the service
+Available Tasks for setup:
+        all                                 							  Runs all setup tasks
+        server                              						  Setup http server on given port
+        download-ca-cert                    			    Download CMS root CA certificate
+        download-cert-tls                   				 Download CA certificate from CMS for tls
+        create-default-key-transfer-policy  	  Create default key transfer policy for KBS
 
-#### 11.7.3.2  Stop
-
-Stops the service
-
-#### 11.7.3.3  Uninstall
-
-Removes the service
-
-#### 11.7.3.4  version
-
-Displays the version of the service
-
-#### 11.7.3.5  setup
-
-Usage: /usr/local/bin/kms setup \[--force\|--noexec\] \[task1 task2
-...\]
-
-Available setup tasks:
-
-##### 11.7.3.5.1  kms setup jca-security-providers
-
-##### 11.7.3.5.2  kms setup password-vault
-
-##### 11.7.3.5.3  kms setup jetty-ports
-
-##### 11.7.3.5.4  kms setup jetty-tls-keystore
-
-##### 11.7.3.5.5  kms setup shiro-ssl-port
-
-##### 11.7.3.5.6  kms setup notary-key
-
-##### 11.7.3.5.8  kms setup envelope-key
-
-##### 11.7.3.5.9  kms setup storage-key
-
-##### 11.7.3.5.10  kms setup saml-certificates
-
-##### 11.7.3.5.11  kms setup tpm-identity-certificates
+##### 
 
 ### 11.7.4  Directory Layout
 
-The Verification Service installs by default to /opt/kms with the
-following folders.
+The Verification Service installs by default with the following folders:
 
-#### 11.7.4.1  Bin
+#### /opt/kbs/bin
 
-Contains scripts and executable binaries
+Contains KBS binaries
 
-#### 11.7.4.2  Configuration
+#### /etc/kbs/
 
-Contains configuration files
+Contains KBS configuration files
 
-#### 11.7.4.3  Env
+#### /var/log/kbs/
 
-Contains environment details
+Contains KBS logs
 
-#### 11.7.4.4  Features
 
-#### 11.7.4.5  Java
-
-Contains Java artifacts
-
-#### 11.7.4.6  Logs
-
-Contains logs. Primary log file is `kms.log`
-
-#### 11.7.4.7  Repository
-
-Contains the `keys` subdirectory, which is used for storing image
-encryption keys.
-
-#### 11.7.4.8  Script
-
-Contains additional scripts
 
 
 
@@ -8271,7 +8236,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.0.0.bin
+   ./cms-v3.3.0.bin
    ```
 
     When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -8360,7 +8325,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.0.0.bin
+./authservice-v3.3.0.bin
 ```
 
 > ***Note:*** *The `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.*
@@ -8415,7 +8380,7 @@ INSTALL_ADMIN_PASSWORD=<Password for the global installation user
 Execute the populate-users script:
 
 ```shell
-./populate-users
+./populate-users.sh
 ```
 
 > ***Note:***  *The script can be executed with the `–output_json` argument to create the `populate-user.json`.This json output file will contain all of the users created by the script, along with usernames, passwords, and role assignments. This file can be used both as a record of the service and administrator accounts, and can be used as alternative inputs to recreate the same users with the same credentials in the future if needed. Be sure to protect this file if the `–output_json` argument is used.*
@@ -8534,7 +8499,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
  ```shell
-./hvs-v3.0.0.bin
+./hvs-v3.3.0.bin
  ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -8564,6 +8529,8 @@ The following must be completed before installing the Workload Service:
 * The Verification Service must be installed and available
 
 * The Workload Service database must be available
+
+  
 
 ### 3.8.3  Supported Operating Systems
 
@@ -8597,7 +8564,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.0.0.bin
+  ./wls-v3.3.0.bin
   ```
   
   
@@ -8658,9 +8625,9 @@ The following must be completed before installing the Trust Agent:
 
 * Libvirt must be installed
 
-* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.5 must be installed
+* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
 
-> ***Note***: *The specific Docker-CE version 19.03.5 is required for Docker Container Confidentiality. Only this version is supported for this use case.*
+> ***Note***: *The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.*
 
 #### 3.9.4.1  Tboot Installation
 
@@ -8680,8 +8647,10 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 1. Install tboot
 
    ```shell
-   yum install tboot
+   yum install tboot-1.9.10
    ```
+
+   > **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.2 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
 
 2. Make a backup of your current `grub.cfg` file
 
@@ -8770,7 +8739,7 @@ To install the Trust Agent for Linux:
   For Platform Attestation only, provide the following in `trustagent.env` 
 
    ```shell
-  MTWILSON_API_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
+  HVS_URL=https://<Verification Service IP or Hostname>:8443/hvs/v2
   PROVISION_ATTESTATION=y
   GRUB_FILE=<path to grub.cfg>
   CURRENT_IP=<Trust Agent IP address>
@@ -8798,13 +8767,14 @@ To install the Trust Agent for Linux:
   WA_WITH_CONTAINER_SECURITY=yes
   NO_PROXY=<Registry_ip>
   HTTPS_PROXY=<proxy_url>
+  INSECURE_SKIP_VERIFY=<TRUE/FALSE based on registry configured with http/https respectively>
   REGISTRY_SCHEME_TYPE=https
    ```
 
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.0.0.bin
+  ./trustagent-v3.3.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -8850,10 +8820,38 @@ The following must be completed before installing the Workload Agent:
 
 -   libvirt must be installed
 
--   (REQUIRED for Docker Container Confidentiality only): Docker CE
-    19.03.5 must be installed
+- Libvirt must be configured to set the "remember_owner" property to "0".  
 
-    > ***Note***: *The specific Docker-CE version 19.03.5 is required for
+  Edit the qemu.conf configuration file:
+
+  ```
+  vi /etc/libvirt/qemu.conf
+  ```
+
+  Set "remember_owner" to "0":
+
+  ```
+  remember_owner = 0
+  ```
+
+  Restart the libvirtd service:
+
+  ```
+  systemctl restart libvirtd  
+  ```
+
+  If this step is not performed before launching encrypted VMs, on VM restart you will see errors similar to the following:
+
+  ```
+  "Error starting domain: internal error: child reported (status=125): Requested operation is not valid: Setting different SELinux label on /var/lib/nova/instances/15d7ec2f-27ad-41ed-9632-32a83c3d10ef/disk which is already in use"
+  ```
+
+  
+
+-   (REQUIRED for Docker Container Confidentiality only): Docker CE
+    19.03.13 must be installed
+
+    > ***Note***: *The specific Docker-CE version 19.03.13 is required for
     > Docker Container Confidentiality. Only this version is supported for
     > this use case.*
 
@@ -8871,7 +8869,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.0.0.bin
+  ./workload-agent-v3.3.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -9103,17 +9101,18 @@ ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_IP=<OpenStack Nova IP or hostname>
+OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
+OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
  # Kubernetes Integration Credentials - required for Kubernetes integration only
-ENDPOINT_KUBERNETES_URL=https://kubernetes:6443/
-ENDPOINT_KUBERNETES_CRD=custom-isecl
-ENDPOINT_KUBERNETES_TRUST_FILE_LOCATION=/etc/ihub/root_k8s_trust.pem
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
+TENANT=KUBERNETES
+KUBERNETES_URL=https://kubernetes:6443/
+KUBERNETES_CRD=custom-isecl
+KUBERNETES_CERT_FILE=<path where Kubernetes api_server.crt is copied>
+KUBERNETES_TOKEN=<Token fetched from kubernetes secret of ISECL-Controller>
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -9127,7 +9126,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.0.0.bin
+   ./ihub-v3.3.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -9181,55 +9180,58 @@ Enterprise Linux 8.2
 
 1.  Copy the Key Broker installation binary to the `/root` directory.
 
-2.  Create the installation answer file kms.env:
+2. Create the installation answer file `kbs.env`:
 
-    ```shell
-    AAS_API_URL=https://<AAS IP or hostname>:8444/aas
-    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
-    KMS_TLS_CERT_IP=<comma-separated list of IP addresses for the Key Broker>
-    KMS_TLS_CERT_DNS=<comma-separated list of hostnames for the Key Broker>
-    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
-    BEARER_TOKEN=<Installation token from populate-users script>
-    ```
+   ```shell
+   SAN_LIST=#comma-separated list of IP addresses and hostnames for the KBS to be used in the Subject Alternative Names list in the TLS Certificat
+   ENDPOINT_URL=https://<kbs IP or hostname>:<kbs_port>/v1
+   CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
+   CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
+   AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+   BEARER_TOKEN=<Installation token from populate-users script>
+   ```
+   #OPTIONAL , only when using 3rd-Party KMIP Compliant KMS Server
+   KEY_MANAGER=KMIP
+   KMIP_SERVER_IP=<IP address of the KMIP server>
+   KMIP_SERVER_PORT=<Port where KMIP Server is listening on>
+   KMIP_CLIENT_KEY_PATH=<KMIP Client Key Path>
+   KMIP_ROOT_CERT_PATH=<KMIP Server Root Certificate Path>
+   KMIP_CLIENT_CERT_PATH=<KMIP Client Certificate Path>
+
+   ```
+   
+   ```
 
 3.  Execute the KBS installer.
 
     ```shell
-    ./kms-6.0-SNAPSHOT.bin
+    ./kbs-v3.3.0.bin
     ```
 
 #### 3.15.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
 
 The Key Broker immediately after installation will be configured to use
-a filesystem key management solution. This should be used only for
-testing and POC purposes; using a secure 3^rd^-party Key management
+a filesystem key management solution if not configured for KMIP. This should be used only for
+testing and POC purposes; using a secure 3rd-party Key management
 Server should be used for production deployments. To configure the Key
 Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
-1.  Copy the KMIP server’s client certificate, client key and root ca
-    certificate into `/opt/kms/configuration/` on the Key Broker
+1.  Ensure the KMIP server’s client certificate, client key and root ca are accessible for reading by Key Broker Service
 
-2.  Change the ownership of these files to `kms:kms`
-
-    ```shell
-    chown kms:kms /opt/kms/configuration/*
-    ```
-
-3.  Configure the variables for kmip support as below
-
-    ```shell
-    kms config key.manager.provider com.intel.kms.keystore.kmip.KMIPKeyManager
-    kms config kmip.server.address <IP>
-    kms config kmip.server.port <PORT>
-    kms config kmip.ca.certificates.path <path to kmip ca certificate>
-    kms config kmip.client.certificate.path <path to kmip client certificate>
-    kms config kmip.client.key.path <path to kmip client key>
+2.  Update the `config.yml` for the following variables under `/etc/kbs/config.yml`
+    ```yaml
+    kmip:
+      server-ip: <IP address of the KMIP server>
+      server-port: <Port where KMIP Server is listening on>
+      client-cert-path: <KMIP Client Certificate Path>
+      client-key-path: <KMIP Client Key Path>
+      root-cert-path: <KMIP Server Root Certificate Path>
     ```
 
 4.  Restart the Key Broker for the settings to take effect
 
     ```shell
-    kms restart
+    kbs stop;kbs start
     ```
 
 ### 3.15.7  Importing Verification Service Certificates
@@ -9237,7 +9239,7 @@ Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 After installation, the Key Broker must import the SAML and PrivacyCA
 certificates from any Verification Services it will trust. This provides
 the Key Broker a way to ensure that only attestations that come from a
-“known” Verification Service. The SAML and PrivacyCA certificates needed
+"known" Verification Service. The SAML and PrivacyCA certificates needed
 can be found on the Verification Service.
 
 #### 3.15.7.1  Importing a SAML certificate
@@ -9245,40 +9247,65 @@ can be found on the Verification Service.
 Use OpenSSL to display the SAML certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/saml.crt.pem
+cat /etc/hvs/certs/trustedca/saml-cert.pem
 ```
 
 Use the SAML certificate output in the following POST call to the Key
 Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:9443/v1/saml-certificates
+POST https://<Key Broker IP address or hostname>:<Key Broker Port>/kbs/v1/saml-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
 -----BEGIN CERTIFICATE-----
-MIID9TCCAl2gAwIBAgIBCTANBgkqhkiG9w0BAQwFADBQMQswCQYDVQQGEwJVUzEL
+MIID/DCCAmSgAwIBAgIBCDANBgkqhkiG9w0BAQwFADBQMQswCQYDVQQGEwJVUzEL
 MAkGA1UECBMCU0YxCzAJBgNVBAcTAlNDMQ4wDAYDVQQKEwVJTlRFTDEXMBUGA1UE
-AxMOQ01TIFNpZ25pbmcgQ0EwHhcNMTkxMjExMTkzOTU1WhcNMjAxMjExMTkzOTU1
-WjAYMRYwFAYDVQQDEw1tdHdpbHNvbi1zYW1sMIIBojANBgkqhkiG9w0BAQEFAAOC
-AY8AMIIBigKCAYEArbrDpzR4Ry0MVhSJULHZoiVL020YqtyRH+R2NlVXTpJzqmEA
-Ep2utfcP8+mSCT7DLpGBO6KACPCz3pmqj3wZyqZNTrG7IF2Z4Fuf641fPcxA3WVH
-3lXz0L5Ep4jOUdfT8kj4hHxHJVJhDsW4J2fds2RGnn8bZG/QbmmGNRfqdxht0zMh
-63ik8jBWNWHxYSRbck27FyTj9hDU+z+rFfIdNv1SiQ9FyndgOytK/m7ijoAetkSF
-bCsauzUL7DFdRzTmB2GCF/Zd957V51GNpvan6uwqDTL6T4NFX2sqoVduu/WIyTpO
-/6D2aA741CR3Bmk9945TSeDKZNz2HkihuE+d8ES68W1t4rvox/Noi74e0k35AqcQ
-Q3P0DZpD+XaRapz5CHcOPwOpZ3A/8wN2f+CS2HqDx8FwABkh7l8OdiIWs8+TDQZe
-1x4e/50jE/8zMR/tsAy1EXkm3OTOVxih0u18J84x4OT+rHAIcoQ+TOJ40aHrWGHg
-kVCfiCUzYYT/W/RBAgMBAAGjEjAQMA4GA1UdDwEB/wQEAwIGwDANBgkqhkiG9w0B
-AQwFAAOCAYEAP/ABHdPquBNrMOCU+v7SfMLmIfJymA15mCorMEiKZ1d7oNnoPP0G
-pfyRA4TUiyFLCOLi4jIXWuu4Lt6RUz6bnzn8JRWD5ocIJGGxWjOA66xyS3o9iG7G
-otOh1pzp5wlwPG7r8ZJ7Q26J+NuHpN1GW5U5Vjww1J9rEKnsKp45QHkG2nXEujdx
-YXmKXtEG2gOMVjaLiqromf6VxbdNoKHZGEfqU3H5ymMgqIrnXl3MivA30CymCDLl
-rJGRQSwOfzywPCnUOAVptBwLs2kwOtdvnq+BTK3q/dKKoNiFURj/mQ70egquW9ly
-TOkYivmKqMZxZlq0//cre4K35aCW3ZArzGgNM8Pk0V/hZp8ZHrWLNAdo4w/Pj1oC
-Yq7R0RQ8jQerkewYBfrv3O3e9c22h48fsHnun6F3sbcDjws/sWJIOcrPyqJE26HY
-DmIKpvjqc0jI31ndBBwkb+RIBFkz1Ycob9rsW16uVqbjBFDjJ5QKOdXxhqulyboa
-JAF53vmU+1jE
+AxMOQ01TIFNpZ25pbmcgQ0EwHhcNMjAxMTE4MDQwMjAwWhcNMjExMTE4MDQwMjAw
+WjAfMR0wGwYDVQQDExRIVlMgU0FNTCBDZXJ0aWZpY2F0ZTCCAaIwDQYJKoZIhvcN
+AQEBBQADggGPADCCAYoCggGBALisc9JJeupLBk22pnARt9CP6CJQn1iEMbLvvkZ0
+tCbuG9wX5LUoyPFGELDcHrK2E5eLqLUrxCgHa6zTkokgoh3Oj/PXG3JoqZsK2hVd
+VHyL82JnjLrB93SsNwlo7002V35RaAvWln+Z9fJtY9gOB7LS+UCchVYXduFYSG8m
+sXkGkG60VvQlpFYYTO773/DV/zj2cZmL2l3/6OLX+QeCG8UtRo7iqNloD+788sSd
+CQKx2m3PxRd195cTNGBarOMJwzPu8/w+bbk8E3wO/IdjO7Mh3K5yNRr1V99sFG5h
+RyjZwgfO7RYOp2B8hMZENeWvUGB1QiNwsKvC27HE4WkkCsF+HCcKDwEGUY1/NmRq
+pj6yaBajsKM326agPk8Roihgea4NdWQrfpa/W3ZmMLceggtwY4PJeonEuLiidKAk
+Tg13XRUQ1yq9mUFnY5pZCFvO1liu7P2xtr6xvAFdX/KsPaXZRnOwzSODkhmS6NNe
+lsj1JCUtR/rVJVmIA7dBcxPZEwIDAQABoxIwEDAOBgNVHQ8BAf8EBAMCBsAwDQYJ
+KoZIhvcNAQEMBQADggGBAB0dXcAmSnU4Sda6UfToUTO3PotwCS/e4Tm5RoKzYfqz
+R6UQF1dlcVhkS1mz3wl1EZbeOJU61QiSACfAG05SU2KtrZ0h7//nJT/0N0hwGzhL
+9c0r10QYss3LqI9eUAddtqjyQf8baJtuFruBQjoFytqzp6XQ9gtPL5XcLyl9C4xy
+sWpKRfiB3Px5Agi18RiVM3/hBDGfVbcb/v8dWJM28MJs5ZWgrb/HdfMUQJFdYHOc
+AU+WpxGjaftTiD9Is5lTOb3ESKMkz7fEW6YXulTkij2P9m5pcoZIPPZbnXQWJzot
+emz5RgbYVBE4R6tZNJ1IyZhDiY4O1MjpCYhzaAoPVPD9lYIHLQcMHH56xx0Y24Fv
+wFIIU6C6OatLDLApRBMFeZa/xFgf2qNjm+1wu5N79EB9xukqzIw+lR+dXYAHgChW
+PrYK5F500/BiTmNtNC+EiwLs6RQU4ZBXki8U/uBFB7f5vnk8LxPm4NlP0GSCJhAr
+fpo2VjlPKVVUUUTQGxZV0Q==
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIENTCCAp2gAwIBAgIBAzANBgkqhkiG9w0BAQwFADBHMQswCQYDVQQGEwJVUzEL
+MAkGA1UECBMCU0YxCzAJBgNVBAcTAlNDMQ4wDAYDVQQKEwVJTlRFTDEOMAwGA1UE
+AxMFQ01TQ0EwHhcNMjAxMTE4MDQwMDAwWhcNMjUxMTE4MDQwMDAwWjBQMQswCQYD
+VQQGEwJVUzELMAkGA1UECBMCU0YxCzAJBgNVBAcTAlNDMQ4wDAYDVQQKEwVJTlRF
+TDEXMBUGA1UEAxMOQ01TIFNpZ25pbmcgQ0EwggGiMA0GCSqGSIb3DQEBAQUAA4IB
+jwAwggGKAoIBgQCyjonRwxZ8UbWkzAcQn6SnyOlQzzdOVW2+WNh61tMfRVioSykA
+otuG1hhgApULbyUmBsJSmNU4oQjnlblpsH+LOLLHHlM8tCA5oX9XGzlpQVp+Dr17
+vK69lN0Ner2hqVxmJy2evN93rV+nsFrdx2O2/JcptkPKQUc+EcqDOPbMgIBWjRpT
+lVeyEIoWBBxAwtoUxpCMBXtSnxVB7+6Yc3apONj8wF5Ie7qBXXOTH3II3tAYNFiA
+O1ivNER8zNr2Aia14V/lQUlHzwB94TBMFLPzR4T2bXiGH2wfW4Z35ULdW8avcKSR
+r9KSQ4JtREp2xsJ9AYr89WPljiKvf6wJaTFT1BnR/cvBtpsKbrppbiJrYqbuRa8m
+0vcZ278dM4sGMLUqa7AnMXWHqI6MjqulN2RHIkQ/J3ih0Q8GLDJaruiJnNOeGiDo
+mL0LxJFEy5OGH3AUioOGRHdF0suFneRv3emY6FSMSXuofLfn59I7ik630cfj3r7X
+1xzuqUbZE70uqCUCAwEAAaMjMCEwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQF
+MAMBAf8wDQYJKoZIhvcNAQEMBQADggGBAJiIWLM16WqIyT/D59Q+xDptL/kP4BVs
+HemKCqIwJ9N1JzFH5W4chCv0u5R4Gcb4q7HOtbhjTm/W1u6EVWetLVQeNSOizqf5
+NjNoA3eZH8MWn6q93rBuWtZebpDMNYYFgRvPU4d8lKfRV4JdcYlyLo0wbzzF9AOJ
+0CIBNBcYJXZqZeqrnPBzMZe7RVvoTIu2VOYk+RIvao8jgCZOwEqe3RMBnaF2psIO
+OrnmSMtLDKoPSVyOYt4R/agSFtiOIHnddmR6djvkVNgkvg8B1WuElU/9W0Tlxn/A
+AblH+qq6FVQLzWOITkCu/YN4W222zR0EeMsaZ7NEkxHMrhj4giFB+AnjEL04XDjz
+G2Vcq4c3Ka4ZBZv3Q6nWgK6RfrqAJL+tGS8YX9Bt08J7q41wje63QhUjtmaL3gTu
+4WqlKxedoBweEpD4x0CIcxtVA48NmFS9NQse6wAsq3GvKCcSsCBUgyKMnmDb5Y+g
+lynfJLtgmHDcO7+8I0ZU2zBu8k8GotnBrQ==
 -----END CERTIFICATE-----
 ```
 
@@ -9287,14 +9314,14 @@ JAF53vmU+1jE
 Use OpenSSL to display the PrivacyCA certificate content:
 
 ```shell
-openssl x509 -in /opt/hvs/configuration/PrivacyCA.pem
+openssl x509 -in /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
 ```
 
 Use the PrivacyCA certificate output in the following POST call to the
 Key Broker:
 
 ```http
-POST https://<Key Broker IP address or hostname>:9443/v1/tpm-identity-certificates
+POST https://<Key Broker IP address or hostname>:<Key Broker Port>/kbs/v1/tpm-identity-certificates
 ```
 ```shell
 Content-Type: application/x-pem-file 
@@ -9355,7 +9382,7 @@ The WPM is REQUIRED for the following use cases.
 ### 3.16.2  Package Dependencies
 
 (Required only if Docker Container encryption is needed) `Docker-ce
-19.03.5` must be installed. This is needed only if the option
+19.03.13` must be installed. This is needed only if the option
 `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
 file.
 
@@ -9404,7 +9431,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.0.0.bin
+    ./wpm-v3.3.0.bin
     ```
 
 
@@ -10594,15 +10621,9 @@ openstack image unset --property trait:CUSTOM_ISECL_TRUSTED <image_name>
 
 #### 6.13.2.3  Configuring the Integration Hub for Use with OpenStack
 
-The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "ENDPOINT_OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
+The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "OPENSTACK..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section). 
 
-However, this configuration can also be performed after installation using CLI commands:
 
-```shell
-ihub setup <endpoint name> --endpoint-url="http://openstack:5000/v3" --endpoint-user="username" --endpoint-pass="password"
-```
-
-Restart the Integration Hub after configuring the endpoint. Note that "endpoint name" should be replaced with any user-friendly name for the OpenStack instance you would prefer.
 
 #### 6.13.2.7  Scheduling Instances
 
@@ -10675,7 +10696,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.0.0.bin
+    ./isecl-k8s-extensions-v3.3.0.bin
     ```
     
 2.  Add a mount path to the
@@ -11118,7 +11139,7 @@ Hosts that are not trusted (including servers where there is no trust
 status, like hosts with no Trust Agent) will fail to launch any
 encrypted workloads.
 
->***Important Note:*** *Docker version 19.03.5 is specifically required,
+>***Important Note:*** *Docker version 19.03.13 is specifically required,
 >and other versions are not supported. Installation of the Workload
 >Agent for Docker Container Confidentiality will **replace** the
 >existing Docker binaries (the client and daemon, in /usr/bin/dockerd
@@ -13493,18 +13514,20 @@ TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP ad
 ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
+#Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
+TENANT=<KUBERNETES or OPENSTACK>
+
 # OpenStack Integration Credentials - required for OpenStack integration only
-ENDPOINT_OPENSTACK_IP=<OpenStack Nova IP or hostname>
-ENDPOINT_OPENSTACK_AUTH_PORT=<OpenStack Keystone port; 5000 by default>
-ENDPOINT_OPENSTACK_API_PORT=<OpenStack Nova API port; 8778 by default>
-ENDPOINT_OPENSTACK_USERNAME=<OpenStack username>
-ENDPOINT_OPENSTACK_PASSWORD=<OpenStack password>
+OPENSTACK_AUTH_URL=<OpenStack Keystone URL; typically http://openstack-ip:5000/>
+OPENSTACK_PLACEMENT_URL=<OpenStack Nova API URL; typically http://openstack-ip:8778/>
+OPENSTACK_USERNAME=<OpenStack username>
+OPENSTACK_PASSWORD=<OpenStack password>
 
 # Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
-ENDPOINT_KUBERNETES_CRD=custom-isecl
-ENDPOINT_KUBERNETES_TRUST_FILE_LOCATION=/etc/ihub/root_k8s_trust.pem
-ENDPOINT_KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik
+KUBERNETES_CRD=custom-isecl
+KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
+KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
 BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
@@ -14650,204 +14673,140 @@ executed only as the Root user:
 <div style="page-break-after: always"></div>
 # 12  Certificate and Key Management
 
-## 12.1  Host Verification Service Certificates and Keys
+## 12.1  Authentication and Authorization Service
+
+The AAS uses a JWT signing certificate to generate JWT tokens.  By default this certificate is issued by the CMS signing CA.  Generally, this should not be changed.
+
+The JWT signing certificate and its private key can be found here:
+
+```
+/etc/authservice/certs/tokensign/jwtsigncert.pem
+/etc/authservice/certs/tokensign/jwt.key
+```
 
 
-The Host Verification Service has several unique certificates not
-present on other services.
 
-### 12.1.1  SAML
+## 12.2  Host Verification Service 
 
-The SAML Certificate a is used to sign SAML attestation reports, and is
-itself signed by the Root Certificate. This certificate is unique to the
-Verification Service.
+
+
+### 12.2.1  SAML
+
+The SAML Certificate is used to sign SAML attestation reports, and is itself signed by the intermediate signing CA from the CMS. This certificate is unique to the Verification Service.
 
 ```shell
-/opt/hvs/configuration/saml.crt
+/etc/hvs/certs/trustedca/saml-crt.pem
+/etc/hvs/trusted-keys/saml.key
 ```
-```shell
-/opt/hvs/configuration/saml.crt.pem
+Note that, if this certificate is replaced, all existing attestations in the HVS will immediately appear as invalid/untrusted due to a SAML signature mismatch.  
+
+If the Integration Hub is being used, the new SAML certificate will need to be imported to the Hub.
+
+If the Key Broker Service is being used, the new SAML certificate will need to be imported to the KBS.
+
+To replace this certificate with a new SAML certificate using the CMS self-signed certificate chain, use the following command:
+
 ```
-```shell
-/opt/hvs/configuration/SAML.jks
+hvs setup download-cert-saml
 ```
 
-The SAML Certificate can be replaced with a user-specified keypair and certificate chain using the following command:
+### 12.2.2  Asset Tag
 
-mtwilson replace-saml-key-pair --private-key=new.key.pem
---cert-chain=new.cert-chain.pem
-
-This will:
-
--   Replace key pair in `/opt/hvs/configuration/SAML.jks`, alias
-    samlkey1
-
--   Update `/opt/hvs/configuration/saml.crt` with saml DER public key
-    cert
-
--   Update `/opt/hvs/configuration/saml.crt.pem` with saml PEM public
-    key cert
-
--   Update configuration properties:
+The Asset tag Certificate is used to sign all Asset Tag Certificates. This certificate is unique to the Verification Service.
 
 ```shell
-saml.key.password to null
-saml.certificate.dn
-saml.issuer
+/etc/hvs/certs/trustedca/tag-ca-cert.pem
+/etc/hvs/trusted-keys/tag-ca.key
 ```
-When the SAML certificate is replaced, all hosts will immediately be
-added to a queue to generate a new attestation report, since the old
-signing certificate is no longer valid. No service restart is necessary.
 
-If the Integration Hub is being used, the new SAML certificate will need
-to be imported to the Hub.
+If the Asset tag signing certificate is replaced, all existing Asset Tags will be considered invalid, and will need to be recreated. It is recommended to delete any existing Asset Tag certificates and Flavors, and then recreate and deploy new Tags.
 
-### 12.1.2  Asset Tag
+### 12.2.3  Privacy CA 
 
-The Asset tag Certificate is used to sign all Asset Tag Certificates.
-This certificate is unique to the Verification Service.
+The Privacy CA certificate is used as part of the certificate chain for creating the Attestation Identity Key (AIK) during Trust Agent provisioning. The Privacy CA must be a self-signed certificate. This certificate is unique to the Verification Service.
+
+The Privacy CA certificate is used by Trust Agent nodes during Trust Agent provisioning; if the Privacy CA certificate is changed, all Trust Agent nodes will need to be re-provisioned.
+
+```
+/etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
+/etc/hvs/trusted-keys/privacy-ca.key
+```
+
+If the Privacy CA certificate is replaced, all Trust Agent hosts will need to be re-provisioned with a new AIK:
 
 ```shell
-/opt/hvs/configuration/tag-cacerts.pem
+tagent setup provision-attestation
 ```
 
-The Asset Tag Certificate can be replaced with a user-specified keypair
-and certificate chain using the following command:
+Any Trust Agent hosts not reprovisioned will result in untrusted attestations, as the validation of the AIK used to sign the hosts' TPM quotes will no longer match the endorsement chain of the HVS.
+
+### 12.2.4  Endorsement CA
+
+The Endorsement CA is a self-signed certificate used during Trust Agent provisioning.  
+
+```
+/etc/hvs/certs/endorsement/EndorsementCA.pem`
+/etc/hvs/trusted-keys/endorsement-ca.key
+/etc/hvs/certs/endorsement/EndorsementCA-external.pem`
+```
+
+If the Endorsement CA certificate is replaced, all Trust Agent hosts will need to be re-provisioned with a new Endorsement Certificate:
 
 ```shell
-    mtwilson replace-tag-key-pair --private-key=new.key.pem --cert-chain=new.cert-chain.pem
+tagent setup provision-attestation
 ```
 
-This will:
+Any Trust Agent hosts not reprovisioned will result in untrusted attestations, as the validation of the AIK used to sign the hosts' TPM quotes will no longer match the endorsement chain of the HVS.
 
--   Replace key pair in database table mw\_file (cakey is private and
-    public key pem formatted, cacerts is cert chain)
+## 12.3  Regenerating TLS Certificates
 
--   Update `/opt/hvs/configuration/tag-cacerts.pem with cert chain`
+TLS certificates for each service are issued by the Certificate Management Service during installation. If the CMS root certificate is changed, or to regenerate the TLS certificate for a given service, use the following commands (note: environment variables will need to be set; typically these are the same variables set in the service installation .env file):
 
--   Update configuration properties:
+1. <servicename> download_ca_cert`
 
-```shell
-tag.issuer.dn
+2. Set up required environment variables.  These are some of the same variables that would be used in the .env installation file to install the service.  Note that a new/valid bearer token will be needed; this can be generated using the populate-users.sh script with the AAS, or by using the installation admin user credentials to get a token from the AAS API.
+
+   ```
+   CMS_BASE_URL=<CMS API URL>`
+   BEARER_TOKEN=<token>
+   ```
+
+3. Use setup to re-download a new TLS certificate.
+
+   ```
+   <servicename> download-cert-tls --force
+   ```
+
+This generates a new key pair and CSR, gets it signed by the CMS.
+
+
+
+## 12.4 Replacing Self-Signed Certificates
+
+The CMS offers automatic generation of certificates based on a self-signed root CA. Certificates using this root CA may need to be replaced with certificates signed by a recognized CA. This effectively involves replacing the certificates deployed during installation with new certificates that use a hierarchy outside of the CMS.
+
+To replace any non-TLS certificate, simply replace the existing certificate file with the new certificate and its private key.  Each certificate must include any intermediate certificate chain, excluding the root.  The root CA certificate must also be replaced so that the new hierarchy is used for validation.  
+
+### TLS Certificates
+
+To replace the TLS certificates in ISecL services, generate new TLS certificates for each service.  Each TLS certificate requires that a list of resolvable DNS hostnames and/or IP addresses be included as Subject Alternative Names in the new certificate.
+
+Copy the new TLS certificates to the appropriate directories, overwriting the existing TLS certificates deployed by the CMS during installation:
+
 ```
-No service restart is needed. However, all existing Asset Tags will be
-considered invalid, and will need to be recreated. It is recommended to
-delete any existing Asset Tag certificates and Flavors, and then
-recreate and deploy new Tags.
-
-### 12.1.3  Privacy CA 
-
-The Privacy CA certificate is used as part of the certificate chain for
-creating the Attestation Identity Key (AIK) during Trust Agent
-provisioning. The Privacy CA must be a self-signed certificate. This
-certificate is unique to the Verification Service.
-
-The Privacy CA certificate is used by Trust Agent nodes during Trust
-Agent provisioning; if the Privacy CA certificate is changed, all Trust
-Agent nodes will need to be re-provisioned.
-
-`/opt/hvs/configuration/PrivacyCA.p12`
-
-`/opt/hvs/configuration/PrivacyCA.pem`
-
-The Privacy CA Certificate can be replaced with a user-specified keypair
-and certificate chain using the following command:
-
-```shell
-mtwilson replace-pca-key-pair --private-key=new.key.pem --cert-chain=new.cert-chain.pem
-```
-
-This will:
-
--   Replace key pair in `/opt/hvs/configuration/PrivacyCA.p12`, alias
-    1
-
--   Update `/opt/hvs/configuration/PrivacyCA.pem` with cert
-
--   Update configuration properties:
-
-```shell
-mtwilson.privacyca.aik.issuer
-mtwilson.privacyca.aik.validity.days
-```
-After the Privacy CA certificate is replaced, all Trust Agent hosts will
-need to be re-provisioned with a new AIK:
-
-```shell
-tagent setup download-mtwilson-privacy-ca-certificate --force
-tagent setup request-aik-certificate --force
-tagent restart
+/etc/<servicename>/tls-cert.pem
+/etc/<servicename>/tls.key
 ```
 
+Copy the new root CA to each service, overwriting the CMS-created root CA:
 
-
-### 12.1.4  Endorsement CA
-
-The Endorsement CA is a self-signed certificate used during Trust Agent
-provisioning.
-
-`/opt/hvs/configuration/EndorsementCA.p12`
-
-`/opt/hvs/configuration/EndorsementCA.pem`
-
-The Endorsement CA Certificate can be replaced with a user-specified
-keypair and certificate chain using the following command:
-
-```shell
-mtwilson replace-eca-key-pair --private-key=new.key.pem --cert-chain=new.cert-chain.pem
+```
+/etc/<servicename>/certs/trustedca/root/
 ```
 
-This will:
-
--   Replace key pair in `/opt/hvs/configuration/EndorsementCA.p12`,
-    alias 1
-
--   Update `/opt/hvs/configuration/EndorsementCA.pem` with accepted
-    ECs
-
--   Update configuration properties:
-
-```{=html}
-mtwilson.privacyca.ek.issuer
-mtwilson.privacyca.ek.validity.days
-```
-After the Endorsement CA certificate is replaced, all Trust Agent hosts
-will need to be re-provisioned with a new Endorsement Certificate:
-
-```shell
-tagent setup request-endorsement-certificate --force
-tagent restart
-```
+Restart each service so that the changes take effect.
 
 
-
-## 12.2  TLS Certificates
-
-TLS certificates for each service are issued by the Certificate
-Management Service during installation. If the CMS root certificate is
-changed, or to regenerate the TLS certificate for a given service, use
-the following commands (note: environment variables will need to be set;
-typically these are the same variables set in the service installation
-.env file):
-
--   `<servicename> download_ca_cert`
--   Download CMS root CA certificate
-    
--   Environment variable `CMS_BASE_URL=<url>` for CMS API url
-    
--   `<servicename> download_cert TLS` 
--   Generates Key pair and CSR, gets it signed from CMS
-    
--   Environment variable `CMS_BASE_URL=<url>` for CMS API url
-    
--   Environment variable `BEARER_TOKEN=<token>` for authenticating
-        with CMS
-    
--   Environment variable `KEY_PATH=<key_path>` to override default
-        specified in config
-    
--   Environment variable `CERT_PATH=<cert_path>` to override
-        default specified in config
 
 <div style="page-break-after: always"></div> 
 # 13  Uninstallation

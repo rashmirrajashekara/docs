@@ -27,6 +27,7 @@ Table of Contents
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
             * [TPM is already owned](#tpm-is-already-owned)
+            * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
             * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
             * [Using Docker Notary](#using-docker-notary)
             * [In case of Misconfigurations](#in-case-of-misconfigurations)
@@ -53,17 +54,17 @@ Table of Contents
 
 * Intel® SecL-DC  supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL.
 
-  > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. 
+  > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. Only dTPM is supported on Intel® SecL-DC platform hardware. 
 
   ![hardware-options](./images/trusted-boot-options.PNG)
 
-> **Note:** A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
+> **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.2 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
+> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
 
 ### OS Requirements
 
-* `RHEL 8.2` OS
+* `RHEL 8.3` OS
 * `rhel-8-for-x86_64-baseos-rpms` and `rhel-8-for-x86_64-appstream-rpms` repositories need to be enabled on build machine and remote machines
 * Date and time should be in sync across the machines
 
@@ -98,7 +99,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 * The repos can be built only as `root` user
 
-* RHEL 8.2 Machine for building repos
+* RHEL 8.3 Machine for building repos
 
 * Enable the following RHEL repos:
 
@@ -143,7 +144,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/fs.xml
   repo sync
   ```
 
@@ -176,7 +177,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -206,7 +207,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/cc-docker.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/cc-docker.xml
   repo sync
   ```
   
@@ -263,7 +264,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.2.0 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/cc-crio.xml
   repo sync
   ```
 
@@ -273,6 +274,32 @@ The below steps needs to be carried out on the Build and Deployment VM
   cd utils/build/workload-security
   chmod +x ws-prereq.sh
   ./ws-prereq.sh -c
+  ```
+  
+* Enable and start the Docker daemon
+
+  ```shell
+  systemctl enable docker
+  systemctl start docker
+  ```
+
+* Ignore the below steps if not running behind a proxy
+
+  ```shell
+  mkdir -p /etc/systemd/system/docker.service.d
+  touch /etc/systemd/system/docker.service.d/proxy.conf
+  
+  #Add the below lines in proxy.conf
+  [Service]
+  Environment="HTTP_PROXY=<http_proxy>"
+  Environment="HTTPS_PROXY=<https_proxy>"
+  Environment="NO_PROXY=<no_proxy>"
+  ```
+
+  ```shell
+  #Reload docker
+  systemctl daemon-reload
+  systemctl restart docker
   ```
 
 * Download go dependencies
@@ -286,7 +313,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 * Build the repos
 
   ```shell
-  cd /root/isecl/cc-crio/
+  cd /root/intel-secl/build/cc-crio
   make all
   ```
   
@@ -300,7 +327,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 ## **4. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/ansible-role) repository.
 
 
 ### Pre-requisites
@@ -370,9 +397,7 @@ cd tools/ansible-role
 
 ### Update Ansible Inventory
 
-The following is the inventory to be used and updated. 
-
-> **Note:** Ansible requires `ssh` and `root` user access to remote machines.
+In order to deploy Intel® SecL-DC binaries, the following inventory can be used and the required inventory vars as below need to be set. The below example inventory can be created under `/etc/ansible/hosts`
 
 ```
 [CSP]
@@ -400,9 +425,14 @@ ansible_user=root
 ansible_password=<password>
 ```
 
+> **Note:** Ansible requires `ssh` and `root` user access to remote machines. The following command can be used to ensure ansible can connect to remote machines with host key check `
+  ```shell
+  ssh-keyscan -H <ip_address> >> /root/.ssh/known_hosts
+  ```
+
 ### Create and Run Playbook
 
-The following are playbook and CLI for deploying Intel® SecL-DC binaries for Foundational and Workload Security
+The following are playbook and CLI example for deploying Intel® SecL-DC binaries based on the supported deployment models and usecases. The below example playbooks can be created as `site-bin-isecl.yml`
 
 > **Note :** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
 
@@ -476,6 +506,31 @@ Update the following vars in `defaults/main.yml`
 tpm_owner_secret: <tpm_secret>
 ```
 
+#### UEFI SecureBoot enabled
+
+If UEFI mode and UEFI SecureBoot feature is enabled, the following option can be used to during runtime in the playbook
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars uefi_secureboot=yes \
+-- extra-vars grub_file_path=<uefi mode grub file path>
+```
+
+or
+
+Update the following vars in `defaults/main.yml`
+
+```yaml
+# Enable/disable for UEFI SecureBoot Mode
+# [yes - UEFI SecureBoot mode, no - Legacy mode]
+uefi_secureboot: 'yes'
+
+# The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
+grub_file_path: <uefi mode grub file path>
+```
+
 #### Deploying for Workload Confidentiality with CRIO Runtime
 
 If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtime` , following option can be provided during runtime in playbook. By default, the playbook is configured to install for `Launch Time Protection - Workload Confidentiality with Docker Runtime`
@@ -533,13 +588,13 @@ If any service installation fails due to any misconfiguration, just uninstall th
 
 ## **5. Usecase Workflows API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.2/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections)
 
 ### Use Case Collections
 
@@ -547,11 +602,13 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | ---------------------- | --------------------------------------------- | ------------------ |
 | Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
 |                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
-|                        | Trusted Workload Placement                    | ✔️(Kubernetes Only) |
+|                        | Trusted Workload Placement (VM & Containers)  | ✔️ |
 |                        | Application Integrity                         | ✔️                  |
-| Launch Time Protection | VM Confidentiality                            | ❌                  |
+| Launch Time Protection | VM Confidentiality                            | ✔️                  |
 |                        | Container Confidentiality with Docker Runtime | ✔️                  |
 |                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
+
+> **Note: ** `Foundational Security - Host Attestation` is a pre-requisite for all usecases beyond Host Attestation. E.g: For working with `Launch Time Protection - VM Confidentiality` , Host Attestation flow must be run as a pre-req before trying VM Confidentiality
 
 ### Downloading API Collections
 
@@ -817,16 +874,16 @@ deployment in the `isecl` namespace.
 
 9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                         | Required   | Type     | Default | Description                                                  |
-   | ----------------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL                     | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH                | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX                    | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
-   | PORT                          | `Optional` | `string` | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_PATH      | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
-   | TLS_CERT_PATH                 | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
-   | TLS_KEY_PATH                  | `Required` | `string` |         | Path of tls key                                              |
+   | Field                    | Required   | Type     | Default | Description                                                  |
+   | ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
+   | LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
+   | LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+   | TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
+   | PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
+   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+   | TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
+   | TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
 
 
 
