@@ -1214,7 +1214,8 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 	docker ps
 ```
-Integration with OpenStack
+
+## Integration with OpenStack
 
 OpenStack can now use “Traits” to provide qualitative data about Nova Compute hosts to establish Trait requirements. The Integration Hub continually push SGX data to the OpenStack Traits resources. This means OpenStack scheduler natively supports workload scheduling incorporating SGX Host information, including SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status upto date/not. The OpenStack Placement Service will automatically attempt to place images with Trait requirements on compute nodes that have those Traits.
 
