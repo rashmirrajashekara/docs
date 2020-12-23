@@ -641,21 +641,21 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 * Set the required traits for SGX Hosts
 ```
+  #For example 'cirros' image can be used for the instances
   openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required <image name>
-  For example 'cirros' image can be used for the instances.
+  
 ```
 * Veiw the Traits that has been set:
 ```
-  openstack image show <image name>
-
-  The trait should be set and assinged to the respective image successfully. For example 'cirros' image can be used for the instances.
+  #The trait should be set and assinged to the respective image successfully. For example 'cirros' image can be used for the instances 
+   openstack image show <image name>
 ```
 * Verify the trait is enabled for the SGX Host:
 ```
   openstack resource provider trait list <uuid of the host which the openstack resoruce provider lists>
 
-  SGX Supported, SGX TCB upto Date, SGX FLC enabled, SGX EPC size attritubes of the SGX host for which the 'required' trait set to TRUE or FALSE is displayed. For example,if required trait is set as TRUE:
-
+  #SGX Supported, SGX TCB upto Date, SGX FLC enabled, SGX EPC size attritubes of the SGX host for which the 'required' trait set to TRUE or FALSE is displayed. For example,if required trait is set as TRUE:
+  
   CUSTOM_ISECL_SGX_ENABLED_TRUE
   CUSTOM_ISECL_SGX_SUPPORTED_TRUE
   CUSTOM_ISECL_SGX_TCBUPTODATE_FALSE
