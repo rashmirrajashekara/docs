@@ -530,6 +530,30 @@ uefi_secureboot: 'yes'
 # The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
 grub_file_path: <uefi mode grub file path>
 ```
+#### Deploying for Workload Confidentiality for VMs
+
+If using for `Launch Time Protection - Workload Confidentiality for VMs` , following option can be provided during runtime in playbook. By default, the playbook is configured to install for `Launch Time Protection - Workload Confidentiality with Docker Runtime`
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=workload-conf-vm \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars skip_sdd=yes
+--extra-vars wpm_container_security=no
+```
+or
+
+Update the following vars in `defaults/main.yml`
+
+```yaml
+#Enable/disable container security for CRIO runtime
+# [yes - Launch Time Protection with CRIO Containers, NA - others]
+skip_secure_docker_daemon: 'yes'
+
+# Enable/disable Workload Policy Manager Installation with container security 
+# [ yes - Container Confidentiality with Docker Containers, no - others]
+wpm_container_security: 'no'
+```
 
 #### Deploying for Workload Confidentiality with CRIO Runtime
 
@@ -537,7 +561,7 @@ If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtim
 
 ```shell
 ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
+--extra-vars setup=workload-conf-containers-crio \
 --extra-vars binaries_path=<path where built binaries are copied to> \
 --extra-vars skip_sdd=yes
 ```
@@ -548,7 +572,7 @@ Update the following vars in `defaults/main.yml`
 ```yaml
 #Enable/disable container security for CRIO runtime
 # [yes - Launch Time Protection with CRIO Containers, NA - others]
-skip_secure_docker_daemon: <skip_sdd>
+skip_secure_docker_daemon: 'yes'
 ```
 
 #### Using Docker Notary
