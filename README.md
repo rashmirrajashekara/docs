@@ -188,12 +188,15 @@ Following steps facilitate the building of all components:
 
 ## Support 
 
-## Reporting Issues
- 1. [SKC Library adding incorrect entry in /etc/hosts file for kbshostname](https://jira.devtools.intel.com/browse/ISECL-13500)
- 2. [AAS_URL not updating in authservice.env by skc automation scripts](https://jira.devtools.intel.com/browse/ISECL-13501)
- 3. [HvsTrustExpiry label should not display in SGX node label](https://jira.devtools.intel.com/browse/ISECL-13364)
- 4. [Single and multiple instances launch from encrypted image failed](https://jira.devtools.intel.com/browse/ISECL-13311)
-
+## Known Issues
+ 1. SKC Library adding incorrect entry in /etc/hosts file for kbshostname
+    Details: This issue is not reproducible with fresh VM. It comes only when we already have some other entry in hosts file with same hostname. It will be fixed in upcoming v3.4 release.
+ 2. AAS_URL not updating in authservice.env by skc automation scripts
+    Details: This issue is not impacting AAS deployment as AAS by default consider it’s own IP if it didn’t find in env file. It will be fixed in upcoming v3.4 release.
+ 3. HvsTrustExpiry label should not display in SGX node label
+    Details: While validating common cluster use case. HvsTrustExpiry label (which is part of TA agent), is displaying under SGX node labels. Although there is no impact of this. It will be fixed in upcoming v3.4 release.
+ 4. Single and multiple instances launch from encrypted image failed
+    Details: As pert of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming v3.4 release.
 
 ## Contributing 
 
