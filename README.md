@@ -200,7 +200,7 @@ Following steps facilitate the building of all components:
     Details: While validating common cluster use case. HvsTrustExpiry label (which is part of TA agent), is displaying under SGX node labels. Although there is no impact of this. It will be fixed in upcoming v3.4 release.
  4. Single and multiple instances launch from encrypted image failed
     
-    Details: As pert of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming v3.4 release.
+    Details: As part of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming v3.4 release.
 
 ## Contributing 
 
