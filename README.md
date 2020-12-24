@@ -188,7 +188,19 @@ Following steps facilitate the building of all components:
 
 ## Support 
 
-## Reporting Issues
+## Known Issues
+ 1. SKC Library adding incorrect entry in /etc/hosts file for kbshostname
+ 
+    Details: This issue is not reproducible with fresh VM. It comes only when we already have some other entry in hosts file with same hostname. It will be fixed in upcoming release.
+ 2. AAS_URL not updating in authservice.env by skc automation scripts
+    
+    Details: This issue is not impacting AAS deployment as AAS by default consider it’s own IP if it didn’t find in env file. It will be fixed in upcoming release.
+ 3. HvsTrustExpiry label should not display in SGX node label
+    
+    Details: While validating common cluster use case. HvsTrustExpiry label (which is part of TA agent), is displaying under SGX node labels. Although there is no impact of this. It will be fixed in upcoming release.
+ 4. Single and multiple instances launch from encrypted image failed
+    
+    Details: As part of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming release.
 
 ## Contributing 
 

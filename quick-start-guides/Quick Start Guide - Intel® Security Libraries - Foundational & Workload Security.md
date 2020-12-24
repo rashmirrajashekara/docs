@@ -386,6 +386,7 @@ cd tools/ansible-role
 | Host Attestation                                             | `setup: host-attestation` in playbook or via `--extra-vars` as `setup=host-attestation` in CLI |
 | Application Integrity                                        | `setup: application-integrity` in playbook or via `--extra-vars` as `setup=application-integrity` in CLI |
 | Data Fencing & Asset Tags                                    | `setup: data-fencing` in playbook or via `--extra-vars` as `setup=data-fencing` in CLI |
+| Trusted Workload Placement - VM            | `setup: trusted-workload-placement-vm` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-vm` in CLI |
 | Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
 | Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
 | Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
@@ -425,9 +426,9 @@ ansible_user=root
 ansible_password=<password>
 ```
 
-> **Note:** Ansible requires `ssh` and `root` user access to remote machines. The following command can be used to ensure ansible can connect to remote machines with host key check `
+> **Note:** Ansible requires `ssh` and `root` user access to remote machines. The following command can be used to ensure ansible can connect to remote machines with host key check. Ensure the existing keys of the machines are cleared to enable fresh keyscan.
   ```shell
-  ssh-keyscan -H <ip_address> >> /root/.ssh/known_hosts
+  ssh-keyscan -H <ip_address/hostname> >> /root/.ssh/known_hosts
   ```
 
 ### Create and Run Playbook
@@ -529,26 +530,6 @@ uefi_secureboot: 'yes'
 
 # The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
 grub_file_path: <uefi mode grub file path>
-```
-
-#### Deploying for Workload Confidentiality with CRIO Runtime
-
-If using for `Launch Time Protection - Workload Confidentiality with CRIO Runtime` , following option can be provided during runtime in playbook. By default, the playbook is configured to install for `Launch Time Protection - Workload Confidentiality with Docker Runtime`
-
-```shell
-ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
---extra-vars binaries_path=<path where built binaries are copied to> \
---extra-vars skip_sdd=yes
-```
-or
-
-Update the following vars in `defaults/main.yml`
-
-```yaml
-#Enable/disable container security for CRIO runtime
-# [yes - Launch Time Protection with CRIO Containers, NA - others]
-skip_secure_docker_daemon: <skip_sdd>
 ```
 
 #### Using Docker Notary
