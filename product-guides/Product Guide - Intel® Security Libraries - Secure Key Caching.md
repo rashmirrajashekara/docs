@@ -1121,7 +1121,7 @@ To install the SGX Integration Hub, follow these steps:
     BEARER_TOKEN=< Installation token from AAS > 
  
     AAS_API_URL=https://< AAS IP or Hostname >:8444/aas
-    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1/
+    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
     POLL_INTERVAL_MINUTES=2
     TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
     TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK >
