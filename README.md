@@ -189,6 +189,11 @@ Following steps facilitate the building of all components:
 ## Support 
 
 ## Reporting Issues
+ 1. [SKC Library adding incorrect entry in /etc/hosts file for kbshostname](https://jira.devtools.intel.com/browse/ISECL-13500)
+ 2. [AAS_URL not updating in authservice.env by skc automation scripts](https://jira.devtools.intel.com/browse/ISECL-13501)
+ 3. [HvsTrustExpiry label should not display in SGX node label](https://jira.devtools.intel.com/browse/ISECL-13364)
+ 4. [Single and multiple instances launch from encrypted image failed](https://jira.devtools.intel.com/browse/ISECL-13311)
+
 
 ## Contributing 
 
