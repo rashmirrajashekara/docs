@@ -734,7 +734,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
     
      AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
     
-     CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1 
+     CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1/
     
      SCS_BASE_URL=https://<SGX Caching Service IP or Hostname>:9000/scs/sgx/
 
@@ -855,7 +855,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas 
     
-       CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1 
+       CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1/ 
     
        SAN_LIST=< *Comma-separated list of IP addresses and hostnames for the SQVS* > 
        
@@ -1115,13 +1115,13 @@ To install the SGX Integration Hub, follow these steps:
 ```
     IHUB_SERVICE_USERNAME=< IHUB service user username > 
     IHUB_SERVICE_PASSWORD=< IHUB service user password > 
-    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1/ 
+    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1
     ATTESTATION_TYPE=SGX
     CMS_TLS_CERT_SHA384=< CMS TLS digest > 
     BEARER_TOKEN=< Installation token from AAS > 
  
-    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/ 
-    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
+    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas
+    CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1/
     POLL_INTERVAL_MINUTES=2
     TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
     TENANT=< tenant-type e.g. KUBERNETES or OPENSTACK >
@@ -1229,7 +1229,7 @@ CUSTOM_ISECL_SGX_ENABLED_TRUE=required
 ```
 These Traits can be set using CLI commands for OpenStack Glance:
 ```
-openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required 
+openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required <image name>
 ```
 To veiw the Traits that has been set:
 ```
@@ -1307,7 +1307,7 @@ NA
         
        CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
-       SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1/
+       SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1
         
        KEY_MANAGER=Directory
        
