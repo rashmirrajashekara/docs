@@ -627,7 +627,7 @@ Pod should be in running state and launched on the host as per values in pod.yml
 
   Note:
   * While using deployment scripts to install the components, in the env directory of the binaries folder comment "KUBERNETES_TOKEN" in the ihub.env before installation.
-  * Openstack compute node and build VM should have the same repositories, else there will be package mismatch for SKC library.
+  * Openstack compute node and build VM should have the same OS package repositories, else there will be package mismatch for SKC library.
   
 * On the openstack controller, if resource provider is not listing the resources then install the "osc-placement"
 ```
