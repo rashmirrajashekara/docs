@@ -202,6 +202,8 @@ Following steps facilitate the building of all components:
     
     Details: As part of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming release.
 
+ 5. On openstack compute node and build VM, same repos should be used to build the components. If there is a mismatch in repos, key transfer flow would fail due to the package mismatch. It will be fixed in the upcoming release.
+
 ## Contributing 
 
 ## Legalities
