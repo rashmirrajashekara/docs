@@ -15,7 +15,7 @@ Table of Contents
        * [Building](#building)
      * [License](#license)
      * [Support](#support)
-     * [Reporting Issues](#reporting-issues)
+     * [Known Issues](#known-issues)
      * [Contributing](#contributing)
      * [Legalities](#legalities)
 
@@ -143,13 +143,6 @@ Following steps facilitate the building of all components:
   ./all-components.sh
   ```
 
-* Build all repos
-
-  ```shell
-  cd /root/isecl/all
-  make all
-  ```
-
 * Download go dependencies
 
   ```shell
@@ -174,6 +167,13 @@ Following steps facilitate the building of all components:
   systemctl restart docker
   ```
 
+* Build all repos
+
+  ```shell
+  cd /root/isecl/all
+  make all
+  ```
+  
 * Built Binaries
 
   ```shell
