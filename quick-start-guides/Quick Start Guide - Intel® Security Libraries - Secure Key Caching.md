@@ -625,8 +625,10 @@ Pod should be in running state and launched on the host as per values in pod.yml
 
 * IHUB should be installed and configured with Openstack
 
-  Note: While using deployment scripts to install the components, in the env directory of the binaries folder comment "KUBERNETES_TOKEN" in the ihub.env before installation.
-
+  Note:
+  * While using deployment scripts to install the components, in the env directory of the binaries folder comment "KUBERNETES_TOKEN" in the ihub.env before installation.
+  * Openstack compute node and build VM should have the same repositories, else there will be package mismatch for SKC library.
+  
 * On the openstack controller, if resource provider is not listing the resources then install the "osc-placement"
 ```
   pip3 install osc-placement
