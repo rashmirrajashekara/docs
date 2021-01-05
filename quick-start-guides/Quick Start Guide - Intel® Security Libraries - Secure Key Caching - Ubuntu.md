@@ -86,7 +86,7 @@ apt-get update
 **Ubuntu System Tools and utils**
 
 ```
-apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx
+apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 apt-get update
@@ -419,7 +419,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
 Update skc.conf with the following
   - Deployment system IP address
-  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - Comment out the K8S_IP,OPENSTACK_IP and TENANT
   - System IP address where Kubernetes or Openstack is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
@@ -434,6 +434,7 @@ Update csp_skc.conf with the following
   - CSP system IP Address
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
+  - Comment out the K8S_IP,OPENSTACK_IP and TENANT
 Save and Close
 ./install_csp_skc.sh
 ```

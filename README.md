@@ -15,7 +15,7 @@ Table of Contents
        * [Building](#building)
      * [License](#license)
      * [Support](#support)
-     * [Reporting Issues](#reporting-issues)
+     * [Known Issues](#known-issues)
      * [Contributing](#contributing)
      * [Legalities](#legalities)
 
@@ -143,13 +143,6 @@ Following steps facilitate the building of all components:
   ./all-components.sh
   ```
 
-* Build all repos
-
-  ```shell
-  cd /root/isecl/all
-  make all
-  ```
-
 * Download go dependencies
 
   ```shell
@@ -174,6 +167,13 @@ Following steps facilitate the building of all components:
   systemctl restart docker
   ```
 
+* Build all repos
+
+  ```shell
+  cd /root/isecl/all
+  make all
+  ```
+  
 * Built Binaries
 
   ```shell
@@ -201,6 +201,8 @@ Following steps facilitate the building of all components:
  4. Single and multiple instances launch from encrypted image failed
     
     Details: As part of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming release.
+
+ 5. On openstack compute node and build VM, same OS package repositories should be used to build the components. If there is a mismatch in repos, key transfer flow would fail due to the package mismatch. It will be fixed in the upcoming release.
 
 ## Contributing 
 
