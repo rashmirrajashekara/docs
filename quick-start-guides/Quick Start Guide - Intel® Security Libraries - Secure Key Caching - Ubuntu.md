@@ -59,22 +59,22 @@ Ensure that all the SKC service ports are accessible with firewall
 Access required for the postgresql repo in all systems, through below steps:
 
 **Create the file repository configuration**
-```shell
+```
 sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 ```
 
 **Import the repository signing key**
-```shell
+```
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 ```
 
 **Update the package lists**
-```shell
+```
 apt-get update
 ```
 
 **On SGX Compute Node only, load the MSR driver, as it is not auto-loaded**
-```shell
+```
 cd /root
 modprobe msr
 ```
@@ -463,8 +463,6 @@ Save and Close
 
 #### Deploy SGX Agent
 ```
-From the root directory, run the below command:
-$modprobe msr
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
@@ -508,7 +506,7 @@ GIT Configuration**
 
 ## Appendix
 
-## Creating RSA Keys in Key Broker Service
+### Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
@@ -526,7 +524,7 @@ GIT Configuration**
 
 - copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
-## Configuration for NGINX testing
+### Configuration for NGINX testing
 
 **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
@@ -594,7 +592,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-## KBS key-transfer flow validation
+### KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
 
