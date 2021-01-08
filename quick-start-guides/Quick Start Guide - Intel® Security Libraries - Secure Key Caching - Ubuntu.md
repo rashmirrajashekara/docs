@@ -58,15 +58,26 @@ Ensure that all the SKC service ports are accessible with firewall
 
 Access required for the postgresql repo in all systems, through below steps:
 
-# Create the file repository configuration:
+**Create the file repository configuration**
+```
 sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+```
 
-# Import the repository signing key:
+**Import the repository signing key**
+```
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+```
 
-# Update the package lists:
+**Update the package lists**
+```
 apt-get update
+```
 
+**On SGX Compute Node only, load the MSR driver, as it is not auto-loaded**
+```
+cd /root
+modprobe msr
+```
 
 ## **4. Deployment Model**
 
@@ -130,7 +141,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.0 -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/skc.xml
 repo sync
 ```
 
@@ -213,12 +224,12 @@ The below installation is required on the Build & Deployment system only and the
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections)
+  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections)
 
 
 ## **8. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -359,7 +370,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ## **9. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections) repository
 
 ### Use Case Collections
 
@@ -495,7 +506,7 @@ GIT Configuration**
 
 ## Appendix
 
-## Creating RSA Keys in Key Broker Service
+### Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
@@ -513,7 +524,7 @@ GIT Configuration**
 
 - copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
-## Configuration for NGINX testing
+### Configuration for NGINX testing
 
 **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
@@ -581,7 +592,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-# KBS key-transfer flow validation
+### KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
 

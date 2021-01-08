@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### December 2020
+### January 2020
 
-### Revision 3.3
+### Revision 3.3.1
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -257,7 +257,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.3/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -419,7 +419,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.3.0.bin
+./cms-v3.3.1.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -517,7 +517,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.3.0.bin
+./authservice-v3.3.1.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -644,7 +644,7 @@ Update the BEARER_TOKEN value in /root/scs.env file
 
 Execute the SCS installer binary:
 
-./scs-v3.3.0.bin
+./scs-v3.3.1.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -752,7 +752,7 @@ Update the BEARER_TOKEN value in /root/shvs.env file
 
 Execute the installer binary.
 
-./shvs-v3.3.0.bin
+./shvs-v3.3.1.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -879,7 +879,7 @@ Update the BEARER_TOKEN value in /root/sqvs.env file
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.3.0.bin
+sqvs-v3.3.1.bin
 
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
@@ -1144,7 +1144,7 @@ Update the BEARER_TOKEN value in the ihub.env file
 
 4.  Execute the installer binary.
 
-./ihub-v3.3.0.bin
+./ihub-v3.3.1.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
