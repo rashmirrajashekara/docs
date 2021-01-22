@@ -209,7 +209,7 @@ The Workload Service acts as a management service for handling Workload Flavors 
 
 The Trust Agent resides on physical servers and enables both remote attestation and the extended chain of trust capabilities. The Agent maintains ownership of the server's Trusted Platform Module, allowing secure attestation quotes to be sent to the Verification Service. Incorporating the Intel® SecL HostInfo and TpmProvider libraries, the Trust Agent serves to report on platform security capabilities and platform integrity measurements. 
 
-The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Enterprise Linux* (RHEL) 8.1 and later. 
+The Trust Agent is supported for Red Hat Enterprise Linux* (RHEL) 8.1 and later. 
 
 
 
@@ -299,11 +299,11 @@ The Intel® SecL-DC services can be installed in a variety of layouts, partially
 
 Management services can typically be deployed anywhere with network access to all of the protected servers. This could be a set of individual VMs per service; containers; or all installed on a single physical or virtual machine.
 
-Node components must be installed on each protected physical server. Typically this is needed for Windows and Linux deployments.
+Node components must be installed on each protected physical server. Typically this is needed for Linux deployments.
 
 ### 3.3.1  Platform Integrity 
 
-The most basic use case enabled by Intel® SecL-DC, Platform Integrity requires only the Verification Service and, to protect Windows or Linux hosts, the Trust Agent. This also enables the Application Integrity use case by default for Linux systems.
+The most basic use case enabled by Intel® SecL-DC, Platform Integrity requires only the Verification Service and, to protect Linux hosts, the Trust Agent. This also enables the Application Integrity use case by default for Linux systems.
 
 The Integration Hub may be added to provide integration support for OpenStack or Kubernetes. The Hub is often installed on the same machine as the Verification Service, but optionally can be installed separately.
 
@@ -826,7 +826,7 @@ Tboot will not be installed automatically. Instructions for installing and confi
 
 ### 3.9.3  Supported Operating Systems
 
-The Intel® Security Libraries Trust Agent for Linux supports Red Hat Enterprise Linux 8.2. Windows support is described in the section "Installing the Trust Agent for Windows"
+The Intel® Security Libraries Trust Agent for Linux supports Red Hat Enterprise Linux 8.2. 
 
 ### 3.9.4  Prerequisites
 
@@ -2291,7 +2291,7 @@ Authorization: Bearer <token>
 
 #### 6.4.2.1  Red Hat Enterprise Linux
 
-Asset Tags can be provisioned to a Windows or RHEL host via a REST API
+Asset Tags can be provisioned to a RHEL host via a REST API
 request on the Verification Service that will in turn make a request to
 the Trust Agent on the host to be tagged.
 
@@ -2418,7 +2418,7 @@ attestation.
 
 ##### 6.4.2.2.3  Creating the Asset Tag Flavor (VMWare ESXi Only)
 
-While for RHEL and Windows hosts the Asset Tag Flavor is automatically
+While for RHEL hosts the Asset Tag Flavor is automatically
 created during the Tag Provisioning step, for VMWare ESXi hosts the
 Flavor must be created by importing it from the host after the Tag has
 been provisioned.
@@ -5882,8 +5882,6 @@ Get the status of the trust agent service.
 
 ### 11.2.4  Directory Layout
 
-#### 11.2.4.1  Windows
-
 #### 11.2.4.2 Linux
 
 The Linux Trust Agent installs by default to `/opt/trustagent`, with the
@@ -7996,7 +7994,7 @@ The Workload Service acts as a management service for handling Workload Flavors 
 
 The Trust Agent resides on physical servers and enables both remote attestation and the extended chain of trust capabilities. The Agent maintains ownership of the server's Trusted Platform Module, allowing secure attestation quotes to be sent to the Verification Service. Incorporating the Intel® SecL HostInfo and TpmProvider libraries, the Trust Agent serves to report on platform security capabilities and platform integrity measurements. 
 
-The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Enterprise Linux* (RHEL) 8.1 and later. 
+The Trust Agent is supported for Red Hat Enterprise Linux* (RHEL) 8.1 and later. 
 
 
 
@@ -8080,7 +8078,7 @@ Node components must be installed on each protected physical server. Typically t
 
 ### 3.3.1  Platform Integrity 
 
-The most basic use case enabled by Intel® SecL-DC, Platform Integrity requires only the Verification Service and, to protect Windows or Linux hosts, the Trust Agent. This also enables the Application Integrity use case by default for Linux systems.
+The most basic use case enabled by Intel® SecL-DC, Platform Integrity requires only the Verification Service and, to protect Linux hosts, the Trust Agent. This also enables the Application Integrity use case by default for Linux systems.
 
 The Integration Hub may be added to provide integration support for OpenStack or Kubernetes. The Hub is often installed on the same machine as the Verification Service, but optionally can be installed separately.
 
@@ -9688,7 +9686,7 @@ used to communicate with the registered host for retrieving TPM quotes
 and other host information. Connection Strings differ based on the type
 of host.
 
-## 5.1  Trust Agent (Windows and Linux)
+## 5.1  Trust Agent 
 
 The Trust Agent connection string connects directly to the Trust Agent
 on a given host. The Verification Service will use a service account
@@ -9937,8 +9935,7 @@ Requires the permission `flavors:create`
 > VMWare ESXi host types, MUST be created for each registered host of
 > that type, and should in general be imported from that host. This
 > means that importing the `HOST_UNIQUE` flavor should always be done
-> for each host registered (except for Windows hosts, which do not
-> have `HOST_UNIQUE` measurements)*
+> for each host registered *
 
 To import ONLY the `HOST_UNIQUE` Flavor part from a host:
 
@@ -10106,9 +10103,9 @@ Authorization: Bearer <token>
 
 ### 6.4.2  Deploying Asset Tags
 
-#### 6.4.2.1  Windows and Red Hat Enterprise Linux
+#### 6.4.2.1  Red Hat Enterprise Linux
 
-Asset Tags can be provisioned to a Windows or RHEL host via a REST API
+Asset Tags can be provisioned to a RHEL host via a REST API
 request on the Verification Service that will in turn make a request to
 the Trust Agent on the host to be tagged.
 
@@ -10125,7 +10122,7 @@ Authorization: Bearer <token>
 #### 6.4.2.2  VMWare
 
 Since VMWare ESXi hosts do not use a Trust Agent, the process for
-writing Asset Tags to a VMWare host is different from RHEL or Windows. A
+writing Asset Tags to a VMWare host is different from RHEL. A
 new interface has been added to ESXi via a new `esxcli` command starting
 in vSphere 6.5 Update 2 that allows the Asset Tag information to be
 written to the TPM via a command-line command. The older process is also
@@ -10237,7 +10234,7 @@ attestation.
 
 ##### Creating the Asset Tag Flavor (VMWare ESXi Only)
 
-While for RHEL and Windows hosts the Asset Tag Flavor is automatically
+While for RHEL hosts the Asset Tag Flavor is automatically
 created during the Tag Provisioning step, for VMWare ESXi hosts the
 Flavor must be created by importing it from the host after the Tag has
 been provisioned.
@@ -12047,8 +12044,7 @@ OS flavor for the other measurements that would be identical for other
 similarly configured hosts.
 
 ***Note***:*The HOST\_UNIQUE Flavors are unique to a specific host, and should
-always be imported directly from the specific host. Windows hosts do
-not require a HOST\_UNIQUE flavor part.*
+always be imported directly from the specific host. *
 
 ```json
 {
@@ -13467,7 +13463,7 @@ The Trust Agent configuration settings are managed in
 
 ### 11.2.4  Directory Layout
 
-#### Windows
+#### 
 
 #### Linux
 
@@ -14924,55 +14920,6 @@ rm -rf /var/log/isecl-k8s-extensions
 # 14  Appendix
 
 ## 14.1  PCR Definitions
-
-### 14.1.1  Microsoft Windows Server 2016 Datacenter
-
-#### 14.1.1.1  TPM 2.0
-
-<table>
-<thead>
-<tr class="header">
-<th>PCR</th>
-<th>Measurement Parameters</th>
-<th>Description</th>
-<th>Operating System</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>PCR 0</td>
-<td>BIOS ROM and Flash Image</td>
-<td>This PCR is based solely on the BIOS version, and remains identical across all hosts using the same BIOS. This PCR is used as the PLATFORM Flavor</td>
-<td><ul>
-<li><p>All</p></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>PCR 12</td>
-<td>Data events and highly volatile events</td>
-<td>This PCR measures some of the modules which has boot counters in it. It changes on every boot and resume (Microsoft Windows ONLY; do not use for attestation as the values change on reboot)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td>PCR 13</td>
-<td>Boot Module Details</td>
-<td>This PCR remains static except major changes such as kernel module update, different device driver for different OEM servers, etc. (Microsoft Windows ONLY)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td>PCR 14</td>
-<td>Boot Authorities</td>
-<td>Used to record the Public keys of authorities that sign OS components. Expected not to change often. (Microsoft Windows ONLY)</td>
-<td><ul>
-<li><p>Microsoft Windows Server</p></li>
-</ul></td>
-</tr>
-</tbody>
-</table>
 
 ### 14.1.2  Red Had Enterprise Linux
 
