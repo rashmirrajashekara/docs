@@ -837,7 +837,7 @@ To install the SQVS Service, follow these steps:
 
 1.  Copy the SQVS installation binary to the ~/root directory
 
-2.  Copy trusted_rootca.pem from sgx-verification-service/dist/linux/trusted_rootca.pem to /tmp directory 
+2.  Copy the trusted_rootca.pem from sgx-verification-service/dist/linux/ directory to the /tmp directory 
 
 3.  Create the sqvs.env installation answer file in /root/ directory as below
 
