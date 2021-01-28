@@ -426,7 +426,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 #### Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.
-* Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+* Please note whatever hostname has been used on worker node which pushes platform enablement info to SHVS from SGX Agent, use same node-name in join command.
 * Once the master/worker setup is done, follow below steps:
 
 ##### Untar packages and load docker images
