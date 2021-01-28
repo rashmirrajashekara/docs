@@ -1281,7 +1281,7 @@ deployment in the `isecl` namespace.
    ```shell
    kubectl get secrets -n isecl
    
-   #The below token will be used for ihub installation when configured with Kubernetes Tenant
+   #The below token will be used for ihub installation to update 'KUBERNETES_TOKEN' in ihub.env when configured with Kubernetes Tenant
    kubectl describe secret default-token-<name> -n isecl
    ```
 
@@ -1374,9 +1374,16 @@ To install the Integration Hub, follow these steps:
 1. Copy the API Server certificate of K8s Master to machine where Integration Hub will be installed to `/root/` directory
     >  **Note:**  In most  Kubernetes distributions the Kubernetes certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions.
 
+    In ihub.env `KUBERNETES_TOKEN` token can be retrieved from Kubernetes using the following command:
+
+    ```
+    kubectl get secrets -n isecl -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode
+    ```
+    `KUBERNETES_CERT_FILE=/<any_path>/apiserver.crt` in this path can be specified any ex: `/root` which can taken care by IHUB during installation and copied to '/etc/ihub' directory.
 
 2.  Create the `ihub.env` installation answer file. See the
     sample file below.
+
 
 ```shell
 # Authentication URL and service account credentials
@@ -1544,12 +1551,12 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
    SecL scheduler extension:
 
-   ```yaml
-   - hostPath:
-       path: /<path>/isecl-k8s-extensions/
-       type: ""
-     name: extendedsched
-   ```
+    ```yaml
+    - hostPath:
+        path: /<path>/isecl-k8s-extensions/
+        type: ""
+        name: extendedsched
+    ```
 
 3. Add `policy-config-file` path in the
    `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
@@ -1568,27 +1575,27 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
    ```shell
    systemctl restart kubelet
    ```
-### Logs will be appended to older logs in
-/var/log/isecl-k8s-extensions
+    ### Logs will be appended to older logs in
+    /var/log/isecl-k8s-extensions
 
-1. Whenever the CRD's are deleted and restarted for updates, the CRD's
+5. Whenever the CRD's are deleted and restarted for updates, the CRD's
     using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
     Kubernetes Version 1.14-1.15 uses `crd-1.14.yaml` and 1.16-1.17 uses
     `crd-1.17.yaml`
 
-```shell
-kubectl delete hostattributes.crd.isecl.intel.com
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
-```
+    ```shell
+    kubectl delete crd hostattributes.crd.isecl.intel.com
+    kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
+    ```
 
-2. (Optional) Verify that the Intel ® SecL Custom Resource Definitions
+6. (Optional) Verify that the Intel ® SecL K8s extensions
     have been started:
 
-To verify the Intel SecL CRDs have been deployed:
+    To verify the Intel SecL CRDs have been deployed:
 
-```shell
-kubectl get pods -n isecl
-```
+    ```shell
+    kubectl get pods -n isecl
+    ```
 
 3.16  Installing the Key Broker Service
 ---------------------------------
@@ -3138,16 +3145,14 @@ deployment in the `isecl` namespace.
 
 To deploy the Kubernetes integration CRDs for Intel® SecL:
 
-1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node
-    and execute the installer
+1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node and execute the installer
     
     ```shell
     ./isecl-k8s-extensions-v3.3.0.bin
     ```
     
 2.  Add a mount path to the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
-    SecL scheduler extension:
+    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel SecL scheduler extension:
 
     ```yaml
     - mountPath: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
@@ -3166,8 +3171,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
       name: extendedsched
     ```
 
-4.  Add `policy-config-file` path in the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
+4.  Add `policy-config-file` path in the `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
 
     ```yaml
     - command:
@@ -3178,8 +3182,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
       - --leader-elect=true
     ```
 
-5.  Wait for the isecl-controller and isecl-scheduler pods to be into
-    running state
+5.  Wait for the isecl-controller and isecl-scheduler pods to be into running state
 
     ```shell
 kubectl get pods -n isecl
@@ -3194,45 +3197,40 @@ kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-cont
 ```
 
 
-
 7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
 
 ```shell
 scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
 ```
 
-8. Run the command `systemctl restart kubelet` to restart all the control
-   plane container services, including the base scheduler.
+8. Run the command `systemctl restart kubelet` to restart all the control  plane container services, including the base scheduler.
 
-The scheduler yaml is present under
-`/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
+The scheduler yaml is present under `/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
 
-9. If the Controller and/or Scheduler deployments are deleted, the
-   following steps need to be performed:
+9. If the Controller and/or Scheduler deployments are deleted, the following steps need to be performed:
 
-a. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
-remove/comment the following content and restart kubelet
+    a. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and remove/comment the following content and restart kubelet
 
-​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
+    ​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
 
-​	`systemctl restart kubelet`
+    ​	`systemctl restart kubelet`
 
-b. Redeploy scheduler and controller
+    b. Redeploy scheduler and controller
 
-```
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml
-```
+    ```
+    kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
+    kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml
+    ```
 
-c. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
-add/uncomment the following content and restart kubelet
+    c. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
+    add/uncomment the following content and restart kubelet
 
-​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
+    ​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
 
-​	`systemctl restart kubelet`
+    ​	`systemctl restart kubelet`
 
-d. Logs will be appended to older logs in
-/var/log/isecl-k8s-extensions
+>Note:  Logs will be appended to older logs in
+> `/var/log/isecl-k8s-extensions`
 
 10. Whenever the CRD's are deleted and restarted for updates, the CRD's
     using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
@@ -3262,7 +3260,7 @@ The Integration Hub should be installed after the Intel SecL CRDs have already b
 The ihub.env answer file requires two variables to be configured with information from the Kubernetes environment before installation:  
 
 ```
-KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
+KUBERNETES_CERT_FILE=/root/apiserver.crt
 ```
 
 This file can be copied from the Kuberetes Control Plane Node, and can be found at the following path: 
@@ -3272,7 +3270,7 @@ This file can be copied from the Kuberetes Control Plane Node, and can be found 
 KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 ```
 
-This token can be retrieved from Kubernetes using the following command:
+This token can be retrieved from Kubernetes using the following command to update in ihub.env during Integration Hub installation:
 
 ```
 kubectl get secrets -n isecl -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode
@@ -6194,7 +6192,7 @@ OPENSTACK_PASSWORD=<OpenStack password>
 # Kubernetes Integration Credentials - required for Kubernetes integration only
 KUBERNETES_URL=https://kubernetes:6443/
 KUBERNETES_CRD=custom-isecl
-KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
+KUBERNETES_CERT_FILE=/root/apiserver.crt
 KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
 
 # Installation admin bearer token for CSR approval request to CMS - mandatory
