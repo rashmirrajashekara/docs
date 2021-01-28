@@ -15158,6 +15158,22 @@ Earlier versions will support TPM 1.2 only.
 </tbody>
 </table>
 
+## 14.2  Adding new TPM Manufacturer Endorsement Certificates
+
+The HVS validates the authenticity of TPM key hierarchies using the TPM Endorsement Certificate (EC).  TPM manufacturers each have one or more root certificates that can be used to validate the TPM authenticity.  While the HVS by default will have many of these certificates preloaded, occasionally new root certificates may need to be added (to support new TPM vendors, or if a vendor uses a new certificate).
+
+Adding new ECs can be done via the HVS API:
+
+```
+POST https://verification.service.com:8443/hvs/v2/ca-certificates
+
+ {
+   "name": "HVS_Endorsement_Certificate",
+   "type":"ek",
+"certificate""MIIEBzCCAm+gAwIBAgIRAMRtvTmahewFGODQXGajH/8wDQYJKoZIhvcNAQELBQAwJjEkMCIGA1UEAxMbSFZTIEVuZG9yc2VtZW50IENlcnRpZmljYXRlMB4XDTIxMDExOTEyMTY0OFoXDTI2MDExOTEyMTY0OFowJjEkMCIGA1UEAxMbSFZTIEVuZG9yc2VtZW50IENlcnRpZmljYXRlMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAqogi90vjY0ml07NfkLmWvyDi4FhNe9fNuGpoWmnKqkRk6vLnttRN4TD2JqeA4VmOwlOdWUy}
+```
+
+
 
 ## A.1  Attestation Rules
 
