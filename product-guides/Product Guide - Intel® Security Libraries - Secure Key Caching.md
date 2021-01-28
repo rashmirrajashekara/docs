@@ -4,7 +4,7 @@
 
 ### January 2020
 
-### Revision 3.3.1
+### Revision 3.4.0
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -144,9 +144,7 @@ SCS can be deployed in both Cloud Service Provider (CSP) and tenant environments
 
 ## SGX Host Verification Service
 
-The SGX Host Verification Service (SHVS) collects the SGX information of all the compute nodes in a data center using the SGX Agent. The SGX information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size) and SGX platform hardware and software information (Manifest file/encPPID, CPU SVN, ISV SVN, QEID, QEIdentity, PCEID).
-
-SHVS pushes the SGX platform hardware and software information to the SGX Caching Service (SCS), which uses it to get the PCK certificates of the platform from Intel SGX Provisioning Certification Service (PCS). SHVS also uses SCS to determine if the platform is up to date on hardware and security patches (TCB).
+If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enable info and TCB status to SHVS at regular interval, else, Agent pushes the platform enable info and TCB status to SHVS once and dies. The SGX enablement information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size).
 
 ## SGX Agent
 
@@ -257,7 +255,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.3.1/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.4.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -419,7 +417,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.3.1.bin
+./cms-v3.4.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -517,7 +515,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.3.1.bin
+./authservice-v3.4.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -644,13 +642,13 @@ Update the BEARER_TOKEN value in /root/scs.env file
 
 Execute the SCS installer binary:
 
-./scs-v3.3.1.bin
+./scs-v3.4.0.bin
 
 ## Installing the SGX Host Verification Service 
 
 ### Required For
 
-The SGX Host Verification Service is REQUIRED in the default orchestrator SGX Agent mode.  
+If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enable info and TCB status to SHVS at regular interval, else, Agent pushes the platform enable info and TCB status to SHVS once and dies.  
 
 ### Prerequisites
 
@@ -726,7 +724,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      
      SHVS_SCHEDULER_TIMER=10
      
-     SHVS_HOST_PLATFORM_EXPIRY_TIME=4
+     SHVS_HOST_PLATFORM_EXPIRY_TIME=240
      
      SHVS_AUTO_REFRESH_TIMER=120
 
@@ -752,7 +750,7 @@ Update the BEARER_TOKEN value in /root/shvs.env file
 
 Execute the installer binary.
 
-./shvs-v3.3.1.bin
+./shvs-v3.4.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -881,7 +879,7 @@ Update the BEARER_TOKEN value in /root/sqvs.env file
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.3.1.bin
+sqvs-v3.4.0.bin
 
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
@@ -1117,7 +1115,7 @@ To install the SGX Integration Hub, follow these steps:
 ```
     IHUB_SERVICE_USERNAME=< IHUB service user username > 
     IHUB_SERVICE_PASSWORD=< IHUB service user password > 
-    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v1
+    ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v2
     ATTESTATION_TYPE=SGX
     CMS_TLS_CERT_SHA384=< CMS TLS digest > 
     BEARER_TOKEN=< Installation token from AAS > 
@@ -1146,7 +1144,7 @@ Update the BEARER_TOKEN value in the ihub.env file
 
 4.  Execute the installer binary.
 
-./ihub-v3.3.1.bin
+./ihub-v3.4.0.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
@@ -1331,7 +1329,7 @@ BEARER_TOKEN above can be obtained form Step 3 below
 
 4.  Execute the KBS installer.
 
-./kbs-3.3.0.bin
+./kbs-3.4.0.bin
 
 ##  Installing the SKC Library
 
@@ -1556,7 +1554,7 @@ Following are the set of roles which are required during installation and runtim
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | < SGX_AGENT:HostDataReader: >                                |                                                              | Used by the SHVS to retrieve platform data from SGX_Agent    |
 | < CMS:CertApprover:CN=SGX_AGENT TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SGX-AGENT to get TLS certificate from CMS        |
-| < SHVS:HostRegistration: >                                   |                                                              | Used by the SGX_Agent to register host to the SHVS           |
+| < SHVS:HostDataUpdater: >                                   |                                                              | Used by the SGX_Agent to push host data to the SHVS           |
 | < SHVS:HostsListReader: >                                    |                                                              | Used by the IHUB to retrieve the list of hosts from SHVS     |
 | < SHVS:HostDataReader: >                                     |                                                              | Used by the IHUB to retrieve platform-data from SHVS         |
 | < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SHVS to retrieve TLS Certificate from CMS        |
@@ -1577,10 +1575,6 @@ Following are the set of roles which are required during installation and runtim
 
 
 
-# Connection Strings
-
-Connection Strings define a remote API resource endpoint that will be used to communicate with the registered host for retrieving SGX information and another platform information. Connection Strings differ based on the type of host.
-
 ## SGX Agent
 
 The SGX Agent connection string connects directly to the SGX Agent on a given host. The SGX Host Verification Service will use a service account with the needed SGX Agent permissions to connect to the SGX Agent. Authentication has been centralized with the new Authentication and Authorization Service.
@@ -1599,7 +1593,7 @@ The SGX Agent registers the host with an SGX Host Verification Service at the ti
 
 ### Retrieving Current Host State Information
 
-Admin can get the host state information by calling this rest API. GET https://\<hostname\>:13000/sgx-hvs/v1/host-status
+Admin can get the host state information by calling this rest API. GET https://\<hostname\>:13000/sgx-hvs/v2/host-status
 
 # Intel Security Libraries Configuration Settings 
 
@@ -1624,7 +1618,7 @@ Admin can get the host state information by calling this rest API. GET https://\
 | BEARER_TOKEN                   |                                                         | Installation token from AAS                                  |
 | SHVS_PORT                      | 13000                                                   | SGX Host Verification Service HTTP Port                      |
 | SHVS_SCHEDULER_TIMER           | 60                                                      | SHVS Scheduler timeout                                       |
-| SHVS_HOST_PLATFORM_EXPIRY_TIME | 4                                                       | SHVS Host Info Expiry time                                   |
+| SHVS_HOST_PLATFORM_EXPIRY_TIME | 240                                                       | SHVS Host Info Expiry time                                   |
 | SHVS_AUTO_REFRESH_TIMER        | 120                                                     | SHVS Auto-refresh timeout                                    |
 
 
@@ -1706,7 +1700,7 @@ This folder contains log files: /var/log/shvs/
 | ------------------- | ------------------------------------------------ | ------------------------------------------------------------ |
 | AAS_API_URL         | https://< AAS IP or Hostname>:8444/aas           | API URL for Authentication Authorization Service (AAS).      |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/       | API URL for Certificate Management Service (CMS).            |
-| SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v1/ | The url used during setup to request information from SHVS.  |
+| SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
 | SGX_AGENT_USERNAME  | sgx_agent                                        | Name of the SGX_AGENT USER                                   |
 | SGX_AGENT_PASSWORD  | password                                         | Password of SGX_AGENT user.                                  |
 | BEARER_TOKEN        |                                                  | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
@@ -1780,7 +1774,7 @@ Contains the config.yml configuration file.
 | ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas | Base URL for the AAS                                         |
 | CMS_BASE_URL            | https://< Certificate Management Service IP or Hostname>:8445/cms/v1 | Base URL for the CMS                                         |
-| ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v1/ | Base URL  of SHVS                                            |
+| ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v2/ | Base URL  of SHVS                                            |
 | ATTESTATION_TYPE        | SGX                                                          | For SKC, Attestation Type is always SGX                      |
 | IHUB_SERVICE_USERNAME   | ihubuser@ihub                                                | Database username                                            |
 | IHUB_SERVICE_PASSWORD   | ihubpassword                                                 | Database password                                            |
