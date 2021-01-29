@@ -775,6 +775,7 @@ In the registration-only mode, the SGX Agent pushes the SGX platform data direct
 -   The following must be completed before installing the SGX Agent:
 
     -   Certificate Management Service, Authentication and Authorization Service,SGX Caching Service and SGX Host Verification Service must be installed and available.
+    -   Make sure system date and time of SGX machine and CSP machine both are in sync. Also, if the system is configured to read the RTC time in the local time zone, then use RTC in UTC by running`timedatectl set-local-rtc 0` command on both the machine. Otherwise SGX Agent deployment will fail with certificate expiry error. 
 
 ### Package Dependencies
 
