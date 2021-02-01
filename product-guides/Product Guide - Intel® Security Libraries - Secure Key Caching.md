@@ -4,7 +4,7 @@
 
 ### January 2020
 
-### Revision 3.4.0
+### Revision 3.4
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -144,7 +144,7 @@ SCS can be deployed in both Cloud Service Provider (CSP) and tenant environments
 
 ## SGX Host Verification Service
 
-If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enable info and TCB status to SHVS at regular interval, else, Agent pushes the platform enable info and TCB status to SHVS once and dies. The SGX enablement information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size).
+If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enablement info and TCB status to SHVS at regular interval, else, Agent pushes the platform enablement info and TCB status to SHVS once and dies. The SGX enablement information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size).
 
 ## SGX Agent
 
@@ -255,7 +255,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
 
-https://github.com/intel-secl/docs/blob/v3.4.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.4/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
 
@@ -1618,7 +1618,7 @@ Admin can get the host state information by calling this rest API. GET https://\
 | BEARER_TOKEN                   |                                                         | Installation token from AAS                                  |
 | SHVS_PORT                      | 13000                                                   | SGX Host Verification Service HTTP Port                      |
 | SHVS_SCHEDULER_TIMER           | 60                                                      | SHVS Scheduler timeout                                       |
-| SHVS_HOST_PLATFORM_EXPIRY_TIME | 240                                                       | SHVS Host Info Expiry time                                   |
+| SHVS_HOST_PLATFORM_EXPIRY_TIME | 240                                                     | SHVS Host Info Expiry time                                   |
 | SHVS_AUTO_REFRESH_TIMER        | 120                                                     | SHVS Auto-refresh timeout                                    |
 
 
