@@ -724,6 +724,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      
      SHVS_SCHEDULER_TIMER=10
      
+     #Platform information gets expired every 4 hours, from the time Agent pushes the platform enablement info
      SHVS_HOST_PLATFORM_EXPIRY_TIME=240
      
      SHVS_AUTO_REFRESH_TIMER=120
