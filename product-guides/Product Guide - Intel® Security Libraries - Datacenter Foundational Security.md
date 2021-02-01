@@ -1593,7 +1593,7 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
     To verify the Intel SecL CRDs have been deployed:
 
     ```shell
-    kubectl get pods -n isecl
+    kubectl get -o json hostattributes.crd.isecl.intel.com
     ```
 
 3.16  Installing the Key Broker Service
