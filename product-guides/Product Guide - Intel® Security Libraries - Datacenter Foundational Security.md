@@ -1,4 +1,3 @@
-
 # Intel® Security Libraries - Datacenter Foundational Security
 
 **Product Guide**
@@ -3143,172 +3142,10 @@ for the Control Plane nodes, and a scheduler extension. A single installer will
 deploy both of these CRDs. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
-To deploy the Kubernetes integration CRDs for Intel® SecL:
-
-1.  Copy the `isecl-k8s-extensions` installer to the Kubernetes Control Plane Node and execute the installer
-    
-    ```shell
-    ./isecl-k8s-extensions-v3.3.0.bin
-    ```
-    
-2.  Add a mount path to the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel SecL scheduler extension:
-
-    ```yaml
-    - mountPath: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-      name: extendedsched
-      readOnly: true
-    ```
-
-3.  Add a volume path to the
-    `/etc/kubernetes/manifests/kube-scheduler.yaml` file for the Intel
-    SecL scheduler extension:
-
-    ```yaml
-    - hostPath:
-        path: /opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-        type: ""
-      name: extendedsched
-    ```
-
-4.  Add `policy-config-file` path in the `/etc/kubernetes/manifests/kube-scheduler.yaml` file under `command` section:
-
-    ```yaml
-    - command:
-      - kube-scheduler
-      - --policy-config-file=/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/scheduler-policy.json
-      - --bind-address=127.0.0.1
-      - --kubeconfig=/etc/kubernetes/scheduler.conf
-      - --leader-elect=true
-    ```
-
-5.  Wait for the isecl-controller and isecl-scheduler pods to be into running state
-
-    ```shell
-kubectl get pods -n isecl
-    ```
-    
-6. Create role bindings on the Kubernetes Control Plane Node:
-
-```
-kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
-
-kubectl create clusterrolebinding isecl-crd-clusterrole --clusterrole=isecl-controller --user=system:serviceaccount:isecl:isecl
-```
+> **Note:** Please refer detail steps given for  `3.15 Installing the Intel® SecL Kubernetes Extensions and Integration Hub` section.
 
 
-7. Copy the Integration Hub public key to the Kubernetes Control Plane Node:
-
-```shell
-scp -r /etc/ihub/ihub_public_key.pem k8s.maseter.server:/opt/isecl-k8s-extensions/isecl-k8s-scheduler/config/
-```
-
-8. Run the command `systemctl restart kubelet` to restart all the control  plane container services, including the base scheduler.
-
-The scheduler yaml is present under `/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
-
-9. If the Controller and/or Scheduler deployments are deleted, the following steps need to be performed:
-
-    a. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and remove/comment the following content and restart kubelet
-
-    ​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
-
-    ​	`systemctl restart kubelet`
-
-    b. Redeploy scheduler and controller
-
-    ```
-    kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
-    kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml
-    ```
-
-    c. Edit `/etc/kubernetes/manifests/kube-scheduler.yaml` and
-    add/uncomment the following content and restart kubelet
-
-    ​	`--policy-config-file=/opt/isecl-k8s-extensions/isecl-k8sscheduler/config/scheduler-policy.json`
-
-    ​	`systemctl restart kubelet`
-
->Note:  Logs will be appended to older logs in
-> `/var/log/isecl-k8s-extensions`
-
-10. Whenever the CRD's are deleted and restarted for updates, the CRD's
-    using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
-    Kubernetes Version 1.14-1.15 uses crd-1.14.yaml and 1.16-1.17 uses
-    crd-1.17.yaml
-
-```shell
-kubectl delete hostattributes.crd.isecl.intel.com
-kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-<version>.yaml
-```
-
-11. (Optional) Verify that the Intel ® SecL Custom Resource Definitions
-    have been started:
-
-To verify the Intel SecL CRDs have been deployed:
-
-```shell
-kubectl get crds
-```
-
-
-
-#### 6.13.3.3	Configuring the Integration Hub for Use with Kubernetes
-
-The Integration Hub should be installed after the Intel SecL CRDs have already been installed on the Kubernetes Control Plane.  If the Hub has already been installed without an available tenant endpoint, the installer can simply be rerun with a modified ihub.env answer file containing the required tenant variables.
-
-The ihub.env answer file requires two variables to be configured with information from the Kubernetes environment before installation:  
-
-```
-KUBERNETES_CERT_FILE=/root/apiserver.crt
-```
-
-This file can be copied from the Kuberetes Control Plane Node, and can be found at the following path: 
-/etc/kubernetes/pki/apiserver.crt
-
-```
-KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
-```
-
-This token can be retrieved from Kubernetes using the following command to update in ihub.env during Integration Hub installation:
-
-```
-kubectl get secrets -n isecl -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='default')].data.token}"|base64 --decode
-```
-
-See section 3.15.7 on Installing the Integration Hub.  Use the following variables in the ihub.env answer file:
-
-```
-# Authentication URL and service account credentials
-AAS_API_URL=https://isecl-aas:8444/aas
-IHUB_SERVICE_USERNAME=<Username for the Hub service user>
-IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
-
-# CMS URL and CMS webserivce TLS hash for server verification
-CMS_BASE_URL=https://isecl-cms:8445/cms/v1
-CMS_TLS_CERT_SHA384=<TLS hash>
-
-# TLS Configuration
-TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP addresses and hostnames for the Hub to be used in the Subject Alternative Names list in the TLS Certificate
-
-# Verification Service URL
-ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
-ATTESTATION_TYPE=HVS
-
-# Kubernetes Integration Credentials - required for Kubernetes integration only
-KUBERNETES_URL=https://kubernetes:6443/
-KUBERNETES_CRD=custom-isecl
-KUBERNETES_CERT_FILE=/etc/ihub/apiserver.crt
-KUBERNETES_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6Ik......
-
-# Installation admin bearer token for CSR approval request to CMS - mandatory
-BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
-
-```
-
-
-
-#### 6.13.3.6  Configuring Pods to Require Intel® SecL Attributes
+#### 6.13.3.3  Configuring Pods to Require Intel® SecL Attributes
 
 1.  (Optional) Verify that the worker nodes have had their Intel® SecL
     security attributes populated:
@@ -3363,7 +3200,7 @@ able to be launched on that node. However, if one of the specified
 Tags is missing or has a different value, that worker node will not be
 used for that pod.
 
-#### 6.13.3.7  Tainting Untrusted Worker Nodes
+#### 6.13.3.4  Tainting Untrusted Worker Nodes
 
 Optionally, the Intel® SecL Kubernetes CRDs can be configured to flag
 worker nodes as `tainted` to prevent any pods from launching on them.
