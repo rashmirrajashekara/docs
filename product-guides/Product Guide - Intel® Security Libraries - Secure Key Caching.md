@@ -144,13 +144,13 @@ SCS can be deployed in both Cloud Service Provider (CSP) and tenant environments
 
 ## SGX Host Verification Service
 
-If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enablement info and TCB status to SHVS at regular interval, else, Agent pushes the platform enablement info and TCB status to SHVS once and dies. The SGX enablement information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size).
+If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enablement info and TCB status to SHVS at regular interval, else, Agent pushes the platform enablement info and TCB status to SHVS periodically. The SGX enablement information consists of SGX discovery information (SGX supported, SGX enabled, FLC enabled and EPC memory size).
 
 ## SGX Agent
 
-The SGX Agent resides on physical servers and reports on platform SGX-related information to the SGX Host Verification Service (SHVS).
+The SGX Agent resides on physical servers and pushes SGX platform specific values to SGX Caching Service (SCS).
 
-The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported.
+If SGX Host Verification Service (SHVS) URL is specified in SGX Agent env file, SGX Agent would fetch the TCB status from SCS and updates SHVS with platform enablement info and TCB status periodically.
 
 ## Integration Hub
 
@@ -223,13 +223,9 @@ The high-level architectures of these features are presented in the next sub-sec
 
 The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). 
 
-The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported. 
+THE SGX Agent pushes platform information to SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
-In the orchestrator mode, the SGX Agent is registered to the SGX Host Verification Service (SHVS) at installation time. At runtime, SHVS pulls the SGX platform information from the SGX Agent, which gets the SGX information from the platform directly. SHVS then pushes the information to the SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
-
-In the orchestrator mode, the platform information is made available to Kubernetes via the SGX Hub (IHUB), which pulls it from SHVS and pushes it to the Kubernetes Master using Custom Resource Definitions (CRDs).
-
-In the registration-only mode, the SGX Agent pushes the SGX information directly to the SGX Caching Service and SHVS is not involved in the flow. PCK certificates are obtained and made available to workloads the same way as in the in the orchestrator mode. 
+If SGX Host Verification Service (SHVS) URL is configured, the SGX Agent fetches the TCB Status from SCS and updates SHVS with SGX platform enablement information and TCB status periodically. The platform information is made available to Kubernetes and Openstack via the SGX Hub (IHUB), which pulls it from SHVS.
 
 The SGX Quote Verification Service (SQVS) allows attesting applications to verify SGX quotes and extract the SGX quote attributes to verify compliance with a user-defined SGX enclave policy. SQVS uses the SGX Caching Service to retrieve SGX collateral needed to verify SGX quotes from the Intel SGX Provisioning Certification Service (PCS). SQVS typically runs in the the attesting application owner network environment. Typically, a separate instance of the SGX Caching Service is set setup in the attesting application owner network environment. 
 
@@ -648,7 +644,7 @@ Execute the SCS installer binary:
 
 ### Required For
 
-If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enable info and TCB status to SHVS at regular interval, else, Agent pushes the platform enable info and TCB status to SHVS once and dies.  
+If SGX Host Verification Service API URL is specified in SGX Agent env file, then SGX Agent will push the platform enablement information and TCB status to SHVS at regular interval.
 
 ### Prerequisites
 
@@ -763,11 +759,7 @@ When the installation completes, the SGX Host Verification Service is available.
 
 The SGX Agent is REQUIRED for all use cases. 
 
-The SGX Agent supports 2 modes: orchestrator (default) and registration-only. In the registration-only mode, the compute nodes SGX information does not get pushed to orchestrators like Kubernetes. In both modes, the SGX attestation flow is supported. 
-
-In the orchestrator mode, SGX Agent is registered with SGX Host Verification Service (SHVS), which then pulls all SGX platform data. SHVS, in turn, pushes the data to the SGX Caching Service (SCS).
-
-In the registration-only mode, the SGX Agent pushes the SGX platform data directly to SCS and SHVS is not involved in the flow. 
+The SGX Agent pushes SGX platform data to SGX Caching Service (SCS). SGX Agent gets current TCB Status for the platform from SCS. If SGX Host Verification Service (SHVS) URL is configured, the SGX Agent pushes platform enablement information and TCB Status to SHVS.
 
 ### Prerequisites 
 
@@ -891,7 +883,7 @@ When the installation completes, the SGX Quote Verification Service is available
 ## Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any VM machine.
-* Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+* Please note whatever hostname has been used on worker node while installing SGX_Agent, use same node-name in join command.
 * Once the master/worker setup is done, follow below steps:
 
 ##### Untar packages and load docker images
@@ -1068,7 +1060,7 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 
 ### Required For
 
-The Integration Hub is REQUIRED the default orchestrator SGX Agent mode.
+The Integration Hub is REQUIRED the for enabling support for orchestration support.
 
 ### Prerequisites
 
@@ -1554,15 +1546,13 @@ Following are the set of roles which are required during installation and runtim
 
 | Role Name                                                    | Permissions                                                  | Utility                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| < SGX_AGENT:HostDataReader: >                                |                                                              | Used by the SHVS to retrieve platform data from SGX_Agent    |
-| < CMS:CertApprover:CN=SGX_AGENT TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SGX-AGENT to get TLS certificate from CMS        |
 | < SHVS:HostDataUpdater: >                                   |                                                              | Used by the SGX_Agent to push host data to the SHVS           |
 | < SHVS:HostsListReader: >                                    |                                                              | Used by the IHUB to retrieve the list of hosts from SHVS     |
 | < SHVS:HostDataReader: >                                     |                                                              | Used by the IHUB to retrieve platform-data from SHVS         |
 | < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SHVS to retrieve TLS Certificate from CMS        |
 | < CMS:CertApprover:CN=Integration HUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the IHUB to retrieve TLS Certificate from CMS        |
-| < SCS:HostDataUpdater: >                                     |                                                              | Used by the SHVS to push the platform-info to SCS            |
-| < SCS:HostDataReader: >                                      |                                                              | Used by the SHVS to retrieve the TCB status info from SCS    |
+| < SCS:HostDataUpdater: >                                     |                                                              | Used by the SGX_Agent to push the platform-info to SCS            |
+| < SCS:HostDataReader: >                                      |                                                              | Used by the SGX_Agent to retrieve the TCB status info from SCS    |
 | < SCS:CacheManager: >                                        |                                                              | Used by the SCS admin to refresh the platform info           |
 | < CMS:CertApprover:CN=SCS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SCS to retrieve TLS Certificate from CMS         |
 | < KBS:KeyTransfer:permissions=nginx,USA >                    |                                                              | Used by the SKC Library user for Key Transfer                |
@@ -1579,23 +1569,13 @@ Following are the set of roles which are required during installation and runtim
 
 ## SGX Agent
 
-The SGX Agent connection string connects directly to the SGX Agent on a given host. The SGX Host Verification Service will use a service account with the needed SGX Agent permissions to connect to the SGX Agent. Authentication has been centralized with the new Authentication and Authorization Service.
+The SGX Agent communicates with SGX Caching Service (SCS) and SGX Host Verification Service (SHVS) directly. Authentication has been centralized with the new Authentication and Authorization Service.
 
 # SGX Features Provisioning
 
 ## Host Registration 
 
-Host Registration creates a host record with connectivity details and other host information in the SGX host Verification Service database. This host record will be used by the SGX Host Verification Service to retrieve SGX information and platform values from the SGX Agent.
-
-### SGX Agent 
-
-#### Host Registration with SGX Agent
-
-The SGX Agent registers the host with an SGX Host Verification Service at the time of installation.
-
-### Retrieving Current Host State Information
-
-Admin can get the host state information by calling this rest API. GET https://\<hostname\>:13000/sgx-hvs/v2/host-status
+Host Registration creates a host record with host information in the SGX Host Verification Service database when SGX Agent update SGX enablement information for the first time.
 
 # Intel Security Libraries Configuration Settings 
 
@@ -1708,7 +1688,7 @@ This folder contains log files: /var/log/shvs/
 | BEARER_TOKEN        |                                                  | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS_TLS_CERT_SHA384 | < Certificate Management Service TLS digest>     | SHA384 Hash for verifying the CMS TLS certificate.           |
 | SGX_PORT            | 11001                                            | The port on which the SGX Agent service will listen.         |
-| SGX_AGENT_MODE      | Orchestration                                    | SGX Agent will operate to work in conjuction with orchstrators like Kubernetes |
+| SHVS_UPDATE_INTERVAL| 120                                              | Interval for SHVS updates in minutes. Values should be in the range of 1 minutes to 120 minutues.|
 | SGX_AGENT_NOSETUP   | false                                            | Skips setup during installation if set to true               |
 | SAN_LIST            | 127.0.0.1, localhost                             | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service |
 
