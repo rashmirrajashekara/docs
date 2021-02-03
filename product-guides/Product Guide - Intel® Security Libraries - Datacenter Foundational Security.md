@@ -2,9 +2,9 @@
 
 **Product Guide**
 
-**January 2020**
+**February 2020**
 
-**Revision 3.3.1**
+**Revision 3.4**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -65,7 +65,8 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.1              | Updated for version 3.1 release | October 2020  |
 | 3.2              | Updated for version 3.2 release | November 2020 |
 | 3.3              | Updated for version 3.3 release | December 2020 |
-| 3.3.1            | Updated for version 3.3.1 release | January 2020 |
+| 3.3.1            | Updated for version 3.3.1 release | January 2021 |
+| 3.4 | Updated for version 3.4 release | February 2021 |
 
 
 
@@ -265,11 +266,11 @@ install_pgdb: `authservice/out/install_pgdb.sh`
 
 In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
-https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/ansible-role
+https://github.com/intel-secl/utils/tree/v3.4/develop/tools/ansible-role
 
 Also provided are sample API calls organized by workflows for Postman:
 
-https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections
+https://github.com/intel-secl/utils/tree/v3.4/develop/tools/api-collections
 
 ## 3.2  Hardware Considerations
 
@@ -460,7 +461,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.3.1.bin
+   ./cms-v3.4.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -550,7 +551,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.3.1.bin
+./authservice-v3.4.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
@@ -725,7 +726,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.3.1.bin
+./hvs-v3.4.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -789,7 +790,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.3.1.bin
+  ./wls-v3.4.0.bin
   ```
   
   
@@ -1010,7 +1011,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.3.1.bin
+  ./trustagent-v3.4.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1078,7 +1079,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.3.1.bin
+  ./workload-agent-v3.4.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1872,7 +1873,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.3.1.bin
+    ./wpm-v3.4.0.bin
     ```
 
 
@@ -8325,7 +8326,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.3.1.bin
+   ./cms-v3.4.0.bin
    ```
 
     When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -8414,7 +8415,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.3.1.bin
+./authservice-v3.4.0.bin
 ```
 
 > ***Note:*** *The `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.*
@@ -8588,7 +8589,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
  ```shell
-./hvs-v3.3.1.bin
+./hvs-v3.4.0.bin
  ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -8653,7 +8654,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.3.1.bin
+  ./wls-v3.4.0.bin
   ```
   
   
@@ -8863,7 +8864,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.3.1.bin
+  ./trustagent-v3.4.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -8958,7 +8959,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.3.1.bin
+  ./workload-agent-v3.4.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -9215,7 +9216,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 3. Execute the installer binary.
 
    ```shell
-   ./ihub-v3.3.1.bin
+   ./ihub-v3.4.0.bin
    ```
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
@@ -9294,7 +9295,7 @@ Enterprise Linux 8.2
 3.  Execute the KBS installer.
 
     ```shell
-    ./kbs-v3.3.1.bin
+    ./kbs-v3.4.0.bin
     ```
 
 #### 3.15.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -9520,7 +9521,7 @@ Enterprise Linux 8.2.
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.3.1.bin
+    ./wpm-v3.4.0.bin
     ```
 
 
@@ -10785,7 +10786,7 @@ To deploy the Kubernetes integration CRDs for Intel® SecL:
     and execute the installer
     
     ```shell
-    ./isecl-k8s-extensions-v3.3.1.bin
+    ./isecl-k8s-extensions-v3.4.0.bin
     ```
     
 2.  Add a mount path to the
