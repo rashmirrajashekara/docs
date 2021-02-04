@@ -447,7 +447,7 @@ Create the `populate-users.env` file using the following values:
   AAS_ADMIN_PASSWORD=<AAS password>
 
   IH_CERT_SAN_LIST=<csp hostname,IP>
-  KBS_CERT_SAN_LIST=<kbshostname,IP>
+  KBS_CERT_SAN_LIST=<enterprise hostname,IP>
   SCS_CERT_SAN_LIST=<csp hostname,IP>
   SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
   SHVS_CERT_SAN_LIST=<csp hostname,IP>
@@ -509,7 +509,7 @@ The script will automatically generate the following users:
 -   Global Admin User
 -   Installation User
 
-These user accounts will be used during installation of each components of SGX Attestation and SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
+These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
 
 The Global Admin user account has all roles for all services. This is a default administrator account that can be used to perform any task, including creating any other users. In general this account is useful for POC installations, but in production it should be used only to create user accounts with more restrictive roles. The administrator credentials should be protected and not shared.
 
