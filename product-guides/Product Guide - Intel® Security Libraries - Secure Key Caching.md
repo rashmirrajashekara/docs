@@ -473,7 +473,7 @@ Create the `populate-users.env` file using the following values:
   SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
 
   INSTALL_ADMIN_USERNAME=<Username for the Admin user>
-  INSTALL_ADMIN_PASSWORD=<Password for the SHVS service user>
+  INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
 
 ```
 
