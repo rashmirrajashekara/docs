@@ -348,7 +348,7 @@ Install a sample Postgresql 11 database using the install_pgdb.sh script. This s
 
 Add the Postgresql 11 repository:
 
-https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 Create the `iseclpgdb.env` answer file:
 
