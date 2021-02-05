@@ -440,7 +440,7 @@ Create the `populate-users.env` file using the following values:
 
 ```shell
 # SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
-  ISECL_INSTALL_COMPONENTS=AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
+  ISECL_INSTALL_COMPONENTS=AAS,SCS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
 
   AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
   AAS_ADMIN_USERNAME=<AAS username>
@@ -495,7 +495,7 @@ The script will automatically generate the following users:
 -   Key Broker Service (KBS) with backend key management
 -   SGX Agent User
 -   SKC Library User
--   Installation User
+-   Installation Admin User
 
 These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
 
