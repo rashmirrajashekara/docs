@@ -330,7 +330,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching`, `sgx-orchestration` & `sgx-attestation` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching`, `sgx-orchestration-kubernetes` , `sgx-attestation-kubernetes`, `sgx-orchestration-openstack` & `sgx-attestation-openstack` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
    ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
@@ -352,8 +352,10 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Usecase                      | Variable                                                     |
 | ---------------------------- | ------------------------------------------------------------ |
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
-| SGX Orchestration | `setup: sgx-orchestration` in playbook or via `--extra-vars` as `setup=sgx-orchestration`in CLI |
-| SGX Attestation | `setup: sgx-attestation` in playbook or via `--extra-vars` as `setup=sgx-attestation`in CLI |
+| SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
+| SGX Attestation Kubernetes | `setup: sgx-attestation-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-attestation-kubernetes`in CLI |
+| SGX Orchestration Openstack | `setup: sgx-orchestration-openstack` in playbook or via `--extra-vars` as `setup=sgx-orchestration-openstack`in CLI |
+| SGX Attestation Openstack | `setup: sgx-attestation-openstack` in playbook or via `--extra-vars` as `setup=sgx-attestation-openstack`in CLI |
 
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed

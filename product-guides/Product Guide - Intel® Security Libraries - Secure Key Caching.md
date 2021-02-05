@@ -243,6 +243,11 @@ Key Protection is implemented by the SKC Client -- a set of libraries - which mu
 
 Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are called Key Transfer Policies and are created by an Admin and assigned to Application keys.
 
+##  SKC Virtualization 
+
+Virtualization enabled on SGX Host machines, uses SGX key features. With Virtualization being enabled on SGX host, SKC Library which uses Intel crypto tool kit to protect keys in SGX Enclave can be configured on Virtual Machines which are created on SGX Hosts. This enhancement further provides the privilege for a workload on a VM  allowing successful Secure Key transfer flow which meets the policy requirements. Hence virtualization on SGX Hosts supports key transfer flow for Workload on bare metal, Workload inside a VM, Workload in a container and Workload in a container inside a VM enabled on SGX Host.
+
+
 # Intel® Security Libraries Installation
 
 ## Building from Source
@@ -427,6 +432,76 @@ In addition, the SHA384 digest of the CMS TLS certificate will be needed for ins
 
 cms tlscertsha384
 
+
+### Creating Users and Roles 
+
+During installation of each services, number of user accounts and roles specific to services must be generated. Most of these accounts will be service users, which is used by the various services to function together. Another set of users will be used for installation permissions, and administrative user will be created to provide the initial authentication interface for the actual user based on the organizational requirements. Creating these required users and roles is facilitated by a script that will accept credentials and configuration settings from an answer file and automate the process.
+Create the `populate-users.env` file using the following values:
+
+```shell
+# SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
+  ISECL_INSTALL_COMPONENTS=AAS,SCS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
+
+  AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
+  AAS_ADMIN_USERNAME=<AAS username>
+  AAS_ADMIN_PASSWORD=<AAS password>
+
+  IH_CERT_SAN_LIST=<csp hostname,IP>
+  KBS_CERT_SAN_LIST=<enterprise hostname,IP>
+  SCS_CERT_SAN_LIST=<csp hostname,IP>
+  SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
+  SHVS_CERT_SAN_LIST=<csp hostname,IP>
+  SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
+
+  IH_SERVICE_USERNAME=<Username for the Hub service user>
+  IH_SERVICE_PASSWORD=<Password for the Hub service user>
+
+  SCS_SERVICE_USERNAME=<Username for the SCS service user>
+  SCS_SERVICE_PASSWORD=<Password for the SCS service user>
+
+  SGX_AGENT_SERVICE_USERNAME=<Username for the SGX Agent service user>
+  SGX_AGENT_SERVICE_PASSWORD=<Password for the SGX Agent service user>
+
+  KBS_SERVICE_USERNAME=<Username for the KBS service user>
+  KBS_SERVICE_PASSWORD=<Password for the KBS service user>
+
+  SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
+  SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
+
+  SKC_LIBRARY_CERT_COMMON_NAME=<Username for the SKC Library user>
+
+  SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
+
+  INSTALL_ADMIN_USERNAME=<Username for the Admin user>
+  INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
+
+```
+
+> **Note**: The `ISECL_INSTALL_COMPONENTS` variable is a comma-separated list of all the components that will be used in your environment. Not all services are required for every use case. Include only services which are required specific to the use case.
+
+> **Note**: The SAN list variables each support wildcards( "*" and "?"). Using wildcards, domain names and entire IP ranges can be included in the SAN list, which will allow any host matching those ranges to install the relevant service. The SAN list specified here must exactly match the SAN list for the applicable service in that service’s env installation file.
+
+Execute the populate-users script:
+
+```shell
+./populate-users
+```
+
+The script will automatically generate the following users:
+
+-   Authentication and Authorization Service (AAS)
+-   SGX Caching Service (SCS)
+-   Integration HUB (IHUB)
+-   Key Broker Service (KBS) with backend key management
+-   SGX Agent User
+-   SKC Library User
+-   Installation Admin User
+
+These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
+
+The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and password. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and password can be used to generate an authentication token. 
+
+ 
 ## Installing the Authentication and Authorization Service 
 
 ### Required For
