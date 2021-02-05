@@ -442,7 +442,7 @@ Create the `populate-users.env` file using the following values:
 # SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
   ISECL_INSTALL_COMPONENTS=AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
 
-  AAS_API_URL=https://<AAS IP address or hostname of KBS>:8444/aas
+  AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
   AAS_ADMIN_USERNAME=<AAS username>
   AAS_ADMIN_PASSWORD=<AAS password>
 
@@ -451,19 +451,13 @@ Create the `populate-users.env` file using the following values:
   SCS_CERT_SAN_LIST=<csp hostname,IP>
   SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
   SHVS_CERT_SAN_LIST=<csp hostname,IP>
-  SGX_AGENT_CERT_SAN_LIST=<SGX hostname>
+  SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
 
   IH_SERVICE_USERNAME=<Username for the Hub service user>
   IH_SERVICE_PASSWORD=<Password for the Hub service user>
 
   SCS_SERVICE_USERNAME=<Username for the SCS service user>
   SCS_SERVICE_PASSWORD=<Password for the SCS service user>
-
-  SQVS_SERVICE_USERNAME=<Username for the SQVS service user>
-  SQVS_SERVICE_PASSWORD=<Password for the SQVS service user>
-
-  SHVS_SERVICE_USERNAME=<Username for the SHVS service user>
-  SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
 
   SGX_AGENT_SERVICE_USERNAME=<Username for the SGX Agent service user>
   SGX_AGENT_SERVICE_PASSWORD=<Password for the SGX Agent service user>
@@ -478,11 +472,8 @@ Create the `populate-users.env` file using the following values:
 
   SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
 
-  GLOBAL_ADMIN_USERNAME=<Username for the global admin user>
-  GLOBAL_ADMIN_PASSWORD=<Password for the HVS service user>
-
   INSTALL_ADMIN_USERNAME=<Username for the Admin user>
-  INSTALL_ADMIN_PASSWORD=<Password for the HVS service user>
+  INSTALL_ADMIN_PASSWORD=<Password for the SHVS service user>
 
 ```
 
@@ -500,18 +491,13 @@ The script will automatically generate the following users:
 
 -   Authentication and Authorization Service (AAS)
 -   SGX Caching Service (SCS)
--   SGX Host Verification Service (SHVS)
 -   Integration HUB (IHUB)
 -   Key Broker Service (KBS) with backend key management
--   SGX Quote Verification Service (SQVS)
 -   SGX Agent User
 -   SKC Library User
--   Global Admin User
 -   Installation User
 
 These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
-
-The Global Admin user account has all roles for all services. This is a default administrator account that can be used to perform any task, including creating any other users. In general this account is useful for POC installations, but in production it should be used only to create user accounts with more restrictive roles. The administrator credentials should be protected and not shared.
 
 The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and password. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and password can be used to generate an authentication token. 
 
