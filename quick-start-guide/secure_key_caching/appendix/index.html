@@ -1,0 +1,1141 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../../images/isecl-logo.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Appendix - Intel® SecL-DC</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Palantino:300,400,400i,700%7CFira+Code&display=fallback">
+        <style>body,input{font-family:"Palantino",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Fira Code",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#appendix" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../../.." title="Intel® SecL-DC" class="md-header-nav__button md-logo" aria-label="Intel® SecL-DC">
+      
+  <img src="../../../images/isecl-logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Intel® SecL-DC
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Appendix
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://raghav19.github.io/docs" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    intel-secl/intel-secl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../.." class="md-tabs__link">
+      Welcome to Intel® SecL-DC
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../foundational_workload/pre-reqs/" class="md-tabs__link md-tabs__link--active">
+        Quick Start Guide
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../product-guide/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security/" class="md-tabs__link">
+        Product Guide
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Intel® SecL-DC" class="md-nav__button md-logo" aria-label="Intel® SecL-DC">
+      
+  <img src="../../../images/isecl-logo.png" alt="logo">
+
+    </a>
+    Intel® SecL-DC
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://raghav19.github.io/docs" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    intel-secl/intel-secl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Welcome to Intel® SecL-DC
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+      
+      <label class="md-nav__link" for="nav-2">
+        Quick Start Guide
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Quick Start Guide" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Quick Start Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-1" type="checkbox" id="nav-2-1" >
+      
+      <label class="md-nav__link" for="nav-2-1">
+        Foundational & Workload
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Foundational & Workload" data-md-level="2">
+        <label class="md-nav__title" for="nav-2-1">
+          <span class="md-nav__icon md-icon"></span>
+          Foundational & Workload
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundational_workload/pre-reqs/" class="md-nav__link">
+        Pre-requisites
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundational_workload/build/" class="md-nav__link">
+        Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundational_workload/deploy/" class="md-nav__link">
+        Deploy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundational_workload/workflows/" class="md-nav__link">
+        Workflows
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../foundational_workload/appendix/" class="md-nav__link">
+        Appendix
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2-2" type="checkbox" id="nav-2-2" checked>
+      
+      <label class="md-nav__link" for="nav-2-2">
+        Secure Key Caching
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Secure Key Caching" data-md-level="2">
+        <label class="md-nav__title" for="nav-2-2">
+          <span class="md-nav__icon md-icon"></span>
+          Secure Key Caching
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pre-reqs/" class="md-nav__link">
+        Pre-requisites
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../build/" class="md-nav__link">
+        Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deploy/" class="md-nav__link">
+        Deploy
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflows/" class="md-nav__link">
+        Workflows
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Appendix
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Appendix
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-using-binaries" class="md-nav__link">
+    Deployment Using Binaries
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment Using Binaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup-k8s-cluster-deploy-isecl-k8s-extensions" class="md-nav__link">
+    Setup K8S Cluster &amp; Deploy Isecl-k8s-extensions
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup K8S Cluster &amp; Deploy Isecl-k8s-extensions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#untar-packages-and-load-docker-images" class="md-nav__link">
+    Untar packages and load docker images
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-isecl-controller" class="md-nav__link">
+    Deploy isecl-controller
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-isecl-scheduler" class="md-nav__link">
+    Deploy isecl-scheduler
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-kube-scheduler-to-establish-communication-with-isecl-scheduler" class="md-nav__link">
+    Configure kube-scheduler to establish communication with isecl-scheduler
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying-skc-services-on-single-system" class="md-nav__link">
+    Deploying SKC Services on Single System
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-csp-skc-services" class="md-nav__link">
+    Deploy CSP SKC Services
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#openstack-setup-and-associate-traits" class="md-nav__link">
+    Openstack Setup and Associate Traits
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-enterprise-skc-services" class="md-nav__link">
+    Deploy Enterprise SKC Services
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-sgx-agent" class="md-nav__link">
+    Deploy SGX Agent
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-skc-library" class="md-nav__link">
+    Deploy SKC Library
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#system-user-configuration" class="md-nav__link">
+    System User Configuration
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-rsa-keys-in-key-broker-service" class="md-nav__link">
+    Creating RSA Keys in Key Broker Service
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-for-nginx-testing" class="md-nav__link">
+    Configuration for NGINX testing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kbs-key-transfer-flow-validation" class="md-nav__link">
+    KBS key-transfer flow validation
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Product Guide
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Product Guide" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Product Guide
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product-guide/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security/" class="md-nav__link">
+        Intel® Security Libraries - Datacenter Foundational Security
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../product-guide/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching/" class="md-nav__link">
+        Intel® Security Libraries - Datacenter SGX Attestation Infrastructure and Secure Key Caching
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="appendix">Appendix</h1>
+<h2 id="deployment-using-binaries">Deployment Using Binaries</h2>
+<h4 id="setup-k8s-cluster-deploy-isecl-k8s-extensions">Setup K8S Cluster &amp; Deploy Isecl-k8s-extensions</h4>
+<ul>
+<li>Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.</li>
+<li>Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.</li>
+<li>Once the master/worker setup is done, follow below steps:</li>
+</ul>
+<h5 id="untar-packages-and-load-docker-images">Untar packages and load docker images</h5>
+<ul>
+<li>Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Master Node and extract the contents.
+<div class="highlight"><pre><span></span><code>    cd /opt/
+    tar -xvzf isecl-k8s-extensions-*.tar.gz
+</code></pre></div></li>
+<li>Load the docker images
+<div class="highlight"><pre><span></span><code>    cd isecl-k8s-extensions
+    docker load -i docker-isecl-controller-v*.tar
+    docker load -i docker-isecl-scheduler-v*.tar
+</code></pre></div></li>
+</ul>
+<h5 id="deploy-isecl-controller">Deploy isecl-controller</h5>
+<ul>
+<li>Create hostattributes.crd.isecl.intel.com crd
+<div class="highlight"><pre><span></span><code>    kubectl apply -f yamls/crd-1.17.yaml
+</code></pre></div></li>
+<li>Check whether the crd is created
+<div class="highlight"><pre><span></span><code>    kubectl get crds
+</code></pre></div></li>
+<li>Deploy isecl-controller
+<div class="highlight"><pre><span></span><code>    kubectl apply -f yamls/isecl-controller.yaml
+</code></pre></div></li>
+<li>Check whether the isecl-controller is up and running
+<div class="highlight"><pre><span></span><code>    kubectl get deploy -n isecl
+</code></pre></div></li>
+<li>Create clusterrolebinding for ihub to get access to cluster nodes
+<div class="highlight"><pre><span></span><code>    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+</code></pre></div></li>
+<li>Fetch token required for ihub installation and follow below IHUB installation steps,
+<div class="highlight"><pre><span></span><code>    kubectl get secrets -n isecl
+    kubectl describe secret default-token-&lt;name&gt; -n isecl
+</code></pre></div></li>
+</ul>
+<p>For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP system:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP system. Update KUBERNETES_CERT_FILE.
+* Get k8s token in master, using above commands and update KUBERNETES_TOKEN
+* Update the value of CRD name
+<div class="highlight"><pre><span></span><code>    KUBERNETES_CRD=custom-isecl-sgx
+</code></pre></div></p>
+<h5 id="deploy-isecl-scheduler">Deploy isecl-scheduler</h5>
+<ul>
+<li>
+<p>The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.</p>
+</li>
+<li>
+<p>Install cfssl and cfssljson on Kubernetes Control Plane
+<div class="highlight"><pre><span></span><code>    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+</code></pre></div></p>
+</li>
+<li>
+<p>Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
+<div class="highlight"><pre><span></span><code>    cd /opt/isecl-k8s-extensions/
+    chmod +x create_k8s_extsched_cert.sh
+    ./create_k8s_extsched_cert.sh -n &quot;K8S Extended Scheduler&quot; -s &quot;&lt;K8_MASTER_IP&gt;&quot;,&quot;&lt;K8_MASTER_HOST&gt;&quot; -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+</code></pre></div></p>
+</li>
+<li>After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master system. Also, copy tls key pair generated in previous step to secrets directory.
+<div class="highlight"><pre><span></span><code>    mkdir secrets
+    cp /opt/isecl-k8s-extensions/server.key secrets/
+    cp /opt/isecl-k8s-extensions/server.crt secrets/
+    mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
+    cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
+</code></pre></div>
+Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.</li>
+<li>Create kubernetes secrets scheduler-secret for isecl-scheduler
+<div class="highlight"><pre><span></span><code>    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+</code></pre></div></li>
+<li>Deploy isecl-scheduler
+<div class="highlight"><pre><span></span><code>    kubectl apply -f yamls/isecl-scheduler.yaml
+</code></pre></div></li>
+<li>Check whether the isecl-scheduler is up and running
+<div class="highlight"><pre><span></span><code>    kubectl get deploy -n isecl
+</code></pre></div></li>
+</ul>
+<h5 id="configure-kube-scheduler-to-establish-communication-with-isecl-scheduler">Configure kube-scheduler to establish communication with isecl-scheduler</h5>
+<ul>
+<li>Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
+<div class="highlight"><pre><span></span><code>spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+</code></pre></div></li>
+</ul>
+<div class="highlight"><pre><span></span><code>  containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>  volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+</code></pre></div>
+<p>Note: Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+* Restart Kubelet which restart all the k8s services including kube base schedular
+<div class="highlight"><pre><span></span><code>    systemctl restart kubelet
+</code></pre></div></p>
+<ul>
+<li>Check if CRD data is populated
+<div class="highlight"><pre><span></span><code>    kubectl get -o json hostattributes.crd.isecl.intel.com
+</code></pre></div></li>
+</ul>
+<h4 id="deploying-skc-services-on-single-system">Deploying SKC Services on Single System</h4>
+<div class="highlight"><pre><span></span><code>Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
+Update skc.conf with the following
+  - Deployment system IP address
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
+  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
+./install_skc.sh
+</code></pre></div>
+<h4 id="deploy-csp-skc-services">Deploy CSP SKC Services</h4>
+<div class="highlight"><pre><span></span><code>Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
+Update csp_skc.conf with the following
+  - CSP system IP Address
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
+  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
+./install_csp_skc.sh
+</code></pre></div>
+<p>Create sample yml file for nginx workload and add SGX labels to it such as:
+<div class="highlight"><pre><span></span><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - &quot;true&quot;
+         - key: EPC-Memory
+           operator: In
+           values:
+           - &quot;2.0GB&quot;
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+</code></pre></div></p>
+<p>Validate if pod can be launched on the node. Run following commands:</p>
+<div class="highlight"><pre><span></span><code>    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx
+</code></pre></div>
+<p>Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+<div class="highlight"><pre><span></span><code>    docker ps
+</code></pre></div></p>
+<h4 id="openstack-setup-and-associate-traits">Openstack Setup and Associate Traits</h4>
+<ul>
+<li>
+<p>Setup Compute and Controller node for Openstack. Compute node should be setup on SGX host machine, Controller node can be any system. After the compute/controller setup is done, follow the below steps:</p>
+</li>
+<li>
+<p>IHUB should be installed and configured with Openstack</p>
+</li>
+</ul>
+<p>Note:
+  * While using deployment scripts to install the components, in the env directory of the binaries folder comment "KUBERNETES_TOKEN" in the ihub.env before installation.
+  * Openstack compute node and build VM should have the same OS package repositories, else there will be package mismatch for SKC library.</p>
+<ul>
+<li>On the openstack controller, if resource provider is not listing the resources then install the "osc-placement"
+<div class="highlight"><pre><span></span><code>  pip3 install osc-placement
+</code></pre></div></li>
+<li>source the admin-openrc credentials to gain access to user-only CLI commands and export the os_placement_API_version
+<div class="highlight"><pre><span></span><code>   source admin-openrc
+</code></pre></div></li>
+<li>List the set of resources mapped to the Openstack
+<div class="highlight"><pre><span></span><code>  openstack resource provider list
+</code></pre></div></li>
+<li>Set the required traits for SGX Hosts
+<div class="highlight"><pre><span></span><code>  #For example &#39;cirros&#39; image can be used for the instances
+  openstack image set --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE=required &lt;image name&gt;
+</code></pre></div></li>
+<li>Veiw the Traits that has been set:
+<div class="highlight"><pre><span></span><code>  #The trait should be set and assinged to the respective image successfully. For example &#39;cirros&#39; image can be used for the instances 
+   openstack image show &lt;image name&gt;
+</code></pre></div></li>
+<li>Verify the trait is enabled for the SGX Host:
+<div class="highlight"><pre><span></span><code>  openstack resource provider trait list &lt;uuid of the host which the openstack resoruce provider lists&gt;
+
+  #SGX Supported, SGX TCB upto Date, SGX FLC enabled, SGX EPC size attritubes of the SGX host for which the &#39;required&#39; trait set to TRUE or FALSE is displayed. For example,if required trait is set as TRUE:
+
+  CUSTOM_ISECL_SGX_ENABLED_TRUE
+  CUSTOM_ISECL_SGX_SUPPORTED_TRUE
+  CUSTOM_ISECL_SGX_TCBUPTODATE_FALSE
+  CUSTOM_ISECL_SGX_FLC_ENABLED_TRUE
+  CUSTOM_ISECL_SGX_EPC_SIZE_2_0_GB
+
+  For example, if the required trait is set as FALSE
+  CUSTOM_ISECL_SGX_ENABLED_FALSE
+  CUSTOM_ISECL_SGX_SUPPORTED_TRUE
+  CUSTOM_ISECL_SGX_TCBUPTODATE_FALSE
+  CUSTOM_ISECL_SGX_FLC_ENABLED_FALSE
+  CUSTOM_ISECL_SGX_EPC_SIZE_0_B
+</code></pre></div></li>
+<li>Create the instances
+<div class="highlight"><pre><span></span><code>  openstack server create --flavor tiny --image &lt;image name&gt; --net vmnet &lt;vm instance name&gt;
+
+  Instances should be created and the status should be &quot;Active&quot;. Instance should be launched successfully.
+  openstack server list
+</code></pre></div>
+ Note : To unset the trait, use the following CLI commands:
+<div class="highlight"><pre><span></span><code> openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_TRUE &lt;image name&gt;
+
+ openstack image unset --property trait:CUSTOM_ISECL_SGX_ENABLED_FALSE &lt;image name&gt;
+</code></pre></div></li>
+</ul>
+<h4 id="deploy-enterprise-skc-services">Deploy Enterprise SKC Services</h4>
+<div class="highlight"><pre><span></span><code>Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
+Update enterprise_skc.conf with the following
+  - Enterprise system IP address
+  - Database name, Database username and passwords for AAS and SCS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
+./install_enterprise_skc.sh
+</code></pre></div>
+<h4 id="deploy-sgx-agent">Deploy SGX Agent</h4>
+<div class="highlight"><pre><span></span><code>Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
+./agent_untar.sh
+Edit agent.conf with the following
+  - CSP system IP address where CMS/AAS/SHVS services deployed
+  - CMS TLS SHA Value (Run &quot;cms tlscertsha384&quot; on CSP system)
+  - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
+Save and Close
+./deploy_sgx_agent.sh
+</code></pre></div>
+<h4 id="deploy-skc-library">Deploy SKC Library</h4>
+<div class="highlight"><pre><span></span><code>Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
+./skclib_untar.sh
+Update skc_library.conf with the following
+  - IP address for CMS/AAS/KBS services deployed on Enterprise system
+  - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
+  - CSP system IP address where SGX Caching Service deployed
+  - Hostname of the Enterprise system where KBS is deployed
+Save and Close
+./deploy_skc_library.sh
+</code></pre></div>
+<h2 id="system-user-configuration">System User Configuration</h2>
+<p><strong>Build System</strong></p>
+<p><strong>Setup ~/.gitconfig to update the git user details. A sample config is provided below</strong></p>
+<p>GIT Configuration**</p>
+<div class="highlight"><pre><span></span><code>[user]
+        name = John Doe
+        email = john.doe@abc.com
+[color]
+        ui = auto
+ [push]
+        default = matching 
+</code></pre></div>
+<h2 id="creating-rsa-keys-in-key-broker-service">Creating RSA Keys in Key Broker Service</h2>
+<p><strong>Configuration Update to create Keys in KBS</strong></p>
+<pre><code>cd into /root/binaries/kbs_script folder
+
+Update KBS and AAS IP addresses in run.sh
+
+Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/&lt;id.pem&gt;.
+</code></pre>
+<p><strong>Create RSA Key</strong></p>
+<pre><code>Execute the command
+
+./run.sh reg
+</code></pre>
+<ul>
+<li>copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated</li>
+</ul>
+<h2 id="configuration-for-nginx-testing">Configuration for NGINX testing</h2>
+<p><strong>Note:</strong> Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.</p>
+<p><strong>OpenSSL</strong></p>
+<p>Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:</p>
+<p>[openssl_def]
+engines = engine_section</p>
+<p>[engine_section]
+pkcs11 = pkcs11_section</p>
+<p>[pkcs11_section]
+engine_id = pkcs11</p>
+<p>dynamic_path =/usr/lib64/engines-1.1/pkcs11.so</p>
+<p>MODULE_PATH =/opt/skc/lib/libpkcs11-api.so</p>
+<p>init = 0</p>
+<p><strong>Nginx</strong></p>
+<p>Update nginx configuration file /etc/nginx/nginx.conf with below changes:</p>
+<p>ssl_engine pkcs11;</p>
+<p>Update the location of certificate with the loaction where it was copied into the skc_library machine. </p>
+<p>ssl_certificate "add absolute path of crt file";</p>
+<p>Update the KeyID with the KeyID received when RSA key was generated in KBS</p>
+<p>ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";</p>
+<p><strong>SKC Configuration</strong></p>
+<p>Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.</p>
+<p>Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified</p>
+<p>Sample PKCS11 url is as below</p>
+<p>pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;</p>
+<p>Last PKCS11 url entry in keys.txt should match with the one in nginx.conf</p>
+<p>The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; </p>
+<p>Sample /opt/skc/etc/pkcs11-apimodule.ini file</p>
+<pre><code>[core]
+preload_keys=/tmp/keys.txt
+keyagent_conf=/opt/skc/etc/key-agent.ini
+mode=SGX
+debug=true
+
+[SW]
+module=/usr/lib64/pkcs11/libsofthsm2.so
+
+[SGX]
+module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+</code></pre>
+<h2 id="kbs-key-transfer-flow-validation">KBS key-transfer flow validation</h2>
+<p>On SGX Compute node, Execute below commands for KBS key-transfer:</p>
+<div class="highlight"><pre><span></span><code>    pkill nginx
+</code></pre></div>
+<p>Remove any existing pkcs11 token</p>
+<div class="highlight"><pre><span></span><code>    rm -rf /opt/intel/cryptoapitoolkit/tokens/*
+</code></pre></div>
+<p>Initiate Key transfer from KBS</p>
+<div class="highlight"><pre><span></span><code>    systemctl restart nginx
+</code></pre></div>
+<p>Changing group ownership and permissions of pkcs11 token</p>
+<div class="highlight"><pre><span></span><code>    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
+</code></pre></div>
+<p>Establish a tls session with the nginx using the key transferred inside the enclave</p>
+<div class="highlight"><pre><span></span><code>    wget https://localhost:2443 --no-check-certificate
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../workflows/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Workflows
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../../product-guide/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Intel® Security Libraries - Datacenter Foundational Security
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../../..",
+          features: ['navigation.tabs', 'navigation.tabs.sticky', 'navigation.instant', 'toc.integrate'],
+          search: Object.assign({
+            worker: "../../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

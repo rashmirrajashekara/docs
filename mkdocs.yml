@@ -1,0 +1,51 @@
+# Repository
+repo_name: intel-secl/intel-secl
+repo_url: https://raghav19.github.io/docs
+site_name: Intel® SecL-DC
+docs_dir: docs
+site_dir: site
+nav: 
+  - Home: 'index.md'
+  - Quick Start Guide: 
+      - Foundational & Workload:
+        - Pre-reqs: quick-start-guide/foundational_workload/pre-reqs.md
+        - Build: quick-start-guide/foundational_workload/build.md
+        - Deploy: quick-start-guide/foundational_workload/deploy.md
+        - Workflows: quick-start-guide/foundational_workload/workflows.md
+        - Appendix: quick-start-guide/foundational_workload/appendix.md
+      - Secure Key Caching:
+        - Pre-reqs: quick-start-guide/secure_key_caching/pre-reqs.md
+        - Build: quick-start-guide/secure_key_caching/build.md
+        - Deploy: quick-start-guide/secure_key_caching/deploy.md
+        - Workflows: quick-start-guide/secure_key_caching/workflows.md
+        - Appendix: quick-start-guide/secure_key_caching/appendix.md
+  - Product Guide: 
+      - Foundational & Workload: product-guide/Product Guide - Intel® Security Libraries - Datacenter Foundational Security.md
+      - Secure Key Caching: product-guide/Product Guide - Intel® Security Libraries - Secure Key Caching.md
+theme:
+   name: material
+   font: 
+     code: Fira Code
+     text: Palantino
+   palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+   logo: images/isecl-logo.png
+   favicon: images/isecl-logo.png
+   icon:
+    repo: fontawesome/brands/github
+   features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.instant
+    - toc.integrate
+markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.smartsymbols
+  - pymdownx.magiclink
+  - markdown.extensions.tables
+plugins:
+  - search 
+  - mkdocs-nav-enhancements
