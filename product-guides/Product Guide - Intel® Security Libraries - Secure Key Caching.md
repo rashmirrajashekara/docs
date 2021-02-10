@@ -1507,9 +1507,9 @@ Authorization: Bearer \<token\>
 
 }
 
-### Search User
+### Search Users by Username
 
-GET https://\<IP or hostname of AAS\>:8444/aas/users?\<parameter\>=\<value\>
+GET https://\<IP or hostname of AAS\>:8444/aas/users?name=\<value\>
 
 Authorization: Bearer \<token\>
 
