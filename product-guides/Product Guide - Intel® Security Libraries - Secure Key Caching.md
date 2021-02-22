@@ -1029,7 +1029,7 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 
 ##### Deploy isecl-scheduler
 
-The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml.
+The isecl-scheduler default configuration is provided for common cluster support in /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml.
 
 Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. 
 
