@@ -144,7 +144,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.4.0 -m manifest/fs.xml
   repo sync
   ```
 
@@ -177,7 +177,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.4.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -207,7 +207,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/cc-docker.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.4.0 -m manifest/cc-docker.xml
   repo sync
   ```
   
@@ -264,7 +264,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.4.0 -m manifest/cc-crio.xml
   repo sync
   ```
 
@@ -327,7 +327,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 ## **4. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Foundational & Workload Security Usecases. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.4.0/develop/tools/ansible-role) repository.
 
 
 ### Pre-requisites
@@ -500,11 +500,29 @@ ansible-playbook <playbook-name> \
 ```
 or
 
-Update the following vars in `defaults/main.yml`
+Update the following vars in `vars/main.yml`
 
 ```yaml
 # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
 tpm_owner_secret: <tpm_secret>
+```
+
+#### GRUB Default option for Booting into MLE
+
+The grub2_default option would vary from OEM to OEM for booting after installing tboot. The grub option to be selected for booting into TBOOT/MLE mode, use grubby --info <option:0/1...> to determine which one has no boot menu assigned to it during runtime in the playbook as below. Default is 3.
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars grub_default_option=<grub_default_option>
+```
+or
+
+Update the following vars in `vars/main.yml`
+
+```yaml
+grub_default_option: "3"
 ```
 
 #### UEFI SecureBoot enabled
@@ -521,7 +539,7 @@ ansible-playbook <playbook-name> \
 
 or
 
-Update the following vars in `defaults/main.yml`
+Update the following vars in `vars/main.yml`
 
 ```yaml
 # Enable/disable for UEFI SecureBoot Mode
@@ -546,7 +564,7 @@ ansible-playbook <playbook-name> \
 ```
 or
 
-Update the following vars in `defaults/main.yml`
+Update the following vars in `vars/main.yml`
 
 ```yaml
 # [TRUE/FALSE based on registry configured with http/https respectively]
@@ -569,13 +587,13 @@ If any service installation fails due to any misconfiguration, just uninstall th
 
 ## **5. Usecase Workflows API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.4.0/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.4.0/develop/tools/api-collections)
 
 ### Use Case Collections
 
