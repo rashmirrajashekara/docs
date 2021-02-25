@@ -188,21 +188,28 @@ Following steps facilitate the building of all components:
 
 ## Support 
 
-## Known Issues
- 1. SKC Library adding incorrect entry in /etc/hosts file for kbshostname
- 
-    Details: This issue is not reproducible with fresh VM. It comes only when we already have some other entry in hosts file with same hostname. It will be fixed in upcoming release.
- 2. AAS_URL not updating in authservice.env by skc automation scripts
-    
-    Details: This issue is not impacting AAS deployment as AAS by default consider it’s own IP if it didn’t find in env file. It will be fixed in upcoming release.
- 3. HvsTrustExpiry label should not display in SGX node label
-    
-    Details: While validating common cluster use case. HvsTrustExpiry label (which is part of TA agent), is displaying under SGX node labels. Although there is no impact of this. It will be fixed in upcoming release.
- 4. Single and multiple instances launch from encrypted image failed
-    
-    Details: As part of Trust Agent, Single and multiple instances launch from encrypted image failing.  It will be fixed in upcoming release.
+ 1. Till v3.3 release,  we used to have a patch which used to print all the SGX attributes from the quote.
+   
+   Now with v3.4 github branch this is no more supported and hence we don’t have a way to get these values. The alternate way to find this information is using the following command, once CTK is deployed as part of skc_library installation
+   
+   ```shell
+   /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave /opt/intel/cryptoapitoolkit/lib/libp11SgxEnclave.signed.so -dumpfile info.txt
+   ```
+   
+   ```shell
+   From info.txt
+   metadata->enclave_css.body.enclave_hash.m value represents the MRENCLAVE value of CTK enclave
+   mrsigner->value represents MRSIGNER
+   metadata->enclave_css.body.isv_prod_id shows the PROD_ID
+   metadata->enclave_css.body.isv_svn show ISVSVN and so on
+   ```
 
- 5. On openstack compute node and build VM, same OS package repositories should be used to build the components. If there is a mismatch in repos, key transfer flow would fail due to the package mismatch. It will be fixed in the upcoming release.
+   These values can be used to cross verify against the ones in Key transfer policy. This command has the additional benefit of not needing to generate a quote and then parsing the values. In other words, this tool can be used to get values after enclave is built and signed using sgx_sign.
+
+
+## Known Issues
+
+ 1. SKC workflow does not supported on openstack setup. So end to end SKC key transfer flow will not work with openstack.
 
 ## Contributing 
 
