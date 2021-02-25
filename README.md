@@ -188,9 +188,7 @@ Following steps facilitate the building of all components:
 
 ## Support 
 
- 1. Till v3.3 release,  we used to have a patch which used to print all the SGX attributes from the quote.
-   
-   Now with v3.4 github branch this is no more supported and hence we don’t have a way to get these values. The alternate way to find this information is using the following command, once CTK is deployed as part of skc_library installation
+ 1. To get SGX Attributes from a SGX ECDSA Quote, use the following command, once SKC library component is built on the build system
    
    ```shell
    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave /opt/intel/cryptoapitoolkit/lib/libp11SgxEnclave.signed.so -dumpfile info.txt
@@ -204,7 +202,7 @@ Following steps facilitate the building of all components:
    metadata->enclave_css.body.isv_svn show ISVSVN and so on
    ```
 
-   These values can be used to cross verify against the ones in Key transfer policy. This command has the additional benefit of not needing to generate a quote and then parsing the values. In other words, this tool can be used to get values after enclave is built and signed using sgx_sign.
+   These values can be used to cross verify against the ones in Key transfer policy.
 
 
 ## Known Issues
