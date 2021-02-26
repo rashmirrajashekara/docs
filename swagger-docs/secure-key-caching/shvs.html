@@ -692,13 +692,9 @@
             defs.Host = {
   "type" : "object",
   "properties" : {
-    "connection_string" : {
-      "type" : "string",
-      "x-go-name" : "ConnectionString"
-    },
     "host_ID" : {
       "type" : "string",
-      "x-go-name" : "Id"
+      "x-go-name" : "ID"
     },
     "host_name" : {
       "type" : "string",
@@ -715,28 +711,13 @@
             defs.HostStatusResponse = {
   "type" : "object",
   "properties" : {
-    "agent_retry_count" : {
-      "type" : "integer",
-      "format" : "int64",
-      "x-go-name" : "AgentRetryCount"
-    },
     "host_id" : {
       "type" : "string",
-      "x-go-name" : "HostId"
+      "x-go-name" : "HostID"
     },
     "host_status" : {
       "type" : "string",
       "x-go-name" : "Status"
-    },
-    "scs_retry_count" : {
-      "type" : "integer",
-      "format" : "int64",
-      "x-go-name" : "SCSRetryCount"
-    },
-    "tcb_scs_retry_count" : {
-      "type" : "integer",
-      "format" : "int64",
-      "x-go-name" : "TCBSCSRetryCount"
     }
   },
   "x-go-package" : "intel/isecl/shvs/v3/resource"
@@ -761,7 +742,7 @@
     },
     "host_id" : {
       "type" : "string",
-      "x-go-name" : "HostId"
+      "x-go-name" : "HostID"
     },
     "sgx_enabled" : {
       "type" : "boolean",
@@ -793,25 +774,17 @@
             defs.RegisterHostInfo = {
   "type" : "object",
   "properties" : {
-    "connection_string" : {
-      "type" : "string",
-      "x-go-name" : "ConnectionString"
-    },
     "description" : {
       "type" : "string",
       "x-go-name" : "Description"
     },
     "host_ID" : {
       "type" : "string",
-      "x-go-name" : "HostId"
+      "x-go-name" : "HostID"
     },
     "host_name" : {
       "type" : "string",
       "x-go-name" : "HostName"
-    },
-    "overwrite" : {
-      "type" : "boolean",
-      "x-go-name" : "Overwrite"
     },
     "uuid" : {
       "type" : "string",
@@ -820,10 +793,10 @@
   },
   "x-go-package" : "intel/isecl/shvs/v3/resource"
 };
-            defs.ResponseJson = {
+            defs.ResponseJSON = {
   "type" : "object",
   "properties" : {
-    "Id" : {
+    "ID" : {
       "type" : "string"
     },
     "Message" : {
@@ -880,7 +853,7 @@
           <div class="pull-left">
             <h1>SGX-Host-Verification-Service</h1>
             <div>Version: 1.0</div>
-            <div>BasePath: https://sgx-hvs.com:13000/sgx-hvs/v1</div>
+            <div>BasePath: https://sgx-hvs.com:13000/sgx-hvs/v2</div>
             <div>Copyright (C) 2020 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause</div>
           </div>
           <div class="clearfix"></div>
@@ -888,8 +861,7 @@
         <hr>
         <div id="header">
           <div id="api-_">
-            <div>SGX Host Verification Service (SHVS) retrieves platform-specific details from the registered SGX Agent
-and pushes the data to SGX Caching Service (SCS).
+            <div>Agent pushes the platform enablement info and TCB status to SHVS at regular Interval
 SGX HVS also exposes API for SGX HUB to get platform-specific values.
 SGX HVS listening port is user-configurable.</div>
 	    </br>
@@ -964,7 +936,7 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Host-deleteHost-0-curl">
-			  <pre><code class="language-bsh">curl -X DELETE "https://sgx-hvs.com:13000/sgx-hvs/v1/hosts/d60c9d18-a272-49b9-bf45-872f28407775
+			  <pre><code class="language-bsh">curl -X DELETE "https://sgx-hvs.com:13000/sgx-hvs/v2/hosts/d60c9d18-a272-49b9-bf45-872f28407775
 " -H "Authorization: Bearer &lt;token&gt;"</br></br>Output: </br>204 No content
 </code></pre> 
 			  </div>
@@ -1089,14 +1061,12 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Host-getHosts-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v1/hosts/d60c9d18-a272-49b9-bf45-872f28407775
+			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v2/hosts/d60c9d18-a272-49b9-bf45-872f28407775
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
   "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
   "host_name": "kbshostname",
-  "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
   "description": "",
   "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
-  "overwrite": false
 }
 </code></pre> 
 			  </div>
@@ -1229,11 +1199,10 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Host-queryHosts-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v1/hosts?HostName=kbshostname" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v2/hosts?HostName=kbshostname" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
   {
       "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
       "host_name": "kbshostname",
-      "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
       "uuid": "88888888-8887-1214-0516-3707a5a5a5a5"
   }
 ]
@@ -1254,9 +1223,7 @@ A valid bearer token is required to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Registers a new host in the SHVS database. SGX Agent sends the registration request to SHVS along
-with the overwritten flag (In this release the overwrite flag is set to true) and registers the SGX agent’s information to DB.
-If the host is already registered, SHVS will re-register the host if the overwrite flag is true.
+                        <p class="marked">Agent pushes the platform enablement info and TCB status to SHVS at regular Interval
 A valid bearer token is required to authorize this REST call.
 </p>
                         <p></p>
@@ -1337,51 +1304,6 @@ A valid bearer token is required to authorize this REST call.
                             <!-- <h3> 201 - Successfully registered the host. </h3> -->
                             <div class="methodsubtabletitle">201 - Successfully registered the host.</div>
 
-			    </br>
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-registerHost-201-schema">Schema</a>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-registerHost-201-schema">
-                                  <div id='responses-registerHost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Successfully registered the host.",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/ResponseJson"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-registerHost-201-schema-data').val(stringify(schema));
-                                        var result = $('#responses-registerHost-201-schema-201');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-registerHost-201-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
 
                         <p>
                           <h2>Sample REST Call</h2>
@@ -1393,17 +1315,20 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Host-registerHost-0-curl">
-			  <pre><code class="language-bsh">curl -X POST "https://sgx-hvs.com:13000/sgx-hvs/v1/hosts" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://sgx-hvs.com:13000/sgx-hvs/v2/hosts" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
     "host_name": "kbshostname",
-    "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
     "description": "Rhel test host",
     "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
-    "overwrite": true
+    "sgx_supported": true,
+    "flc_enabled": true,
+    "epc_offset": "0x40000000",
+    "epc_size": "3.0 GB",
+    "tcb_upToDate": true
 }
 </br>Output: </br>{
     "Id": "d60c9d18-a272-49b9-bf45-872f28407775",
     "Status": "Created",
-    "Message": "SGX Host Registered Successfully"
+    "Message": "SGX Host Data Created Successfully"
 }
 </code></pre> 
 			  </div>
@@ -1531,13 +1456,10 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-HostStatus-hostStateInformation-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v1/host-status?hostId=58cee2f3-d694-48ba-b8d2-e541544f5e22" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v2/host-status?hostId=58cee2f3-d694-48ba-b8d2-e541544f5e22" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "host_id": "58cee2f3-d694-48ba-b8d2-e541544f5e22",
-        "host_status": "CONNECTED",
-        "agent_retry_count": 0,
-        "scs_retry_count": 0,
-        "tcb_scs_retry_count": 0
+        "host_status": "CONNECTED"
     }
 ]
 </code></pre> 
@@ -1674,7 +1596,7 @@ A valid bearer token is required to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PlatformData-getPlatformData-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v1/platform-data?HostName=kbshostname" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v2/platform-data?HostName=kbshostname" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "epc_size": "2.0 GB",
         "flc_enabled": true,

@@ -2,7 +2,7 @@
 
 ## Product Guide
 
-### January 2020
+### February 2020
 
 ### Revision 3.4
 
@@ -1434,7 +1434,45 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
     ./skclib_untar.sh
     Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
     ./deploy_skc_library.sh
+    
+#### Deploying SKC Library as a Container 
+```
+Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
 
+Note: All the configuration files required for SKC Library container are modified in the resources directory only 
+
+1. Docker should be installed, enabled and services should be active
+
+2. In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
+
+3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
+
+4. Generate the RSA key in the kbs host and copy it to SGX host.
+
+5. Refer to openssl and nginx sub sections of QSG in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf present resource in the directory.
+
+6. Update keyID in the keys.txt and nginx.conf. 
+
+7. Under [core] section of pkcs11-apimodule.ini in the "/root/resources/" directory add preload_keys=/tmp/keys.txt.
+
+8. Update SKC_library.conf with IP addresses where SKC services are deployed.
+
+9. On the SGX Compute node, load the skc library docker image provided in the tar file. 
+   docker load < <SKC_Library>.tar
+   
+10. Provide valid paramenets in the docker run command and execute the docker run command. Update the genertaed RSA Key ID and <keys>.crt in the resources directory.
+    docker run -p 8080:2443 -p 80:8080 --mount type=bind,source=/root/<KBS_cert>.crt,target=/root/<KBS_cert>.crt --mount type=bind,source=/root/resources/sgx_default_qcnl.conf,target=/etc/sgx_default_qcnl.conf --mount type=bind,source=/root/resources/nginx.conf,target=/etc/nginx/nginx.conf --mount type=bind,source=/root/resources/keys.txt,target=/tmp/keys.txt,readonly --mount type=bind,source=/root/resources/pkcs11-apimodule.ini,target=/opt/skc/etc/pkcs11-apimodule.ini,readonly --mount type=bind,source=/root/resources/openssl.cnf,target=/etc/pki/tls/openssl.cnf --mount type=bind,source=/root/resources/skc_library.conf,target=/skc_library.conf --add-host=<SHC_HOSTNAME>:<SGX_HOST_IP> --add-host=<KBS_Hostname>:<KBS host IP> --mount type=bind,source=/dev/sgx,target=/dev/sgx --cap-add=SYS_MODULE --privileged=true <SKC_LIBRARY_IMAGE_NAME>
+    
+    Note: In the above docker run command, source refers to the actual path of the files located on the host and the target always refers to the files which would be mounted inside the container
+  
+11. Restore index.html for the transferred key inside the container
+    Get the container id using "docker ps" command
+    docker exec -it <container_id> /bin/sh 
+   
+    Download index.html
+    wget https://localhost:2443 --no-check-certificate
+```
+    
 # Authentication
 
 Authentication is centrally managed by the Authentication and Authorization Service (AAS). This service uses a Bearer Token authentication method. This service also centralizes the creation of roles and users, allowing much easier management of users, passwords, and permissions across all Intel® SecL-DC services.
@@ -2978,7 +3016,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
- Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library. 
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library. 
 
 Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
 
@@ -2991,7 +3029,7 @@ The keyID should match the keyID of RSA key created in KBS. Other contents shoul
     Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
 	[core]
-	preload_keys=/tmp/keys.txt
+	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
 	debug=true
@@ -3035,3 +3073,27 @@ Establish tls session with the nginx using the key transferred inside the enclav
 ```
     wget https://localhost:2443 --no-check-certificate
 ```
+
+# Note on Key Transfer Policy
+
+Key transfer policy is used to enforce a set of policies which need to be compiled with before the secret can be securely provisioned onto a sgx enclave
+
+A typical Key Transfer Policy would look as below
+```
+        "sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
+        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
+        "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
+        "client_permissions_allof":["nginx","USA"],
+        "sgx_enforce_tcb_up_to_date":false
+```
+
+sgx_enclave_issuer_anyof establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
+
+sgx_enclave_measurement_anyof represents the cryptographic hash of the enclave log (enclave code, data)
+
+sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+
+client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
+    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
+

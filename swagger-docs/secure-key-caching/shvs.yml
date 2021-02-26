@@ -1,14 +1,11 @@
-basePath: /sgx-hvs/v1
+basePath: /sgx-hvs/v2
 definitions:
   Host:
     description: Host struct is the database schema of a Host table
     properties:
-      connection_string:
-        type: string
-        x-go-name: ConnectionString
       host_ID:
         type: string
-        x-go-name: Id
+        x-go-name: ID
       host_name:
         type: string
         x-go-name: Name
@@ -19,24 +16,12 @@ definitions:
     x-go-package: intel/isecl/shvs/v3/types
   HostStatusResponse:
     properties:
-      agent_retry_count:
-        format: int64
-        type: integer
-        x-go-name: AgentRetryCount
       host_id:
         type: string
-        x-go-name: HostId
+        x-go-name: HostID
       host_status:
         type: string
         x-go-name: Status
-      scs_retry_count:
-        format: int64
-        type: integer
-        x-go-name: SCSRetryCount
-      tcb_scs_retry_count:
-        format: int64
-        type: integer
-        x-go-name: TCBSCSRetryCount
     type: object
     x-go-package: intel/isecl/shvs/v3/resource
   Hosts:
@@ -54,7 +39,7 @@ definitions:
         x-go-name: FlcEnabled
       host_id:
         type: string
-        x-go-name: HostId
+        x-go-name: HostID
       sgx_enabled:
         type: boolean
         x-go-name: SgxEnabled
@@ -77,29 +62,23 @@ definitions:
     x-go-package: intel/isecl/shvs/v3/swagger/docs
   RegisterHostInfo:
     properties:
-      connection_string:
-        type: string
-        x-go-name: ConnectionString
       description:
         type: string
         x-go-name: Description
       host_ID:
         type: string
-        x-go-name: HostId
+        x-go-name: HostID
       host_name:
         type: string
         x-go-name: HostName
-      overwrite:
-        type: boolean
-        x-go-name: Overwrite
       uuid:
         type: string
         x-go-name: UUID
     type: object
     x-go-package: intel/isecl/shvs/v3/resource
-  ResponseJson:
+  ResponseJSON:
     properties:
-      Id:
+      ID:
         type: string
       Message:
         type: string
@@ -110,8 +89,7 @@ definitions:
 host: sgx-hvs.com:13000
 info:
   description: |-
-    SGX Host Verification Service (SHVS) retrieves platform-specific details from the registered SGX Agent
-    and pushes the data to SGX Caching Service (SCS).
+    Agent pushes the platform enablement info and TCB status to SHVS at regular Interval
     SGX HVS also exposes API for SGX HUB to get platform-specific values.
     SGX HVS listening port is user-configurable.
   license:
@@ -142,15 +120,12 @@ paths:
       - bearerAuth: []
       tags:
       - HostStatus
-      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v1/host-status?hostId=58cee2f3-d694-48ba-b8d2-e541544f5e22
+      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v2/host-status?hostId=58cee2f3-d694-48ba-b8d2-e541544f5e22
       x-sample-call-output: |
         [
             {
                 "host_id": "58cee2f3-d694-48ba-b8d2-e541544f5e22",
-                "host_status": "CONNECTED",
-                "agent_retry_count": 0,
-                "scs_retry_count": 0,
-                "tcb_scs_retry_count": 0
+                "host_status": "CONNECTED"
             }
         ]
   /hosts:
@@ -180,13 +155,12 @@ paths:
       - bearerAuth: []
       tags:
       - Host
-      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v1/hosts?HostName=kbshostname
+      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v2/hosts?HostName=kbshostname
       x-sample-call-output: |
         [
           {
               "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
               "host_name": "kbshostname",
-              "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
               "uuid": "88888888-8887-1214-0516-3707a5a5a5a5"
           }
         ]
@@ -194,9 +168,7 @@ paths:
       consumes:
       - application/json
       description: |
-        Registers a new host in the SHVS database. SGX Agent sends the registration request to SHVS along
-        with the overwritten flag (In this release the overwrite flag is set to true) and registers the SGX agent’s information to DB.
-        If the host is already registered, SHVS will re-register the host if the overwrite flag is true.
+        Agent pushes the platform enablement info and TCB status to SHVS at regular Interval
         A valid bearer token is required to authorize this REST call.
       operationId: registerHost
       parameters:
@@ -216,20 +188,23 @@ paths:
       - bearerAuth: []
       tags:
       - Host
-      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v1/hosts
+      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v2/hosts
       x-sample-call-input: |
         {
             "host_name": "kbshostname",
-            "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
             "description": "Rhel test host",
             "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
-            "overwrite": true
+            "sgx_supported": true,
+            "flc_enabled": true,
+            "epc_offset": "0x40000000",
+            "epc_size": "3.0 GB",
+            "tcb_upToDate": true
         }
       x-sample-call-output: |
         {
             "Id": "d60c9d18-a272-49b9-bf45-872f28407775",
             "Status": "Created",
-            "Message": "SGX Host Registered Successfully"
+            "Message": "SGX Host Data Created Successfully"
         }
   /hosts/{id}:
     delete:
@@ -253,7 +228,7 @@ paths:
       tags:
       - Host
       x-sample-call-endpoint: |
-        https://sgx-hvs.com:13000/sgx-hvs/v1/hosts/d60c9d18-a272-49b9-bf45-872f28407775
+        https://sgx-hvs.com:13000/sgx-hvs/v2/hosts/d60c9d18-a272-49b9-bf45-872f28407775
       x-sample-call-output: |
         204 No content
     get:
@@ -281,15 +256,13 @@ paths:
       tags:
       - Host
       x-sample-call-endpoint: |
-        https://sgx-hvs.com:13000/sgx-hvs/v1/hosts/d60c9d18-a272-49b9-bf45-872f28407775
+        https://sgx-hvs.com:13000/sgx-hvs/v2/hosts/d60c9d18-a272-49b9-bf45-872f28407775
       x-sample-call-output: |
         {
           "host_ID": "d60c9d18-a272-49b9-bf45-872f28407775",
           "host_name": "kbshostname",
-          "connection_string": "https://127.0.0.1:11001/sgx_agent/v1/host",
           "description": "",
           "uuid": "88888888-8887-1214-0516-3707a5a5a5a5",
-          "overwrite": false
         }
   /platform-data:
     get:
@@ -318,7 +291,7 @@ paths:
       - bearerAuth: []
       tags:
       - PlatformData
-      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v1/platform-data?HostName=kbshostname
+      x-sample-call-endpoint: https://sgx-hvs.com:13000/sgx-hvs/v2/platform-data?HostName=kbshostname
       x-sample-call-output: |
         [
             {
@@ -348,10 +321,10 @@ responses:
     description: RegisterHostInfo response payload
     schema:
       $ref: '#/definitions/RegisterHostInfo'
-  ResponseJson:
+  ResponseJSON:
     description: ResponseJson response payload
     schema:
-      $ref: '#/definitions/ResponseJson'
+      $ref: '#/definitions/ResponseJSON'
 schemes:
 - https
 securityDefinitions:

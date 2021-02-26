@@ -128,16 +128,15 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.4/develop-gitlab -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b v3.4.0 -m manifest/skc.xml
 repo sync
 ```
 
 **Install, Enable and start the Docker daemon**
 
   ```shell
-  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.10-3.2.el7.x86_64.rpm
-  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-cli-19.03.13-3.el7.x86_64.rpm
-  dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-ce-19.03.13-3.el7.x86_64.rpm
+  dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+  dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
   systemctl enable docker
   systemctl start docker
   ```
@@ -208,12 +207,12 @@ The below installation is required on the Build & Deployment system only and the
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections)
+  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.4/develop/tools/api-collections)
 
 
 ## **8. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.4/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -292,7 +291,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
-    no_proxy: "{{no_proxy}}"```
+    no_proxy: "{{no_proxy}}"
 ```
 
 and
@@ -363,14 +362,14 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ## **9. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.4/develop/tools/api-collections) repository
 
 ### Use Case Collections
 
 | Use case                     | Sub-Usecase | API Collection     |
 | ---------------------------- | ----------- | ------------------ |
 | Secure Key Caching           | -           | ✔️                  |
-| SGX Discovery, Provisioning and Orchestration | -           | ✔️(Kubernetes Only) |
+| SGX Discovery, Provisioning and Orchestration | -           | ✔️                  |
 | SGX Discovery and Provisioning           | -           | ✔️                  |
 
 
@@ -557,11 +556,16 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 #### Deploying SKC Services on Single System
 ```
 Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
-Update skc.conf with the following
+Update orchestrator.conf with the following
   - Deployment system IP address
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
-  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Database name, Database username and passwords for SHVS services
+Update skc.conf with the following
+  - Deployment system IP address
+  - kbs hostname
+  - SGX Agent system IP Address
+  - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_skc.sh
@@ -572,6 +576,7 @@ Save and Close
 Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
 Update csp_skc.conf with the following
   - CSP system IP Address
+  - SGX system IP Addres
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
@@ -691,6 +696,7 @@ Pod should be in running state and launched on the host as per values in pod.yml
 Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
+  - kbs hostname
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -703,10 +709,11 @@ Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to 
 ./agent_untar.sh
 Edit agent.conf with the following
   - SGX Compute node IP where Agent will be installed
-  - CSP system IP address where CMS/AAS/SHVS services deployed
+  - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
   - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
 Save and Close
+Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_BASE_URL in sgx_agent.env available in same folder. (This is optional)
 ./deploy_sgx_agent.sh
 ```
 
@@ -717,10 +724,47 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 Update skc_library.conf with the following
   - IP address for CMS/AAS/KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
-  - CSP system IP address where SGX Caching Service deployed
+  - SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
 Save and Close
 ./deploy_skc_library.sh
+```
+#### Deploying SKC Library as a Container 
+```
+Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
+
+Note: All the configuration files required for SKC Library container are modified in the resources directory only 
+
+1. Docker should be installed, enabled and services should be active
+
+2. In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
+
+3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
+
+4. Generate the RSA key in the kbs host and copy it to SGX host.
+
+5. Refer to openssl and nginx sub sections of QSG in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf present resource in the directory.
+
+6. Update keyID in the keys.txt and nginx.conf. 
+
+7. Under [core] section of pkcs11-apimodule.ini in the "/root/resources/" directory add preload_keys=/tmp/keys.txt.
+
+8. Update SKC_library.conf with IP addresses where SKC services are deployed.
+
+9. On the SGX Compute node, load the skc library docker image provided in the tar file. 
+   docker load < <SKC_Library>.tar
+   
+10. Provide valid paramenets in the docker run command and execute the docker run command. Update the genertaed RSA Key ID and <keys>.crt in the resources directory.
+    docker run -p 8080:2443 -p 80:8080 --mount type=bind,source=/root/<KBS_cert>.crt,target=/root/<KBS_cert>.crt --mount type=bind,source=/root/resources/sgx_default_qcnl.conf,target=/etc/sgx_default_qcnl.conf --mount type=bind,source=/root/resources/nginx.conf,target=/etc/nginx/nginx.conf --mount type=bind,source=/root/resources/keys.txt,target=/tmp/keys.txt,readonly --mount type=bind,source=/root/resources/pkcs11-apimodule.ini,target=/opt/skc/etc/pkcs11-apimodule.ini,readonly --mount type=bind,source=/root/resources/openssl.cnf,target=/etc/pki/tls/openssl.cnf --mount type=bind,source=/root/resources/skc_library.conf,target=/skc_library.conf --add-host=<SHC_HOSTNAME>:<SGX_HOST_IP> --add-host=<KBS_Hostname>:<KBS host IP> --mount type=bind,source=/dev/sgx,target=/dev/sgx --cap-add=SYS_MODULE --privileged=true <SKC_LIBRARY_IMAGE_NAME>
+    
+    Note: In the above docker run command, source refers to the actual path of the files located on the host and the target always refers to the files which would be mounted inside the container
+  
+11. Restore index.html for the transferred key inside the container
+    Get the container id using "docker ps" command
+    docker exec -it <container_id> /bin/sh 
+   
+    Download index.html
+    wget https://localhost:2443 --no-check-certificate
 ```
 
 ## **11. System User Configuration**
@@ -802,7 +846,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
- Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
 
   Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
@@ -817,7 +861,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
   Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
 	[core]
-	preload_keys=/tmp/keys.txt
+	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
 	debug=true
