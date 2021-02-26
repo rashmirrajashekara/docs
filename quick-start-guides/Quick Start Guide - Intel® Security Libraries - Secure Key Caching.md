@@ -702,6 +702,7 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
+  - SGX Compute node IP where Agent will be installed
   - CSP system IP address where CMS/AAS/SHVS services deployed
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
   - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
@@ -747,12 +748,12 @@ GIT Configuration**
 ## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
-
+    
 	cd into /root/binaries/kbs_script folder
 	
-	Update KBS and AAS IP addresses in run.sh
+	Update SYSTEM_IP address in run.sh (where AAS and KBS are deployed)
 	
-	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
+	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
 
 **Create RSA Key**
 
@@ -803,7 +804,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
  Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
 
-  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
   Sample PKCS11 url is as below
   
@@ -879,9 +880,9 @@ A typical Key Transfer Policy would look as below
 
 sgx_enclave_issuer_anyof establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
 
-sgx_enclave_measurement_anyof represents the cryptographic hash of the enclave log
+sgx_enclave_measurement_anyof represents the cryptographic hash of the enclave log (enclave code, data)
 
 sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
 
 client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
-    In above example: the key is provisioned only to the nginx workload and platform which is geo tagged with USA
+    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
