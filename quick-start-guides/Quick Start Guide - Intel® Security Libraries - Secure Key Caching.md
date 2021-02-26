@@ -809,7 +809,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
- Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
 
   Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
@@ -824,7 +824,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
   Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
 	[core]
-	preload_keys=/tmp/keys.txt
+	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
 	debug=true
