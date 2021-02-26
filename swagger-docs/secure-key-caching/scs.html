@@ -694,7 +694,7 @@
   "properties" : {
     "cpu_svn" : {
       "type" : "string",
-      "x-go-name" : "CpuSvn"
+      "x-go-name" : "CPUSvn"
     },
     "enc_ppid" : {
       "type" : "string",
@@ -706,7 +706,7 @@
     },
     "pce_id" : {
       "type" : "string",
-      "x-go-name" : "PceId"
+      "x-go-name" : "PceID"
     },
     "pce_svn" : {
       "type" : "string",
@@ -714,7 +714,7 @@
     },
     "qe_id" : {
       "type" : "string",
-      "x-go-name" : "QeId"
+      "x-go-name" : "QeID"
     }
   },
   "x-go-package" : "intel/isecl/scs/v3/swagger/docs"
@@ -731,7 +731,7 @@
   },
   "x-go-package" : "intel/isecl/scs/v3/resource"
 };
-            defs.TcbInfoJson = {
+            defs.TcbInfoJSON = {
   "type" : "object",
   "properties" : {
     "TcbInfo" : {
@@ -765,7 +765,7 @@
     },
     "pceId" : {
       "type" : "string",
-      "x-go-name" : "PceId"
+      "x-go-name" : "PceID"
     },
     "tcbLevels" : {
       "type" : "array",
@@ -790,88 +790,89 @@
             defs.TcbLevels = {
   "type" : "object",
   "properties" : {
-    "PceSvn" : {
+    "pcesvn" : {
       "type" : "integer",
-      "format" : "uint16"
+      "format" : "uint16",
+      "x-go-name" : "PceSvn"
     },
     "sgxtcbcomp01svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp01Svn"
     },
     "sgxtcbcomp02svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp02Svn"
     },
     "sgxtcbcomp03svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp03Svn"
     },
     "sgxtcbcomp04svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp04Svn"
     },
     "sgxtcbcomp05svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp05Svn"
     },
     "sgxtcbcomp06svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp06Svn"
     },
     "sgxtcbcomp07svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp07Svn"
     },
     "sgxtcbcomp08svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp08Svn"
     },
     "sgxtcbcomp09svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp09Svn"
     },
     "sgxtcbcomp10svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp10Svn"
     },
     "sgxtcbcomp11svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp11Svn"
     },
     "sgxtcbcomp12svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp12Svn"
     },
     "sgxtcbcomp13svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp13Svn"
     },
     "sgxtcbcomp14svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp14Svn"
     },
     "sgxtcbcomp15svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp15Svn"
     },
     "sgxtcbcomp16svn" : {
       "type" : "integer",
-      "format" : "uint64",
+      "format" : "uint8",
       "x-go-name" : "SgxTcbComp16Svn"
     }
   },
@@ -880,14 +881,16 @@
             defs.TcbLevelsType = {
   "type" : "object",
   "properties" : {
-    "Tcb" : {
+    "tcb" : {
       "$ref" : "#/components/schemas/TcbLevels"
     },
-    "TcbDate" : {
-      "type" : "string"
+    "tcbDate" : {
+      "type" : "string",
+      "x-go-name" : "TcbDate"
     },
-    "TcbStatus" : {
-      "type" : "string"
+    "tcbStatus" : {
+      "type" : "string",
+      "x-go-name" : "TcbStatus"
     }
   },
   "x-go-package" : "intel/isecl/scs/v3/resource"
@@ -1304,51 +1307,6 @@ with the provided FMPSC value.
                             <!-- <h3> 200 - Successfully retrieved the TCB info of the platform with the matching fmpsc value. </h3> -->
                             <div class="methodsubtabletitle">200 - Successfully retrieved the TCB info of the platform with the matching fmpsc value.</div>
 
-			    </br>
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-getTcbInfo-200-schema">Schema</a>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-getTcbInfo-200-schema">
-                                  <div id='responses-getTcbInfo-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Successfully retrieved the TCB info of the platform with the matching fmpsc value.",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/TcbInfoJson"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-getTcbInfo-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-getTcbInfo-200-schema-200');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-getTcbInfo-200-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
 
                         <p>
                           <h2>Sample REST Call</h2>
@@ -1463,12 +1421,12 @@ with the provided FMPSC value.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">This API is used by SGX Host Verification Service (HVS) to determine the TCB up-to-date status of a platform.
+                        <p class="marked">This API is used by SGX Agent to determine the TCB up-to-date status of a platform.
 A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sgx/platforminfo/tcbstatus</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sgx/certification/v1/tcbstatus</span></code></pre>
 
     			<h2>Authorization</h2>
                         <ul>
@@ -1569,7 +1527,7 @@ A valid bearer token should be provided to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PlatformInfo-getTcbStatus-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/platforminfo/tcbstatus?qeid=0f16dfa4033e66e642af8fe358c18751" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/tcbstatus?qeid=0f16dfa4033e66e642af8fe358c18751" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "Status": "true",
     "Message": "TCB Status is UpToDate"
 }
@@ -1590,14 +1548,12 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Pushes the SGX Platform values into the SGX Caching Service (SCS). The SGX Host Verification Service (HVS) retrieves the
-platform values (such as enc_ppi, pceid, cpisvn, pcesvn, qeid and manifest) from the registered SGX Agent and uses this API
-to push the platform values to the SCS.
+                        <p class="marked">SGX Agent uses this API to push the platform values (such as enc_ppi, pceid, cpisvn, pcesvn, qeid and manifest) to SCS.
 A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/sgx/platforminfo/push</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/sgx/certification/v1/platforms</span></code></pre>
 
     			<h2>Authorization</h2>
                         <ul>
@@ -1729,7 +1685,7 @@ A valid bearer token should be provided to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PlatformInfo-pushPlatformInfo-0-curl">
-			  <pre><code class="language-bsh">curl -X POST "https://scs.server.com:9000/scs/sgx/platforminfo/push" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://scs.server.com:9000/scs/sgx/certification/v1/platforms" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
    "enc_ppid": "00f51b4272163732be2101ee62dfdb175205a5179c5b5faff4b2ae103cb1150ef7d4e6041775543930600e41dd2e6aee7f4079
          0f5a0380f6b29b1f1f7e6aad75bfa666153bb325c6db5b67f694d14bff98996c4994ce153278bfeb1b455dd4acbeacc97df6a3cd439a838218c
          1e07dae91a62195b803b9d3808d5b8470d46b0af3f275b6f6573871eb4eeb43ed9c5a5647729f25648fa74f1ce43621618b266abde6f44e92ce
@@ -1837,7 +1793,7 @@ A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sgx/platforminfo/refresh</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sgx/certification/v1/refreshes</span></code></pre>
 
     			<h2>Authorization</h2>
                         <ul>
@@ -1921,7 +1877,7 @@ A valid bearer token should be provided to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-PlatformInfo-refreshPlatformInfo-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/platforminfo/refresh" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/refreshes" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "Status": "Success",
     "Message": "sgx collaterals refreshed successfully"
 }
