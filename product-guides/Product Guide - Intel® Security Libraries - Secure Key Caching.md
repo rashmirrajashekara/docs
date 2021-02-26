@@ -1434,7 +1434,45 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
     ./skclib_untar.sh
     Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
     ./deploy_skc_library.sh
+    
+#### Deploying SKC Library as a Container 
+```
+Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
 
+Note: All the configuration files required for SKC Library container are modified in the resources directory only 
+
+1. Docker should be installed, enabled and services should be active
+
+2. In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
+
+3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
+
+4. Generate the RSA key in the kbs host and copy it to SGX host.
+
+5. Refer to openssl and nginx sub sections of QSG in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf present resource in the directory.
+
+6. Update keyID in the keys.txt and nginx.conf. 
+
+7. Under [core] section of pkcs11-apimodule.ini in the "/root/resources/" directory add preload_keys=/tmp/keys.txt.
+
+8. Update SKC_library.conf with IP addresses where SKC services are deployed.
+
+9. On the SGX Compute node, load the skc library docker image provided in the tar file. 
+   docker load < <SKC_Library>.tar
+   
+10. Provide valid paramenets in the docker run command and execute the docker run command. Update the genertaed RSA Key ID and <keys>.crt in the resources directory.
+    docker run -p 8080:2443 -p 80:8080 --mount type=bind,source=/root/<KBS_cert>.crt,target=/root/<KBS_cert>.crt --mount type=bind,source=/root/resources/sgx_default_qcnl.conf,target=/etc/sgx_default_qcnl.conf --mount type=bind,source=/root/resources/nginx.conf,target=/etc/nginx/nginx.conf --mount type=bind,source=/root/resources/keys.txt,target=/tmp/keys.txt,readonly --mount type=bind,source=/root/resources/pkcs11-apimodule.ini,target=/opt/skc/etc/pkcs11-apimodule.ini,readonly --mount type=bind,source=/root/resources/openssl.cnf,target=/etc/pki/tls/openssl.cnf --mount type=bind,source=/root/resources/skc_library.conf,target=/skc_library.conf --add-host=<SHC_HOSTNAME>:<SGX_HOST_IP> --add-host=<KBS_Hostname>:<KBS host IP> --mount type=bind,source=/dev/sgx,target=/dev/sgx --cap-add=SYS_MODULE --privileged=true <SKC_LIBRARY_IMAGE_NAME>
+    
+    Note: In the above docker run command, source refers to the actual path of the files located on the host and the target always refers to the files which would be mounted inside the container
+  
+11. Restore index.html for the transferred key inside the container
+    Get the container id using "docker ps" command
+    docker exec -it <container_id> /bin/sh 
+   
+    Download index.html
+    wget https://localhost:2443 --no-check-certificate
+```
+    
 # Authentication
 
 Authentication is centrally managed by the Authentication and Authorization Service (AAS). This service uses a Bearer Token authentication method. This service also centralizes the creation of roles and users, allowing much easier management of users, passwords, and permissions across all Intel® SecL-DC services.
