@@ -128,7 +128,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.3.1 -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.4/develop-gitlab -m manifest/skc.xml
 repo sync
 ```
 
@@ -330,7 +330,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching`, `sgx-orchestration` & `sgx-attestation` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching`, `sgx-orchestration-kubernetes` , `sgx-attestation-kubernetes`, `sgx-orchestration-openstack` & `sgx-attestation-openstack` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
    ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
@@ -352,8 +352,10 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Usecase                      | Variable                                                     |
 | ---------------------------- | ------------------------------------------------------------ |
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
-| SGX Orchestration | `setup: sgx-orchestration` in playbook or via `--extra-vars` as `setup=sgx-orchestration`in CLI |
-| SGX Attestation | `setup: sgx-attestation` in playbook or via `--extra-vars` as `setup=sgx-attestation`in CLI |
+| SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
+| SGX Attestation Kubernetes | `setup: sgx-attestation-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-attestation-kubernetes`in CLI |
+| SGX Orchestration Openstack | `setup: sgx-orchestration-openstack` in playbook or via `--extra-vars` as `setup=sgx-orchestration-openstack`in CLI |
+| SGX Attestation Openstack | `setup: sgx-attestation-openstack` in playbook or via `--extra-vars` as `setup=sgx-attestation-openstack`in CLI |
 
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
@@ -421,7 +423,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 #### Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.
-* Please note whatever hostname has been used on worker node while registering SGX_Agent with SHVS, use same node-name in join command.
+* Please note whatever hostname has been used on worker node which pushes platform enablement info to SHVS from SGX Agent, use same node-name in join command.
 * Once the master/worker setup is done, follow below steps:
 
 ##### Untar packages and load docker images
@@ -473,7 +475,7 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 ```
 
 ##### Deploy isecl-scheduler
-* The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+* The isecl-scheduler default configuration is provided for common cluster support in /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
 For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
 
 * Install cfssl and cfssljson on Kubernetes Control Plane
@@ -700,6 +702,7 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
+  - SGX Compute node IP where Agent will be installed
   - CSP system IP address where CMS/AAS/SHVS services deployed
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
   - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
@@ -738,17 +741,19 @@ GIT Configuration**
         default = matching 
 ```
 
+* Make sure system date and time of SGX machine and CSP machine both are in sync. Also, if the system is configured to read the RTC time in the local time zone, then use RTC in UTC by running `timedatectl set-local-rtc 0` command on both the machine. Otherwise SGX Agent deployment will fail with certificate expiry error. 
+
 ## Appendix
 
 ## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
-
+    
 	cd into /root/binaries/kbs_script folder
 	
-	Update KBS and AAS IP addresses in run.sh
+	Update SYSTEM_IP address in run.sh (where AAS and KBS are deployed)
 	
-	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
+	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
 
 **Create RSA Key**
 
@@ -799,7 +804,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
  Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
 
-  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
   Sample PKCS11 url is as below
   
@@ -858,3 +863,26 @@ Establish a tls session with the nginx using the key transferred inside the encl
 ```
     wget https://localhost:2443 --no-check-certificate
 ```
+
+# Note on Key Transfer Policy
+
+Key transfer policy is used to enforce a set of policies which need to be compiled with before the secret can be securely provisioned onto a sgx enclave
+
+A typical Key Transfer Policy would look as below
+```
+        "sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
+        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
+        "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
+        "client_permissions_allof":["nginx","USA"],
+        "sgx_enforce_tcb_up_to_date":false
+```
+
+sgx_enclave_issuer_anyof establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
+
+sgx_enclave_measurement_anyof represents the cryptographic hash of the enclave log (enclave code, data)
+
+sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+
+client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
+    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA

@@ -6,13 +6,15 @@
 
 ## **1. Hardware & OS Requirements**
 
-1. **Three Hosts or VMs**
+1. **Four Hosts or VMs**
 
    a.    Build System
 
    b.    CSP managed Services 
 
    c.    Enterprise Managed Services
+
+   d.    K8S Master Node Setup
 
 2. **SGX Enabled Host**
 
@@ -71,12 +73,6 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 **Update the package lists**
 ```
 apt-get update
-```
-
-**On SGX Compute Node only, load the MSR driver, as it is not auto-loaded**
-```
-cd /root
-modprobe msr
 ```
 
 ## **4. Deployment Model**
@@ -181,7 +177,7 @@ repo sync
 **Building All SKC Components**
 
 ```
-make ubuntu
+make
 
 ```
 
@@ -345,7 +341,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching` & `sgx-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
    ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars "ansible_sudo_pass=<password>"
@@ -367,7 +363,9 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Usecase                      | Variable                                                     |
 | ---------------------------- | ------------------------------------------------------------ |
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
+| SGX Orchestration | `setup: sgx-orchestration` in playbook or via `--extra-vars` as `setup=sgx-orchestration`in CLI |
 
+> **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 ## **9. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.3.1/develop/tools/api-collections) repository
@@ -425,13 +423,149 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 ## **10. Deployment Using Binaries**
 
+#### Setup K8S Cluster & Deploy Isecl-k8s-extensions
+
+* Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.
+* Please note whatever hostname has been used on worker node which pushes platform enablement info to SHVS from SGX Agent, use same node-name in join command.
+* Once the master/worker setup is done, follow below steps:
+
+##### Untar packages and load docker images
+* Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Master Node and extract the contents.
+```
+    cd /opt/
+    tar -xvzf isecl-k8s-extensions-*.tar.gz
+```
+* Load the docker images
+```
+    cd isecl-k8s-extensions
+    docker load -i docker-isecl-controller-v*.tar
+    docker load -i docker-isecl-scheduler-v*.tar
+```
+
+##### Deploy isecl-controller
+* Create hostattributes.crd.isecl.intel.com crd
+```
+    kubectl apply -f yamls/crd-1.17.yaml
+```
+* Check whether the crd is created
+```
+    kubectl get crds
+```
+* Deploy isecl-controller
+```
+    kubectl apply -f yamls/isecl-controller.yaml
+```
+* Check whether the isecl-controller is up and running
+```
+    kubectl get deploy -n isecl
+```
+* Create clusterrolebinding for ihub to get access to cluster nodes
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+```
+* Fetch token required for ihub installation and follow below IHUB installation steps,
+```
+    kubectl get secrets -n isecl
+    kubectl describe secret default-token-<name> -n isecl
+```
+
+For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP system:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP system. Update KUBERNETES_CERT_FILE.
+* Get k8s token in master, using above commands and update KUBERNETES_TOKEN
+* Update the value of CRD name
+```
+	KUBERNETES_CRD=custom-isecl-sgx
+```
+
+##### Deploy isecl-scheduler
+* The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
+
+* Install cfssl and cfssljson on Kubernetes Control Plane
+```
+    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+```
+
+* Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
+```
+    cd /opt/isecl-k8s-extensions/
+    chmod +x create_k8s_extsched_cert.sh
+    ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "<K8_MASTER_IP>","<K8_MASTER_HOST>" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+```
+* After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master system. Also, copy tls key pair generated in previous step to secrets directory.
+```
+    mkdir secrets
+    cp /opt/isecl-k8s-extensions/server.key secrets/
+    cp /opt/isecl-k8s-extensions/server.crt secrets/
+    mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
+    cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
+```
+Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.
+* Create kubernetes secrets scheduler-secret for isecl-scheduler
+```
+    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+```
+* Deploy isecl-scheduler
+```
+    kubectl apply -f yamls/isecl-scheduler.yaml
+```
+* Check whether the isecl-scheduler is up and running
+```
+    kubectl get deploy -n isecl
+```
+
+##### Configure kube-scheduler to establish communication with isecl-scheduler
+* Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
+```
+spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+```
+
+```
+  containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+```
+
+```
+  volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+```
+
+Note: Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+* Restart Kubelet which restart all the k8s services including kube base schedular
+```
+	systemctl restart kubelet
+```
+
+* Check if CRD data is populated
+```
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+
 #### Deploying SKC Services on Single System
 ```
 Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
 Update skc.conf with the following
   - Deployment system IP address
-  - Comment out the K8S_IP,OPENSTACK_IP and TENANT
-  - System IP address where Kubernetes or Openstack is deployed
+  - KBS IP address and KBS Hostname  
+  - System IP address where Kubernetes is deployed
+  - TENANT as KUBERNETES  
+  - Comment out the OPENSTACK_IP  
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -443,13 +577,56 @@ Save and Close
 Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
 Update csp_skc.conf with the following
   - CSP system IP Address
+  - System IP address where Kubernetes is deployed 
+  - Comment out the OPENSTACK_IP   
+  - TENANT as KUBERNETES  
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
-  - Comment out the K8S_IP,OPENSTACK_IP and TENANT
 Save and Close
 ./install_csp_skc.sh
 ```
 
+Create sample yml file for nginx workload and add SGX labels to it such as:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
+
+Validate if pod can be launched on the node. Run following commands:
+
+```
+    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx
+```
+
+Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+```
+	docker ps
+```
 #### Deploy Enterprise SKC Services
 ```
 Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
@@ -504,6 +681,8 @@ GIT Configuration**
         default = matching 
 ```
 
+* Make sure system date and time of SGX machine and CSP machine both are in sync. Also, if the system is configured to read the RTC time in the local time zone, then use RTC in UTC by running `timedatectl set-local-rtc 0` command on both the machine. Otherwise SGX Agent deployment will fail with certificate expiry error. 
+    
 ## Appendix
 
 ### Creating RSA Keys in Key Broker Service
