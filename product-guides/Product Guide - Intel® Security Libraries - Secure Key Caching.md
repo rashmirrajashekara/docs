@@ -551,8 +551,8 @@ Create the `populate-users.env` file using the following values:
   SHVS_CERT_SAN_LIST=<csp hostname,IP>
   SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
 
-  IH_SERVICE_USERNAME=<Username for the Hub service user>
-  IH_SERVICE_PASSWORD=<Password for the Hub service user>
+  IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+  IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
   SCS_SERVICE_USERNAME=<Username for the SCS service user>
   SCS_SERVICE_PASSWORD=<Password for the SCS service user>
@@ -560,8 +560,8 @@ Create the `populate-users.env` file using the following values:
   SHVS_SERVICE_USERNAME=<Username for the SHVS service user>
   SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
 
-  SGX_AGENT_SERVICE_USERNAME=<Username for the SGX Agent service user>
-  SGX_AGENT_SERVICE_PASSWORD=<Password for the SGX Agent service user>
+  SGX_AGENT_USERNAME=<Username for the SGX Agent service user>
+  SGX_AGENT_PASSWORD=<Password for the SGX Agent service user>
 
   KBS_SERVICE_USERNAME=<Username for the KBS service user>
   KBS_SERVICE_PASSWORD=<Password for the KBS service user>
