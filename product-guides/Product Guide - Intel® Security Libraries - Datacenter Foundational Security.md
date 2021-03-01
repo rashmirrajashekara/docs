@@ -6443,11 +6443,6 @@ mandatory if db-sslcert does not already exist
 
 alternatively, set environment variable AAS\_DB\_SSLCERTSRC
 
-\- Run this command with environment variable AAS\_DB\_REPORT\_MAX\_ROWS
-and
-
-AAS\_DB\_REPORT\_NUM\_ROTATIONS can update db rotation arguments
-
 #####  11.5.3.2.3  `authservice setup server [--port=<port>]`
 
 \- Setup http server on \<port\>
@@ -14163,10 +14158,6 @@ This folder contains the CMS root CA certificate.
 ​         <span style="font-family:Courier; color:blue">**stop**</span><br/>
 ​                   <span style="font-family:Courier; color:brown">authservice stop</span><br/>
 ​                   Stop authservice
-
-​         <span style="font-family:Courier; color:blue">**tlscertsha384**</span><br/>
-​                   <span style="font-family:Courier; color:brown">authservice tlscertsha384</span><br/>
-​                   Show the SHA384 digest of the certificate used for TLS
 
 ​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
 ​                   <span style="font-family:Courier; color:brown">authservice uninstall</span><br/>
