@@ -14162,10 +14162,6 @@ This folder contains the CMS root CA certificate.
 ​                   <span style="font-family:Courier; color:brown">authservice stop</span><br/>
 ​                   Stop authservice
 
-​         <span style="font-family:Courier; color:blue">**tlscertsha384**</span><br/>
-​                   <span style="font-family:Courier; color:brown">authservice tlscertsha384</span><br/>
-​                   Show the SHA384 digest of the certificate used for TLS
-
 ​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
 ​                   <span style="font-family:Courier; color:brown">authservice uninstall</span><br/>
 ​                   Uninstall authservice<br/>
