@@ -432,75 +432,6 @@ In addition, the SHA384 digest of the CMS TLS certificate will be needed for ins
 
 cms tlscertsha384
 
-
-### Creating Users and Roles 
-
-During installation of each services, number of user accounts and roles specific to services must be generated. Most of these accounts will be service users, which is used by the various services to function together. Another set of users will be used for installation permissions, and administrative user will be created to provide the initial authentication interface for the actual user based on the organizational requirements. Creating these required users and roles is facilitated by a script that will accept credentials and configuration settings from an answer file and automate the process.
-Create the `populate-users.env` file using the following values:
-
-```shell
-# SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
-  ISECL_INSTALL_COMPONENTS=AAS,SCS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
-
-  AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
-  AAS_ADMIN_USERNAME=<AAS username>
-  AAS_ADMIN_PASSWORD=<AAS password>
-
-  IH_CERT_SAN_LIST=<csp hostname,IP>
-  KBS_CERT_SAN_LIST=<enterprise hostname,IP>
-  SCS_CERT_SAN_LIST=<csp hostname,IP>
-  SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
-  SHVS_CERT_SAN_LIST=<csp hostname,IP>
-  SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
-
-  IH_SERVICE_USERNAME=<Username for the Hub service user>
-  IH_SERVICE_PASSWORD=<Password for the Hub service user>
-
-  SCS_SERVICE_USERNAME=<Username for the SCS service user>
-  SCS_SERVICE_PASSWORD=<Password for the SCS service user>
-
-  SGX_AGENT_SERVICE_USERNAME=<Username for the SGX Agent service user>
-  SGX_AGENT_SERVICE_PASSWORD=<Password for the SGX Agent service user>
-
-  KBS_SERVICE_USERNAME=<Username for the KBS service user>
-  KBS_SERVICE_PASSWORD=<Password for the KBS service user>
-
-  SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
-  SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
-
-  SKC_LIBRARY_CERT_COMMON_NAME=<Username for the SKC Library user>
-
-  SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
-
-  INSTALL_ADMIN_USERNAME=<Username for the Admin user>
-  INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
-
-```
-
-> **Note**: The `ISECL_INSTALL_COMPONENTS` variable is a comma-separated list of all the components that will be used in your environment. Not all services are required for every use case. Include only services which are required specific to the use case.
-
-> **Note**: The SAN list variables each support wildcards( "*" and "?"). Using wildcards, domain names and entire IP ranges can be included in the SAN list, which will allow any host matching those ranges to install the relevant service. The SAN list specified here must exactly match the SAN list for the applicable service in that service’s env installation file.
-
-Execute the populate-users script:
-
-```shell
-./populate-users
-```
-
-The script will automatically generate the following users:
-
--   Authentication and Authorization Service (AAS)
--   SGX Caching Service (SCS)
--   Integration HUB (IHUB)
--   Key Broker Service (KBS) with backend key management
--   SGX Agent User
--   SKC Library User
--   Installation Admin User
-
-These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
-
-The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and password. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and password can be used to generate an authentication token. 
-
  
 ## Installing the Authentication and Authorization Service 
 
@@ -596,15 +527,78 @@ Before deployment is initiated, user account and roles must be generated for eac
 
 Creating these required users and roles is facilitated by the scripts in the corresponding components (Refer to dist/linux directory of each component) and needs to be executed before installation of each component.
 
-SCS: scs_aas_curl.sh
-
-SHVS: shvs_aas_curl.sh
-
-SQVS: sqvs_aas_curl.sh
-
 For Key Broker Service and Integration Hub User/Roles creation, Please refer to the appendix section for sample scripts
 
 The output of these scripts is a bearer-token which needs to be updated in the BEARER_TOKEN env variable in the corresponding component’s env file.
+
+### Creating Users and Roles 
+
+During installation of each services, number of user accounts and roles specific to services must be generated. Most of these accounts will be service users, which is used by the various services to function together. Another set of users will be used for installation permissions, and administrative user will be created to provide the initial authentication interface for the actual user based on the organizational requirements. Creating these required users and roles is facilitated by a script that will accept credentials and configuration settings from an answer file and automate the process.
+Create the `populate-users.env` file using the following values:
+
+```shell
+# SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
+  ISECL_INSTALL_COMPONENTS=AAS,SCS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
+
+  AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
+  AAS_ADMIN_USERNAME=<AAS username>
+  AAS_ADMIN_PASSWORD=<AAS password>
+
+  IH_CERT_SAN_LIST=<csp hostname,IP>
+  KBS_CERT_SAN_LIST=<enterprise hostname,IP>
+  SCS_CERT_SAN_LIST=<csp hostname,IP>
+  SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
+  SHVS_CERT_SAN_LIST=<csp hostname,IP>
+  SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
+
+  IH_SERVICE_USERNAME=<Username for the Hub service user>
+  IH_SERVICE_PASSWORD=<Password for the Hub service user>
+
+  SCS_SERVICE_USERNAME=<Username for the SCS service user>
+  SCS_SERVICE_PASSWORD=<Password for the SCS service user>
+
+  SHVS_SERVICE_USERNAME=<Username for the SHVS service user>
+  SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
+
+  SGX_AGENT_SERVICE_USERNAME=<Username for the SGX Agent service user>
+  SGX_AGENT_SERVICE_PASSWORD=<Password for the SGX Agent service user>
+
+  KBS_SERVICE_USERNAME=<Username for the KBS service user>
+  KBS_SERVICE_PASSWORD=<Password for the KBS service user>
+
+  SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
+  SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
+
+  SKC_LIBRARY_CERT_COMMON_NAME=<Username for the SKC Library user>
+
+  SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
+
+  INSTALL_ADMIN_USERNAME=<Username for the Admin user>
+  INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
+
+```
+> **Note**: The `ISECL_INSTALL_COMPONENTS` variable is a comma-separated list of all the components that will be used in your environment. Not all services are required for every use case. Include only services which are required specific to the use case.
+
+> **Note**: The SAN list variables each support wildcards( "*" and "?"). Using wildcards, domain names and entire IP ranges can be included in the SAN list, which will allow any host matching those ranges to install the relevant service. The SAN list specified here must exactly match the SAN list for the applicable service in that service’s env installation file.
+
+Execute the populate-users script:
+```shell
+./populate-users
+```
+
+The script will automatically generate the following users:
+
+-   Authentication and Authorization Service (AAS)
+-   SGX Caching Service (SCS)
+-   SGX Host Verificatin Service (SHVS)
+-   Integration HUB (IHUB)
+-   Key Broker Service (KBS) with backend key management
+-   Installation Admin User
+
+These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
+
+The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and `INSTALLATION_ADMIN_PASSWORD`. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and `INSTALLATION_ADMIN_PASSWORD` can be used to generate an authentication token. 
+
 
 ## Installing the Caching Service
 
@@ -699,17 +693,9 @@ Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PG
         
        SAN_LIST=<comma-separated list of IPs and hostnames for the SCS>
         
-       BEARER_TOKEN=<Installation token from AAS> 
+       BEARER_TOKEN=<Installation token> 
 
-BEARER_TOKEN above can be obtained from running scs_aas_curl.sh script below
-
-Execute scs_aas_curl.sh script to create SGX Caching Service user account and roles
-
-cd sgx-caching-service/dist/linux/
-
-./scs_aas_curl.sh
-
-Update the BEARER_TOKEN value in /root/scs.env file
+Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 Execute the SCS installer binary:
 
@@ -800,7 +786,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      
      SHVS_AUTO_REFRESH_TIMER=120
 
-     BEARER_TOKEN=<Installation token from AAS> 
+     BEARER_TOKEN=<Installation token> 
     
      AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
     
@@ -810,15 +796,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
      SAN_LIST=<Comma-separated list of IP addresses and hostnames for the SHVS> 
 
-BEARER_TOKEN above can be obtained from running shvs_aas_curl.sh script below
-
-Execute shvs_aas_curl.sh script to create SGX Host Verification Service user account and roles
-
-cd sgx-hvs/dist/linux/
-
-./shvs_aas_curl.sh
-
-Update the BEARER_TOKEN value in /root/shvs.env file
+Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 Execute the installer binary.
 
@@ -862,7 +840,10 @@ Intel® Xeon® SP (Ice Lake-SP)
     Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
     Update the following in agent.conf
-     - IP address for all the services
+    - IP address of the SGX compute node
+     - IP address for all the CSP side services
+     - AAS admin credentials
+     - sgx_agent user credentials
      - Certificate Management Service TLS digest value (CMS running on CSP system)
     ./deploy_sgx_agent.sh
 
@@ -936,20 +917,11 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        
        SQVS_INCLUDE_TOKEN=true
 
-BEARER_TOKEN above can be obtained from running sqvs_aas_curl.sh script below
-
-Execute sqvs_aas_curl.sh script to create SGX Verification Service user account and roles
-
-cd sgx-verification-service/dist/linux/
-
-./sqvs_aas_curl.sh
-
-Update the BEARER_TOKEN value in /root/sqvs.env file
+Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 3.  Execute the sqvs installer binary.
 
 sqvs-v3.4.0.bin
-
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1187,7 +1159,7 @@ To install the SGX Integration Hub, follow these steps:
     ATTESTATION_SERVICE_URL=< https://< SHVS IP or Hostname >:13000/sgx-hvs/v2
     ATTESTATION_TYPE=SGX
     CMS_TLS_CERT_SHA384=< CMS TLS digest > 
-    BEARER_TOKEN=< Installation token from AAS > 
+    BEARER_TOKEN=<Installation token> 
  
     AAS_API_URL=https://< AAS IP or Hostname >:8444/aas
     CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
@@ -1209,7 +1181,7 @@ To install the SGX Integration Hub, follow these steps:
 ```
 3.  Create Integrated Hub Service user account and Roles. A sample script is provided in the appendix section for reference
 
-Update the BEARER_TOKEN value in the ihub.env file
+Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 4.  Execute the installer binary.
 
@@ -1384,17 +1356,17 @@ NA
        
        TLS_COMMON_NAME="KBS TLS Certificate"
        
-       SKC_CHALLENGE_TYPE="SGX"
+       SKC_CHALLENGE_TYPE="SGX,SW"
         
        CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
         
        TLS_SAN_LIST=<KBS Hostname/IP>
         
        BEARER_TOKEN=<Installation token from AAS>
+       
+       SESSION_EXPIRY_TIME=60
 
-BEARER_TOKEN above can be obtained form Step 3 below
-
-3.  Create Key Broker Service user account and Roles. A sample script is provided in the appendix section for reference
+Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 4.  Execute the KBS installer.
 
@@ -1432,7 +1404,12 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
     Copy skc_library.tar skc_library.sha2 and skclib_untar.sh to a directory in SGX Compute node
     ./skclib_untar.sh
-    Update the IP address for the services mentioned in skc_library.conf (SCS IP Should be set to CSP SCS IP)
+    Update the following in skc_library.conf (SCS IP Should be set to CSP SCS IP)
+    - IP address for CSP side services
+    - IP address for Enterprise side services
+    - AAS Admin credentials
+    - Hostname of the system where KBS is deployed
+    - skc_library user credentials
     ./deploy_skc_library.sh
     
 #### Deploying SKC Library as a Container 
@@ -1679,7 +1656,6 @@ Following are the set of roles which are required during installation and runtim
 | < SQVS:QuoteVerifier: >                                      |                                                              | Used by the KBS service user for quote verification          |
 
 
-
 ## SGX Agent
 
 The SGX Agent communicates with SGX Caching Service (SCS) and SGX Host Verification Service (SHVS) directly. Authentication has been centralized with the new Authentication and Authorization Service.
@@ -1712,7 +1688,7 @@ Host Registration creates a host record with host information in the SGX Host Ve
 | CMS_TLS_CERT_SHA384            | < Certificate Management Service TLS digest>            | SHA384 hash of the CMS TLS certificate                       |
 | BEARER_TOKEN                   |                                                         | Installation token from AAS                                  |
 | SHVS_PORT                      | 13000                                                   | SGX Host Verification Service HTTP Port                      |
-| SHVS_SCHEDULER_TIMER           | 60                                                      | SHVS Scheduler timeout                                       |
+| SHVS_SCHEDULER_TIMER           | 10                                                      | SHVS Scheduler timeout                                       |
 | SHVS_HOST_PLATFORM_EXPIRY_TIME | 240                                                     | SHVS Host Info Expiry time                                   |
 | SHVS_AUTO_REFRESH_TIMER        | 120                                                     | SHVS Auto-refresh timeout                                    |
 
@@ -1804,7 +1780,6 @@ This folder contains log files: /var/log/shvs/
 | SHVS_UPDATE_INTERVAL| 120                                              | Interval for SHVS updates in minutes. Values should be in the range of 1 minutes to 120 minutues.|
 | SGX_AGENT_NOSETUP   | false                                            | Skips setup during installation if set to true               |
 | SAN_LIST            | 127.0.0.1, localhost                             | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service |
-
 
 
 ### Configuration Options - This is same as above. 
@@ -2585,378 +2560,6 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
 
 # Appendix 
 
-Sample Shell script to create KBS user, KBS Roles and mapping KBS user to KBS roles and generating a KBS Token from AAS
-
-#### Sample Script to create Key Broker Service User account and roles
-
-```
-#!/bin/bash
-echo "Setting up Key Broker Service Related roles and user in AAS Database"
-
-source ~/kbs.env 2> /dev/null
-
-aas_hostname=${AAS_API_URL:-"https://<aas.server.com>:8444/aas"}
-CURL_OPTS="-s -k"
-CONTENT_TYPE="Content-Type: application/json"
-ACCEPT="Accept: application/jwt"
-
-red=`tput setaf 1`
-green=`tput setaf 2`
-reset=`tput sgr0`
-
-mkdir -p /tmp/kbs
-tmpdir=$(mktemp -d -p /tmp/kbs)
-
-dnf install -yq jq
-
-Bearer_token=`curl $CURL_OPTS -X POST $aas_hostname/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
-
-# This routine checks if kbs user exists and returns user id
-# it creates a new user if one does not exist
-create_kbs_user()
-{
-cat > $tmpdir/user.json << EOF
-{
-        "username":"$KBS_SERVICE_USERNAME",
-        "password":"$KBS_SERVICE_PASSWORD"
-}
-EOF
-        #check if kbs user already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users?name=$KBS_SERVICE_USERNAME > $tmpdir/user-response.status
-
-        len=$(jq '. | length' < $tmpdir/user_response.json)
-        if [ $len -ne 0 ]; then
-                user_id=$(jq -r '.[0] .user_id' < $tmpdir/user_response.json)
-        else
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/user.json -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users > $tmpdir/user_response.status
-
-                local status=$(cat $tmpdir/user_response.status)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/user_response.json ]; then
-                        user_id=$(jq -r '.user_id' < $tmpdir/user_response.json)
-                        if [ -n "$user_id" ]; then
-                                echo "${green} Created kbs user, id: $user_id ${reset}"
-                        fi
-                fi
-        fi
-}
-
-# This routine checks if kbs CertApprover/Administrator/QuoteVerifier roles exist and returns those role ids
-# it creates above roles if not present in AAS db
-create_roles()
-{
-cat > $tmpdir/certroles.json << EOF
-{
-        "service": "CMS",
-        "name": "CertApprover",
-        "context": "CN=$TLS_COMMON_NAME;SAN=$TLS_SAN_LIST;CERTTYPE=TLS"
-}
-EOF
-
-cat > $tmpdir/quoteverifyroles.json << EOF
-{
-        "service": "SQVS",
-        "name": "QuoteVerifier",
-        "context": ""
-}
-EOF
-
-        #check if CertApprover role already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles?name=CertApprover > $tmpdir/role_response.status
-
-        cms_role_id=$(jq --arg SAN $TLS_SAN_LIST -r '.[] | select ( .context | ( contains("KBS") and contains($SAN)))' < $tmpdir/role_response.json | jq -r '.role_id')
-        if [ -z $cms_role_id ]; then
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/certroles.json -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_response-status.json
-
-                local status=$(cat $tmpdir/role_response-status.json)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/role_response.json ]; then
-                        cms_role_id=$(jq -r '.role_id' < $tmpdir/role_response.json)
-                fi
-        fi
-
-        # get admin role id
-        admin_role_id=`curl $CURL_OPTS $aas_hostname/roles?name=Administrator -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" | jq -r '.[0].role_id'`
-
-        #check if QuoteVerifier role already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=QuoteVerifier > $tmpdir/role_resp.status
-
-        len=$(jq '. | length' < $tmpdir/role_resp.json)
-        if [ $len -ne 0 ]; then
-                sqvs_role_id=$(jq -r '.[0] .role_id' < $tmpdir/role_resp.json)
-        else
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/quoteverifyroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
-
-                local status=$(cat $tmpdir/role_resp-status.json)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/role_resp.json ]; then
-                        sqvs_role_id=$(jq -r '.role_id' < $tmpdir/role_resp.json)
-                fi
-        fi
-        ROLE_ID_TO_MAP=`echo \"$cms_role_id\",\"$admin_role_id\",\"$sqvs_role_id\"`
-}
-
-#Maps kbs user to CertApprover/Administrator/QuoteVerifier Roles
-mapUser_to_role()
-{
-cat >$tmpdir/mapRoles.json <<EOF
-{
-        "role_ids": [$ROLE_ID_TO_MAP]
-}
-EOF
-        curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/mapRoles.json -o $tmpdir/mapRoles_response.json -w "%{http_code}" $aas_hostname/users/$user_id/roles > $tmpdir/mapRoles_response-status.json
-
-        local status=$(cat $tmpdir/mapRoles_response-status.json)
-        if [ $status -ne 201 ]; then
-                return 1
-        fi
-}
-
-KBS_SETUP_API="create_kbs_user create_roles mapUser_to_role"
-status=
-for api in $KBS_SETUP_API
-do
-        eval $api
-        status=$?
-        if [ $status -ne 0 ]; then
-                break;
-        fi
-done
-
-if [ $status -ne 0 ]; then
-        echo "${red} Key Broking Service user/roles creation failed.: $api ${reset}"
-        exit 1
-else
-        echo "${green} Key Broking Service user/roles creation succeded ${reset}"
-fi
-
-#Get Token for Key Broking Service user and configure it in kbs config.
-curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "$ACCEPT" --data @$tmpdir/user.json -o $tmpdir/kbs_token-resp.json -w "%{http_code}" $aas_hostname/token > $tmpdir/get_kbs_token-response.status
-
-status=$(cat $tmpdir/get_kbs_token-response.status)
-if [ $status -ne 200 ]; then
-        echo "${red} Couldn't get bearer token for kbs user ${reset}"
-else
-        export BEARER_TOKEN=`cat $tmpdir/kbs_token-resp.json`
-        echo "************************************************************************************************************************************************"
-        echo $BEARER_TOKEN
-        echo "************************************************************************************************************************************************"
-        echo "${green} copy the above token and paste it against BEARER_TOKEN in kbs.env ${reset}"
-fi
-
-# cleanup
-rm -rf $tmpdir
-
-```
-
-The printed token needs to be added in BEARER_TOKEN section in kbs.env
-
-
-#### Sample Script to Create Integrated Hub User account and Roles
-
-```
-#!/bin/bash
-echo "Setting up Integration Hub Service Related roles and user in AAS Database"
-
-source ~/ihub.env 2> /dev/null
-
-aas_hostname=${AAS_API_URL:-"https://<aas.server.com>:8444/aas"}
-CN="Integration Hub TLS Certificate"
-CURL_OPTS="-s -k"
-CONTENT_TYPE="Content-Type: application/json"
-ACCEPT="Accept: application/jwt"
-
-red=`tput setaf 1`
-green=`tput setaf 2`
-reset=`tput sgr0`
-
-mkdir -p /tmp/ihub
-tmpdir=$(mktemp -d -p /tmp/ihub)
-
-dnf install -yq jq
-
-Bearer_token=`curl $CURL_OPTS -X POST $aas_hostname/token -d '{"username": "admin@aas", "password": "aasAdminPass" }'`
-
-# This routine checks if ihub user exists and returns user id
-# it creates a new user if one does not exist
-create_ihub_user()
-{
-cat > $tmpdir/user.json << EOF
-{
-        "username":"$IHUB_SERVICE_USERNAME",
-        "password":"$IHUB_SERVICE_PASSWORD"
-}
-EOF
-        #check if ihub user already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users?name=$IHUB_SERVICE_USERNAME > $tmpdir/user-response.status
-
-        len=$(jq '. | length' < $tmpdir/user_response.json)
-        if [ $len -ne 0 ]; then
-                user_id=$(jq -r '.[0] .user_id' < $tmpdir/user_response.json)
-        else
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/user.json -o $tmpdir/user_response.json -w "%{http_code}" $aas_hostname/users > $tmpdir/user_response.status
-
-                local status=$(cat $tmpdir/user_response.status)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/user_response.json ]; then
-                        user_id=$(jq -r '.user_id' < $tmpdir/user_response.json)
-                        if [ -n "$user_id" ]; then
-                                echo "${green} Created ihub user, id: $user_id ${reset}"
-                        fi
-                fi
-        fi
-}
-
-# This routine checks if ihub CertApprover/HostsListReader/HostDataReader roles exist and returns those role ids
-# it creates above roles if not present in AAS db
-create_roles()
-{
-cat > $tmpdir/certroles.json << EOF
-{
-        "service": "CMS",
-        "name": "CertApprover",
-        "context": "CN=$CN;SAN=$TLS_SAN_LIST;CERTTYPE=TLS"
-}
-EOF
-
-cat > $tmpdir/hostlistreadroles.json << EOF
-{
-        "service": "SHVS",
-        "name": "HostsListReader",
-        "context": ""
-}
-EOF
-
-cat > $tmpdir/hostdatareadroles.json << EOF
-{
-        "service": "SHVS",
-        "name": "HostDataReader",
-        "context": ""
-}
-EOF
-        #check if CertApprover role already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles?name=CertApprover > $tmpdir/role_response.status
-
-        cms_role_id=$(jq --arg SAN $TLS_SAN_LIST -r '.[] | select ( .context | ( contains("Integration Hub") and contains($SAN)))' < $tmpdir/role_response.json | jq -r '.role_id')
-        if [ -z $cms_role_id ]; then
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/certroles.json -o $tmpdir/role_response.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_response-status.json
-
-                local status=$(cat $tmpdir/role_response-status.json)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/role_response.json ]; then
-                        cms_role_id=$(jq -r '.role_id' < $tmpdir/role_response.json)
-                fi
-        fi
-
-        #check if HostsListReader role already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=HostsListReader > $tmpdir/role_resp.status
-        len=$(jq '. | length' < $tmpdir/role_resp.json)
-        if [ $len -ne 0 ]; then
-                ihub_role_id1=$(jq -r '.[0] .role_id' < $tmpdir/role_resp.json)
-        else
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/hostlistreadroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
-
-                local status=$(cat $tmpdir/role_resp-status.json)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/role_resp.json ]; then
-                        ihub_role_id1=$(jq -r '.role_id' < $tmpdir/role_resp.json)
-                fi
-        fi
-
-        #check if HostDataReader role already exists
-        curl $CURL_OPTS -H "Authorization: Bearer ${Bearer_token}" -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles?name=HostDataReader > $tmpdir/role_resp.status
-
-        ihub_role_id2=$(jq -r '.[] | select ( .service | contains("SHVS"))' < $tmpdir/role_resp.json | jq -r '.role_id')
-        if [ -z $ihub_role_id2 ]; then
-                curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/hostdatareadroles.json -o $tmpdir/role_resp.json -w "%{http_code}" $aas_hostname/roles > $tmpdir/role_resp-status.json
-
-                local status=$(cat $tmpdir/role_resp-status.json)
-                if [ $status -ne 201 ]; then
-                        return 1
-                fi
-
-                if [ -s $tmpdir/role_resp.json ]; then
-                        ihub_role_id2=$(jq -r '.role_id' < $tmpdir/role_resp.json)
-                fi
-        fi
-
-        ROLE_ID_TO_MAP=`echo \"$cms_role_id\",\"$ihub_role_id1\",\"$ihub_role_id2\"`
-}
-
-#Maps ihub user to CertApprover/HostsListReader/HostDataReader Roles
-mapUser_to_role()
-{
-cat >$tmpdir/mapRoles.json <<EOF
-{
-        "role_ids": [$ROLE_ID_TO_MAP]
-}
-EOF
-        curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "Authorization: Bearer ${Bearer_token}" --data @$tmpdir/mapRoles.json -o $tmpdir/mapRoles_response.json -w "%{http_code}" $aas_hostname/users/$user_id/roles > $tmpdir/mapRoles_response-status.json
-
-        local status=$(cat $tmpdir/mapRoles_response-status.json)
-        if [ $status -ne 201 ]; then
-                return 1
-        fi
-}
-
-IHUB_SETUP_API="create_ihub_user create_roles mapUser_to_role"
-status=
-for api in $IHUB_SETUP_API
-do
-        eval $api
-        status=$?
-        if [ $status -ne 0 ]; then
-                break;
-        fi
-done
-
-if [ $status -ne 0 ]; then
-        echo "${red} Integration Hub Service user/roles creation failed.: $api ${reset}"
-        exit 1
-else
-        echo "${green} Integration Hub Service user/roles creation succeded ${reset}"
-fi
-
-#Get Token for Integration Hub Service user and configure it in ihub config.
-curl $CURL_OPTS -X POST -H "$CONTENT_TYPE" -H "$ACCEPT" --data @$tmpdir/user.json -o $tmpdir/ihub_token-resp.json -w "%{http_code}" $aas_hostname/token > $tmpdir/get_ihub_token-response.status
-
-status=$(cat $tmpdir/get_ihub_token-response.status)
-if [ $status -ne 200 ]; then
-        echo "${red} Couldn't get bearer token for ihub user ${reset}"
-else
-        export BEARER_TOKEN=`cat $tmpdir/ihub_token-resp.json`
-        echo "************************************************************************************************************************************************"
-        echo $BEARER_TOKEN
-        echo "************************************************************************************************************************************************"
-        echo "${green} copy the above token and paste it against BEARER_TOKEN in ihub.env ${reset}"
-fi
-
-# cleanup
-rm -rf $tmpdir
-
-```
-
-The printed token needs to be added in BEARER_TOKEN section in ihub.env
-
-
 ## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
@@ -2965,7 +2568,7 @@ On the Enterprise VM, where Key broker service is running
 
 	cd /root/binaries/kbs_script
 	
-	Update KBS and AAS IP addresses in run.sh
+	Update Enterprise VM IP address where KBS and AAS are installed in run.sh
 	
 	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
 
