@@ -27,6 +27,7 @@ Table of Contents
          * [Create and Run Playbook](#create-and-run-playbook)
          * [Additional Examples &amp; Tips](#additional-examples--tips)
             * [TPM is already owned](#tpm-is-already-owned)
+            * [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
             * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
             * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
             * [Using Docker Notary](#using-docker-notary)
@@ -509,7 +510,9 @@ tpm_owner_secret: <tpm_secret>
 
 #### GRUB Default option for Booting into MLE
 
-The grub2_default option would vary from OEM to OEM for booting after installing tboot. The grub option to be selected for booting into TBOOT/MLE mode, use grubby --info <option:0/1...> to determine which one has no boot menu assigned to it during runtime in the playbook as below. Default is 3.
+The grub2_default option would vary from OEM to OEM for booting after installing tboot. The grub option to be selected for booting into TBOOT/MLE mode, use `grubby --info <option:0/1...>` to determine which one has no boot menu assigned to it during runtime in the playbook as below. Default is 3.
+
+> **NOTE:** This is not required in case of UEFI Secure boot mode
 
 ```shell
 ansible-playbook <playbook-name> \
