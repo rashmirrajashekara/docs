@@ -996,16 +996,19 @@ To install the Trust Agent for Linux:
   WLS_API_URL=https://<WLS IP address or hostname>:5000/wls/
    ```
 
-  For Workload Confidentiality with Docker Container Encryption, add the following (**in addition to** the basic Platform Attestation sample):
+  For Workload Confidentiality with Container Encryption, add the following (**in addition to** the basic Platform Attestation sample):
 
    ```shell
   WLA_SERVICE_USERNAME=<Username for the WLA service user>
   WLA_SERVICE_PASSWORD=<Username for the WLA service user>
   WLS_API_URL=https://<WLS IP address or hostname>:5000/wls/
-  WA_WITH_CONTAINER_SECURITY=yes
   NO_PROXY=<Registry_ip>
   HTTPS_PROXY=<proxy_url>
   REGISTRY_SCHEME_TYPE=https
+  ##For the Docker container runtime:
+  WA_WITH_CONTAINER_SECURITY_DOCKER=yes
+  ##For the CRI-O container runtime:
+  WA_WITH_CONTAINER_SECURITY_CRIO=yes
    ```
 
 * Execute the Trust Agent installer and wait for the installation to complete.
@@ -1851,24 +1854,27 @@ Enterprise Linux 8.2.
 
 1.  Copy the WPM installer to the `/root` directory
 
-2.  Create the `wpm.env` answer file:
+2. Create the `wpm.env` answer file:
 
-    ```shell
-    KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
-    WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
-    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
-    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
-    CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
-    AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
-    BEARER_TOKEN=<Installation token from populate-users script>
-    ```
+   ```shell
+   KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
+   WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
+   WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
+   CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
+   CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
+   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
+   BEARER_TOKEN=<Installation token from populate-users script>
+   ```
 
-    For Docker Container Encryption only, add the following line to the
-    wpm.env installation answer file:
+   For Container Encryption only, add the following line to the
+   wpm.env installation answer file:
 
-    ```shell
-    WPM_WITH_CONTAINER_SECURITY=yes
-    ```
+   ```shell
+   ##For the Docker container runtime:
+   WPM_WITH_CONTAINER_SECURITY_DOCKER=yes
+   ##For the CRI-O container runtime: 
+   WPM_WITH_CONTAINER_SECURITY_CRIO=yes
+   ```
 
 3.  Execute the WPM installer:
 
@@ -8847,17 +8853,20 @@ To install the Trust Agent for Linux:
   WLS_API_URL=https://<WLS IP address or hostname>:5000/wls/
    ```
 
-  For Workload Confidentiality with Docker Container Encryption, add the following (**in addition to** the basic Platform Attestation sample):
+  For Workload Confidentiality with Docker Encryption, add the following (**in addition to** the basic Platform Attestation sample):
 
    ```shell
   WLA_SERVICE_USERNAME=<Username for the WLA service user>
   WLA_SERVICE_PASSWORD=<Username for the WLA service user>
   WLS_API_URL=https://<WLS IP address or hostname>:5000/wls/
-  WA_WITH_CONTAINER_SECURITY=yes
   NO_PROXY=<Registry_ip>
   HTTPS_PROXY=<proxy_url>
   INSECURE_SKIP_VERIFY=<TRUE/FALSE based on registry configured with http/https respectively>
   REGISTRY_SCHEME_TYPE=https
+  ##For the Docker container runtime:
+  WA_WITH_CONTAINER_SECURITY_DOCKER=yes
+  ##For the CRI-O container runtime:
+  WA_WITH_CONTAINER_SECURITY_CRIO=yes
    ```
 
 * Execute the Trust Agent installer and wait for the installation to complete.
@@ -9498,24 +9507,27 @@ Enterprise Linux 8.2.
 
 1.  Copy the WPM installer to the `/root` directory
 
-2.  Create the `wpm.env` answer file:
+2. Create the `wpm.env` answer file:
 
-    ```shell
-    KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
-    WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
-    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
-    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
-    CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
-    AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
-    BEARER_TOKEN=<Installation token from populate-users script>
-    ```
+   ```shell
+   KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
+   WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
+   WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
+   CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
+   CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
+   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
+   BEARER_TOKEN=<Installation token from populate-users script>
+   ```
 
-    For Docker Container Encryption only, add the following line to the
-    wpm.env installation answer file:
+   For Container Encryption only, add the following line to the
+   wpm.env installation answer file:
 
-    ```shell
-    WPM_WITH_CONTAINER_SECURITY=yes
-    ```
+   ```shell
+   ##For the Docker container runtime:
+   WPM_WITH_CONTAINER_SECURITY_DOCKER=yes
+   ##For the CRI-O container runtime: 
+   WPM_WITH_CONTAINER_SECURITY_CRIO=yes
+   ```
 
 3.  Execute the WPM installer:
 
