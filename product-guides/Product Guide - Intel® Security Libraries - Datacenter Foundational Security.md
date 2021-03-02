@@ -1979,11 +1979,10 @@ Authorization: Bearer <token>
 }
 ```
 
-### 4.2.3  Search User
+### 4.2.3  Search Users by Username
 
 ```
-GET https://<IP or hostname of AAS>:8444/aas/users?<parameter>=<value>
-Authorization: Bearer <token>
+GET https://<IP or hostname of AAS>:8444/aas/users?name=<value>
 ```
 
 ### 4.2.4  Change User Password
