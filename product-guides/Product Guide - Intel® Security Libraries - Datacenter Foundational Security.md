@@ -6442,6 +6442,11 @@ mandatory if db-sslcert does not already exist
 
 alternatively, set environment variable AAS\_DB\_SSLCERTSRC
 
+\- Run this command with environment variable AAS\_DB\_REPORT\_MAX\_ROWS
+and
+
+AAS\_DB\_REPORT\_NUM\_ROTATIONS can update db rotation arguments
+
 #####  11.5.3.2.3  `authservice setup server [--port=<port>]`
 
 \- Setup http server on \<port\>
