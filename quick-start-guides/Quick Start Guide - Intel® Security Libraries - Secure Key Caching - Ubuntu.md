@@ -263,16 +263,19 @@ The following inventory can be used and created under `/etc/ansible/hosts`.
 [CSP:vars]
 isecl_role=csp
 ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
 ansible_password=<password>
 
 [Enterprise:vars]
 isecl_role=enterprise
 ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
 ansible_password=<password>
 
 [Node:vars]
 isecl_role=node
 ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
 ansible_password=<password>
 ```
 
@@ -293,6 +296,9 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
 
 ```yaml
 - hosts: all
+  remote_user: root
+  become: yes
+  become_user: root
   gather_facts: yes
   any_errors_fatal: true
   vars:
@@ -303,7 +309,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   environment:
     http_proxy: "{{http_proxy}}"
     https_proxy: "{{https_proxy}}"
-    no_proxy: "{{no_proxy}}"```
+    no_proxy: "{{no_proxy}}"
 ```
 
 and
@@ -320,6 +326,9 @@ OR
 
 ```yaml
 - hosts: all
+  remote_user: root
+  become: yes
+  become_user: root
   gather_facts: yes
   any_errors_fatal: true
   roles:   
@@ -333,7 +342,7 @@ OR
 and
 
 ```shell
-ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars "ansible_sudo_pass=<password>"
+ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
 ```
 
 > **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
@@ -341,10 +350,10 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching` & `sgx-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching` & `sgx-orchestration-kubernetes` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
-   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars "ansible_sudo_pass=<password>"
+   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
   ```
 
   or 
@@ -363,7 +372,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Usecase                      | Variable                                                     |
 | ---------------------------- | ------------------------------------------------------------ |
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
-| SGX Orchestration | `setup: sgx-orchestration` in playbook or via `--extra-vars` as `setup=sgx-orchestration`in CLI |
+| SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 ## **9. Usecase Workflows with Postman API Collections**
@@ -375,6 +384,8 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Use case                     | Sub-Usecase | API Collection     |
 | ---------------------------- | ----------- | ------------------ |
 | Secure Key Caching           | -           | ✔️                  |
+| SGX Discovery, Provisioning and Orchestration | -           | ✔️                  |
+
 
 
 ### Download Postman API Collections
@@ -478,7 +489,7 @@ For IHUB installation, make sure to update below configuration in /root/binaries
 ```
 
 ##### Deploy isecl-scheduler
-* The isecl-scheduler default configuration is provided for common cluster support in isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+* The isecl-scheduler default configuration is provided for common cluster support in /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
 For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
 
 * Install cfssl and cfssljson on Kubernetes Control Plane
@@ -560,13 +571,16 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 #### Deploying SKC Services on Single System
 ```
 Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
+Update orchestrator.conf with the following
+  - Deployment system IP address
+  - SAN List (a list of ip address and hostname for the deployment system)
+  - TENANT as KUBERNETES
+  - System IP address where Kubernetes is deployed
+  - Database name, Database username and passwords for SHVS services
 Update skc.conf with the following
   - Deployment system IP address
-  - KBS IP address and KBS Hostname  
-  - System IP address where Kubernetes is deployed
-  - TENANT as KUBERNETES  
-  - Comment out the OPENSTACK_IP  
-  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - SAN List (a list of ip address and hostname for the deployment system)
+  - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_skc.sh
@@ -577,9 +591,9 @@ Save and Close
 Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
 Update csp_skc.conf with the following
   - CSP system IP Address
-  - System IP address where Kubernetes is deployed 
-  - Comment out the OPENSTACK_IP   
-  - TENANT as KUBERNETES  
+  - SAN List (a list of ip address and hostname for the CSP system)
+  - TENANT as KUBERNETES
+  - System IP address where Kubernetes is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -632,6 +646,8 @@ Pod should be in running state and launched on the host as per values in pod.yml
 Copy the binaries directory generated in the build system to the /root/ directory on Enterprise system
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
+  - SAN List (a list of ip address and hostname for the Enterprise system)
+  - kbs hostname
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -643,10 +659,12 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
-  - CSP system IP address where CMS/AAS/SHVS services deployed
+  - SGX Compute node IP where Agent will be installed
+  - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
-  - For Each Agent installation on a SGX compute node, please change AGENT_USER (Changing AGENT_PASSWORD is optional)
+  - For Each Agent installation on a SGX compute node, please change AGENT_USER and AGENT_PASSWORD
 Save and Close
+Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
 ./deploy_sgx_agent.sh
 ```
 
@@ -657,8 +675,9 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 Update skc_library.conf with the following
   - IP address for CMS/AAS/KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
-  - CSP system IP address where SGX Caching Service deployed
+  - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
 Save and Close
 ./deploy_skc_library.sh
 ```
@@ -691,9 +710,9 @@ GIT Configuration**
 
 	cd into /root/binaries/kbs_script folder
 	
-	Update KBS and AAS IP addresses in run.sh
+	Update SYSTEM_IP address in run.sh (where AAS and KBS are deployed)
 	
-	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
+	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
 
 **Create RSA Key**
 
@@ -745,9 +764,9 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 **SKC Configuration**
 
- Create keys.txt in /tmp folder. This provides key preloading functionality in skc_library.
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
 
-  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key IDs which need to be transferred from KBS along with respective object tag for each key id specified
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
   Sample PKCS11 url is as below
   
@@ -760,7 +779,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
   Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
 	[core]
-	preload_keys=/tmp/keys.txt
+	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
 	debug=true
@@ -796,3 +815,26 @@ Establish a tls session with the nginx using the key transferred inside the encl
 ```
     wget https://localhost:2443 --no-check-certificate
 ```
+
+# Note on Key Transfer Policy
+
+Key transfer policy is used to enforce a set of policies which need to be compiled with before the secret can be securely provisioned onto a sgx enclave
+
+A typical Key Transfer Policy would look as below
+```
+        "sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
+        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
+        "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
+        "client_permissions_allof":["nginx","USA"],
+        "sgx_enforce_tcb_up_to_date":false
+```
+
+sgx_enclave_issuer_anyof establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
+
+sgx_enclave_measurement_anyof represents the cryptographic hash of the enclave log (enclave code, data)
+
+sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+
+client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
+    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
