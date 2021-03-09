@@ -843,9 +843,9 @@ Update the location of certificate with the loaction where it was copied into th
 
 ssl_certificate "add absolute path of crt file";
 
-Update the KeyID with the KeyID received when RSA key was generated in KBS
+Update the fields(token, object and pin-value) with the values given in keys.txt for the KeyID corresponding to the certificate.
 
-ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234";
 
 **SKC Configuration**
 
@@ -857,9 +857,9 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
   
   pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
   
-  Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
+  Token, object and pin-value given in PKCS11 url entry in keys.txt should match with the one in nginx.conf.
 
-  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
+  The keyID should match the keyID of RSA key created in KBS. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
 
   Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
