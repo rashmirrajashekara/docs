@@ -449,7 +449,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 
    ```shell
    AAS_TLS_SAN=<comma-separated list of IPs and hostnames for the AAS>
-   AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas
+   AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1
    SAN_LIST=<Comma-separated list of IP addresses and hostnames for the CMS>,127.0.0.1,localhost 
    ```
 
@@ -568,7 +568,7 @@ Create the `populate-users.env` file:
 ```shell
 ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IHUB,HVS,WLA,AAS
 
-AAS_API_URL=https://<AAS IP address or hostname>:8444/aas
+AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1
 AAS_ADMIN_USERNAME=<AAS username>
 AAS_ADMIN_PASSWORD=<AAS password>
 
@@ -703,7 +703,7 @@ To install the Verification Service, follow these steps:
 
    ```shell
    # Authentication URL and service account credentials 
-   AAS_API_URL=https://isecl-aas:8444/aas
+   AAS_API_URL=https://isecl-aas:8444/aas/v1
    HVS_SERVICE_USERNAME=<username>
    HVS_SERVICE_PASSWORD=<password>
    
@@ -783,7 +783,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
   WLS_SERVICE_PASSWORD=<password for WLS service account>
   CMS_BASE_URL=https://<IP or hostname to CMS>:8445/cms/v1/
   CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
-  AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/
+  AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/v1/
   SAN_LIST=<comma-separated list of IPs and hostnames for the WLS>
   BEARER_TOKEN=<Installation token from populate-users script>
   ```
@@ -984,7 +984,7 @@ To install the Trust Agent for Linux:
   CURRENT_IP=<Trust Agent IP address>
   CMS_TLS_CERT_SHA384=<CMS TLS digest>
   BEARER_TOKEN=<Installation token from populate-users script>
-  AAS_API_URL=https://<AAS IP or Hostname>:8444/aas
+  AAS_API_URL=https://<AAS IP or Hostname>:8444/aas/v1
   CMS_BASE_URL=https://<CMS IP or Hostname>:8445/cms/v1
   SAN_LIST=<Comma-separated list of IP addresses and hostnames for the TAgent matching the SAN list specified in the populate-users script; may include wildcards>
    ```
@@ -1391,7 +1391,7 @@ To install the Integration Hub, follow these steps:
 
 ```shell
 # Authentication URL and service account credentials
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 IHUB_SERVICE_USERNAME=<Username for the Hub service user>
 IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
@@ -1652,7 +1652,7 @@ Enterprise Linux 8.2
 2. Create the installation answer file kbs.env:
 
    ```shell
-   AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+   AAS_API_URL=https://<AAS IP or hostname>:8444/aas/v1
    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
    ENDPOINT_URL=https://<KBS IP or hostname>:9443/kbs/v1/
    SAN_LIST=<comma-separated list of hostnames and IP addresses for the Key Broker>
@@ -1863,7 +1863,7 @@ Enterprise Linux 8.2.
    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
    CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
-   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
+   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas/v1
    BEARER_TOKEN=<Installation token from populate-users script>
    ```
 
@@ -1914,7 +1914,7 @@ account the token was generated for.
 To request a new token from the AAS:
 
 ```
-POST https://<AAS IP or hostname>:8444/aas/token
+POST https://<AAS IP or hostname>:8444/aas/v1/token
 
 {
     "username" : "<username>",
@@ -1970,7 +1970,7 @@ Usernames have the following requirements:
 ### 4.2.2  Create User
 
 ```
-POST https://<IP or hostname of AAS>:8444/aas/users
+POST https://<IP or hostname of AAS>:8444/aas/v1/users
 Authorization: Bearer <token>
 
 {
@@ -1982,13 +1982,13 @@ Authorization: Bearer <token>
 ### 4.2.3  Search Users by Username
 
 ```
-GET https://<IP or hostname of AAS>:8444/aas/users?name=<value>
+GET https://<IP or hostname of AAS>:8444/aas/v1/users?name=<value>
 ```
 
 ### 4.2.4  Change User Password
 
 ```
-PATCH https://<IP or hostname of AAS>:8444/aas/users/changepassword
+PATCH https://<IP or hostname of AAS>:8444/aas/v1/users/changepassword
 Authorization: Bearer <token>
 {
 	"username": "<username>",
@@ -2001,7 +2001,7 @@ Authorization: Bearer <token>
 ### 4.2.5  Delete User
 
 ```
-DELETE https://<IP or hostname of AAS>:8444/aas/users/<User ID>
+DELETE https://<IP or hostname of AAS>:8444/aas/v1/users/<User ID>
 Authorization: Bearer <token>
 ```
 
@@ -2024,7 +2024,7 @@ applicable for that service in the AAS.
 ### 4.3.1  Create Role
 
 ```
-POST https://<AAS IP or Hostname>:8444/aas/roles
+POST https://<AAS IP or Hostname>:8444/aas/v1/roles
 Authorization: Bearer <token>
 
 {
@@ -2059,7 +2059,7 @@ the API resource and method definitions in the API documentation.
 ### 4.3.2  Search Roles
 
 ```
-GET https://<AAS IP or Hostname>:8444/aas/roles?<parameter>=<value>
+GET https://<AAS IP or Hostname>:8444/aas/v1/roles?<parameter>=<value>
 Authorization: Bearer <token>
 ```
 
@@ -2077,14 +2077,14 @@ filter=false
 ### 4.3.3  Delete Role
 
 ```
-DELETE https://<AAS IP or Hostname>:8444/aas/roles/<role ID>
+DELETE https://<AAS IP or Hostname>:8444/aas/v1/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
 ### 4.3.4  Assign Role to User
 
 ```
-POST https://<AAS IP or Hostname>:8444/aas/users/<user ID>/roles
+POST https://<AAS IP or Hostname>:8444/aas/v1/users/<user ID>/roles
 Authorization: Bearer <token>
 
 {
@@ -2095,14 +2095,14 @@ Authorization: Bearer <token>
 ### 4.3.5  List Roles Assigned to User
 
 ```
-GET https://<AAS IP or Hostname\>:8444/aas/users/<user ID>/roles
+GET https://<AAS IP or Hostname\>:8444/aas/v1/users/<user ID>/roles
 Authorization: Bearer <token>
 ```
 
 ### 4.3.6  Remove Role from User
 
 ```
-DELETE https://<AAS IP or Hostname>:8444/aas/users/<userID>/roles/<role ID>
+DELETE https://<AAS IP or Hostname>:8444/aas/v1/users/<userID>/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
@@ -5339,7 +5339,7 @@ size, whichever comes first, and 12 total rotations will be retained.
 
 ```
 # Authentication URL and service account credentials - mandatory
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 HVS_SERVICE_USERNAME=HVS_service
 HVS_SERVICE_PASSWORD=password
 
@@ -5715,7 +5715,7 @@ The Trust Agent configuration settings are managed in
 | ownersecretkey: 625d6d8...1be0b4e957          | Defines the TPM ownership secret. This is randomly generated unless manually specified during installation in the trustagent.env file. Note that changing this value may require clearing the TPM ownership in the server BIOS. |
 | aiksecretkey: 59acd1367...edcbede60c          | Defines the AIK secret. Randomly generated. If this is changed, a new AIK will need to be provisioned. |
 | aas:                                          |                                                              |
-| baseurl: https://0.0.0.0:8444/aas/            | Defines the base URL for the AAS                             |
+| baseurl: https://0.0.0.0:8444/aas/v1/         | Defines the base URL for the AAS                             |
 | cms:                                          |                                                              |
 | baseurl: https://0.0.0.0:8445/cms/v1          | Defines the base URL for the CMS                             |
 | tlscertdigest: 330086b3...ae477c8502          | Defines the SHA383 hash of the CMS TLS certificate           |
@@ -6011,7 +6011,7 @@ SOFTWARE Flavors.
 
 ```
 # Authentication URL and service account credentials
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 IHUB_SERVICE_USERNAME=<Integration Hub Service User username>
 IHUB_SERVICE_PASSWORD=<Integration Hub Service User password>
 
@@ -6075,7 +6075,7 @@ ihub:
   service-password: hubAdminPass
   poll-interval-minutes: 1
 aas:
-  url: https://<aas_ip>:8444/aas
+  url: https://<aas_ip>:8444/aas/v1
 cms:
   url: https://<cms_ip>:8445/cms/v1/
   tls-cert-digest: 8a035e3cdd...
@@ -6211,32 +6211,32 @@ The ihub installs by default to /etc/ihub.  This directory contains the config.y
 
 ### 11.4.1  Installation Answer File Options
 
-| Key                                | Sample Value                                            | Description                                                  |
-| ---------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
-| CMS\_NOSETUP                       | false                                                   | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
-| CMS\_PORT                          | 8445                                                    | Defines the HTTPS port the service will use.                 |
-| AAS\_API\_URL                      | https://\<Hostname or IP address of the AAS\>:8444/aas/ | URL to connect to the AAS, used during setup for authentication. |
-| AAS\_TLS\_SAN                      | \<Comma-separated list of IPs/hostnames for the AAS\>   | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
-| LOG\_ROTATION\_PERIOD              | hourly, daily, weekly, monthly, yearly                  | log rotation period, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_COMPRESS                      | Compress                                                | Old versions of log files are compressed with gzip, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_DELAYCOMPRESS                 | delaycompress                                           | Postpone compression of the previous log file to the next rotation cycle, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_COPYTRUNCATE                  | Copytruncate                                            | Truncate the original log file in place after creating a copy,'create' creates new one, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_SIZE                          | 1K                                                      | Log files are rotated when they grow bigger than size bytes, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_OLD                           | 12                                                      | Log files are rotated count times before being removed, for more details refer- https://linux.die.net/man/8/logrotate |
-| CMS\_CA\_CERT\_VALIDITY            | 5                                                       | CMS Root Certificate Validity in years                       |
-| CMS\_CA\_ORGANIZATION              | INTEL                                                   | CMS Certificate Organization                                 |
-| CMS\_CA\_LOCALITY                  | US                                                      | CMS Certificate locality                                     |
-| CMS\_CA\_PROVINCE                  | CA                                                      | CMS Certificate province                                     |
-| CMS\_CA\_COUNTRY                   | USA                                                     | CMS Certificate country                                      |
-| CMS\_TLS\_SAN\_LIST                |                                                         | Comma-separated list of IP addresses and hostnames to be added to the SAN list of CMS server |
-| CMS\_SERVER\_READ\_TIMEOUT         | 30s                                                     | MS server - ReadTimeout is the maximum duration for reading the entire request, including the body. |
-| CMS\_SERVER\_READ\_HEADER\_TIMEOUT | 10s                                                     | CMS server - ReadHeaderTimeout is the amount of time allowed to read request headers |
-| CMS\_SERVER\_WRITE\_TIMEOUT        | 10s                                                     | CMS server - WriteTimeout is the maximum duration before timing out writes of the response. |
-| CMS\_SERVER\_IDLE\_TIMEOUT         | 10s                                                     | CMS server - IdleTimeout is the maximum amount of time to wait for the next request when keep-alives are enabled. |
-| CMS\_SERVER\_MAX\_HEADER\_BYTES    | 1048576                                                 | CMS server - MaxHeaderBytes controls the maximum number of bytes the server will read parsing the request header's keys and values, including the request line. |
-| AAS\_JWT\_CN                       | AAS JWT Signing Certificate                             | CN of AAS JWT certificate, this gets populated in special JWT token. AAS must send JWT certificate CSR with this CN. |
-| AAS\_TLS\_CN                       | AAS TLS Certificate                                     | CN of AAS TLS certificate, this gets populated in special JWT token. AAS must send TLS certificate CSR with this CN. |
-| AAS\_TLS\_SAN                      |                                                         | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
+| Key                                | Sample Value                                               | Description                                                  |
+| ---------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| CMS\_NOSETUP                       | false                                                      | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
+| CMS\_PORT                          | 8445                                                       | Defines the HTTPS port the service will use.                 |
+| AAS\_API\_URL                      | https://\<Hostname or IP address of the AAS\>:8444/aas/v1/ | URL to connect to the AAS, used during setup for authentication. |
+| AAS\_TLS\_SAN                      | \<Comma-separated list of IPs/hostnames for the AAS\>      | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
+| LOG\_ROTATION\_PERIOD              | hourly, daily, weekly, monthly, yearly                     | log rotation period, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_COMPRESS                      | Compress                                                   | Old versions of log files are compressed with gzip, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_DELAYCOMPRESS                 | delaycompress                                              | Postpone compression of the previous log file to the next rotation cycle, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_COPYTRUNCATE                  | Copytruncate                                               | Truncate the original log file in place after creating a copy,'create' creates new one, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_SIZE                          | 1K                                                         | Log files are rotated when they grow bigger than size bytes, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_OLD                           | 12                                                         | Log files are rotated count times before being removed, for more details refer- https://linux.die.net/man/8/logrotate |
+| CMS\_CA\_CERT\_VALIDITY            | 5                                                          | CMS Root Certificate Validity in years                       |
+| CMS\_CA\_ORGANIZATION              | INTEL                                                      | CMS Certificate Organization                                 |
+| CMS\_CA\_LOCALITY                  | US                                                         | CMS Certificate locality                                     |
+| CMS\_CA\_PROVINCE                  | CA                                                         | CMS Certificate province                                     |
+| CMS\_CA\_COUNTRY                   | USA                                                        | CMS Certificate country                                      |
+| CMS\_TLS\_SAN\_LIST                |                                                            | Comma-separated list of IP addresses and hostnames to be added to the SAN list of CMS server |
+| CMS\_SERVER\_READ\_TIMEOUT         | 30s                                                        | MS server - ReadTimeout is the maximum duration for reading the entire request, including the body. |
+| CMS\_SERVER\_READ\_HEADER\_TIMEOUT | 10s                                                        | CMS server - ReadHeaderTimeout is the amount of time allowed to read request headers |
+| CMS\_SERVER\_WRITE\_TIMEOUT        | 10s                                                        | CMS server - WriteTimeout is the maximum duration before timing out writes of the response. |
+| CMS\_SERVER\_IDLE\_TIMEOUT         | 10s                                                        | CMS server - IdleTimeout is the maximum amount of time to wait for the next request when keep-alives are enabled. |
+| CMS\_SERVER\_MAX\_HEADER\_BYTES    | 1048576                                                    | CMS server - MaxHeaderBytes controls the maximum number of bytes the server will read parsing the request header's keys and values, including the request line. |
+| AAS\_JWT\_CN                       | AAS JWT Signing Certificate                                | CN of AAS JWT certificate, this gets populated in special JWT token. AAS must send JWT certificate CSR with this CN. |
+| AAS\_TLS\_CN                       | AAS TLS Certificate                                        | CN of AAS TLS certificate, this gets populated in special JWT token. AAS must send TLS certificate CSR with this CN. |
+| AAS\_TLS\_SAN                      |                                                            | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
 ### 11.4.2  Configuration Options
 
@@ -6245,7 +6245,7 @@ The CMS configuration can be found in `/etc/cms/config.yml`
 ```yaml
 port: 8445
 loglevel: info
-authserviceurl: https://<AAS IP or hostname>:8444/aas/
+authserviceurl: https://<AAS IP or hostname>:8444/aas/v1/
 cacertvalidity: 5
 organization: INTEL
 locality: SC
@@ -6596,7 +6596,7 @@ Contains database scripts.
 | WLS\_DB\_USERNAME   | wlsdbuser                                           | (Required) Database username                                 |
 | WLS\_DB\_PASSWORD   | wlsdbuserpass                                       | (Required) Database password                                 |
 | HVS\_URL            | https://\<HVS IP address or hostname\>:8443/hvs/v2/ | (Required) Base URL for the HVS                              |
-| AAS\_API\_URL       | https://\<AAS IP address or hostname\>:8444/aas     | Base URL for the AAS                                         |
+| AAS\_API\_URL       | https://\<AAS IP address or hostname\>:8444/aas/v1  | Base URL for the AAS                                         |
 | SAN\_LIST           | 127.0.0.1,localhost,10.x.x.x                        | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | CMS\_BASE\_URL      |                                                     | Base URL for the CMS                                         |
 | BEARER\_TOKEN       | \<token\>                                           | (Required) Token from the CMS generated during CMS setup that allows the AAS to perform initial setup tasks. |
@@ -6627,7 +6627,7 @@ postgres:
   sslmode: false
 hvs_api_url: https://<HVS IP or hostname>:8443/hvs/v2/
 cms_base_url: https://<CMS IP or hostname>:8445:/cms/v1/
-aas_api_url: https://<AAS IP or hostname>:8444/aas/
+aas_api_url: https://<AAS IP or hostname>:8444/aas/v1/
 subject:
   tlscertcommonname: WLS TLS Certificate
   organization: INTEL
@@ -6856,32 +6856,6 @@ folders.
 
 ### 11.7.1  Installation Answer File Options
 
-| Variable Name                        | Default Value       | Notes                                                        |
-| ------------------------------------ | ------------------- | ------------------------------------------------------------ |
-| USERNAME                             |                     | KBS admin username                                           |
-| PASSWORD                             |                     | KBS admin password                                           |
-| CMS\_BASE\_URL                       |                     | Required for generating TLS certificate                      |
-| CMS\_TLS\_CERT\_SHA384               |                     | SHA384 digest of CMS TLS certificate                         |
-| AAS\_API\_URL                        |                     | AAS baseurl                                                  |
-| BEARER\_TOKEN                        |                     | JWT token for installation user                              |
-| KMS\_HOME                            | /opt/kms            | Application home directory                                   |
-| KBS\_SERVICE\_USERNAME               | kms                 | Non-root user to run KMS                                     |
-| JETTY\_PORT                          | 80                  | The server will listen for HTTP connections on this port     |
-| JETTY\_SECURE\_PORT                  | 443                 | The server will listen for HTTPS connections on this port    |
-| KMS\_LOG\_LEVEL                      | INFO                | Sets the root log level in logback.xml                       |
-| KMS\_NOSETUP                         | false               | Skips setup during installation if set to true               |
-| ENDPOINT\_URL                        | http://localhost    | Endpoint to be used in key transfer url                      |
-| KEY\_MANAGER\_PROVIDER               | DirectoryKeyManager | Key manager to be used for key management                    |
-| KBS\_SERVICE\_PASSWORD               |                     | This password protects the configuration file and the password vault. It must be set before installing and before starting the KBS |
-| KMS\_TLS\_CERT\_IP                   |                     | IP addresses to be included in SAN list                      |
-| KMS\_TLS\_CERT\_DNS                  |                     | DNS addresses to be included in SAN list                     |
-| BARBICAN\_PROJECT\_ID                |                     | OpenStack Barbican project id                                |
-| BARBICAN\_ENDPOINT\_URL              |                     | OpenStack Barbican endpoint url                              |
-| BARBICAN\_KEYSTONE\_PUBLIC\_ENDPOINT |                     | OpenStack Keystone endpoint url                              |
-| BARBICAN\_TENANTNAME                 |                     | OpenStack Barbican tenant name                               |
-| BARBICAN\_USERNAME                   |                     | OpenStack Barbican admin username                            |
-| BARBICAN\_PASSWORD                   |                     | OpenStack Barbican admin password                            |
-
 ### 11.7.2  Configuration Options
 
 ### 11.7.3 Command-Line Options
@@ -7028,7 +7002,7 @@ Contains scripts and executable binaries.
 | KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
-| AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas     | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
+| AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
 | BEARER\_TOKEN                  | \<token\>                                               | Required; token from CMS with permissions used for installation. |
 | WPM\_WITH\_CONTAINER\_SECURITY | “yes” or “no”                                           | Optional, defaults to “no.” Defines whether the WPM will support Docker Container encryption. If this is set to Yes, the appropriate prerequisites for Docker Container encryption will be installed. If this is set to “no,” the WPM will not be able to encrypt Docker Container images, and will only be usable to encrypt Virtual Machine images. |
 | WPM\_LOG\_LEVEL                | INFO (default), DEBUG                                   | Optional; defines the log level for the WPM. Defaults to INFO. |
@@ -8319,7 +8293,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 
    ```shell
    AAS_TLS_SAN=<comma-separated list of IPs and hostnames for the AAS>
-   AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas
+   AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1
    SAN_LIST=<Comma-separated list of IP addresses and hostnames for the CMS>,127.0.0.1,localhost 
    ```
 
@@ -8437,7 +8411,7 @@ Create the `populate-users.env` file:
 ```shell
 ISECL_INSTALL_COMPONENTS=KBS,TA,WLS,WPM,IHUB,HVS,WLA,AAS
 
-AAS_API_URL=https://<AAS IP address or hostname>:8444/aas
+AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1
 AAS_ADMIN_USERNAME=<AAS username>
 AAS_ADMIN_PASSWORD=<AAS password>
 
@@ -8571,7 +8545,7 @@ To install the Verification Service, follow these steps:
 
    ```shell
    # Authentication URL and service account credentials 
-   AAS_API_URL=https://isecl-aas:8444/aas
+   AAS_API_URL=https://isecl-aas:8444/aas/v1
    HVS_SERVICE_USERNAME=HVS_service
    HVS_SERVICE_PASSWORD=password
    
@@ -8652,7 +8626,7 @@ The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linu
   WLS_SERVICE_PASSWORD=<password for WLS service account>
   CMS_BASE_URL=https://<IP or hostname to CMS>:8445/cms/v1/
   CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
-  AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/
+  AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/v1/
   SAN_LIST=<comma-separated list of IPs and hostnames for the WLS>
   BEARER_TOKEN=<Installation token from populate-users script>
   ```
@@ -8841,7 +8815,7 @@ To install the Trust Agent for Linux:
   CURRENT_IP=<Trust Agent IP address>
   CMS_TLS_CERT_SHA384=<CMS TLS digest>
   BEARER_TOKEN=<Installation token from populate-users script>
-  AAS_API_URL=https://<AAS IP or Hostname>:8444/aas
+  AAS_API_URL=https://<AAS IP or Hostname>:8444/aas/v1
   CMS_BASE_URL=https://<CMS IP or Hostname>:8445/cms/v1
   SAN_LIST=<Comma-separated list of IP addresses and hostnames for the TAgent matching the SAN list specified in the populate-users script; may include wildcards>
    ```
@@ -9184,7 +9158,7 @@ To install the Integration Hub, follow these steps:
 
 ```shell
 # Authentication URL and service account credentials
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 IHUB_SERVICE_USERNAME=<Integration Hub Service User username>
 IHUB_SERVICE_PASSWORD=<Integration Hub Service User password>
 
@@ -9286,7 +9260,7 @@ Enterprise Linux 8.2
    ENDPOINT_URL=https://<kbs IP or hostname>:<kbs_port>/v1
    CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
    CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
-   AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+   AAS_API_URL=https://<AAS IP or hostname>:8444/aas/v1
    BEARER_TOKEN=<Installation token from populate-users script>
    ```
    #OPTIONAL , only when using 3rd-Party KMIP Compliant KMS Server
@@ -9516,7 +9490,7 @@ Enterprise Linux 8.2.
    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
    CMS_BASE_URL=https://<IP address or hostname for CMS>:8445/cms/v1/
-   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas
+   AAS_API_URL=https://<Hostname or IP address of the AAS>:8444/aas/v1
    BEARER_TOKEN=<Installation token from populate-users script>
    ```
 
@@ -9565,7 +9539,7 @@ account the token was generated for.
 To request a new token from the AAS:
 
 ```http
-POST <https://<AAS IP or hostname>:8444/aas/token>
+POST <https://<AAS IP or hostname>:8444/aas/v1/token>
 ```
 ```Json
 {
@@ -9621,7 +9595,7 @@ Usernames have the following requirements:
 ### 4.2.2  Create User
 
 ```http
-POST https://<IP or hostname of AAS>:8444/aas/users
+POST https://<IP or hostname of AAS>:8444/aas/v1/users
 Authorization: Bearer <token>
 ```
 ```JSON
@@ -9634,14 +9608,14 @@ Authorization: Bearer <token>
 ### 4.2.3  Search User
 
 ```http
-GET https://<IP or hostname of AAS>:8444/aas/users?<parameter>=<value>
+GET https://<IP or hostname of AAS>:8444/aas/v1/users?<parameter>=<value>
 Authorization: Bearer <token>
 ```
 
 ### 4.2.4  Change User Password
 
 ```http
-PATCH https://<IP or hostname of AAS>:8444/aas/users/changepassword
+PATCH https://<IP or hostname of AAS>:8444/aas/v1/users/changepassword
 Authorization: Bearer <token>
 ```
 ```JSON
@@ -9656,7 +9630,7 @@ Authorization: Bearer <token>
 ### 4.2.5  Delete User
 
 ```http
-DELETE https://<IP or hostname of AAS>:8444/aas/users/<User ID>
+DELETE https://<IP or hostname of AAS>:8444/aas/v1/users/<User ID>
 Authorization: Bearer <token>
 ```
 
@@ -9678,7 +9652,7 @@ applicable for that service in the AAS.
 ### 4.3.1  Create Role
 
 ```http
-POST https://<AAS IP or Hostname>:8444/aas/roles
+POST https://<AAS IP or Hostname>:8444/aas/v1/roles
 Authorization: Bearer <token>
 ```
 ```JSON
@@ -9714,7 +9688,7 @@ the API resource and method definitions in the API documentation.
 ### 4.3.2  Search Roles
 
 ```http
-GET https://<AAS IP or Hostname>:8444/aas/roles?<parameter>=<value>
+GET https://<AAS IP or Hostname>:8444/aas/v1/roles?<parameter>=<value>
 Authorization: Bearer <token>
 ```
 
@@ -9732,14 +9706,14 @@ filter=false
 ### 4.3.3  Delete Role
 
 ```http
-DELETE https://<AAS IP or Hostname>:8444/aas/roles/<role ID>
+DELETE https://<AAS IP or Hostname>:8444/aas/v1/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
 ### 4.3.4  Assign Role to User
 
 ```http
-POST https://<AAS IP or Hostname>:8444/aas/users/<user ID>/roles
+POST https://<AAS IP or Hostname>:8444/aas/v1/users/<user ID>/roles
 Authorization: Bearer <token>
 ```
 ```JSON
@@ -9751,14 +9725,14 @@ Authorization: Bearer <token>
 ### 4.3.5  List Roles Assigned to User
 
 ```http
-GET https://<AAS IP or Hostname\>:8444/aas/users/<user ID>/roles
+GET https://<AAS IP or Hostname\>:8444/aas/v1/users/<user ID>/roles
 Authorization: Bearer <token>
 ```
 
 ### 4.3.6  Remove Role from User
 
 ```http
-DELETE https://<AAS IP or Hostname>:8444/aas/users/<userID>/roles/<role ID>
+DELETE https://<AAS IP or Hostname>:8444/aas/v1/users/<userID>/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
@@ -12919,7 +12893,7 @@ size, whichever comes first, and 12 total rotations will be retained.
 
 ```shell
 # Authentication URL and service account credentials - mandatory
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 HVS_SERVICE_USERNAME=HVS_service
 HVS_SERVICE_PASSWORD=password
 
@@ -13390,7 +13364,7 @@ The Trust Agent configuration settings are managed in
 | ownersecretkey: 625d6d8...1be0b4e957          | Defines the TPM ownership secret. This is randomly generated unless manually specified during installation in the trustagent.env file. Note that changing this value may require clearing the TPM ownership in the server BIOS. |
 | aiksecretkey: 59acd1367...edcbede60c          | Defines the AIK secret. Randomly generated. If this is changed, a new AIK will need to be provisioned. |
 | aas:                                          |                                                              |
-| baseurl: https://0.0.0.0:8444/aas/            | Defines the base URL for the AAS                             |
+| baseurl: https://0.0.0.0:8444/aas/v1/         | Defines the base URL for the AAS                             |
 | cms:                                          |                                                              |
 | baseurl: https://0.0.0.0:8445/cms/v1          | Defines the base URL for the CMS                             |
 | tlscertdigest: 330086b3...ae477c8502          | Defines the SHA383 hash of the CMS TLS certificate           |
@@ -13601,7 +13575,7 @@ provisioned from the Verification Service when creating/deploying
 
 ```shell
 # Authentication URL and service account credentials
-AAS_API_URL=https://isecl-aas:8444/aas
+AAS_API_URL=https://isecl-aas:8444/aas/v1
 IHUB_SERVICE_USERNAME=<Integration Hub Service User username>
 IHUB_SERVICE_PASSWORD=<Integration Hub Service User password>
 
@@ -13648,7 +13622,7 @@ REPORT_SIGNING_SERVICE_TLS_CERT_SHA384=bb3a1…
 ihub-service-username: ihub_service
 ihub-service-password: password
 aas:
-  url: https://isecl-aas:8444/aas
+  url: https://isecl-aas:8444/aas/v1
 cms:
   url: https://isecl-cms:8445/cms/v1
 report-signing:
@@ -13830,32 +13804,32 @@ attestation-type: hvs
 
 ### 11.4.1  Installation Answer File Options
 
-| Key                                | Sample Value                                            | Description                                                  |
-| ---------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
-| CMS\_NOSETUP                       | false                                                   | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
-| CMS\_PORT                          | 8445                                                    | Defines the HTTPS port the service will use.                 |
-| AAS\_API\_URL                      | https://\<Hostname or IP address of the AAS\>:8444/aas/ | URL to connect to the AAS, used during setup for authentication. |
-| AAS\_TLS\_SAN                      | \<Comma-separated list of IPs/hostnames for the AAS\>   | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
-| LOG\_ROTATION\_PERIOD              | hourly, daily, weekly, monthly, yearly                  | log rotation period, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_COMPRESS                      | Compress                                                | Old versions of log files are compressed with gzip, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_DELAYCOMPRESS                 | delaycompress                                           | Postpone compression of the previous log file to the next rotation cycle, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_COPYTRUNCATE                  | Copytruncate                                            | Truncate the original log file in place after creating a copy,'create' creates new one, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_SIZE                          | 1K                                                      | Log files are rotated when they grow bigger than size bytes, for more details refer- https://linux.die.net/man/8/logrotate |
-| LOG\_OLD                           | 12                                                      | Log files are rotated count times before being removed, for more details refer- https://linux.die.net/man/8/logrotate |
-| CMS\_CA\_CERT\_VALIDITY            | 5                                                       | CMS Root Certificate Validity in years                       |
-| CMS\_CA\_ORGANIZATION              | INTEL                                                   | CMS Certificate Organization                                 |
-| CMS\_CA\_LOCALITY                  | US                                                      | CMS Certificate locality                                     |
-| CMS\_CA\_PROVINCE                  | CA                                                      | CMS Certificate province                                     |
-| CMS\_CA\_COUNTRY                   | USA                                                     | CMS Certificate country                                      |
-| CMS\_TLS\_SAN\_LIST                |                                                         | Comma-separated list of IP addresses and hostnames to be added to the SAN list of CMS server |
-| CMS\_SERVER\_READ\_TIMEOUT         | 30s                                                     | MS server - ReadTimeout is the maximum duration for reading the entire request, including the body. |
-| CMS\_SERVER\_READ\_HEADER\_TIMEOUT | 10s                                                     | CMS server - ReadHeaderTimeout is the amount of time allowed to read request headers |
-| CMS\_SERVER\_WRITE\_TIMEOUT        | 10s                                                     | CMS server - WriteTimeout is the maximum duration before timing out writes of the response. |
-| CMS\_SERVER\_IDLE\_TIMEOUT         | 10s                                                     | CMS server - IdleTimeout is the maximum amount of time to wait for the next request when keep-alives are enabled. |
-| CMS\_SERVER\_MAX\_HEADER\_BYTES    | 1048576                                                 | CMS server - MaxHeaderBytes controls the maximum number of bytes the server will read parsing the request header's keys and values, including the request line. |
-| AAS\_JWT\_CN                       | AAS JWT Signing Certificate                             | CN of AAS JWT certificate, this gets populated in special JWT token. AAS must send JWT certificate CSR with this CN. |
-| AAS\_TLS\_CN                       | AAS TLS Certificate                                     | CN of AAS TLS certificate, this gets populated in special JWT token. AAS must send TLS certificate CSR with this CN. |
-| AAS\_TLS\_SAN                      |                                                         | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
+| Key                                | Sample Value                                               | Description                                                  |
+| ---------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
+| CMS\_NOSETUP                       | false                                                      | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
+| CMS\_PORT                          | 8445                                                       | Defines the HTTPS port the service will use.                 |
+| AAS\_API\_URL                      | https://\<Hostname or IP address of the AAS\>:8444/aas/v1/ | URL to connect to the AAS, used during setup for authentication. |
+| AAS\_TLS\_SAN                      | \<Comma-separated list of IPs/hostnames for the AAS\>      | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
+| LOG\_ROTATION\_PERIOD              | hourly, daily, weekly, monthly, yearly                     | log rotation period, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_COMPRESS                      | Compress                                                   | Old versions of log files are compressed with gzip, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_DELAYCOMPRESS                 | delaycompress                                              | Postpone compression of the previous log file to the next rotation cycle, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_COPYTRUNCATE                  | Copytruncate                                               | Truncate the original log file in place after creating a copy,'create' creates new one, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_SIZE                          | 1K                                                         | Log files are rotated when they grow bigger than size bytes, for more details refer- https://linux.die.net/man/8/logrotate |
+| LOG\_OLD                           | 12                                                         | Log files are rotated count times before being removed, for more details refer- https://linux.die.net/man/8/logrotate |
+| CMS\_CA\_CERT\_VALIDITY            | 5                                                          | CMS Root Certificate Validity in years                       |
+| CMS\_CA\_ORGANIZATION              | INTEL                                                      | CMS Certificate Organization                                 |
+| CMS\_CA\_LOCALITY                  | US                                                         | CMS Certificate locality                                     |
+| CMS\_CA\_PROVINCE                  | CA                                                         | CMS Certificate province                                     |
+| CMS\_CA\_COUNTRY                   | USA                                                        | CMS Certificate country                                      |
+| CMS\_TLS\_SAN\_LIST                |                                                            | Comma-separated list of IP addresses and hostnames to be added to the SAN list of CMS server |
+| CMS\_SERVER\_READ\_TIMEOUT         | 30s                                                        | MS server - ReadTimeout is the maximum duration for reading the entire request, including the body. |
+| CMS\_SERVER\_READ\_HEADER\_TIMEOUT | 10s                                                        | CMS server - ReadHeaderTimeout is the amount of time allowed to read request headers |
+| CMS\_SERVER\_WRITE\_TIMEOUT        | 10s                                                        | CMS server - WriteTimeout is the maximum duration before timing out writes of the response. |
+| CMS\_SERVER\_IDLE\_TIMEOUT         | 10s                                                        | CMS server - IdleTimeout is the maximum amount of time to wait for the next request when keep-alives are enabled. |
+| CMS\_SERVER\_MAX\_HEADER\_BYTES    | 1048576                                                    | CMS server - MaxHeaderBytes controls the maximum number of bytes the server will read parsing the request header's keys and values, including the request line. |
+| AAS\_JWT\_CN                       | AAS JWT Signing Certificate                                | CN of AAS JWT certificate, this gets populated in special JWT token. AAS must send JWT certificate CSR with this CN. |
+| AAS\_TLS\_CN                       | AAS TLS Certificate                                        | CN of AAS TLS certificate, this gets populated in special JWT token. AAS must send TLS certificate CSR with this CN. |
+| AAS\_TLS\_SAN                      |                                                            | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
 ### 11.4.2  Configuration Options
 
@@ -13864,7 +13838,7 @@ The CMS configuration can be found in `/etc/cms/config.yml`
 ```yaml
 port: 8445
 loglevel: info
-authserviceurl: https://<AAS IP or hostname>:8444/aas/
+authserviceurl: https://<AAS IP or hostname>:8444/aas/v1/
 cacertvalidity: 5
 organization: INTEL
 locality: SC
@@ -14202,7 +14176,7 @@ Contains database scripts.
 | WLS\_DB\_USERNAME    | wlsdbuser                                           | (Required) Database username                                 |
 | WLS\_DB\_PASSWORD    | wlsdbuserpass                                       | (Required) Database password                                 |
 | HVS\_URL             | https://\<HVS IP address or hostname\>:8443/hvs/v2/ | (Required) Base URL for the HVS                              |
-| AAS\_API\_URL        | https://\<AAS IP address or hostname\>:8444/aas     | Base URL for the AAS                                         |
+| AAS\_API\_URL        | https://\<AAS IP address or hostname\>:8444/aas/v1  | Base URL for the AAS                                         |
 | WLS\_CERT\_SAN\_LIST | 127.0.0.1,localhost,10.x.x.x                        | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | CMS\_BASE\_URL       |                                                     | Base URL for the CMS                                         |
 | BEARER\_TOKEN        | \<token\>                                           | (Required) Token from the CMS generated during CMS setup that allows the AAS to perform initial setup tasks. |
@@ -14233,7 +14207,7 @@ postgres:
   sslmode: false
 hvs_api_url: https://<HVS IP or hostname>:8443/hvs/v2/
 cms_base_url: https://<CMS IP or hostname>:8445:/cms/v1/
-aas_api_url: https://<AAS IP or hostname>:8444/aas/
+aas_api_url: https://<AAS IP or hostname>:8444/aas/v1/
 subject:
   tlscertcommonname: WLS TLS Certificate
   organization: INTEL
@@ -14640,7 +14614,7 @@ Contains scripts and executable binaries.
 | KMS\_TLS\_SHA384               |                                                         | Required. SHA384 hash of the Key Broker TLS certificate      |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
-| AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas     | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
+| AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
 | BEARER\_TOKEN                  | \<token\>                                               | Required; token from CMS with permissions used for installation. |
 | WPM\_WITH\_CONTAINER\_SECURITY | “yes” or “no”                                           | Optional, defaults to “no.” Defines whether the WPM will support Docker Container encryption. If this is set to Yes, the appropriate prerequisites for Docker Container encryption will be installed. If this is set to “no,” the WPM will not be able to encrypt Docker Container images, and will only be usable to encrypt Virtual Machine images. |
 | WPM\_LOG\_LEVEL                | INFO (default), DEBUG                                   | Optional; defines the log level for the WPM. Defaults to INFO. |
