@@ -7,7 +7,7 @@ info:
   license:
     name: 'Copyright (C) 2020 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause'
   title: Certificate Management Service (CMS)
-  version: "2.2"
+  version: "3"
 paths:
   /ca-certificates:
     get:
@@ -80,7 +80,11 @@ paths:
     post:
       consumes:
       - application/x-pem-file
-      description: "Retrieves the certificate signed by CMS. A valid certificate type \nshould be provided as a query parameter for this API Call to distinguish the \ntype of certificate requested. A valid bearer token is required to authorize\nthis REST call.\n"
+      description: |
+        Retrieves the certificate signed by CMS. A valid certificate type
+        should be provided as a query parameter for this API Call to distinguish the
+        type of certificate requested. A valid bearer token is required to authorize
+        this REST call.
       operationId: GetCmsSignedCertificate
       parameters:
       - description: |
@@ -107,7 +111,8 @@ paths:
             -----END CERTIFICATE REQUEST-------
           format: txt
           type: string
-      - description: Certificate type such as TLS, Flavor-Signing, JWT-Signing, Signing and TLS-Client.
+      - description: Certificate type such as TLS, Flavor-Signing, JWT-Signing, Signing
+          and TLS-Client.
         in: query
         name: certType
         required: true
@@ -116,7 +121,8 @@ paths:
       - application/x-pem-file
       responses:
         "200":
-          description: Successfully retrieved the certificate signed by CMS for provided CSR.
+          description: Successfully retrieved the certificate signed by CMS for provided
+            CSR.
           schema:
             example: |
               -----BEGIN CERTIFICATE------
@@ -175,20 +181,22 @@ paths:
         -----END CERTIFICATE-------
   /version:
     get:
-      description: Retrieves the version of Certificate Management Service.
-      operationId: getVersion
+      description: |
+        GetVersion is used to get the version of the application.
+        Returns - The version of the application.
+      operationId: GetVersion
       produces:
       - text/plain
       responses:
         "200":
-          description: Successfully retrieved the version of Certificate Management Service.
-          schema:
-            example: v2.2
-            type: string
+          description: Successfully retrieved the version.
       tags:
       - Version
-      x-sample-call-endpoint: https://cms.com:8445/cms/v1/version
-      x-sample-call-output: v2.2
+      x-sample-call-endpoint: https://cms.com:8443/cms/v1/version
+      x-sample-call-output: |-
+        Service Name: Certificate Management Service
+        Version: v3.4.0-0f0162ea
+        Build Date: 2021-03-08T12:31:46+0000
 schemes:
 - https
 securityDefinitions:

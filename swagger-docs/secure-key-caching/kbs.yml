@@ -1451,6 +1451,24 @@ paths:
             "not_after": "2021-07-20T18:39:10Z",
             "revoked": false
         }
+  /version:
+    get:
+      description: |
+        GetVersion is used to get the version of the application.
+        Returns - The version of the application.
+      operationId: GetVersion
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Successfully retrieved the version.
+      tags:
+      - Version
+      x-sample-call-endpoint: https://kbs.com:8443/kbs/v1/version
+      x-sample-call-output: |-
+        Service Name: Key Broker Service
+        Version: v3.4.0-0f0162ea
+        Build Date: 2021-03-08T12:17:18+0000
 schemes:
 - https
 securityDefinitions:

@@ -1,4 +1,4 @@
-basePath: /wls
+basePath: /wls/v1
 definitions:
   Author:
     description: Author defines the email address of the author
@@ -53,7 +53,8 @@ definitions:
     type: object
     x-go-package: intel/isecl/lib/flavor/v3
   Encryption:
-    description: Encryption contains information pertaining to the encryption policy of the image
+    description: Encryption contains information pertaining to the encryption policy
+      of the image
     properties:
       digest:
         type: string
@@ -64,7 +65,8 @@ definitions:
     type: object
     x-go-package: intel/isecl/lib/flavor/v3
   ExpectedEncryption:
-    description: ExpectedEncryption is a data template that defines the json tag name of the encryption requirement, and the expected boolean value
+    description: ExpectedEncryption is a data template that defines the json tag name
+      of the encryption requirement, and the expected boolean value
     properties:
       name:
         type: string
@@ -149,7 +151,8 @@ definitions:
     type: object
     x-go-package: intel/isecl/lib/common/v3/pkg/instance
   Integrity:
-    description: Integrity contains information pertaining to the Integrity policy of the image
+    description: Integrity contains information pertaining to the Integrity policy
+      of the image
     properties:
       notary_url:
         type: string
@@ -228,6 +231,17 @@ definitions:
       $ref: '#/definitions/Report'
     type: array
     x-go-package: intel/isecl/workload-service/v3/swagger/docs
+  RequestKey:
+    description: RequestKey struct defines input parameters to retrieve a key
+    properties:
+      hardware_uuid:
+        type: string
+        x-go-name: HwId
+      key_url:
+        type: string
+        x-go-name: KeyUrl
+    type: object
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/wls
   Result:
     properties:
       faults:
@@ -245,6 +259,17 @@ definitions:
         x-go-name: Trusted
     type: object
     x-go-package: intel/isecl/workload-service/v3/swagger/docs
+  ReturnKey:
+    description: ReturnKey to return key Json
+    properties:
+      key:
+        items:
+          format: uint8
+          type: integer
+        type: array
+        x-go-name: Key
+    type: object
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/wls
   Rule:
     properties:
       expected:
@@ -298,7 +323,10 @@ paths:
         A valid bearer token should be provided to authorize this REST call.
       operationId: queryFlavors
       parameters:
-      - description: "Boolean value to indicate whether the response should be filtered to return specific flavors instead of listing \nall flavors. When the filter is true and no other query parameter is specified, error response will be returned. \nDefault value is true.\n"
+      - description: |
+          Boolean value to indicate whether the response should be filtered to return specific flavors instead of listing
+          all flavors. When the filter is true and no other query parameter is specified, error response will be returned.
+          Default value is true.
         in: query
         name: filter
         type: boolean
@@ -315,14 +343,15 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the flavors based on the provided filter criteria.
+          description: Successfully retrieved the flavors based on the provided filter
+            criteria.
           schema:
             $ref: '#/definitions/FlavorsResponse'
       security:
       - bearerAuth: []
       tags:
       - Flavors
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/flavors?label=label_image-test-4
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/flavors?label=label_image-test-4
       x-sample-call-output: |
         [
           {
@@ -346,7 +375,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates a flavor for the encrypted image in the workload service database. \nFlavor can be created by providing the image flavor content obtained from the WPM after encrypting the image.\nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Creates a flavor for the encrypted image in the workload service database.
+        Flavor can be created by providing the image flavor content obtained from the WPM after encrypting the image.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: createFlavor
       parameters:
       - in: body
@@ -365,7 +397,7 @@ paths:
       - bearerAuth: []
       tags:
       - Flavors
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/flavors
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/flavors
       x-sample-call-input: |
         {
            "flavor": {
@@ -409,7 +441,9 @@ paths:
         }
   /flavors/{flavor_id}:
     delete:
-      description: "Deletes the flavor associated with a specified flavor id from the workload service \ndatabase. A valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Deletes the flavor associated with a specified flavor id from the workload service
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: deleteFlavorByID
       parameters:
       - description: Unique ID of the flavor.
@@ -428,11 +462,14 @@ paths:
       tags:
       - Flavors
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
+        https://workloadservice.com:5000/wls/v1/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
       x-sample-call-output: |
         204 No content
     get:
-      description: "Retrieves the flavor associated with a specified flavor ID or flavor label from the workload service \ndatabase. The path parameter can be either flavor ID or flavor Label. \nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Retrieves the flavor associated with a specified flavor ID or flavor label from the workload service
+        database. The path parameter can be either flavor ID or flavor Label.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: getFlavorByIdOrLabel
       parameters:
       - description: Unique ID of the flavor.
@@ -444,7 +481,8 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the flavor for the specified flavor id or flavor label.
+          description: Successfully retrieved the flavor for the specified flavor
+            id or flavor label.
           schema:
             $ref: '#/definitions/ImageFlavor'
       security:
@@ -452,7 +490,7 @@ paths:
       tags:
       - Flavors
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
+        https://workloadservice.com:5000/wls/v1/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
       x-sample-call-output: |
         {
           "flavor": {
@@ -479,7 +517,10 @@ paths:
         A valid bearer token should be provided to authorize this REST call.
       operationId: queryImages
       parameters:
-      - description: "Boolean value to indicate whether the response should be filtered to return specific images instead of \nlisting all images. When the filter is true and no other query parameter is specified, error response will be returned. \nDefault value is true.\n"
+      - description: |
+          Boolean value to indicate whether the response should be filtered to return specific images instead of
+          listing all images. When the filter is true and no other query parameter is specified, error response will be returned.
+          Default value is true.
         in: query
         name: filter
         type: boolean
@@ -497,14 +538,15 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the images based on the provided filter criteria.
+          description: Successfully retrieved the images based on the provided filter
+            criteria.
           schema:
             $ref: '#/definitions/ImagesResponse'
       security:
       - bearerAuth: []
       tags:
       - Images
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/images/image_id=ffff021e-9669-4e53-9224-8880fb4e4081
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/images/image_id=ffff021e-9669-4e53-9224-8880fb4e4081
       x-sample-call-output: |
         [
           {
@@ -518,7 +560,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates an association between the image and flavor(s) in the workload service database. \nAn image id from the image storage and flavor id(s) should be provided in the request body.\nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Creates an association between the image and flavor(s) in the workload service database.
+        An image id from the image storage and flavor id(s) should be provided in the request body.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: createImage
       parameters:
       - in: body
@@ -530,19 +575,36 @@ paths:
       - application/json
       responses:
         "201":
-          description: Successfully created the association between specified image and flavor(s).
+          description: Successfully created the association between specified image
+            and flavor(s).
           schema:
             $ref: '#/definitions/ImageInfo'
       security:
       - bearerAuth: []
       tags:
       - Images
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/images
-      x-sample-call-input: "{\n   \"id\" : \"ffff021e-9669-4e53-9224-8880fb4e4081\",\n   \"flavor_ids\" : [ \n       \"d6129610-4c8f-4ac4-8823-df4e925688c3\", \n       \"d6129610-4c8f-4ac4-8823-df4e925688c4\" \n   ]\n}\n"
-      x-sample-call-output: "{\n   \"id\" : \"ffff021e-9669-4e53-9224-8880fb4e4081\",\n   \"flavor_ids\" : [ \n       \"d6129610-4c8f-4ac4-8823-df4e925688c3\", \n       \"d6129610-4c8f-4ac4-8823-df4e925688c4\" \n   ]\n}\n"
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/images
+      x-sample-call-input: |
+        {
+           "id" : "ffff021e-9669-4e53-9224-8880fb4e4081",
+           "flavor_ids" : [
+               "d6129610-4c8f-4ac4-8823-df4e925688c3",
+               "d6129610-4c8f-4ac4-8823-df4e925688c4"
+           ]
+        }
+      x-sample-call-output: |
+        {
+           "id" : "ffff021e-9669-4e53-9224-8880fb4e4081",
+           "flavor_ids" : [
+               "d6129610-4c8f-4ac4-8823-df4e925688c3",
+               "d6129610-4c8f-4ac4-8823-df4e925688c4"
+           ]
+        }
   /images/{image_id}:
     delete:
-      description: "Deletes the image details associated with a specified image id in the workload service \ndatabase. A valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Deletes the image details associated with a specified image id in the workload service
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: deleteImageById
       parameters:
       - description: Unique ID of the image.
@@ -561,11 +623,13 @@ paths:
       tags:
       - Images
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081
+        https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081
       x-sample-call-output: |
         204 No content
     get:
-      description: "Retrieves the image details associated with a specified image id from the workload service \ndatabase. A valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Retrieves the image details associated with a specified image id from the workload service
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: getImageById
       parameters:
       - description: Unique ID of the image.
@@ -585,8 +649,15 @@ paths:
       - bearerAuth: []
       tags:
       - Images
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081
-      x-sample-call-output: "{\n   \"id\": \"ffff021e-9669-4e53-9224-8880fb4e4081\",\n   \"flavor_ids\" : [ \n       \"d6129610-4c8f-4ac4-8823-df4e925688c3\", \n       \"d6129610-4c8f-4ac4-8823-df4e925688c4\" \n    ]\n}\n"
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081
+      x-sample-call-output: |
+        {
+           "id": "ffff021e-9669-4e53-9224-8880fb4e4081",
+           "flavor_ids" : [
+               "d6129610-4c8f-4ac4-8823-df4e925688c3",
+               "d6129610-4c8f-4ac4-8823-df4e925688c4"
+            ]
+        }
   /images/{image_id}/flavors:
     get:
       description: |
@@ -604,14 +675,15 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the associated flavors for the specified image.
+          description: Successfully retrieved the associated flavors for the specified
+            image.
           schema:
             $ref: '#/definitions/FlavorsResponse'
       security:
       - bearerAuth: []
       tags:
       - ImageFlavor
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors
       x-sample-call-output: |
         [
           {
@@ -670,17 +742,20 @@ paths:
         type: string
       responses:
         "204":
-          description: Successfully removed the specified flavor associated with the image.
+          description: Successfully removed the specified flavor associated with the
+            image.
       security:
       - bearerAuth: []
       tags:
       - ImageFlavor
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
+        https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
       x-sample-call-output: |
         204 No content
     get:
-      description: "Retrieves the specified flavor associated with an image id from the workload service database. \nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Retrieves the specified flavor associated with an image id from the workload service database.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: getImageFlavorByID
       parameters:
       - description: Unique ID of the image.
@@ -699,7 +774,8 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the specified flavor associated with the image.
+          description: Successfully retrieved the specified flavor associated with
+            the image.
           schema:
             $ref: '#/definitions/ImageFlavor'
       security:
@@ -707,7 +783,7 @@ paths:
       tags:
       - ImageFlavor
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
+        https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
       x-sample-call-output: |
         {
           "flavor": {
@@ -727,7 +803,9 @@ paths:
           }
         }
     put:
-      description: "Assigns a flavor to the image associated with the specified image id in the workload service database. \nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Assigns a flavor to the image associated with the specified image id in the workload service database.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: addImageFlavor
       parameters:
       - description: Unique ID of the image.
@@ -746,83 +824,60 @@ paths:
       - application/json
       responses:
         "201":
-          description: Successfully created a new flavor association with the specified image.
+          description: Successfully created a new flavor association with the specified
+            image.
       security:
       - bearerAuth: []
       tags:
       - ImageFlavor
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
+        https://workloadservice.com:5000/wls/v1/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors/d6129610-4c8f-4ac4-8823-df4e925688c4
       x-sample-call-output: |
         201 Created
-  /images/{image_id}/flavors?flavor_part={flavor_part}:
-    get:
-      description: "Retrieves the flavor containing the provided flavor part associated with a specified image from \nthe workload service database. The query parameter 'flavor_part' is mandatory.\nA valid bearer token should be provided to authorize this REST call.\n"
-      operationId: retrieveFlavorForImageId
+  /keys:
+    post:
+      consumes:
+      - application/json
+      description: |
+        Gets and returns the wrapped key from KBS for given key url, if saml report from hvs for given host with hardware uuid is trusted.
+      operationId: CreateKey
       parameters:
-      - description: Unique ID of the image.
-        format: uuid
-        in: path
-        name: image_id
+      - in: body
+        name: request body
         required: true
-        type: string
-      - description: Flavor part string.
-        in: query
-        name: flavor_part
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/RequestKey'
       produces:
       - application/json
       responses:
-        "200":
-          description: Successfully retrieved the flavor containing the provided flavor part.
+        "201":
+          description: Successfully return wrapped key from KBS
           schema:
-            $ref: '#/definitions/SignedImageFlavor'
+            $ref: '#/definitions/ReturnKey'
       security:
       - bearerAuth: []
       tags:
-      - ImageFlavor
-      x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/images/ffff021e-9669-4e53-9224-8880fb4e4081/flavors?flavor_part=CONTAINER_IMAGE
-      x-sample-call-output: |
+      - Keys
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/keys
+      x-sample-call-input: |
         {
-          "flavor": {
-              "meta": {
-                  "id": "d6129610-4c8f-4ac4-8823-df4e925688c3",
-                  "description": {
-                      "flavor_part": "CONTAINER_IMAGE",
-                      "label": "label_image-test-3"
-                  }
-              },
-              "encryption_required": true,
-              "encryption": {
-                  "key_url": "https://10.105.168.234:443/v1/keys/60a9fe49-612f-4b66-bf86-b75c7873f3b3/transfer",
-                  "digest": "3JiqO+O4JaL2qQxpzRhTHrsFpDGIUDV8fTWsXnjHVKY="
-              },
-              "integrity_enforced": false
-          },
-          "signature": "CStRpWgj0De7+xoX1uFSOacLAZeEcodUuvH62B4hVoiIEriVaHxrLJhBjnIuSPmIoZewCdTShw7GxmMQiMikCrVhaUilYk066TckOcLW/E3K+7NAiZ5k
-          uS96J6dVxgJ+9k7iKf7Z+6lnWUJz92VWLP4U35WK4MtV+MPTYn2Zj1p+/tTUuSql//k8KCmpywzI1J1/XXjvqee3M9cGInnbOUGEFoLBAO1+w30yptoNxKEaB/9t3qEYywk
-          8buT5GEMYUjJEj9PGGaW+lR37x0zcXggwMg/RsijMV6rNKsjjC0fN1vGswzoaIJPD1RJkQ8X9l3AaM0qhLBQDrurWxKK4KSQSpI0BziGPkKi5vAeeRkV//fU5JXNdPxdOky
-          XVebeMQR9bYntXtZl41qjOZ0zIOKAHNJiBLyMYausbTZHVCwDuA/HBAT8i7JAIesxexX89bL+khPebHWkHaifS4NejymbGzM+n62EHuoeIo33qDMQ/U0FA3i6gRy0s/sFQV
-          XR0xk8l"
+            "hardware_uuid": "ecee021e-9669-4e53-9224-8880fb4e4080"
+            "key_url": "http://kbs.server.com:9443/v1/keys/73755fda-c910-46be-821f-e8ddeab189e9/transfer"
         }
-  /noauth/version:
-    get:
-      description: Retrieves the version of workload service.
-      operationId: getVersion
-      produces:
-      - text/plain
-      responses:
-        "200":
-          description: Successfully retrieved the version of workload service.
-          schema:
-            example: v2.2
-            type: string
-      tags:
-      - Version
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/noauth/version
-      x-sample-call-output: v2.2
+      x-sample-call-output: |-
+        {
+         "key": "eyJpbnN0YW5jZV9tYW5pZmVzdCI6eyJpbnN0YW5jZV9pbmZvIjp7Imluc3RhbmNlX2lkIjoiN2Y4MDMwMTgtZjU2Zi00NWJiLTk0Mm
+          EtODhmYjgzOGNhMjMxIiwiaG9zdF9oYXJkd2FyZV91dWlkIjoiODA4YjcwNmYtNTYzMS1lNTExLTkwNmUtMDAxMjc5NWQ5NmRkIiwiaW1hZ2VfaW
+          QiOiIxMjAwMjQwMC1kMDZiLTRjOWItYWUzYi1hZDQ2MmNjZWI2NzQifSwiaW1hZ2VfZW5jcnlwdGVkIjp0cnVlfSwicG9saWN5X25hbWUiOiJJbn
+          RlbCBDb250YWluZXIgUG9saWN5IiwicmVzdWx0cyI6W3sicnVsZSI6eyJydWxlX25hbWUiOiJFbmNyeXB0aW9uTWF0Y2hlcyIsIm1hcmtlcnMiOl
+          siQ09OVEFJTkVSX0lNQUdFIl0sImV4cGVjdGVkIjp7Im5hbWUiOiJlbmNyeXB0aW9uX3JlcXVpcmVkIiwidmFsdWUiOnRydWV9fSwiZmxhdm9yX2
+          lkIjoiNjkyMWM5NWQtMTRhOC00ZWE4LTk0OWQtZDMzOGQ4OGE0NDdmIiwidHJ1c3RlZCI6dHJ1ZX0seyJydWxlIjp7InJ1bGVfbmFtZSI6IkludG
+          Vncml0eU1hdGNoZXMiLCJtYXJrZXJzIjpbIkNPTlRBSU5FUl9JTUFHRSJdLCJleHBlY3RlZCI6eyJuYW1lIjoiaW50ZWdyaXR5X2VuZm9yY2VkIiw
+          idmFsdWUiOmZhbHNlfX0sImZsYXZvcl9pZCI6IjY5MjFjOTVkLTE0YTgtNGVhOC05NDlkLWQzMzhkODhhNDQ3ZiIsInRydXN0ZWQiOnRydWV9LHsi
+          cnVsZSI6eyJydWxlX25hbWUiOiJGbGF2b3JJbnRlZ3JpdHlNYXRjaGVzIiwibWFya2VycyI6WyJmbGF2b3JJbnRlZ3JpdHkiXSwiZXhwZWN0ZWQiO
+          nsibmFtZSI6ImZsYXZvcl90cnVzdGVkIiwidmFsdWUiOnRydWV9fSwiZmxhdm9yX2lkIjoiNjkyMWM5NWQtMTRhOC00ZWE4LTk0OWQtZDMzOGQ4OG
+          E0NDdmIiwidHJ1c3RlZCI6dHJ1ZX1dLCJ0cnVzdGVkIjp0cnVlfQ==",
+        }
   /reports:
     get:
       description: |
@@ -831,7 +886,9 @@ paths:
         A valid bearer token should be provided to authorize this REST call.
       operationId: queryReports
       parameters:
-      - description: "Boolean value to indicate whether the response should be filtered to return no results instead of listing all reports. \nWhen the filter is true and no other query parameter is specified, error response will be returned. Default value is true.\n"
+      - description: |
+          Boolean value to indicate whether the response should be filtered to return no results instead of listing all reports.
+          When the filter is true and no other query parameter is specified, error response will be returned. Default value is true.
         in: query
         name: filter
         type: boolean
@@ -850,11 +907,13 @@ paths:
         in: query
         name: hardware_uuid
         type: string
-      - description: Reports returned will be restricted to after this date. from_date should be given in date format yyyy-mm-ddTHH:mm:ss.
+      - description: Reports returned will be restricted to after this date. from_date
+          should be given in date format yyyy-mm-ddTHH:mm:ss.
         in: query
         name: from_date
         type: string
-      - description: Reports returned will be restricted to before this date. to_date should be given in date format yyyy-mm-ddTHH:mm:ss.
+      - description: Reports returned will be restricted to before this date. to_date
+          should be given in date format yyyy-mm-ddTHH:mm:ss.
         in: query
         name: to_date
         type: string
@@ -863,7 +922,9 @@ paths:
         in: query
         name: latest_per_vm
         type: boolean
-      - description: "Results returned will be restricted to between the current date and number of days prior. \nThis option will override other date options.\n"
+      - description: |
+          Results returned will be restricted to between the current date and number of days prior.
+          This option will override other date options.
         in: query
         name: num_of_days
         type: integer
@@ -878,7 +939,7 @@ paths:
       - bearerAuth: []
       tags:
       - Reports
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/reports?report_id=f52023eb-7991-47ba-91fc-c43bd9d80c29
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/reports?report_id=f52023eb-7991-47ba-91fc-c43bd9d80c29
       x-sample-call-output: |-
         {
          "id": "f52023eb-7991-47ba-91fc-c43bd9d80c29",
@@ -977,7 +1038,12 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates an image trust report. A report contains the status of an associated image. \nThe report schema provided in the request body contains an interface called Rule which works on \nany matching policy based on provided rule_name. Rule policy can be either image encryption policy \nor flavor integrity policy or integrity policy. \nA valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Creates an image trust report. A report contains the status of an associated image.
+        The report schema provided in the request body contains an interface called Rule which works on
+        any matching policy based on provided rule_name. Rule policy can be either image encryption policy
+        or flavor integrity policy or integrity policy.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: createReport
       parameters:
       - in: body
@@ -996,7 +1062,7 @@ paths:
       - bearerAuth: []
       tags:
       - Reports
-      x-sample-call-endpoint: https://workloadservice.com:5000/wls/reports
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/reports
       x-sample-call-input: |
         {
          "id": "f52023eb-7991-47ba-91fc-c43bd9d80c29",
@@ -1189,7 +1255,9 @@ paths:
         }
   /reports/{report_id}:
     delete:
-      description: "Deletes the image trust report associated with a specified report id from the workload service \ndatabase. A valid bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Deletes the image trust report associated with a specified report id from the workload service
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: deleteReportById
       parameters:
       - description: Unique ID of the report.
@@ -1202,15 +1270,34 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully deleted the image trust report associated with specified report id.
+          description: Successfully deleted the image trust report associated with
+            specified report id.
       security:
       - bearerAuth: []
       tags:
       - Reports
       x-sample-call-endpoint: |
-        https://workloadservice.com:5000/wls/reports/f52023eb-7991-47ba-91fc-c43bd9d80c29
+        https://workloadservice.com:5000/wls/v1/reports/f52023eb-7991-47ba-91fc-c43bd9d80c29
       x-sample-call-output: |
         204 No content
+  /version:
+    get:
+      description: |
+        GetVersion is used to get the version of the application.
+        Returns - The version of the application.
+      operationId: GetVersion
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Successfully retrieved the version.
+      tags:
+      - Version
+      x-sample-call-endpoint: https://workloadservice.com:5000/wls/v1/version
+      x-sample-call-output: |-
+        Service Name: Workload Service
+        Version: v3.4.0-0f0162ea
+        Build Date: 2021-03-08T12:18:54+0000
 responses:
   FlavorResponse:
     description: FlavorResponse response payload
@@ -1224,6 +1311,10 @@ responses:
     description: ImagesResponse response payload
     schema:
       $ref: '#/definitions/ImagesResponse'
+  KeyResponse:
+    description: KeyResponse response payload
+    schema:
+      $ref: '#/definitions/ReturnKey'
   ReportsResponse:
     description: ReportsResponse response payload
     schema:
