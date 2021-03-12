@@ -581,6 +581,7 @@ Update csp_skc.conf with the following
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
   - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - CSP Admin Username and Password
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_csp_skc.sh
@@ -713,7 +714,6 @@ Edit agent.conf with the following
   - SGX Compute node IP where Agent will be installed
   - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
-  - For Each Agent installation on a SGX compute node, please change AGENT_USER and AGENT_PASSWORD
 Save and Close
 Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
 ./deploy_sgx_agent.sh

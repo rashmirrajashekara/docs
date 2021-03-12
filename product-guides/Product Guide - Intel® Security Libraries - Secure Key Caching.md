@@ -537,44 +537,43 @@ During installation of each services, number of user accounts and roles specific
 Create the `populate-users.env` file using the following values:
 
 ```shell
-# SKC Components include AAS,SCS,SHVS,SQVS,SIH,SKBS,SGX_AGENT and SKC-LIBRARY.
-  ISECL_INSTALL_COMPONENTS=AAS,SCS,SIH,SKBS,SGX_AGENT,SKC-LIBRARY
+# SKC Components include AAS,SCS,SHVS,SQVS,SIH and SKBS.
+ISECL_INSTALL_COMPONENTS=AAS,SCS,SHVS,SQVS,SIH,SKBS
 
-  AAS_API_URL=https://<AAS IP address of enterprise system>:8444/aas
-  AAS_ADMIN_USERNAME=<AAS username>
-  AAS_ADMIN_PASSWORD=<AAS password>
+AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1
+AAS_ADMIN_USERNAME=<AAS username>
+AAS_ADMIN_PASSWORD=<AAS password>
 
-  IH_CERT_SAN_LIST=<csp hostname,IP>
-  KBS_CERT_SAN_LIST=<enterprise hostname,IP>
-  SCS_CERT_SAN_LIST=<csp hostname,IP>
-  SQVS_CERT_SAN_LIST=<SQVS hostname,IP>
-  SHVS_CERT_SAN_LIST=<csp hostname,IP>
-  SGX_AGENT_CERT_SAN_LIST=<SGX Agent hostname>
+IH_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the Integration Hub>
+KBS_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the Key Broker Service>
+SCS_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the SGX Caching Service>
+SQVS_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the SGX Quote Verification Service>
+SHVS_CERT_SAN_LIST=<comma-separated list of IPs and hostnames for the SGX Host Verification Service>
 
-  IHUB_SERVICE_USERNAME=<Username for the Hub service user>
-  IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
+IHUB_SERVICE_USERNAME=<Username for the Hub service user>
+IHUB_SERVICE_PASSWORD=<Password for the Hub service user>
 
-  SCS_SERVICE_USERNAME=<Username for the SCS service user>
-  SCS_SERVICE_PASSWORD=<Password for the SCS service user>
+SCS_SERVICE_USERNAME=<Username for the SCS service user>
+SCS_SERVICE_PASSWORD=<Password for the SCS service user>
 
-  SHVS_SERVICE_USERNAME=<Username for the SHVS service user>
-  SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
+SHVS_SERVICE_USERNAME=<Username for the SHVS service user>
+SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
 
-  SGX_AGENT_USERNAME=<Username for the SGX Agent service user>
-  SGX_AGENT_PASSWORD=<Password for the SGX Agent service user>
+KBS_SERVICE_USERNAME=<Username for the KBS service user>
+KBS_SERVICE_PASSWORD=<Password for the KBS service user>
 
-  KBS_SERVICE_USERNAME=<Username for the KBS service user>
-  KBS_SERVICE_PASSWORD=<Password for the KBS service user>
+SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
+SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
 
-  SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
-  SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
+SKC_LIBRARY_CERT_COMMON_NAME=<SKC Library Certificate Common Name>
 
-  SKC_LIBRARY_CERT_COMMON_NAME=<Username for the SKC Library user>
+SKC_LIBRARY_KEY_TRANSFER_CONTEXT=<SKC Library KeyTransfer Role Context>
 
-  SKC_LIBRARY_KEY_TRANSFER_CONTEXT=permissions=nginx,USA
+INSTALL_ADMIN_USERNAME=<Username for the Admin user>
+INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
 
-  INSTALL_ADMIN_USERNAME=<Username for the Admin user>
-  INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
+CSP_ADMIN_USERNAME=<Username for the CSP Admin user>
+CSP_ADMIN_PASSWORD=<Password for the CSP Admin user>
 
 ```
 > **Note**: The `ISECL_INSTALL_COMPONENTS` variable is a comma-separated list of all the components that will be used in your environment. Not all services are required for every use case. Include only services which are required specific to the use case.
@@ -594,6 +593,7 @@ The script will automatically generate the following users:
 -   Integration HUB (IHUB)
 -   Key Broker Service (KBS) with backend key management
 -   Installation Admin User
+-   CSP Admin User
 
 These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
 
@@ -842,8 +842,8 @@ Intel® Xeon® SP (Ice Lake-SP)
     Update the following in agent.conf
     - IP address of the SGX compute node
      - IP address for all the CSP side services
-     - AAS admin credentials
-     - sgx_agent user credentials
+     - CSP admin credentials
+     - Long-lived token validity period in days
      - Certificate Management Service TLS digest value (CMS running on CSP system)
     ./deploy_sgx_agent.sh
 
@@ -1772,8 +1772,6 @@ This folder contains log files: /var/log/shvs/
 | AAS_API_URL         | https://< AAS IP or Hostname>:8444/aas           | API URL for Authentication Authorization Service (AAS).      |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/       | API URL for Certificate Management Service (CMS).            |
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
-| SGX_AGENT_USERNAME  | sgx_agent                                        | Name of the SGX_AGENT USER                                   |
-| SGX_AGENT_PASSWORD  | password                                         | Password of SGX_AGENT user.                                  |
 | BEARER_TOKEN        |                                                  | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS_TLS_CERT_SHA384 | < Certificate Management Service TLS digest>     | SHA384 Hash for verifying the CMS TLS certificate.           |
 | SGX_PORT            | 11001                                            | The port on which the SGX Agent service will listen.         |
