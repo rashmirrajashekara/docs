@@ -13,6 +13,7 @@ Table of Contents
      * [Building all components](#building-all-components)
        * [Pre-requisites](#pre-requisites)
        * [Building](#building)
+     * [Common Cluster Setup and Validation](#common-cluster-setup-and-validation)
      * [License](#license)
      * [Support](#support)
      * [Known Issues](#known-issues)
@@ -185,15 +186,15 @@ Following steps facilitate the building of all components:
 > **Note:** Post successful build, the  deployment and usecase collections can be followed from Quick start guides posted above
 
 
-### Common Cluster Setup and Validation
+## Common Cluster Setup and Validation
 
-## Setup K8S Cluster & Deploy Isecl-k8s-extensions
+### Setup K8S Cluster & Deploy Isecl-k8s-extensions
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
 * To setup k8 cluster follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos Once the master/worker setup is done, follow below steps on Master Node:
 
-## Untar packages and load docker images
+### Untar packages and load docker images
 
 * Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Master Node and extract the contents.
   
@@ -210,7 +211,7 @@ Following steps facilitate the building of all components:
     docker load -i docker-isecl-scheduler-v*.tar
   ```
   
-## Deploy isecl-controller
+### Deploy isecl-controller
 
 * Create hostattributes.crd.isecl.intel.com crd
   
@@ -249,7 +250,7 @@ Following steps facilitate the building of all components:
     kubectl describe secret default-token-<name> -n isecl
   ```
   
-## Deploy ihub
+### Deploy ihub
 
 For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on both CSP systems (SGX and FS):
 
@@ -277,7 +278,7 @@ For IHUB installation, make sure to update below configuration in /root/binaries
     mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/hvs_ihub_public_key.pem
   ```
   
-## Deploy isecl-scheduler
+### Deploy isecl-scheduler
 
 * The isecl-scheduler default configuration is provided for common cluster support in /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. 
  
@@ -326,7 +327,7 @@ For IHUB installation, make sure to update below configuration in /root/binaries
     kubectl get deploy -n isecl
   ```
   
-## Configure kube-scheduler to establish communication with isecl-scheduler
+### Configure kube-scheduler to establish communication with isecl-scheduler
 
 * Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
 
@@ -365,7 +366,7 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	kubectl get nodes --show-labels
   ```
   
-## Validation: (POD Launch)
+### Validation: (POD Launch)
 
 * Create sample nginx.yml file for SGX workload and add SGX labels to it such as:
 
