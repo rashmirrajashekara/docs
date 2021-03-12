@@ -15,7 +15,7 @@ Table of Contents
        * [Building](#building)
      * [Common Cluster Setup and Validation](#common-cluster-setup-and-validation)
        * [Setup K8S Cluster & Deploy Isecl-k8s-extensions](#setup-k8s-cluster-&-deploy-isecl-k8s-extensions)
-       * [Untar packages and load docker images](#untar-packages-and-load-docker-images)
+       * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
        * [Deploy isecl-controller](#deploy-isecl-controller)
        * [Deploy ihub](#deploy-ihub)
        * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
