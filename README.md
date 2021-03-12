@@ -14,6 +14,13 @@ Table of Contents
        * [Pre-requisites](#pre-requisites)
        * [Building](#building)
      * [Common Cluster Setup and Validation](#common-cluster-setup-and-validation)
+       * [Setup K8S Cluster & Deploy Isecl-k8s-extensions](#setup-k8s-cluster-&-deploy-isecl-k8s-extensions)
+       * [Untar packages and load docker images](#untar-packages-and-load-docker-images)
+       * [Deploy isecl-controller](#deploy-isecl-controller)
+       * [Deploy ihub](#deploy-ihub)
+       * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+       * [Configure kube-scheduler to establish communication with isecl-scheduler](#configure-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+       * [Validate POD Launch](#validate-pod-launch)
      * [License](#license)
      * [Support](#support)
      * [Known Issues](#known-issues)
@@ -366,7 +373,7 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	kubectl get nodes --show-labels
   ```
   
-### Validation: (POD Launch)
+### Validate POD Launch
 
 * Create sample nginx.yml file for SGX workload and add SGX labels to it such as:
 
