@@ -14,7 +14,7 @@ Table of Contents
        * [Pre-requisites](#pre-requisites)
        * [Building](#building)
      * [Common Cluster Setup and Validation](#common-cluster-setup-and-validation)
-       * [Setup K8S Cluster & Deploy Isecl-k8s-extensions](#setup-k8s-cluster-&-deploy-isecl-k8s-extensions)
+       * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
        * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
        * [Deploy isecl-controller](#deploy-isecl-controller)
        * [Deploy ihub](#deploy-ihub)
@@ -195,7 +195,7 @@ Following steps facilitate the building of all components:
 
 ## Common Cluster Setup and Validation
 
-### Setup K8S Cluster & Deploy Isecl-k8s-extensions
+### Setup K8S Cluster and Deploy Isecl-k8s-extensions
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
