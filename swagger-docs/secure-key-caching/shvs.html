@@ -689,31 +689,47 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-            defs.Host = {
+            defs.HardwareFeatures = {
   "type" : "object",
   "properties" : {
+    "SGX" : {
+      "$ref" : "#/components/schemas/SGX"
+    }
+  },
+  "x-go-package" : "intel/isecl/shvs/v3/types"
+};
+            defs.HostInfo = {
+  "type" : "object",
+  "properties" : {
+    "hardware_features" : {
+      "$ref" : "#/components/schemas/HardwareFeatures"
+    },
     "host_ID" : {
       "type" : "string",
+      "format" : "uuid",
       "x-go-name" : "ID"
     },
     "host_name" : {
       "type" : "string",
       "x-go-name" : "Name"
     },
+    "status" : {
+      "type" : "string",
+      "x-go-name" : "Status"
+    },
     "uuid" : {
       "type" : "string",
+      "format" : "uuid",
       "x-go-name" : "HardwareUUID"
     }
   },
-  "description" : "Host struct is the database schema of a Host table",
   "x-go-package" : "intel/isecl/shvs/v3/types"
 };
             defs.HostStatusResponse = {
   "type" : "object",
   "properties" : {
     "host_id" : {
-      "type" : "string",
-      "x-go-name" : "HostID"
+      "$ref" : "#/components/schemas/UUID"
     },
     "host_status" : {
       "type" : "string",
@@ -725,7 +741,7 @@
             defs.Hosts = {
   "type" : "array",
   "items" : {
-    "$ref" : "#/components/schemas/Host"
+    "$ref" : "#/components/schemas/HostInfo"
   },
   "x-go-package" : "intel/isecl/shvs/v3/types"
 };
@@ -741,8 +757,7 @@
       "x-go-name" : "FlcEnabled"
     },
     "host_id" : {
-      "type" : "string",
-      "x-go-name" : "HostID"
+      "$ref" : "#/components/schemas/UUID"
     },
     "sgx_enabled" : {
       "type" : "boolean",
@@ -771,33 +786,11 @@
   },
   "x-go-package" : "intel/isecl/shvs/v3/swagger/docs"
 };
-            defs.RegisterHostInfo = {
-  "type" : "object",
-  "properties" : {
-    "description" : {
-      "type" : "string",
-      "x-go-name" : "Description"
-    },
-    "host_ID" : {
-      "type" : "string",
-      "x-go-name" : "HostID"
-    },
-    "host_name" : {
-      "type" : "string",
-      "x-go-name" : "HostName"
-    },
-    "uuid" : {
-      "type" : "string",
-      "x-go-name" : "UUID"
-    }
-  },
-  "x-go-package" : "intel/isecl/shvs/v3/resource"
-};
             defs.ResponseJSON = {
   "type" : "object",
   "properties" : {
     "ID" : {
-      "type" : "string"
+      "$ref" : "#/components/schemas/UUID"
     },
     "Message" : {
       "type" : "string"
@@ -807,6 +800,88 @@
     }
   },
   "x-go-package" : "intel/isecl/shvs/v3/resource"
+};
+            defs.SGX = {
+  "type" : "object",
+  "properties" : {
+    "enabled" : {
+      "type" : "boolean",
+      "x-go-name" : "Enabled"
+    },
+    "meta" : {
+      "$ref" : "#/components/schemas/SGXMeta"
+    }
+  },
+  "x-go-package" : "intel/isecl/shvs/v3/types"
+};
+            defs.SGXHostInfo = {
+  "type" : "object",
+  "properties" : {
+    "description" : {
+      "type" : "string",
+      "x-go-name" : "Description"
+    },
+    "epc_offset" : {
+      "type" : "string",
+      "x-go-name" : "EpcOffset"
+    },
+    "epc_size" : {
+      "type" : "string",
+      "x-go-name" : "EpcSize"
+    },
+    "flc_enabled" : {
+      "type" : "boolean",
+      "x-go-name" : "FlcEnabled"
+    },
+    "host_name" : {
+      "type" : "string",
+      "x-go-name" : "HostName"
+    },
+    "sgx_enabled" : {
+      "type" : "boolean",
+      "x-go-name" : "SgxEnabled"
+    },
+    "sgx_supported" : {
+      "type" : "boolean",
+      "x-go-name" : "SgxSupported"
+    },
+    "tcb_upToDate" : {
+      "type" : "boolean",
+      "x-go-name" : "TcbUptodate"
+    },
+    "uuid" : {
+      "type" : "string",
+      "x-go-name" : "UUID"
+    }
+  },
+  "x-go-package" : "intel/isecl/shvs/v3/resource"
+};
+            defs.SGXMeta = {
+  "type" : "object",
+  "properties" : {
+    "epc_size" : {
+      "type" : "string",
+      "x-go-name" : "EpcSize"
+    },
+    "flc_enabled" : {
+      "type" : "boolean",
+      "x-go-name" : "FlcEnabled"
+    },
+    "tcb_upToDate" : {
+      "type" : "boolean",
+      "x-go-name" : "TcbUpToDate"
+    }
+  },
+  "x-go-package" : "intel/isecl/shvs/v3/types"
+};
+            defs.UUID = {
+  "type" : "array",
+  "description" : "A UUID is a 128 bit (16 byte) Universal Unique IDentifier as defined in RFC\n4122.",
+  "items" : {
+    "type" : "integer",
+    "format" : "uint8"
+  },
+  "x-go-package" : "github.com/google/uuid"
 };
   </script>
 
@@ -844,6 +919,10 @@
                   <li class="nav-header" data-group="PlatformData"><a href="#api-PlatformData">PlatformData</a></li>
                     <li data-group="PlatformData" data-name="getPlatformData" class="">
                       <a href="#api-PlatformData-getPlatformData">getPlatformData</a>
+                    </li>
+                  <li class="nav-header" data-group="Version"><a href="#api-Version">Version</a></li>
+                    <li data-group="Version" data-name="getVersion" class="">
+                      <a href="#api-Version-getVersion">getVersion</a>
                     </li>
           </ul>
         </nav>
@@ -995,6 +1074,31 @@ A valid bearer token is required to authorize this REST call.
                             </table>
 
 
+                            <h2>Query parameters</h2>
+                            <!-- <div class="methodsubtabletitle">Query parameters</div> -->
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th width="150px">Type</th>
+                                <th>Description</th>
+                              </tr>
+				<tr>
+				<td style="width:150px;">getPlatformData
+				</td>
+				<td style="width:150px;"><span class="type">Boolean</span></td>
+				<td>
+					<div class="inner description">Add platform data to the host info.</div>
+				</td>
+				</tr>
+				<tr>
+				<td style="width:150px;">getStatus
+				</td>
+				<td style="width:150px;"><span class="type">Boolean</span></td>
+				<td>
+					<div class="inner description">Add host status to the host info.</div>
+				</td>
+				</tr>
+                            </table>
 
     			  <h2>Produces</h2>
     			    <ul>
@@ -1022,7 +1126,7 @@ A valid bearer token is required to authorize this REST call.
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/RegisterHostInfo"
+        "$ref" : "#/components/schemas/HostInfo"
       }
     }
   }
@@ -1130,6 +1234,22 @@ A valid bearer token is required to authorize this REST call.
 				<td style="width:150px;"><span class="type">String</span></td>
 				<td>
 					<div class="inner description">Name of the host.</div>
+				</td>
+				</tr>
+				<tr>
+				<td style="width:150px;">getPlatformData
+				</td>
+				<td style="width:150px;"><span class="type">Boolean</span></td>
+				<td>
+					<div class="inner description">Add platform data to the host info.</div>
+				</td>
+				</tr>
+				<tr>
+				<td style="width:150px;">getStatus
+				</td>
+				<td style="width:150px;"><span class="type">Boolean</span></td>
+				<td>
+					<div class="inner description">Add host status to the host info.</div>
 				</td>
 				</tr>
                             </table>
@@ -1265,7 +1385,7 @@ A valid bearer token is required to authorize this REST call.
   "content" : {
     "application/json" : {
       "schema" : {
-        "$ref" : "#/components/schemas/RegisterHostInfo"
+        "$ref" : "#/components/schemas/SGXHostInfo"
       }
     }
   },
@@ -1304,6 +1424,51 @@ A valid bearer token is required to authorize this REST call.
                             <!-- <h3> 201 - Successfully registered the host. </h3> -->
                             <div class="methodsubtabletitle">201 - Successfully registered the host.</div>
 
+			    </br>
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-registerHost-201-schema">Schema</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-registerHost-201-schema">
+                                  <div id='responses-registerHost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Successfully registered the host.",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ResponseJSON"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-registerHost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-registerHost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-registerHost-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
 
                         <p>
                           <h2>Sample REST Call</h2>
@@ -1610,6 +1775,62 @@ A valid bearer token is required to authorize this REST call.
 </code></pre> 
 			  </div>
 			  <div class="tab-pane" id="examples-PlatformData-getPlatformData-0-support">
+			  </div> 
+                          </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
+                <section id="api-Version">
+                  <h1>Version</h1>
+                    <div id="api-Version-getVersion">
+                      <article id="api-Version-getVersion-0" data-group="User" data-name="getVersion" data-version="0">
+                        <div class="pull-left">
+                          <h1>getVersion</h1>
+                          <!-- <p></p> -->
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <!-- <p></p> -->
+                        <p class="marked">GetVersion is used to get the version of the application.
+Returns - The version of the application.
+</p>
+                        <p></p>
+                        <!-- <br /> -->
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/version</span></code></pre>
+
+    			<h2>Authorization</h2>
+  			<ul>
+    				<li>None</li>
+  			</ul>
+
+
+                          <!-- <h2>Parameters</h2> -->
+
+
+
+
+
+                          <h2>Response</h2>
+                            <!-- <h3> 200 - Successfully retrieved the version. </h3> -->
+                            <div class="methodsubtabletitle">200 - Successfully retrieved the version.</div>
+
+
+                        <p>
+                          <h2>Sample REST Call</h2>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+			  <li class="active"><a href="#examples-Version-getVersion-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Version-getVersion-0-support"></a></li> 
+			</ul> 
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Version-getVersion-0-curl">
+			  <pre><code class="language-bsh">curl -X GET "https://sgx-hvs.com:13000/sgx-hvs/v2/version"</br></br>Output: </br>Service Name: SGX Host Verification Service
+Version: v3.4.0-0f0162ea
+Build Date: 2021-03-08T12:17:18+0000</code></pre> 
+			  </div>
+			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
 			  </div> 
                           </div>
                         </article>

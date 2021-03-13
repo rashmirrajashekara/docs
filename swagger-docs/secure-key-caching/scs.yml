@@ -8,6 +8,9 @@ definitions:
       enc_ppid:
         type: string
         x-go-name: EncPpid
+      hardware_uuid:
+        type: string
+        x-go-name: HardwareUUID
       manifest:
         type: string
         x-go-name: PlatformManifest
@@ -41,9 +44,6 @@ definitions:
     x-go-package: intel/isecl/scs/v3/resource
   TcbInfoType:
     properties:
-      TcbEvaluationDataNumber:
-        format: int64
-        type: integer
       fmspc:
         type: string
         x-go-name: Fmspc
@@ -56,6 +56,10 @@ definitions:
       pceId:
         type: string
         x-go-name: PceID
+      tcbEvaluationDataNumber:
+        format: int64
+        type: integer
+        x-go-name: TcbEvaluationDataNumber
       tcbLevels:
         items:
           $ref: '#/definitions/TcbLevelsType'
@@ -361,7 +365,8 @@ paths:
                  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
                  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
                  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-                 00000000000000000000000"
+                 00000000000000000000000",
+            "hardware_uuid": "ee37c360-7eae-4250-a677-6ee12adce8e2"
         }
       x-sample-call-output: |
         {
@@ -558,6 +563,10 @@ paths:
         in: query
         name: qeid
         type: string
+      - description: Provisioning Certificate Enclave ID specific to a platform.
+        in: query
+        name: pceid
+        type: string
       produces:
       - application/json
       responses:
@@ -576,22 +585,24 @@ paths:
             "Status": "true",
             "Message": "TCB Status is UpToDate"
         }
-  /sgx/certification/v1/version:
+  /version:
     get:
-      description: Retrieves the version of the SGX Caching Service.
+      description: |
+        GetVersion is used to get the version of the application.
+        Returns - The version of the application.
       operationId: getVersion
       produces:
       - text/plain
       responses:
         "200":
-          description: Successfully retrieved the version of SGX Caching Service.
-          schema:
-            example: skc_M12-SKC_SCS_M10_WW01.01-58-g2efaa71
-            type: string
+          description: Successfully retrieved the version.
       tags:
       - Version
       x-sample-call-endpoint: https://scs.server.com:9000/scs/sgx/certification/v1/version
-      x-sample-call-output: skc_M12-SKC_SCS_M10_WW01.01-58-g2efaa71
+      x-sample-call-output: |-
+        Service Name: SGX Caching Service
+        Version: v3.4.0-0f0162ea
+        Build Date: 2021-03-08T12:17:18+0000
 responses:
   StatusResponse:
     description: StatusResponse response payload

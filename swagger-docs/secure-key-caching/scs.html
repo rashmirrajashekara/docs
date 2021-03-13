@@ -700,6 +700,10 @@
       "type" : "string",
       "x-go-name" : "EncPpid"
     },
+    "hardware_uuid" : {
+      "type" : "string",
+      "x-go-name" : "HardwareUUID"
+    },
     "manifest" : {
       "type" : "string",
       "x-go-name" : "PlatformManifest"
@@ -747,10 +751,6 @@
             defs.TcbInfoType = {
   "type" : "object",
   "properties" : {
-    "TcbEvaluationDataNumber" : {
-      "type" : "integer",
-      "format" : "int64"
-    },
     "fmspc" : {
       "type" : "string",
       "x-go-name" : "Fmspc"
@@ -766,6 +766,11 @@
     "pceId" : {
       "type" : "string",
       "x-go-name" : "PceID"
+    },
+    "tcbEvaluationDataNumber" : {
+      "type" : "integer",
+      "format" : "int64",
+      "x-go-name" : "TcbEvaluationDataNumber"
     },
     "tcbLevels" : {
       "type" : "array",
@@ -1460,6 +1465,14 @@ A valid bearer token should be provided to authorize this REST call.
 					<div class="inner description">Quoting Enclave ID specific to a platform.</div>
 				</td>
 				</tr>
+				<tr>
+				<td style="width:150px;">pceid
+				</td>
+				<td style="width:150px;"><span class="type">String</span></td>
+				<td>
+					<div class="inner description">Provisioning Certificate Enclave ID specific to a platform.</div>
+				</td>
+				</tr>
                             </table>
 
     			  <h2>Produces</h2>
@@ -1763,7 +1776,8 @@ A valid bearer token should be provided to authorize this REST call.
          0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
          0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
          0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-         00000000000000000000000"
+         00000000000000000000000",
+    "hardware_uuid": "ee37c360-7eae-4250-a677-6ee12adce8e2"
 }
 </br>Output: </br>{
     "Status": "Created",
@@ -1901,10 +1915,12 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the version of the SGX Caching Service.</p>
+                        <p class="marked">GetVersion is used to get the version of the application.
+Returns - The version of the application.
+</p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/sgx/certification/v1/version</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/version</span></code></pre>
 
     			<h2>Authorization</h2>
   			<ul>
@@ -1917,14 +1933,10 @@ A valid bearer token should be provided to authorize this REST call.
 
 
 
-    			  <h2>Produces</h2>
-    			    <ul>
-      			    <li>text/plain</li>
-    			    </ul>
 
                           <h2>Response</h2>
-                            <!-- <h3> 200 - Successfully retrieved the version of SGX Caching Service. </h3> -->
-                            <div class="methodsubtabletitle">200 - Successfully retrieved the version of SGX Caching Service.</div>
+                            <!-- <h3> 200 - Successfully retrieved the version. </h3> -->
+                            <div class="methodsubtabletitle">200 - Successfully retrieved the version.</div>
 
 
                         <p>
@@ -1937,7 +1949,9 @@ A valid bearer token should be provided to authorize this REST call.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Version-getVersion-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/version" -H "Accept: text/plain"</br></br>Output: </br>skc_M12-SKC_SCS_M10_WW01.01-58-g2efaa71</code></pre> 
+			  <pre><code class="language-bsh">curl -X GET "https://scs.server.com:9000/scs/sgx/certification/v1/version"</br></br>Output: </br>Service Name: SGX Caching Service
+Version: v3.4.0-0f0162ea
+Build Date: 2021-03-08T12:17:18+0000</code></pre> 
 			  </div>
 			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
 			  </div> 
