@@ -150,10 +150,10 @@ rm -rf $tmpdir
 ```shell
 wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
 tar -xzf go1.14.4.linux-amd64.tar.gz
-sudo mv go /usr/local
+mv go /usr/local/
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.1.linux-amd64.tar.gz
+rm -rf go1.14.4.linux-amd64.tar.gz
 ```
 
 #### Docker
@@ -342,7 +342,7 @@ chmod +x pre-requisites.sh
 #     purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 
 chmod +x skc-bootstrap-db-services.sh
-./skc-bootstrap-db-services.sh
+./skc-bootstrap-db-services.sh up
 
 #skc-bootstrap.sh
 #Reference
