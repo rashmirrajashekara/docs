@@ -150,10 +150,10 @@ rm -rf $tmpdir
 ```shell
 wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
 tar -xzf go1.14.4.linux-amd64.tar.gz
-mv go /usr/local/
+sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.4.linux-amd64.tar.gz
+rm -rf go1.14.1.linux-amd64.tar.gz
 ```
 
 #### Docker
@@ -327,24 +327,21 @@ K8S_CA_CERT=
 
 ###### Run scripts on K8s master
 
-The bootstrap scripts are sample scripts to allow for a quick start of SKC services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
+* The bootstrap scripts are sample scripts to allow for a quick start of SKC services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
 
 ```shell
 #Pre-reqs.sh
-chmod +x pre-requisites.sh
 ./pre-requisites.sh
 
-#skc-bootstrap-db-services.sh
+#skc-bootstrap-db-services
 #Reference
 #Usage: ./skc-bootstrap-db-services.sh [-help/up/purge]
 #    -help      print help and exit
 #     up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 #     purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+./skc-bootstrap-db-services.sh
 
-chmod +x skc-bootstrap-db-services.sh
-./skc-bootstrap-db-services.sh up
-
-#skc-bootstrap.sh
+#skc-bootstrap
 #Reference
 #Usage: ./skc-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
@@ -356,12 +353,24 @@ chmod +x skc-bootstrap-db-services.sh
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
 #        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s
-
-chmod +x skc-bootstrap.sh
 ./skc-bootstrap.sh up <all/usecase of choice>
 ```
 
-> TODO: Add steps for configuring K8s scheduler in case of microk8s
+
+
+* Configure kube-scheduler to establish communication with isecl-scheduler.
+
+```shell
+vi /var/snap/microk8s/current/args/kube-scheduler
+
+#Add the below line
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
+```
+
+
 
 #### Multi-Node
 
@@ -467,24 +476,20 @@ K8S_CA_CERT=
 ```shell
 #If using sample script provided for creating nfs directories
 #Copy the script to the base path of the NFS location configured
-chmod +x create-skc-dirs-nfs.sh
 ./create-skc-dirs.nfs.sh
 
 #Pre-reqs.sh
-chmod +x pre-requisites.sh
 ./pre-requisites.sh
 
-#skc-bootstrap-db-services.sh
+#skc-bootstrap-db-services
 #Reference
 #Usage: ./skc-bootstrap-db-services.sh [-help/up/purge]
 #    -help      print help and exit
 #     up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 #     purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-
-chmod +x skc-bootstrap-db-services.sh
 ./skc-bootstrap-db-services.sh
 
-#skc-bootstrap.sh
+#skc-bootstrap
 #Reference
 #Usage: ./skc-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
@@ -496,12 +501,9 @@ chmod +x skc-bootstrap-db-services.sh
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
 #        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s
-
-chmod +x skc-bootstrap.sh
 ./skc-bootstrap.sh up <all/usecase of choice>
 
-#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following
-
+#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following:
 ./skc-bootstrap.sh up isecl-scheduler
 ```
 
@@ -541,14 +543,6 @@ volumes:
 
 ```shell
 systemctl restart kubelet
-```
-
-
-
-* Check if CRD data is populated
-
-```shell
-kubectl get -o json hostattributes.crd.isecl.intel.com
 ```
 
 
