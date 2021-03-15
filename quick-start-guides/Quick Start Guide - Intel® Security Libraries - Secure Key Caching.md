@@ -802,6 +802,8 @@ GIT Configuration**
 	
 	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
 
+	Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility.
+
 **Create RSA Key**
 
 	Execute the command
