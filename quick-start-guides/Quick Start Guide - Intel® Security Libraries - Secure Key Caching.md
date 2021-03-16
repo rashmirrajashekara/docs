@@ -940,9 +940,9 @@ A typical Key Transfer Policy would look as below
 
 Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
 
-Run `sgx_sign` utility on the signed enclave.
+Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
 ```
-    sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
+    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
 ```
 
 - For `sgx_enclave_issuer_anyof`, in info.txt, search for "mrsigner->value" . E.g mrsigner->value :
