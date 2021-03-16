@@ -350,7 +350,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching` & `sgx-orchestration-kubernetes` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching` , `skc-no-orchestration` & `sgx-orchestration-kubernetes` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
    ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
@@ -373,6 +373,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | ---------------------------- | ------------------------------------------------------------ |
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
 | SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
+| SKC No Orchestration         | `setup: skc-no-orchestration` in playbook or via `--extra-vars` as `setup=skc-no-orchestration`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 ## **9. Usecase Workflows with Postman API Collections**
@@ -385,7 +386,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | ---------------------------- | ----------- | ------------------ |
 | Secure Key Caching           | -           | ✔️                  |
 | SGX Discovery, Provisioning and Orchestration | -           | ✔️                  |
-
+| SGX Discovery and Provisioning           | -           | ✔️                  |
 
 
 ### Download Postman API Collections
@@ -574,13 +575,15 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update orchestrator.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES
-  - System IP address where Kubernetes is deployed
-  - Database name, Database username and passwords for SHVS services
+  - System IP address where Kubernetes deployed
+  - Database name, Database username and password for SHVS
 Update skc.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
-  - Database name, Database username and passwords for AAS and SCS services
+  - Install Admin and CSP Admin credentials
+  - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_skc.sh
@@ -592,9 +595,11 @@ Copy the binaries directory generated in the build system system to the /root/ d
 Update csp_skc.conf with the following
   - CSP system IP Address
   - SAN List (a list of ip address and hostname for the CSP system)
-  - TENANT as KUBERNETES
+  - Install Admin and CSP Admin credentials
+  - TENANT as KUBERNETES 
   - System IP address where Kubernetes is deployed
-  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Database name, Database username and password for AAS, SCS and SHVS services
+  - CSP Admin Username and Password
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_csp_skc.sh
@@ -637,7 +642,7 @@ Validate if pod can be launched on the node. Run following commands:
     kubectl describe pods nginx
 ```
 
-Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+Pod should be in running state and launched on the host as per values in pod.yml. Validate by running below command on sgx host:
 ```
 	docker ps
 ```
@@ -647,7 +652,7 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
   - SAN List (a list of ip address and hostname for the Enterprise system)
-  - kbs hostname
+  - Install Admin credentials
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -659,10 +664,10 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
-  - SGX Compute node IP where Agent will be installed
   - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+  - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+  - Token validity period in days
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
-  - For Each Agent installation on a SGX compute node, please change AGENT_USER and AGENT_PASSWORD
 Save and Close
 Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
 ./deploy_sgx_agent.sh
@@ -672,12 +677,21 @@ Note: In case you don't want agent to push discovery related data to SHVS. Pleas
 ```
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 ./skclib_untar.sh
+Update create_roles.conf with the following
+  - IP address of AAS deployed on Enterprise system
+  - Admin account credentials of AAS deployed on Enterprise system
+  - Permission string to be embedded into skc_libraty client TLS Certificate
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+Save and Close
+./skc_library_create_roles.sh
+Copy the token printed on console.
 Update skc_library.conf with the following
-  - IP address for CMS/AAS/KBS services deployed on Enterprise system
+  - IP address for CMS and KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
   - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
-  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
+  - SKC_TOKEN with the token copied from previous step
 Save and Close
 ./deploy_skc_library.sh
 ```
@@ -704,15 +718,18 @@ GIT Configuration**
     
 ## Appendix
 
-### Creating RSA Keys in Key Broker Service
+## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
 
 	cd into /root/binaries/kbs_script folder
 	
-	Update SYSTEM_IP address in run.sh (where AAS and KBS are deployed)
-	
-	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
+	Update kbs.conf with the following
+  - Enterprise system IP address where CMS/AAS/KBS services are deployed
+  - Port of CMS, AAS and KBS services deployed on enterprise system
+  - AAS admin and Enterprise admin credentials
+  
+  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
@@ -722,7 +739,7 @@ GIT Configuration**
 
 - copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
-### Configuration for NGINX testing
+## Configuration for NGINX testing
 
 **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
@@ -790,7 +807,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-### KBS key-transfer flow validation
+# KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
 

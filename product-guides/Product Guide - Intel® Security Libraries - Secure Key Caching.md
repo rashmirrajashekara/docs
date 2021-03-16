@@ -406,7 +406,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 
 AAS_TLS_SAN=\< Comma-Separated list of IPs and hostnames for the AAS\>
 
-AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas
+AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas/v1/
 
 SAN_LIST=\< Comma-Separated list of IP addresses and hostnames for the CMS\>
 
@@ -540,7 +540,7 @@ Create the `populate-users.env` file using the following values:
 # SKC Components include AAS,SCS,SHVS,SQVS,SIH and SKBS.
 ISECL_INSTALL_COMPONENTS=AAS,SCS,SHVS,SQVS,SIH,SKBS
 
-AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1
+AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1/
 AAS_ADMIN_USERNAME=<AAS username>
 AAS_ADMIN_PASSWORD=<AAS password>
 
@@ -685,7 +685,7 @@ Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PG
         
        CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
-       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas
+       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/v1/
        
        RETRY_COUNT=3
        
@@ -788,7 +788,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
      BEARER_TOKEN=<Installation token> 
     
-     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas 
+     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1 
     
      CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1/
     
@@ -840,7 +840,6 @@ Intel® Xeon® SP (Ice Lake-SP)
     Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
     Update the following in agent.conf
-    - IP address of the SGX compute node
      - IP address for all the CSP side services
      - CSP admin credentials
      - Long-lived token validity period in days
@@ -903,7 +902,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        BEARER_TOKEN=< Installation token > 
     
-       AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas 
+       AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas/v1/ 
     
        CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1/ 
     
@@ -1161,7 +1160,7 @@ To install the SGX Integration Hub, follow these steps:
     CMS_TLS_CERT_SHA384=< CMS TLS digest > 
     BEARER_TOKEN=<Installation token> 
  
-    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas
+    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/v1/
     CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
     POLL_INTERVAL_MINUTES=2
     TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
@@ -1344,7 +1343,7 @@ NA
        
        SERVER_PORT=9443
         
-       AAS_API_URL=https://<AAS IP or hostname>:8444/aas
+       AAS_API_URL=https://<AAS IP or hostname>:8444/aas/v1/
         
        CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
@@ -1404,12 +1403,21 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 
     Copy skc_library.tar skc_library.sha2 and skclib_untar.sh to a directory in SGX Compute node
     ./skclib_untar.sh
-    Update the following in skc_library.conf (SCS IP Should be set to CSP SCS IP)
-    - IP address for CSP side services
-    - IP address for Enterprise side services
-    - AAS Admin credentials
-    - Hostname of the system where KBS is deployed
-    - skc_library user credentials
+    Update create_roles.conf with the following
+    - IP address of AAS deployed on Enterprise system
+    - Admin account credentials of AAS deployed on Enterprise system
+    - Permission string to be embedded into skc_libraty client TLS Certificate
+    - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+
+    ./skc_library_create_roles.sh
+    Copy the token printed on console.
+    Update skc_library.conf with the following
+    - IP address for CMS and KBS services deployed on Enterprise system
+    - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
+    - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
+    - Hostname of the Enterprise system where KBS is deployed
+    - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
+    - SKC_TOKEN with the token copied from previous step
     ./deploy_skc_library.sh
     
 #### Deploying SKC Library as a Container 
@@ -1470,7 +1478,7 @@ The following sections present how to use AAS APIs to create tokens and manage u
 
 To request a new token from the AAS:
 
-POST https://\<AAS IP or hostname\>:8444/aas/token
+POST https://\<AAS IP or hostname\>:8444/aas/v1/token
 
 {
 
@@ -1510,7 +1518,7 @@ Usernames have the following requirements:
 
 ### Create User 
 
-POST https://\<IP or hostname of AAS\>:8444/aas/users
+POST https://\<IP or hostname of AAS\>:8444/aas/v1/users
 
 Authorization: Bearer \<token\>
 
@@ -1524,13 +1532,13 @@ Authorization: Bearer \<token\>
 
 ### Search Users by Username
 
-GET https://\<IP or hostname of AAS\>:8444/aas/users?name=\<value\>
+GET https://\<IP or hostname of AAS\>:8444/aas/v1/users?name=\<value\>
 
 Authorization: Bearer \<token\>
 
 ### Change User Password
 
-PATCH https://\<IP or hostname of AAS\>:8444/aas/users/changepassword
+PATCH https://\<IP or hostname of AAS\>:8444/aas/v1/users/changepassword
 
 {
 
@@ -1544,7 +1552,7 @@ PATCH https://\<IP or hostname of AAS\>:8444/aas/users/changepassword
 
 ### Delete User
 
-DELETE https://\<IP or hostname of AAS\>:8444/aas/users/\<User ID\>
+DELETE https://\<IP or hostname of AAS\>:8444/aas/v1/users/\<User ID\>
 
 Authorization: Bearer \<token\>
 
@@ -1554,7 +1562,7 @@ Permissions in Intel® SecL-DC are managed by Roles. Roles are a set of predefin
 
 ### Create Roles
 
-POST https://\<AAS IP or Hostname\>:8444/aas/roles
+POST https://\<AAS IP or Hostname\>:8444/aas/v1/roles
 
 Authorization: Bearer \<token\>
 
@@ -1584,7 +1592,7 @@ Permissions required to execute specific API requests are listed with the API re
 
 ### Search Roles
 
-GET https://\<AAS IP or Hostname\>:8444/aas/roles?\<parameter\>=\<value\>
+GET https://\<AAS IP or Hostname\>:8444/aas/v1/roles?\<parameter\>=\<value\>
 
 Authorization: Bearer \<token\>
 
@@ -1602,13 +1610,13 @@ allContexts=\<true or false\> filter=false
 
 ### Delete Role
 
-DELETE https://\<AAS IP or Hostname\>:8444/aas/roles/\<role ID\> Authorization:
+DELETE https://\<AAS IP or Hostname\>:8444/aas/v1/roles/\<role ID\> Authorization:
 
 Bearer \<token\>
 
 ### Assign Role to User
 
-POST https://\<AAS IP or Hostname\>:8444/aas/users/\<user ID\>/roles
+POST https://\<AAS IP or Hostname\>:8444/aas/v1/users/\<user ID\>/roles
 
 Authorization: Bearer \<token\>
 
@@ -1620,13 +1628,13 @@ Authorization: Bearer \<token\>
 
 ### List Roles Assigned to User 
 
-GET https://\<AAS IP or Hostname\>:8444/aas/users/\<user ID\>/roles
+GET https://\<AAS IP or Hostname\>:8444/aas/v1/users/\<user ID\>/roles
 
 Authorization: Bearer \<token\>
 
 ### Remove Role from User 
 
-DELETE https://\<AAS IP or Hostname\>:8444/aas/users/\<user ID\>/roles/\<role ID\>
+DELETE https://\<AAS IP or Hostname\>:8444/aas/v1/users/\<user ID\>/roles/\<role ID\>
 
 Authorization: Bearer \<token\>
 
@@ -1675,7 +1683,7 @@ Host Registration creates a host record with host information in the SGX Host Ve
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
 | CMS_BASE_URL                   | https://< IP address or hostname for CMS >:8445/cms/v1/ | Base URL of the CMS                                          |
-| AAS_API_URL                    | https://< IP address or hostname for AAS >:8444/aas     | Base URL of the AAS                                          |
+| AAS_API_URL                    | https://< IP address or hostname for AAS >:8444/aas/v1/     | Base URL of the AAS                                          |
 | SCS_BASE_URL                   | https://< IP or hostname of SCS >:9000/scs/sgx/         | Base URL of SCS                                              |
 | SHVS_DB_PORT                   | 5432                                                    | Defines the port number for communication with the database server. By default, with a local database server installation, this port will be set to 5432. |
 | SHVS_DB_NAME                   | pgshvsdb                                                | Defines the schema name of the database. If a remote database connection will be used, this schema must be created in the remote database before installing the SGX Host Verification Service |
@@ -1769,10 +1777,10 @@ This folder contains log files: /var/log/shvs/
 
 | Key                 | Sample Value                                     | Description                                                  |
 | ------------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| AAS_API_URL         | https://< AAS IP or Hostname>:8444/aas           | API URL for Authentication Authorization Service (AAS).      |
+| SCS_BASE_URL         | https://< AAS IP or Hostname>:9000/scs/sgx/           | The url used during setup to request information from SCS.      |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/       | API URL for Certificate Management Service (CMS).            |
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
-| BEARER_TOKEN        |                                                  | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
+| BEARER_TOKEN        |                                                  | Long Lived JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS_TLS_CERT_SHA384 | < Certificate Management Service TLS digest>     | SHA384 Hash for verifying the CMS TLS certificate.           |
 | SGX_PORT            | 11001                                            | The port on which the SGX Agent service will listen.         |
 | SHVS_UPDATE_INTERVAL| 120                                              | Interval for SHVS updates in minutes. Values should be in the range of 1 minutes to 120 minutues.|
@@ -1840,7 +1848,7 @@ Contains the config.yml configuration file.
 
 | Key                     | sample Value                                                 | Description                                                  |
 | ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas | Base URL for the AAS                                         |
+| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas/v1/ | Base URL for the AAS                                         |
 | CMS_BASE_URL            | https://< Certificate Management Service IP or Hostname>:8445/cms/v1 | Base URL for the CMS                                         |
 | ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v2/ | Base URL  of SHVS                                            |
 | ATTESTATION_TYPE        | SGX                                                          | For SKC, Attestation Type is always SGX                      |
@@ -1934,7 +1942,7 @@ This folder contains log files: /var/log/ihub/
 | ----------- | ---------------------------------------------------- | ------------------------------------------------------------ |
 | CMS_PORT    | 8445                                                 | Default Port where Certificate Management Service Runs       |
 | CMS_NOSETUP | false                                                | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
-| AAS_API_URL | https://< AAS Hostname or IP address>:8444/aas/      | URL to connect to the AAS, used during setup for authentication. |
+| AAS_API_URL | https://< AAS Hostname or IP address>:8444/aas/v1/      | URL to connect to the AAS, used during setup for authentication. |
 | AAS_TLS_SAN | < Comma-separated list of IPs/hostnames for the AAS> | SAN list populated in special JWT token; this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
 
@@ -2188,7 +2196,7 @@ Contains database scripts.
 | Variable Name        | Default Value                                 | Notes                                              |
 | -------------------- | --------------------------------------------- | -------------------------------------------------- |
 | CMS_BASE_URL         | https://< CMS IP or hostname >:8445/cms/v1/   | Required for generating TLS certificate            |
-| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas       | AAS service url                                        |
+| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas/v1/       | AAS service url                                        |
 | SQVS_URL             | https://< SQVS IP or hostname >:12000/svs/v1/ | Required to get the SGX Quote verified             |
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest > | SHA384 digest of CMS TLS certificate               |
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
@@ -2257,7 +2265,7 @@ Contains executable scripts and binaries.
 | Key                               | Sample Value                                                 | Description                                                  |
 | --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | CMS_BASE_URL                      | https://< CMS IP or hostname >:8445/cms/v1/                  | CMS URL for Certificate Management Service                   |
-| AAS_API_URL                       | https://< AAS IP or hostname >:8444/aas                      | API URL for Authentication Authorization Service             |
+| AAS_API_URL                       | https://< AAS IP or hostname >:8444/aas/v1/                      | API URL for Authentication Authorization Service             |
 | SCS_ADMIN_USERNAME                | scsuser@scs                                                  | SCS Service username                                         |
 | SCS_ADMIN_PASSWORD                | scspassword                                                  | SCS Service password                                         |
 | BEARER_TOKEN                      |                                                              | Installation Token from AAS                                  |
@@ -2335,7 +2343,7 @@ Contains database scripts
 | Key                      | Sample Value                                                 | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | CMS_BASE_URL             | https://< CMS IP address or hostname >:8445/cms/v1/          | Defines the base URL for the CMS owned by  the image owner. Note that this CMS  may be different from the CMS used for other components. |
-| AAS_API_URL              | https://< AAS IP address or hostname >:8444/aas              | Defines the baseurl for the AAS owned by  the image owner. Note that this AAS  may be different from the AAS used for other components. |
+| AAS_API_URL              | https://< AAS IP address or hostname >:8444/aas/v1/              | Defines the baseurl for the AAS owned by  the image owner. Note that this AAS  may be different from the AAS used for other components. |
 | SCS_BASE_URL             | https://< SCS IP address or hostname >:9000/scs/sgx/certification/v1/ | The SCS url is needed.                                       |
 | SGX_TRUSTED_ROOT_CA_PATH | /tmp/trusted_rootca.pem                                      | The path to SGX root ca used to verify quote                 |
 | CMS_TLS_CERT_SHA384      | < Certificate Management Service TLS digest >                | SHA384 hash of the CMS  TLS certificate                      |
@@ -2564,13 +2572,14 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
 
 On the Enterprise VM, where Key broker service is running
 
-	cd /root/binaries/kbs_script
+    cd into /root/binaries/kbs_script folder
 	
-	Update Enterprise VM IP address where KBS and AAS are installed in run.sh
-	
-	Update CACERT_PATH variable with trustedca certificate inside directory /etc/kbs/certs/trustedca/<id.pem>. 
-
-	Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility.
+	Update kbs.conf with the following
+	- Enterprise system IP address where CMS/AAS/KBS services are deployed
+	- Port of CMS, AAS and KBS services deployed on enterprise system
+	- AAS admin and Enterprise admin credentials
+  
+	Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
@@ -2704,9 +2713,9 @@ A typical Key Transfer Policy would look as below
 
 Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
 
-Run `sgx_sign` utility on the signed enclave.
+Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
 ```
-    sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
+    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
 ```
 
 - For `sgx_enclave_issuer_anyof`, in info.txt, search for "mrsigner->value" . E.g mrsigner->value :
