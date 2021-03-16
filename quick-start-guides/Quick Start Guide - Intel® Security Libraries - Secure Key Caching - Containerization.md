@@ -5,8 +5,18 @@ Table of Contents
 
    * [Quick start Guide - SGX Containerization](#quick-start-guide---sgx-containerization)
       * [Hardware &amp; OS Requirements](#hardware--os-requirements)
+         * [Machines](#machines)
+         * [OS Requirements](#os-requirements)
+         * [Container Runtime](#container-runtime)
+         * [K8s Distributions](#k8s-distributions)
+         * [Storage](#storage)
       * [Network Requirements](#network-requirements)
-      * [RHEL Package Requirements](#rhel-package-requirements)
+         * [Build System](#build-system)
+         * [CSP Managed Services](#csp-managed-services)
+         * [Enterprise Managed Services](#enterprise-managed-services)
+         * [SGX Enabled Host](#sgx-enabled-host)
+         * [Firewall Settings](#firewall-settings)
+      * [RHEL RPMs Requirements](#rhel-rpms-requirements)
       * [Deployment Model](#deployment-model)
          * [Single Node](#single-node)
          * [Multi Node](#multi-node)
@@ -39,8 +49,8 @@ Table of Contents
                   * [Update .env file](#update-env-file-1)
                   * [Run scripts on K8s master](#run-scripts-on-k8s-master-1)
       * [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
-            * [Single Node Deployments](#single-node-deployments)
-            * [Multi Node Deployments](#multi-node-deployments)
+         * [Single Node Deployments](#single-node-deployments)
+         * [Multi Node Deployments](#multi-node-deployments)
       * [Default Service Ports](#default-service-ports)
       * [Usecase Workflows API Collections](#usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-4)
@@ -63,70 +73,73 @@ Table of Contents
 
 ## Hardware & OS Requirements
 
-1. **Machines**
+### Machines
 
-   * RHEL 8.2 Build Machine
+* RHEL 8.2 Build Machine
 
-   * K8S Master Node Setup on CSP (VMs/Physical Nodes + SGX enabled Physical Nodes)
+* K8S Master Node Setup on CSP (VMs/Physical Nodes + SGX enabled Physical Nodes)
 
-   * K8S Master Node Setup on Enterprise (VMs/Physical Nodes)
+* K8S Master Node Setup on Enterprise (VMs/Physical Nodes)
 
-   > **Note:** The supported K8s distributions are `microk8s(single-node)` & `kubeadm(multi-node)` K8s distributions
+### OS Requirements
 
-2. **OS Requirements**
+* RHEL 8.2 for build
 
-   * RHEL 8.2 for build
+* RHEL 8.2 or Ubuntu 18.04 for K8s cluster deployments
 
-   * RHEL 8.2 or Ubuntu 18.04 for deployments
-   
-     >  **Note:** SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
-   
-3. **Container Runtime**
+  >  **Note:** SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
-   * Docker
-   
-4. **Storage**
+### Container Runtime
 
-   * `hostPath` in case of single-node `microk8s`
-   * `NFS` in case of multi-node `kubeadm`
+* Docker
+
+### K8s Distributions
+
+* Single Node: `microk8s`
+* Multi Node: `kubeadm`
+
+### Storage
+
+* `hostPath` in case of single-node `microk8s`
+* `NFS` in case of multi-node `kubeadm`
 
 
 
 ## Network Requirements
 
-1. **Build System**
+### Build System
 
-   Internet access required
+Internet access required
 
-2. **CSP Managed Services**
+### CSP Managed Services
 
-   Internet access required for SGX Caching Service deployed on CSP system/SGX Compute Node;
+Internet access required for SGX Caching Service deployed on CSP system/SGX Compute Node;
 
-3. **Enterprise Managed Services**
+### Enterprise Managed Services
 
-   Internet access required for SGX Caching Service deployed on Enterprise system;
+Internet access required for SGX Caching Service deployed on Enterprise system;
 
-4. **SGX Enabled Host**
+### SGX Enabled Host
 
-   Internet access required to access KBS running on Enterprise environment
+Internet access required to access KBS running on Enterprise environment
 
-**Firewall Settings**
+### Firewall Settings
 
 Ensure that all the SKC service ports are accessible with firewall
 
 
 
-## RHEL Package Requirements
+## RHEL RPMs Requirements
 
-Access required for the following packages in all systems
+Access required for the following rpms in all systems
 
-1. **BaseOS**
+* BaseOS
 
-2. **Appstream**
+* Appstream
 
-3. **CodeReady**
+* CodeReady
 
-   
+
 
 ## Deployment Model
 
@@ -582,7 +595,7 @@ systemctl restart kubelet
 
 ## Default Service and Agent Mount Paths
 
-#### Single Node Deployments
+### Single Node Deployments
 
 Single node Deployments use `hostPath` mounting pod(container) files directly on host. Following is the complete list of the files being mounted on host
 
@@ -631,7 +644,7 @@ Logs: /var/log/sgx-agent
 EFI: /sys/firmware/efi/efivars
 ```
 
-#### Multi Node Deployments
+### Multi Node Deployments
 
 Multi node Deployments use k8s persistent volume and persistent volume claims for mounting pod(container) files on NFS volumes for all services, agents will continue to use `hostPath`. Following is a sample list of the files being mounted on NFS base volumes
 
