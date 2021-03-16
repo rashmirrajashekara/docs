@@ -308,11 +308,12 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   * RHEL 8.2 enabled K8s worker node with SGX:
 
     * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
-  * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
+    * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
     * Execute  `./agent_untar.sh`  
-  * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
+    * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
+    
   * Ubuntu 18.04 enabled K8s worker node with SGX:
-  
+ 
     * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
     * Copy the platform-dependencies script to SGX enabled worker nodes
     * Execute  `./agent_untar.sh`  
