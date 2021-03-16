@@ -1229,6 +1229,12 @@ deployment in the `isecl` namespace.
 
 ### 3.15.1  Deploy Intel® SecL Custom Controller
 ------------------------------------------
+
+#Install skopeo to load docker image for controller and scheduler from archive
+    ``` shell
+    dnf install -y skopeo
+    ```
+
 1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
     
     ```shell
@@ -1259,28 +1265,36 @@ deployment in the `isecl` namespace.
 4. Load the `isecl-controller` docker image
 
    ```shell
-   docker load -i docker-isecl-controller-*.tar
+   cd /<path>/isecl-k8s-extensions/
+   skopeo copy oci-archive:<isecl-k8s-controller-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
+   
+5. Udate image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
+   ``` shell
+      containers:
+        - name: isecl-controller
+          image: <docker_private_registry_server>:5000/<imageName>:<tagName>
+    ```
 
-5. Deploy `isecl-controller`
+6. Deploy `isecl-controller`
 
    ```shell
    kubectl apply -f yamls/isecl-controller.yaml
    ```
 
-6. Check whether the isecl-controller is up and running
+7. Check whether the isecl-controller is up and running
 
    ```shell
    kubectl get deploy -n isecl
    ```
 
-7. Create clusterRoleBinding for ihub to get access to cluster nodes
+8. Create clusterRoleBinding for ihub to get access to cluster nodes
 
    ```shell
    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
    ```
 
-8. Fetch token required for ihub installation
+9. Fetch token required for ihub installation
 
    ```shell
    kubectl get secrets -n isecl
@@ -1289,7 +1303,7 @@ deployment in the `isecl` namespace.
    kubectl describe secret default-token-<name> -n isecl
    ```
 
-9. Additional Optional Configurable fields for isecl-controller configuration in `isecl-controller.yaml`
+10. Additional Optional Configurable fields for isecl-controller configuration in `isecl-controller.yaml`
 
    | Field                 | Required   | Type     | Default | Description                                                  |
    | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
@@ -1492,37 +1506,44 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
 
    ```shell
    cd /<path>/isecl-k8s-extensions/
-   docker load -i docker-isecl-scheduler-*.tar
+   skopeo copy oci-archive:<isecl-k8s-scheduler-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
    
-5. Create scheduler-secret for isecl-scheduler
+5. Udate image name as above in scheduler yaml "/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml"
+   ``` shell
+      containers:
+        - name: isecl-scheduler
+          image: <docker_private_registry_server>:5000/<imageName>:<tagName>
+    ```
+  
+6. Create scheduler-secret for isecl-scheduler
 
    ```shell
    cd /<path>/
    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
    ```
 
-6. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file. The scheduler and controller yaml files are located under `/<path>/isecl-k8s-extensions/yamls`
+7. The `isecl-scheduler.yaml` file includes support for both SGX and Workload Security put together. For only working with Workload Security scenarios , the following line needs to be made empty in the yaml file. The scheduler and controller yaml files are located under `/<path>/isecl-k8s-extensions/yamls`
 
    ```yaml
    - name: SGX_IHUB_PUBLIC_KEY_PATH
      value: ""
    ```
 
-7. Deploy `isecl-scheduler`
+8. Deploy `isecl-scheduler`
 
    ```shell
    cd /<path>/isecl-k8s-extensions/
    kubectl apply -f yamls/isecl-scheduler.yaml      
    ```
 
-8. Check whether the `isecl-scheduler` is up and running
+9. Check whether the `isecl-scheduler` is up and running
 
    ```shell
    kubectl get deploy -n isecl
    ```
 
-9. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
+10. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
    | Field                    | Required   | Type     | Default | Description                                                  |
    | ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
