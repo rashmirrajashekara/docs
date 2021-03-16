@@ -348,6 +348,7 @@ K8S_DISTRIBUTION=microk8s
 K8S_MASTER_IP=<ip-address of K8s master>
 K8S_MASTER_HOSTNAME=<hostname of K8s master>
 AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master HOSTNAME>
 
 #For microk8s
 #K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
@@ -494,6 +495,7 @@ K8S_DISTRIBUTION=kubeadm
 K8S_MASTER_IP=<ip-address of K8s master>
 K8S_MASTER_HOSTNAME=<hostname of K8s master>
 AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master HOSTNAME>
 
 # For Kubeadm
 # K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
