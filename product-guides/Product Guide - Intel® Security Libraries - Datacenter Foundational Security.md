@@ -1231,9 +1231,7 @@ deployment in the `isecl` namespace.
 ------------------------------------------
 
 #Install skopeo to load docker image for controller and scheduler from archive
-    ``` shell
     dnf install -y skopeo
-    ```
 
 1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
     
