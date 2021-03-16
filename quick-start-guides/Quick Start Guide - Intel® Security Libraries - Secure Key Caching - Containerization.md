@@ -253,9 +253,9 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * Ensure a docker registry is running locally or remotely. 
 
-  > **Note:** For single node microk8s deployment, a registry can be brought up by using microk8s add-ons. More details present in Microk8s documentation. This is not mandatory, if a remote registry already exists, the same can be  used as well for single-node
+  > **Note:** For single node `microk8s` deployment, a registry can be brought up by using microk8s add-ons. More details present in Microk8s documentation. This is not mandatory, if a remote registry already exists, the same can be  used as well for single-node
   >
-  > **Note:** For multi-node kubeadm deployment, a docker registry needs to be setup by the user
+  > **Note:** For multi-node `kubeadm` deployment, a docker registry needs to be setup by the user
 
 * Push all container images to docker registry. Example below
 
@@ -273,11 +273,16 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
   * RHEL 8.2 enabled K8s worker node with SGX:
 
-    > TODO: add the pre-req for sgxagent here
-
+    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
+  * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
+    * Execute  `./agent_untar.sh`  
+  * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
   * Ubuntu 18.04 enabled K8s worker node with SGX:
-
-    > TODO: add the pre-req for sgxagent here
+  
+    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
+    * Copy the platform-dependencies script to SGX enabled worker nodes
+    * Execute  `./agent_untar.sh`  
+    * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
 
 ### Deploy
 
@@ -352,7 +357,7 @@ K8S_CA_CERT=
 #    Available Options for up/down command:
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
-#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s
+#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization
 ./skc-bootstrap.sh up <all/usecase of choice>
 ```
 
@@ -382,7 +387,9 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 * Copy all manifests and OCI container images as required to K8s master
 
-* Ensure images are pushed to registry
+* Ensure images are pushed to registry locally or remotely
+
+* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
 
 * `NFS` storage class is used in kubernetes environment for data persistence and supported in SKC. User needs to setup NFS server and create directory structure along with granting permission for a given user id. From security point of view, its been recommended to create a separate user id and grant the permission for all isecl directories for this user id. Below are some samples for reference
 
@@ -507,7 +514,12 @@ K8S_CA_CERT=
 ./skc-bootstrap.sh up isecl-scheduler
 ```
 
+* Create and update `scheduler-policy.json` path
 
+```shell
+mkdir -p /opt/isecl-k8s-extensions
+cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions
+```
 
 * Configure kube-scheduler to establish communication with isecl-scheduler. Add `scheduler-policy.json` under kube-scheduler section, `mountPath` under container section and `hostPath` under volumes section in` /etc/kubernetes/manifests/kube-scheduler.yaml` as mentioned below
 
@@ -535,11 +547,11 @@ volumes:
     name: extendedsched
 ```
 
-> **Note:** Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+> **Note:** Make sure to use proper indentation and don't delete existing `mountPath` and `hostPath` sections in `kube-scheduler.yaml`
 
 
 
-* Restart Kubelet which restart all the k8s services including kube base scheduler
+* Restart `kubelet` which restart all the k8s services including kube-scheduler
 
 ```shell
 systemctl restart kubelet
@@ -762,7 +774,40 @@ make all
 
 ### SKC Key Transfer Flow
 
-> TODO: TBA by Vinit
+Below steps to be followed post successful deployment with Single-Node/Multi-Node deployment
+
+#### Generating keys:
+
+* Navigate to `k8s/manifests/kbs/kbs_script/`  
+
+* Update `kbs.conf` with `SYSTEM_IP` and `CACERT_PATH`
+
+  * `CACERT_PATH` for Single-Node deployments:  `/etc/kbs/certs/trustedca/<sha1>.pem`
+
+  * `CACERT_PATH` for Multi-Node deployments: `<NFS-PATH>/kbs/config/certs/trustedca/<sha1>.pem`
+
+    > **Note:** The CACERT needs to be copied to K8s master for the key transfer flow
+
+* Generate the key using `./run.sh reg`
+
+#### Setup configurations
+
+* Copy generated key to `k8s/manifests/skc_library/resources`  
+* Update all the files available under `k8s/manifests/skc_library/resources` with required values
+  * `hosts`
+  * `keys.txt`
+  * `nginx.conf`
+  * `openssl.cnf` 
+  * `pkcs11-apimodule.ini` 
+  * `sgx_default_qcnl.conf` 
+  * `skc_library.conf` 
+* Update `mountPath` and `subPath` with generated key id, along with image name in `k8s/manifests/skc_library/deployment.yml`  
+* Update `skc-bootstrap.sh` with key id inside function `deploy_SKC_library()`   for the following line `$KUBECTL create secret generic kbs-cert-secret --from-file=resources/<key id>.crt --namespace=isecl`
+
+#### Initiate Key Transfer Flow
+
+* Deploy the SKC Library using `./skc-bootstrap.sh up skclib`
+* It will initiate the key transfer
 
 ### Setup Task Flow
 
@@ -801,9 +846,24 @@ In order to cleanup and setup fresh again on single node without data,config fro
 #Purge all db data,pods,deploy,cm,secrets
 ./skc-bootstrap-db-services.sh purge
 
+#Comment/Remove the following lines from /var/snap/microk8s/current/args/kube-scheduler
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
+
 #Setup fresh
 ./skc-bootstrap-db-services.sh up
 ./skc-bootstrap.sh up <all/usecase of choice>
+
+#Reconfigure K8s-scheduler
+vi /var/snap/microk8s/current/args/kube-scheduler
+
+#Add the below line
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
 ```
 
 
@@ -814,45 +874,163 @@ In order to cleanup and setup fresh again on single node with data,config from p
 #Down all data and pods,deploy,cm,secrets with deleting config,data,logs
 ./skc-bootstrap.sh down <all/usecase of choice>
 
+#Comment/Remove the following lines from /var/snap/microk8s/current/args/kube-scheduler
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
+
 #Setup fresh
 ./skc-bootstrap-db-services.sh up
 ./skc-bootstrap.sh up <all/usecase of choice>
+
+#Reconfigure K8s-scheduler
+vi /var/snap/microk8s/current/args/kube-scheduler
+
+#Add the below line
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
 ```
 
 
 
 #### Multi-node
 
-In order to cleanup and setup fresh again on multi-node without data,config from previous deployment
+In order to cleanup and setup fresh again on multi-node with data,config from previous deployment
 
 ```shell
 #Purge all data and pods,deploy,cm,secrets
 ./skc-bootstrap.sh down <all/usecase of choice>
+
+#Delete 'scheduler-policy.json'
+rm -rf /opt/isecl-k8s-extensions
+
+#Comment/Remove '--policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+ containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Comment/Remove '- mountPath: ...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+      
+#Comment/Remove '-hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+
+#Restart kubelet
+systemctl restart kubelet
 
 #Purge all db data,pods,deploy,cm,secrets
 ./skc-bootstrap-db-services.sh purge
 
 #Cleanup all data from NFS share --> User controlled
 
-#Cleanup data from each worker node
+#Cleanup data from each worker node --> User controlled
 rm -rf /etc/sgx_agent
 rm -rf /var/log/sgx_agent
 
 #Setup fresh
 ./skc-bootstrap-db-services.sh up
 ./skc-bootstrap.sh up <all/usecase of choice>
+
+#Reconfigure K8s-scheduler
+containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+
+volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+
+#Restart kubelet
+systemctl restart kubelet
 ```
 
 
 
-In order to cleanup and setup fresh again on multi-node with data,config from previous deployment
+In order to cleanup and setup fresh again on multi-node without removing data,config from previous deployment
 
 ```shell
 #Down all pods,deploy,cm,secrets with removing persistent data
 ./skc-bootstrap.sh down <all/usecase of choice>
 
+#Delete 'scheduler-policy.json'
+rm -rf /opt/isecl-k8s-extensions
+
+#Comment/Remove '--policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+ containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Comment/Remove '- mountPath: ...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+      
+#Comment/Remove '-hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+    
+#Restart kubelet
+systemctl restart kubelet
+
 #Setup fresh
 ./skc-bootstrap-db-services.sh up
 ./skc-bootstrap.sh up <all/usecase of choice>
+
+#Setup fresh
+./skc-bootstrap-db-services.sh up
+./skc-bootstrap.sh up <all/usecase of choice>
+
+#Copy ihub_public_key.pem from <NFS-PATH>/ihub/config/ to K8s master and update IHUB_PUB_KEY_PATH in isecl-skc-k8s.env
+
+#Bootstrap isecl-scheduler
+./skc-bootstrap.sh up isecl-scheduler
+
+#Reconfigure K8s-scheduler
+containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+
+volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+    
+#Restart kubelet
+systemctl restart kubelet
 ```
 
