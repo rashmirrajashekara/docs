@@ -85,7 +85,7 @@ Access required for the following packages in all systems
 **System Tools and utils**
 
 ```
-dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
+dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel skopeo
 dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
@@ -560,13 +560,15 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update orchestrator.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
-  - Database name, Database username and passwords for SHVS services
+  - Database name, Database username and password for SHVS
 Update skc.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
-  - Database name, Database username and passwords for AAS and SCS services
+  - Install Admin and CSP Admin credentials
+  - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_skc.sh
@@ -578,9 +580,10 @@ Copy the binaries directory generated in the build system system to the /root/ d
 Update csp_skc.conf with the following
   - CSP system IP Address
   - SAN List (a list of ip address and hostname for the CSP system)
+  - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
-  - Database name, Database username and passwords for AAS, SCS and SHVS services
+  - Database name, Database username and password for AAS, SCS and SHVS services
   - CSP Admin Username and Password
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -624,7 +627,7 @@ Validate if pod can be launched on the node. Run following commands:
     kubectl describe pods nginx
 ```
 
-Pod should be in running state and launched on the host as per values in pod.yml. Validate running below commands on sgx host:
+Pod should be in running state and launched on the host as per values in pod.yml. Validate by running below command on sgx host:
 ```
 	docker ps
 ```
@@ -699,7 +702,7 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
   - SAN List (a list of ip address and hostname for the Enterprise system)
-  - kbs hostname
+  - Install Admin credentials
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
 Save and Close
@@ -711,8 +714,9 @@ Save and Close
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 ./agent_untar.sh
 Edit agent.conf with the following
-  - SGX Compute node IP where Agent will be installed
   - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+  - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+  - Token validity period in days
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
 Save and Close
 Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
@@ -723,12 +727,21 @@ Note: In case you don't want agent to push discovery related data to SHVS. Pleas
 ```
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 ./skclib_untar.sh
+Update create_roles.conf with the following
+  - IP address of AAS deployed on Enterprise system
+  - Admin account credentials of AAS deployed on Enterprise system
+  - Permission string to be embedded into skc_libraty client TLS Certificate
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+Save and Close
+./skc_library_create_roles.sh
+Copy the token printed on console.
 Update skc_library.conf with the following
-  - IP address for CMS/AAS/KBS services deployed on Enterprise system
+  - IP address for CMS and KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
   - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
-  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
+  - SKC_TOKEN with the token copied from above step
 Save and Close
 ./deploy_skc_library.sh
 ```
@@ -798,11 +811,12 @@ GIT Configuration**
     
 	cd into /root/binaries/kbs_script folder
 	
-	Update SYSTEM_IP address in run.sh (where AAS and KBS are deployed)
-	
-	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
-
-	Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility.
+	Update kbs.conf with the following
+  - Enterprise system IP address where CMS/AAS/KBS services are deployed
+  - Port of CMS, AAS and KBS services deployed on enterprise system
+  - AAS admin and Enterprise admin credentials
+  
+  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility.
 
 **Create RSA Key**
 
