@@ -221,7 +221,7 @@ The high-level architectures of these features are presented in the next sub-sec
 
 ## SGX Attestation Support and SGX Support in Orchestrators
 
-The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently Kubernetes and OpenStack is supported). 
+The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (Kubernetes and OpenStack). 
 
 THE SGX Agent pushes platform information to SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
@@ -275,8 +275,8 @@ Generated component binaries/installers are:
 
 DB scripts:
 
-- DB installation script: install_pg.sh
-- DB creation script: create_db.sh
+- Postgres installation script: install_pg.sh
+- AAS, SCS and SHVS DB creation script: create_db.sh
 
 ## Hardware Considerations
 
@@ -846,7 +846,7 @@ Edit agent.conf with the following
 
 Save and Close
 
-Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+Note: In case orchestration support is not needed, please comment/delete SHVS_IP in agent.conf available in same folder
 
 ./deploy_sgx_agent.sh
 ```
@@ -1652,18 +1652,18 @@ Following are the set of roles which are required during installation and runtim
 
 | Role Name                                                    | Permissions                                                  | Utility                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| < SHVS:HostDataUpdater: >                                   |                                                              | Used by the SGX_Agent to push host data to the SHVS           |
+| < SHVS:HostDataUpdater: >                                    |                                                              | Used by the SGX_Agent to push host data to the SHVS          |
 | < SHVS:HostsListReader: >                                    |                                                              | Used by the IHUB to retrieve the list of hosts from SHVS     |
 | < SHVS:HostDataReader: >                                     |                                                              | Used by the IHUB to retrieve platform-data from SHVS         |
-| < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SHVS to retrieve TLS Certificate from CMS        |
-| < CMS:CertApprover:CN=Integration HUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the IHUB to retrieve TLS Certificate from CMS        |
-| < SCS:HostDataUpdater: >                                     |                                                              | Used by the SGX_Agent to push the platform-info to SCS            |
-| < SCS:HostDataReader: >                                      |                                                              | Used by the SGX_Agent to retrieve the TCB status info from SCS    |
+| < CMS:CertApprover:CN=SHVS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                   | Used by the SHVS to retrieve TLS Certificate from CMS        |
+| < CMS:CertApprover:CN=Integration HUB TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                        | Used by the IHUB to retrieve TLS Certificate from CMS        |
+| < SCS:HostDataUpdater: >                                     |                                                              | Used by the SGX_Agent to push the platform-info to SCS       |
+| < SCS:HostDataReader: >                                      |                                                              | Used by the SGX_Agent to retrieve the TCB status info from SCS|
 | < SCS:CacheManager: >                                        |                                                              | Used by the SCS admin to refresh the platform info           |
-| < CMS:CertApprover:CN=SCS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the SCS to retrieve TLS Certificate from CMS         |
+| < CMS:CertApprover:CN=SCS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                    | Used by the SCS to retrieve TLS Certificate from CMS         |
 | < KBS:KeyTransfer:permissions=nginx,USA >                    |                                                              | Used by the SKC Library user for Key Transfer                |
 | < CMS:CertApprover:CN=skcuser;CERTTYPE=TLS-Client>           |                                                              | Used by the SKC Library user to retrieve TLS-Client Certificate from CMS |
-| < CMS:CertApprover:CN=KBS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                              | Used by the KBS to retrieve TLS Certificate from CMS         |
+| < CMS:CertApprover:CN=KBS TLS Certificate;SAN=<san list>;CERTTYPE=TLS> |                                                    | Used by the KBS to retrieve TLS Certificate from CMS         |
 | AAS: Administrator                                           | *:*:*                                                        | Administrator role for the AAS only. Has all permissions for AAS resources, including the ability to create or delete users and roles |
 | AAS: RoleManager                                             | AAS: [roles:create:*, roles:retrieve:*, roles:search:*, roles:delete:*] | AAS role that allows all actions for Roles but cannot create or delete Users or assign Roles to Users. |
 | AAS: UserManager                                             | AAS: [users:create:*, users:retrieve:*, users:store:*, users:search:*, users:delete:*] | AAS role with all permissions for Users but has no ability to create Roles or assign Roles to Users. |
@@ -1785,7 +1785,7 @@ This folder contains log files: /var/log/shvs/
 
 | Key                 | Sample Value                                     | Description                                                  |
 | ------------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| SCS_BASE_URL         | https://< AAS IP or Hostname>:9000/scs/sgx/     | The url used during setup to request information from SCS.   |
+| SCS_BASE_URL        | https://< AAS IP or Hostname>:9000/scs/sgx/      | The url used during setup to request information from SCS.   |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/       | API URL for Certificate Management Service (CMS).            |
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
 | BEARER_TOKEN        |                                                  | Long Lived JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
@@ -1855,9 +1855,9 @@ Contains the config.yml configuration file.
 
 | Key                     | sample Value                                                 | Description                                                  |
 | ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas/v1 | Base URL for the AAS                                         |
-| CMS_BASE_URL            | https://< Certificate Management Service IP or Hostname>:8445/cms/v1 | Base URL for the CMS                                         |
-| ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v2/ | Base URL  of SHVS                                            |
+| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas/v1 | Base URL for the AAS                      |
+| CMS_BASE_URL            | https://< Certificate Management Service IP or Hostname>:8445/cms/v1 | Base URL for the CMS                                 |
+| ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v2/ | Base URL  of SHVS                               |
 | ATTESTATION_TYPE        | SGX                                                          | For SKC, Attestation Type is always SGX                      |
 | IHUB_SERVICE_USERNAME   | ihubuser@ihub                                                | Database username                                            |
 | IHUB_SERVICE_PASSWORD   | ihubpassword                                                 | Database password                                            |
@@ -2277,7 +2277,7 @@ Contains executable scripts and binaries.
 | SCS_ADMIN_PASSWORD                | scspassword                                                  | SCS Service password                                         |
 | BEARER_TOKEN                      |                                                              | Installation Token from AAS                                  |
 | CMS_TLS_CERT_SHA384               | < Certificate Management Service TLS digest >                | SHA384  Hash sum for verifying the CMS TLS certificate.      |
-| INTEL_PROVISIONING_SERVER         | https://sbx.api.trustedservices.intel.com/sgx/certification/v3 | Intel pcs server url                                         |
+| INTEL_PROVISIONING_SERVER         | https://sbx.api.trustedservices.intel.com/sgx/certification/v3 | Intel pcs server url                                       |
 | INTEL_PROVISIONING_SERVER_API_KEY | < Add your API subscription key >                            | Intel PCS Server API subscription key                        |
 | SCS_REFRESH_HOURS                 | 1 hour                                                       | Time after which the SGX collaterals in SCS db get refreshed from  Intel PCS server |
 | RETRY_COUNT                       | 3                                                            | Number Of times to connect to PCS if PCS service is not accessible |
@@ -2351,7 +2351,7 @@ Contains database scripts
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | CMS_BASE_URL             | https://< CMS IP address or hostname >:8445/cms/v1/          | Defines the base URL for the CMS owned by  the image owner. Note that this CMS  may be different from the CMS used for other components. |
 | AAS_API_URL              | https://< AAS IP address or hostname >:8444/aas/v1           | Defines the baseurl for the AAS owned by  the image owner. Note that this AAS  may be different from the AAS used for other components. |
-| SCS_BASE_URL             | https://< SCS IP address or hostname >:9000/scs/sgx/certification/v1/ | The SCS url is needed.                                       |
+| SCS_BASE_URL             | https://< SCS IP address or hostname >:9000/scs/sgx/certification/v1/ | The SCS url is needed.                              |
 | SGX_TRUSTED_ROOT_CA_PATH | /tmp/trusted_rootca.pem                                      | The path to SGX root ca used to verify quote                 |
 | CMS_TLS_CERT_SHA384      | < Certificate Management Service TLS digest >                | SHA384 hash of the CMS  TLS certificate                      |
 | BEARER_TOKEN             |                                                              | Token from CMS with  permissions used for installation.      |

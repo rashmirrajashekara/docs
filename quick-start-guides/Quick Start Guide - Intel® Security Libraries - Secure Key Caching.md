@@ -723,7 +723,7 @@ Edit agent.conf with the following
 
 Save and Close
 
-Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+Note: In case orchestration support is not needed, please comment/delete SHVS_IP in agent.conf available in same folder
 
 ./deploy_sgx_agent.sh
 ```
