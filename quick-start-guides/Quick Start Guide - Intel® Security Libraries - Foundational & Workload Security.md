@@ -740,6 +740,7 @@ deployment in the `isecl` namespace.
 4. Load the `isecl-controller` docker image
 
    ```shell
+   cd /<path>/isecl-k8s-extensions/
    skopeo copy oci-archive:<isecl-k8s-controller-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
 5. Udate image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
@@ -852,6 +853,7 @@ deployment in the `isecl` namespace.
 4. Load the `isecl-scheduler` docker image
 
    ```shell
+   cd /<path>/isecl-k8s-extensions/
    skopeo copy oci-archive:<isecl-k8s-scheduler-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
  
