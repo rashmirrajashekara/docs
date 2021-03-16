@@ -145,13 +145,13 @@ Access required for the following rpms in all systems
 
 ### Single Node
 
-The single Node uses `**microk8s**` as a supported K8s distribution
+The single Node uses `microk8s` as a supported K8s distribution
 
 > TODO: Praveen to provide diagram
 
 ### Multi Node
 
-The multi node supports `**kubeadm**` as a supported K8s distribution
+The multi node supports `kubeadm` as a supported K8s distribution
 
 ![K8s Deployment-sqx](./images/k8s-deployment-sgx.jpg)
 
