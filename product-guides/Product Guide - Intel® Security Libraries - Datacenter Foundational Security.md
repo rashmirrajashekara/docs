@@ -1230,7 +1230,7 @@ deployment in the `isecl` namespace.
 ### 3.15.1  Deploy Intel® SecL Custom Controller
 ------------------------------------------
 
-#Install skopeo to load docker image for controller and scheduler from archive
+    #Install skopeo to load docker image for controller and scheduler from archive
     dnf install -y skopeo
 
 1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
