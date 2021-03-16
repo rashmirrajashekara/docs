@@ -741,7 +741,7 @@ Update skc_library.conf with the following
   - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
-  - SKC_TOKEN with the token copied from above step
+  - SKC_TOKEN with the token copied from previous step
 Save and Close
 ./deploy_skc_library.sh
 ```
@@ -816,7 +816,7 @@ GIT Configuration**
   - Port of CMS, AAS and KBS services deployed on enterprise system
   - AAS admin and Enterprise admin credentials
   
-  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility.
+  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
