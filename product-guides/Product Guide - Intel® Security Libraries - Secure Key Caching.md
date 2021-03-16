@@ -406,7 +406,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 
 AAS_TLS_SAN=\< Comma-Separated list of IPs and hostnames for the AAS\>
 
-AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas/v1/
+AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas/v1
 
 SAN_LIST=\< Comma-Separated list of IP addresses and hostnames for the CMS\>
 
@@ -540,7 +540,7 @@ Create the `populate-users.env` file using the following values:
 # SKC Components include AAS,SCS,SHVS,SQVS,SIH and SKBS.
 ISECL_INSTALL_COMPONENTS=AAS,SCS,SHVS,SQVS,SIH,SKBS
 
-AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1/
+AAS_API_URL=https://<AAS IP address or hostname>:8444/aas/v1
 AAS_ADMIN_USERNAME=<AAS username>
 AAS_ADMIN_PASSWORD=<AAS password>
 
@@ -685,7 +685,7 @@ Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PG
         
        CMS_TLS_CERT_SHA384=<sha384 of CMS TLS certificate>
         
-       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/v1/
+       AAS_API_URL=https://<IP or hostname to AAS>:8444/aas/v1
        
        RETRY_COUNT=3
        
@@ -840,11 +840,14 @@ Intel® Xeon® SP (Ice Lake-SP)
     Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
     ./agent_untar.sh
     Update the following in agent.conf
-     - IP address for all the CSP side services
-     - CSP admin credentials
-     - Long-lived token validity period in days
-     - Certificate Management Service TLS digest value (CMS running on CSP system)
-    ./deploy_sgx_agent.sh
+	- CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+	- CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+	- Token validity period in days
+	- CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
+
+	Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+	./deploy_sgx_agent.sh
+
 
 ##  Installing the SQVS
 
@@ -902,7 +905,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        BEARER_TOKEN=< Installation token > 
     
-       AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas/v1/ 
+       AAS_API_URL=https://< Authentication and Authorization Service IP or Hostname >:8444/aas/v1
     
        CMS_BASE_URL=https://< Certificate Management Service IP or Hostname >:8445/cms/v1/ 
     
@@ -1160,7 +1163,7 @@ To install the SGX Integration Hub, follow these steps:
     CMS_TLS_CERT_SHA384=< CMS TLS digest > 
     BEARER_TOKEN=<Installation token> 
  
-    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/v1/
+    AAS_API_URL=https://< AAS IP or Hostname >:8444/aas/v1
     CMS_BASE_URL=https://< CMS IP or Hostname >:8445/cms/v1
     POLL_INTERVAL_MINUTES=2
     TLS_SAN_LIST=< comma separated list of IPs and hostnames for the IHUB >
@@ -1343,7 +1346,7 @@ NA
        
        SERVER_PORT=9443
         
-       AAS_API_URL=https://<AAS IP or hostname>:8444/aas/v1/
+       AAS_API_URL=https://<AAS IP or hostname>:8444/aas/v1
         
        CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
@@ -1683,7 +1686,7 @@ Host Registration creates a host record with host information in the SGX Host Ve
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
 | CMS_BASE_URL                   | https://< IP address or hostname for CMS >:8445/cms/v1/ | Base URL of the CMS                                          |
-| AAS_API_URL                    | https://< IP address or hostname for AAS >:8444/aas/v1/     | Base URL of the AAS                                          |
+| AAS_API_URL                    | https://< IP address or hostname for AAS >:8444/aas/v1     | Base URL of the AAS                                          |
 | SCS_BASE_URL                   | https://< IP or hostname of SCS >:9000/scs/sgx/         | Base URL of SCS                                              |
 | SHVS_DB_PORT                   | 5432                                                    | Defines the port number for communication with the database server. By default, with a local database server installation, this port will be set to 5432. |
 | SHVS_DB_NAME                   | pgshvsdb                                                | Defines the schema name of the database. If a remote database connection will be used, this schema must be created in the remote database before installing the SGX Host Verification Service |
@@ -1848,7 +1851,7 @@ Contains the config.yml configuration file.
 
 | Key                     | sample Value                                                 | Description                                                  |
 | ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas/v1/ | Base URL for the AAS                                         |
+| AAS_API_URL             | https://< Authentication and Authorization Service IP or  Hostname>:8444/aas/v1 | Base URL for the AAS                                         |
 | CMS_BASE_URL            | https://< Certificate Management Service IP or Hostname>:8445/cms/v1 | Base URL for the CMS                                         |
 | ATTESTATION_SERVICE_URL | https://< SGX Host Verification Service IP or hostname>:13000/sgx-hvs/v2/ | Base URL  of SHVS                                            |
 | ATTESTATION_TYPE        | SGX                                                          | For SKC, Attestation Type is always SGX                      |
@@ -1942,7 +1945,7 @@ This folder contains log files: /var/log/ihub/
 | ----------- | ---------------------------------------------------- | ------------------------------------------------------------ |
 | CMS_PORT    | 8445                                                 | Default Port where Certificate Management Service Runs       |
 | CMS_NOSETUP | false                                                | Determines whether “setup” will be executed after installation. Typically this is set to “false” to install and perform setup in one action. The “true” option is intended for building the service as a container, where the installation would be part of the image build, and setup would be performed when the container starts for the first time to generate any persistent data. |
-| AAS_API_URL | https://< AAS Hostname or IP address>:8444/aas/v1/      | URL to connect to the AAS, used during setup for authentication. |
+| AAS_API_URL | https://< AAS Hostname or IP address>:8444/aas/v1      | URL to connect to the AAS, used during setup for authentication. |
 | AAS_TLS_SAN | < Comma-separated list of IPs/hostnames for the AAS> | SAN list populated in special JWT token; this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
 
@@ -2196,7 +2199,7 @@ Contains database scripts.
 | Variable Name        | Default Value                                 | Notes                                              |
 | -------------------- | --------------------------------------------- | -------------------------------------------------- |
 | CMS_BASE_URL         | https://< CMS IP or hostname >:8445/cms/v1/   | Required for generating TLS certificate            |
-| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas/v1/       | AAS service url                                        |
+| AAS_API_URL          | https://< AAS IP or hostname >:8444/aas/v1       | AAS service url                                        |
 | SQVS_URL             | https://< SQVS IP or hostname >:12000/svs/v1/ | Required to get the SGX Quote verified             |
 | CMS_TLS_CERT_SHA384  | < Certificate Management Service TLS digest > | SHA384 digest of CMS TLS certificate               |
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
@@ -2265,7 +2268,7 @@ Contains executable scripts and binaries.
 | Key                               | Sample Value                                                 | Description                                                  |
 | --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | CMS_BASE_URL                      | https://< CMS IP or hostname >:8445/cms/v1/                  | CMS URL for Certificate Management Service                   |
-| AAS_API_URL                       | https://< AAS IP or hostname >:8444/aas/v1/                      | API URL for Authentication Authorization Service             |
+| AAS_API_URL                       | https://< AAS IP or hostname >:8444/aas/v1                      | API URL for Authentication Authorization Service             |
 | SCS_ADMIN_USERNAME                | scsuser@scs                                                  | SCS Service username                                         |
 | SCS_ADMIN_PASSWORD                | scspassword                                                  | SCS Service password                                         |
 | BEARER_TOKEN                      |                                                              | Installation Token from AAS                                  |
@@ -2343,7 +2346,7 @@ Contains database scripts
 | Key                      | Sample Value                                                 | Description                                                  |
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | CMS_BASE_URL             | https://< CMS IP address or hostname >:8445/cms/v1/          | Defines the base URL for the CMS owned by  the image owner. Note that this CMS  may be different from the CMS used for other components. |
-| AAS_API_URL              | https://< AAS IP address or hostname >:8444/aas/v1/              | Defines the baseurl for the AAS owned by  the image owner. Note that this AAS  may be different from the AAS used for other components. |
+| AAS_API_URL              | https://< AAS IP address or hostname >:8444/aas/v1              | Defines the baseurl for the AAS owned by  the image owner. Note that this AAS  may be different from the AAS used for other components. |
 | SCS_BASE_URL             | https://< SCS IP address or hostname >:9000/scs/sgx/certification/v1/ | The SCS url is needed.                                       |
 | SGX_TRUSTED_ROOT_CA_PATH | /tmp/trusted_rootca.pem                                      | The path to SGX root ca used to verify quote                 |
 | CMS_TLS_CERT_SHA384      | < Certificate Management Service TLS digest >                | SHA384 hash of the CMS  TLS certificate                      |
