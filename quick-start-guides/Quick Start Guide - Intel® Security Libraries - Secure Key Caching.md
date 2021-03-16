@@ -712,29 +712,39 @@ Save and Close
 #### Deploy SGX Agent
 ```
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
+
 ./agent_untar.sh
+
 Edit agent.conf with the following
   - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
   - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
   - Token validity period in days
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
+
 Save and Close
+
 Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+
 ./deploy_sgx_agent.sh
 ```
 
 #### Deploy SKC Library
 ```
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
+
 ./skclib_untar.sh
+
 Update create_roles.conf with the following
   - IP address of AAS deployed on Enterprise system
   - Admin account credentials of AAS deployed on Enterprise system
   - Permission string to be embedded into skc_libraty client TLS Certificate
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+
 Save and Close
+
 ./skc_library_create_roles.sh
 Copy the token printed on console.
+
 Update skc_library.conf with the following
   - IP address for CMS and KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
@@ -742,7 +752,9 @@ Update skc_library.conf with the following
   - Hostname of the Enterprise system where KBS is deployed
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
   - SKC_TOKEN with the token copied from previous step
+
 Save and Close
+
 ./deploy_skc_library.sh
 ```
 #### Deploying SKC Library as a Container 

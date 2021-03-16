@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### February 2020
+### March 2021
 
-### Revision 3.4
+### Revision 3.5
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -221,13 +221,13 @@ The high-level architectures of these features are presented in the next sub-sec
 
 ## SGX Attestation Support and SGX Support in Orchestrators
 
-The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently only Kubernetes is supported). 
+The diagram below shows the infrastructure that CSPs need to deploy to support SGX attestation and optionally, integration with orchestrators (currently Kubernetes and OpenStack is supported). 
 
 THE SGX Agent pushes platform information to SGX Caching Service (SCS), which uses it to get the PCK Certificate and other SGX collateral from the Intel SGX Provisioning Certification Service (PCS) and caches them locally. When a workload on the platform needs to generate an SGX Quote, it retrieves the PCK Certificate of the platform from SCS.
 
 If SGX Host Verification Service (SHVS) URL is configured, the SGX Agent fetches the TCB Status from SCS and updates SHVS with SGX platform enablement information and TCB status periodically. The platform information is made available to Kubernetes and Openstack via the SGX Hub (IHUB), which pulls it from SHVS.
 
-The SGX Quote Verification Service (SQVS) allows attesting applications to verify SGX quotes and extract the SGX quote attributes to verify compliance with a user-defined SGX enclave policy. SQVS uses the SGX Caching Service to retrieve SGX collateral needed to verify SGX quotes from the Intel SGX Provisioning Certification Service (PCS). SQVS typically runs in the the attesting application owner network environment. Typically, a separate instance of the SGX Caching Service is set setup in the attesting application owner network environment. 
+The SGX Quote Verification Service (SQVS) allows attesting applications to verify SGX quotes and extract the SGX quote attributes to verify compliance with a user-defined SGX enclave policy. SQVS uses the SGX Caching Service to retrieve SGX collateral needed to verify SGX quotes from the Intel SGX Provisioning Certification Service (PCS). SQVS typically runs in the attesting application owner network environment. Typically, a separate instance of the SGX Caching Service is setup in the attesting application owner network environment. 
 
 ![](Images/image-20200727163158892.png)
 
@@ -254,24 +254,29 @@ Virtualization enabled on SGX Host machines, uses SGX key features. With Virtual
 
 Intel® Security Libraries is distributed as open source code and must be compiled into installation binaries before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 7)
+Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 6)
 
 https://github.com/intel-secl/docs/blob/v3.4/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
-After the components have been built, the installation binaries can be found in the binaries directory created by the build scripts.
+After the components have been built, the installation binaries and database scripts can be found in the binaries directory created by the build scripts.
 
-For components written in GO (Authentication and Authorization Service, Certificate Management Service, SGXAgent, Integration HUB, Key Broker Service, SGX Caching Service, SGX Quote Verfication Service, SGX Host Verification Service):
+Generated component binaries/installers are:
 
-\<servicename\>/out/\<servicename\>.bin
+- CMS: cms-v3.5.0.bin
+- AAS: authservice-v3.5.0.bin
+- SCS: scs-v3.5.0.bin
+- SHVS: shvs-v3.5.0.bin
+- IHUB: ihub-v3.5.0.bin
+- SQVS: sqvs-v3.5.0.bin
+- KBS: kbs-v3.5.0.bin
+- K8S-Extensions: isecl-k8s-extensions-v3.5.0.tar.gz
+- SGX-Agent: agent_untar.sh, sgx_agent.sha2 and sgx_agent.tar
+- SKC-Library: skclib_untar.sh, skc_library.sha2 and skc_library.tar
 
-In addition, the build script will produce some sample database scripts that can be used during installation to setup postgres and create database.
+DB scripts:
 
-Install_pgdb: intel-secl/deployments/installer/install_pgdb.sh
-
-Install_pgscsdb: sgx-caching-service/out/install_pgscsdb.sh
-
-Install_pgshvsdb: sgx-hvs/out/install_pgshvsdb.sh
-
+- DB installation script: install_pg.sh
+- DB creation script: create_db.sh
 
 ## Hardware Considerations
 
@@ -323,11 +328,11 @@ This Includes:
 
 SGX Agent & SKC Library needs to be installed on SGX Enabled Machine.
 
-The node components (SGX Agent) must be installed on each protected physical server:
+Isecl-K8s-extensions must be installed on separate VM.
 
 ### Using the provided Database Installation Script 
 
-Install a sample Postgresql 11 database using the script provided in corresponding component. This script will automatically install the Postgresql database and client packages required.
+Install a sample Postgresql 11 database using the install_pg.sh script provided in binaries directory. This script will automatically install the Postgresql database and client packages required.
 
 Create the iseclpgdb.env answer file:
 
@@ -341,30 +346,26 @@ ISECL_PGDB_CERT_DNS=localhost
 
 ISECL_PGDB_CERT_IP=127.0.0.1
 
-ISECL_PGDB_DBNAME=aasdb
-
-ISECL_PGDB_USERNAME=aasdbuser
-
-ISECL_PGDB_USERPASSWORD=aasdbpassword
-
 Note that the values above assume that the database will be accessed locally. If the database server will be external to the Intel® SecL services, change these values to the hostname or FQDN and IP address where the client will access the database server.
 
 ### Provisioning the Database
 
-Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pg(app name).sh script to configure the database.
+Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pg.sh script to install the database.
 
-If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run the script multiple times, once for each service that requires a database.
+If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run install_pg.sh script only once and create_db.sh script for each component that uses a database.
 
-If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the script on each server hosting a database. The database install scripts use default configuration
+If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the install_pg.sh script on each server hosting a database and create_db.sh script for each component that uses a DB. 
 
-AAS: install_pgdb.sh
+Command to install postgres DB:
+```
+./install_pg.sh
+```
+Command to create DB for AAS/SCS/SHVS:
+```
+./create_db.sh <DB Name> <DB Username> <DB Password>
+```
 
-SCS: install_pgscsdb.sh
-
-SHVS: install_pgshvsdb.sh
-
-
-Note the dbusername and password will be taken from respective component environment files.
+Note that the db name, db username and db user password should match with the respective component environment files.
 
 ###  Database Server TLS Certificate
 
@@ -418,7 +419,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.4.0.bin
+./cms-v3.5.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -470,16 +471,12 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
 
-dnf -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+copy install_pg.sh and create_db.sh to /root/ directory
+```
+./install_pg.sh
 
-dnf module disable postgresql -y
-
-copy install_pgdb.sh and create_db.sh to /root/ directory
-
-./install_pgdb.sh
-
-./create_db.sh aasdb <db_user> <db_password>
-
+./create_db.sh <db name> <db_user> <db_password>
+```
 
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
 
@@ -517,7 +514,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.4.0.bin
+./authservice-v3.5.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -648,12 +645,12 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
 
-copy install_pgscsdb.sh to /root/ directory
+copy install_pg.sh and create_db.sh to /root/ directory
+```
+./install_pg.sh (if services reside on separate VM)
 
-Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SCS db name, ISECL_PGDB_USERNAME with SCS db username and ISECL_PGDB_USERPASSWORD with SCS db password
-
-./install_pgscsdb.sh
-
+./create_db.sh <db name> <db_user> <db_password>
+```
 
 1. Copy the SCS installation binary to the /root/ directory.
 
@@ -699,7 +696,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the SCS installer binary:
 
-./scs-v3.4.0.bin
+./scs-v3.5.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -746,12 +743,12 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 
 Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
 
-copy install_pgshvsdb.sh to /root/ directory
+copy install_pg.sh and create_db.sh to /root/ directory
+```
+./install_pg.sh (if services reside on separate VM)
 
-Open ~/iseclpgdb.env and update the ISECL_PGDB_DBNAME with SHVS db name, ISECL_PGDB_USERNAME with SHVS db username and ISECL_PGDB_USERPASSWORD with SHVS db password
-
-./install_pgshvsdb.sh
-
+./create_db.sh <db name> <db_user> <db_password>
+```
 
 To install the SGX Host Verification Service, follow these steps:
 
@@ -788,7 +785,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
 
      BEARER_TOKEN=<Installation token> 
     
-     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1 
+     AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1
     
      CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1/
     
@@ -800,7 +797,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the installer binary.
 
-./shvs-v3.4.0.bin
+./shvs-v3.5.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -836,19 +833,23 @@ Red Hat Enterprise Linux 8.2.
 Intel® Xeon® SP (Ice Lake-SP)
 
 ### Installation
+```
+Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
 
-    Copy sgx_agent.tar sgx_agent.sha2 and agent_untar.sh to a directory on SGX Compute node
-    ./agent_untar.sh
-    Update the following in agent.conf
-	- CSP system IP address where CMS/AAS/SHVS/SCS services deployed
-	- CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
-	- Token validity period in days
-	- CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
+./agent_untar.sh
 
-	Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
-	./deploy_sgx_agent.sh
+Edit agent.conf with the following
+  - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+  - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+  - Token validity period in days
+  - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
 
+Save and Close
 
+Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+
+./deploy_sgx_agent.sh
+```
 ##  Installing the SQVS
 
 ### Required for
@@ -897,10 +898,6 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
     
        SCS_BASE_URL=https://< SCS IP or Hostname >:9000/scs/sgx/certification/v1
     
-       SQVS_USERNAME=< SGX Quote Verification Service username > 
-    
-       SQVS_PASSWORD=< SGX Quote Verification Service password > 
-    
        CMS_TLS_CERT_SHA384=< Certificate Management Service TLS digest > 
     
        BEARER_TOKEN=< Installation token > 
@@ -923,7 +920,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 3.  Execute the sqvs installer binary.
 
-sqvs-v3.4.0.bin
+./sqvs-v3.5.0.bin
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1187,7 +1184,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the installer binary.
 
-./ihub-v3.4.0.bin
+./ihub-v3.5.0.bin
 
 Copy IHUB public key to the master node and restart kubelet.
 
@@ -1372,7 +1369,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the KBS installer.
 
-./kbs-3.4.0.bin
+./kbs-3.5.0.bin
 
 ##  Installing the SKC Library
 
@@ -1403,26 +1400,34 @@ The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2
 -   One network interface with network access to the Key Broker
 
 ### Installation
+```
+Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
 
-    Copy skc_library.tar skc_library.sha2 and skclib_untar.sh to a directory in SGX Compute node
-    ./skclib_untar.sh
-    Update create_roles.conf with the following
-    - IP address of AAS deployed on Enterprise system
-    - Admin account credentials of AAS deployed on Enterprise system
-    - Permission string to be embedded into skc_libraty client TLS Certificate
-    - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+./skclib_untar.sh
 
-    ./skc_library_create_roles.sh
-    Copy the token printed on console.
-    Update skc_library.conf with the following
-    - IP address for CMS and KBS services deployed on Enterprise system
-    - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
-    - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
-    - Hostname of the Enterprise system where KBS is deployed
-    - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
-    - SKC_TOKEN with the token copied from previous step
-    ./deploy_skc_library.sh
-    
+Update create_roles.conf with the following
+  - IP address of AAS deployed on Enterprise system
+  - Admin account credentials of AAS deployed on Enterprise system
+  - Permission string to be embedded into skc_libraty client TLS Certificate
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+
+Save and Close
+
+./skc_library_create_roles.sh
+Copy the token printed on console.
+
+Update skc_library.conf with the following
+  - IP address for CMS and KBS services deployed on Enterprise system
+  - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
+  - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
+  - Hostname of the Enterprise system where KBS is deployed
+  - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
+  - SKC_TOKEN with the token copied from previous step
+
+Save and Close
+
+./deploy_skc_library.sh
+```
 #### Deploying SKC Library as a Container 
 ```
 Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
@@ -1780,7 +1785,7 @@ This folder contains log files: /var/log/shvs/
 
 | Key                 | Sample Value                                     | Description                                                  |
 | ------------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| SCS_BASE_URL         | https://< AAS IP or Hostname>:9000/scs/sgx/           | The url used during setup to request information from SCS.      |
+| SCS_BASE_URL         | https://< AAS IP or Hostname>:9000/scs/sgx/     | The url used during setup to request information from SCS.   |
 | CMS_BASE_URL        | https://< CMS IP or hostname>:8445/cms/v1/       | API URL for Certificate Management Service (CMS).            |
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
 | BEARER_TOKEN        |                                                  | Long Lived JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
@@ -1788,7 +1793,6 @@ This folder contains log files: /var/log/shvs/
 | SGX_PORT            | 11001                                            | The port on which the SGX Agent service will listen.         |
 | SHVS_UPDATE_INTERVAL| 120                                              | Interval for SHVS updates in minutes. Values should be in the range of 1 minutes to 120 minutues.|
 | SGX_AGENT_NOSETUP   | false                                            | Skips setup during installation if set to true               |
-| SAN_LIST            | 127.0.0.1, localhost                             | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service |
 
 
 ### Configuration Options - This is same as above. 
@@ -2352,8 +2356,6 @@ Contains database scripts
 | CMS_TLS_CERT_SHA384      | < Certificate Management Service TLS digest >                | SHA384 hash of the CMS  TLS certificate                      |
 | BEARER_TOKEN             |                                                              | Token from CMS with  permissions used for installation.      |
 | SQVS_LOG_LEVEL           | INFO (default), DEBUG                                        | Defines the log level  for the SQVS. Defaults to INFO.       |
-| SQVS_PASSWORD            | sqvsuser@sqvs                                                | Defines the credentials for the  SQVS user                   |
-| SQVS_USERNAME            | sqvspassword                                                 | Defines the credentials for the  SQVS User                   |
 | SQVS_PORT                | 12000                                                        | SQVS Secure Port                                             |
 | SQVS_NOSETUP             | false                                                        | Skips setup during installation if set to true               |
 | SAN_LIST                 | 127.0.0.1,localhost                                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
