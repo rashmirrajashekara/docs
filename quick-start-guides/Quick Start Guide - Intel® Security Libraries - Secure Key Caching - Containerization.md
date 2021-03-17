@@ -330,10 +330,10 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 * Copy all manifests and OCI container images as required to K8s master
 * Ensure docker registry is running locally or remotely
 * The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
-```shell
-#Label node
-kubectl label nodes <node-name> node.type=SGX.ENABLED
-```
+  ```shell
+  #Label node
+  kubectl label nodes <node-name> node.type=SGX.ENABLED
+  ```
 * In case of microk8s cluster, the `--allow-privileged=true` flag needs to be added to the `kube-api-server` and restarted to allow runnning of privileged containers 
   like `SGX-AGENT` and `SKC-LIBRARY`
 
@@ -432,10 +432,10 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 * Ensure images are pushed to registry locally or remotely
 
 * The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
-```shell
-#Label node
-kubectl label nodes <node-name> node.type=SGX.ENABLED
-```
+  ```shell
+  #Label node
+  kubectl label nodes <node-name> node.type=SGX.ENABLED
+  ```
 
 * `NFS` storage class is used in kubernetes environment for data persistence and supported in SKC. User needs to setup NFS server and create directory structure along with granting permission for a given user id. From security point of view, its been recommended to create a separate user id and grant the permission for all isecl directories for this user id. Below are some samples for reference
 
