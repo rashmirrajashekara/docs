@@ -720,8 +720,9 @@ Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to 
 ./agent_untar.sh
 
 Edit agent.conf with the following
-  - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+  - CSP system IP address where CMS, AAS, SHVS and SCS services deployed
   - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Token validity period in days
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
 
@@ -754,6 +755,8 @@ Update skc_library.conf with the following
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
   - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
+  - Network Port numbers for CMS and SCS services deployed on CSP system
+  - Network Port numbers for CMS and KBS services deployed on Enterprise system
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
   - SKC_TOKEN with the token copied from previous step
 
