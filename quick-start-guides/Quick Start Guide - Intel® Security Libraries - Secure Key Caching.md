@@ -128,7 +128,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.4.0 -m manifest/skc.xml
+repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.5/develop-gitlab -m manifest/skc.xml
 repo sync
 ```
 
@@ -164,7 +164,6 @@ repo sync
 
 ```
 make
-
 ```
 
 **Copy Binaries to a clean folder**
@@ -560,13 +559,16 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update orchestrator.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
+  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
   - Database name, Database username and password for SHVS
 Update skc.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
   - Install Admin and CSP Admin credentials
   - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys
@@ -580,11 +582,12 @@ Copy the binaries directory generated in the build system system to the /root/ d
 Update csp_skc.conf with the following
   - CSP system IP Address
   - SAN List (a list of ip address and hostname for the CSP system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
   - System IP address where Kubernetes or Openstack is deployed
+  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
   - Database name, Database username and password for AAS, SCS and SHVS services
-  - CSP Admin Username and Password
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_csp_skc.sh
@@ -702,6 +705,7 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
   - SAN List (a list of ip address and hostname for the Enterprise system)
+  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
   - Install Admin credentials
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
@@ -824,7 +828,7 @@ GIT Configuration**
 	cd into /root/binaries/kbs_script folder
 	
 	Update kbs.conf with the following
-  - Enterprise system IP address where CMS/AAS/KBS services are deployed
+  - Enterprise system IP address where CMS, AAS and KBS services are deployed
   - Port of CMS, AAS and KBS services deployed on enterprise system
   - AAS admin and Enterprise admin credentials
   
