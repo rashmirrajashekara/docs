@@ -56,6 +56,7 @@ export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP IP>,<Enterprise IP>, <SGX Compu
 
 Ensure that all the SKC service ports are accessible with firewall
 
+
 ## **3. Ubuntu Package Requirements**
 
 Access required for the postgresql repo in all systems, through below steps:
@@ -174,6 +175,7 @@ repo sync
   systemctl daemon-reload
   systemctl restart docker
   ```
+
 **Building All SKC Components**
 
 ```
@@ -284,6 +286,7 @@ ansible_password=<password>
   ssh-keyscan -H <ip_address> >> /root/.ssh/known_hosts
   ```
 
+
 ### Create and Run Playbook
 
 The following are playbook and CLI example for deploying Intel® SecL-DC binaries based on the supported deployment models and usecases. The below example playbooks can be created as `site-bin-isecl.yml`
@@ -375,7 +378,10 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
 | SKC No Orchestration         | `setup: skc-no-orchestration` in playbook or via `--extra-vars` as `setup=skc-no-orchestration`in CLI |
 
+
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
+
+
 ## **9. Usecase Workflows with Postman API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.4/develop/tools/api-collections) repository
@@ -575,13 +581,16 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update orchestrator.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES
   - System IP address where Kubernetes deployed
+  - Netowrk Port Number of Kubernetes
   - Database name, Database username and password for SHVS
 Update skc.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
   - Install Admin and CSP Admin credentials
   - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys
@@ -595,11 +604,12 @@ Copy the binaries directory generated in the build system system to the /root/ d
 Update csp_skc.conf with the following
   - CSP system IP Address
   - SAN List (a list of ip address and hostname for the CSP system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Install Admin and CSP Admin credentials
   - TENANT as KUBERNETES 
   - System IP address where Kubernetes is deployed
+  - Netowrk Port Number of Kubernetes
   - Database name, Database username and password for AAS, SCS and SHVS services
-  - CSP Admin Username and Password
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_csp_skc.sh
@@ -652,6 +662,7 @@ Copy the binaries directory generated in the build system to the /root/ director
 Update enterprise_skc.conf with the following
   - Enterprise system IP address
   - SAN List (a list of ip address and hostname for the Enterprise system)
+  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
   - Install Admin credentials
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
@@ -662,37 +673,52 @@ Save and Close
 #### Deploy SGX Agent
 ```
 Copy sgx_agent.tar, sgx_agent.sha2 and agent_untar.sh from binaries directoy to a directory in SGX compute node
+
 ./agent_untar.sh
+
 Edit agent.conf with the following
-  - CSP system IP address where CMS/AAS/SHVS/SCS services deployed
+  - CSP system IP address where CMS, AAS, SHVS and SCS services deployed
   - CSP Admin credentials (same which are provided in service configuration file. for ex: csp_skc.conf, orchestrator.conf or skc.conf)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
   - Token validity period in days
   - CMS TLS SHA Value (Run "cms tlscertsha384" on CSP system)
+
 Save and Close
-Note: In case you don't want agent to push discovery related data to SHVS. Please comment/delete SHVS_IP in agent.conf available in same folder
+
+Note: In case orchestration support is not needed, please comment/delete SHVS_IP in agent.conf available in same folder
+
 ./deploy_sgx_agent.sh
 ```
 
 #### Deploy SKC Library
 ```
 Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directoy to a directory in SGX compute node
+
 ./skclib_untar.sh
+
 Update create_roles.conf with the following
   - IP address of AAS deployed on Enterprise system
   - Admin account credentials of AAS deployed on Enterprise system
   - Permission string to be embedded into skc_libraty client TLS Certificate
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
+
 Save and Close
+
 ./skc_library_create_roles.sh
 Copy the token printed on console.
+
 Update skc_library.conf with the following
   - IP address for CMS and KBS services deployed on Enterprise system
   - CSP_CMS_IP should point to the IP of CMS service deployed on CSP system
   - CSP_SCS_IP should point to the IP of SCS service deployed on CSP system
   - Hostname of the Enterprise system where KBS is deployed
+  - Network Port numbers for CMS and SCS services deployed on CSP system
+  - Network Port numbers for CMS and KBS services deployed on Enterprise system
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER (should be same as SKC_USER provided in create_roles.conf)
   - SKC_TOKEN with the token copied from previous step
+
 Save and Close
+
 ./deploy_skc_library.sh
 ```
 
@@ -715,17 +741,17 @@ GIT Configuration**
 ```
 
 * Make sure system date and time of SGX machine and CSP machine both are in sync. Also, if the system is configured to read the RTC time in the local time zone, then use RTC in UTC by running `timedatectl set-local-rtc 0` command on both the machine. Otherwise SGX Agent deployment will fail with certificate expiry error. 
-    
+
 ## Appendix
 
 ## Creating RSA Keys in Key Broker Service
 
 **Configuration Update to create Keys in KBS**
-
+    
 	cd into /root/binaries/kbs_script folder
 	
 	Update kbs.conf with the following
-  - Enterprise system IP address where CMS/AAS/KBS services are deployed
+  - Enterprise system IP address where CMS, AAS and KBS services are deployed
   - Port of CMS, AAS and KBS services deployed on enterprise system
   - AAS admin and Enterprise admin credentials
   
@@ -860,9 +886,9 @@ A typical Key Transfer Policy would look as below
 
 Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
 
-Run `sgx_sign` utility on the signed enclave.
+Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
 ```
-    sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
+    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
 ```
 
 - For `sgx_enclave_issuer_anyof`, in info.txt, search for "mrsigner->value" . E.g mrsigner->value :
