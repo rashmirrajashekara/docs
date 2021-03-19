@@ -4,6 +4,7 @@ Table of Contents
 =================
 
    * [Quick start Guide - SGX Containerization](#quick-start-guide---sgx-containerization)
+   * [Table of Contents](#table-of-contents)
       * [Hardware &amp; OS Requirements](#hardware--os-requirements)
          * [Machines](#machines)
          * [OS Requirements](#os-requirements)
@@ -62,9 +63,10 @@ Table of Contents
          * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
          * [Rebuilding Repos](#rebuilding-repos)
          * [SKC Key Transfer Flow](#skc-key-transfer-flow)
-            * [Generating keys:](#generating-keys)
+            * [Generating keys](#generating-keys)
             * [Setup configurations](#setup-configurations)
             * [Initiate Key Transfer Flow](#initiate-key-transfer-flow)
+         * [SKC Virtualization Flow](#skc-virtualization-flow)
          * [Setup Task Flow](#setup-task-flow)
          * [Configuration Update Flow](#configuration-update-flow)
          * [Cleanup workflows](#cleanup-workflows)
@@ -146,7 +148,7 @@ Access required for the following rpms in all systems
 
 The single Node uses `microk8s` as a supported K8s distribution
 
-> TODO: Praveen to provide diagram
+![k8s-single-node](./images/k8s-single-node.png)
 
 ### Multi Node
 
@@ -304,17 +306,15 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * On each worker node with SGX enabled and registered to K8s-master, the following pre-req needs to be done
 
-  * RHEL 8.2 enabled K8s worker node with SGX:
-
-    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
+  * `RHEL 8.2` enabled K8s worker node with SGX:
+* Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
     * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
     
-  * Ubuntu 18.04 enabled K8s worker node with SGX:
- 
-    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
-    * Copy the platform-dependencies script to SGX enabled worker nodes
+  * `Ubuntu 18.04` enabled K8s worker node with SGX:
+  * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
+  * Copy the platform-dependencies script to SGX enabled worker nodes
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
 
@@ -329,19 +329,19 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 * `microk8s` being the default supported single node K8s distribution, users would need to install microk8s on a Physical server
 * Copy all manifests and OCI container images as required to K8s master
 * Ensure docker registry is running locally or remotely
-* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
+* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
   ```shell
   #Label node
-  kubectl label nodes <node-name> node.type=SGX.ENABLED
+  kubectl label <node-name> node.type=SGX.ENABLED
   ```
-* In case of microk8s cluster, the `--allow-privileged=true` flag needs to be added to the `kube-api-server` and restarted to allow runnning of privileged containers 
+* In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-api-server` and restarted to allow running of privileged containers 
   like `SGX-AGENT` and `SKC-LIBRARY`
 
 ###### Manifests
 
 * Update all the K8s manifests with the image names to be pulled from the registry
 
-* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster`
+* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
 ##### Deploy steps
 
 The bootstrap script would facilitate the deployment of all SGX components at a usecase level. Sample one given below. All the env files will be updated dynamically as per the system on which its deployed
@@ -383,9 +383,9 @@ K8S_CA_CERT=
 #skc-bootstrap-db-services
 #Reference
 #Usage: ./skc-bootstrap-db-services.sh [-help/up/purge]
-#    -help      print help and exit
-#     up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-#     purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+#    -help          print help and exit
+#    up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+#    purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 ./skc-bootstrap-db-services.sh
 
 #skc-bootstrap
@@ -393,8 +393,8 @@ K8S_CA_CERT=
 #Usage: ./skc-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
 #    up   [all/<agent>/<service>/<usecase>]    Bootstrap SKC K8s environment for specified agent/service/usecase
-#    down [all/<agent>/<service>/<usecase>]    Delete SKC K8s environment for specified agent/service/usecase [will not delete data,config and logs]
-#    purge                                     Delete SKC K8s environment with data,config,logs
+#    down [all/<agent>/<service>/<usecase>]    Delete SKC K8s environment for specified agent/service/usecase [will not delete data,config,logs]
+#    purge                                     Delete SKC K8s environment with data,config,logs [only supported for single node deployments]
 
 #    Available Options for up/down command:
 #        agent      Can be one of sagent,skclib
@@ -431,7 +431,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 * Ensure images are pushed to registry locally or remotely
 
-* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
+* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
   ```shell
   #Label node
   kubectl label nodes <node-name> node.type=SGX.ENABLED
@@ -493,7 +493,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 * Update all the K8s manifests with the image names to be pulled from the registry
 
 * The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master`
-* All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data`
+* All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data`
 
 ##### Deploy steps
 
@@ -530,6 +530,7 @@ K8S_CA_CERT=
 ```shell
 #If using sample script provided for creating nfs directories
 #Copy the script to the base path of the NFS location configured
+chmod +x create-skc-dirs.nfs.sh
 ./create-skc-dirs.nfs.sh
 
 #Pre-reqs.sh
@@ -538,9 +539,10 @@ K8S_CA_CERT=
 #skc-bootstrap-db-services
 #Reference
 #Usage: ./skc-bootstrap-db-services.sh [-help/up/purge]
-#    -help      print help and exit
-#     up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-#     purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+#    -help          print help and exit
+#    up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+#    purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
+
 ./skc-bootstrap-db-services.sh
 
 #skc-bootstrap
@@ -548,20 +550,20 @@ K8S_CA_CERT=
 #Usage: ./skc-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
 #    up   [all/<agent>/<service>/<usecase>]    Bootstrap SKC K8s environment for specified agent/service/usecase
-#    down [all/<agent>/<service>/<usecase>]    Delete SKC K8s environment for specified agent/service/usecase [will not delete data,config and logs]
-#    purge                                     Delete SKC K8s environment with data,config,logs
+#    down [all/<agent>/<service>/<usecase>]    Delete SKC K8s environment for specified agent/service/usecase [will not delete data,config,logs]
+#    purge                                     Delete SKC K8s environment with data,config,logs [only supported for single node deployments]
 
 #    Available Options for up/down command:
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
-#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s
+#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization
 ./skc-bootstrap.sh up <all/usecase of choice>
 
-#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following:
+#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following
 ./skc-bootstrap.sh up isecl-scheduler
 ```
 
-* Create and update `scheduler-policy.json` path
+* Create and update `scheduler-policy.json` path
 
 ```shell
 mkdir -p /opt/isecl-k8s-extensions
@@ -823,7 +825,7 @@ make all
 
 Below steps to be followed post successful deployment with Single-Node/Multi-Node deployment
 
-#### Generating keys:
+#### Generating keys
 
 * Navigate to `k8s/manifests/kbs/kbs_script/`  
 
@@ -840,21 +842,44 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 #### Setup configurations
 
 * Copy generated key to `k8s/manifests/skc_library/resources`  
+
+* Update `create_roles.conf` under ``k8s/manifests/skc_library/resources` for `AAS_IP` to K8s Master& `AAS_PORT` to K8s pod exposed service port (Default:`30444`)
+
+* Execute `skc_library_create_roles.sh` to create skc token
+
 * Update all the files available under `k8s/manifests/skc_library/resources` with required values
   * `hosts`
   * `keys.txt`
   * `nginx.conf`
-  * `openssl.cnf` 
   * `pkcs11-apimodule.ini` 
   * `sgx_default_qcnl.conf` 
-  * `skc_library.conf` 
+  * `skc_library.conf`
+  
+  >  **Note: ** Update skc token in the `skc_library.conf` generated in previous step
+  
 * Update `mountPath` and `subPath` with generated key id, along with image name in `k8s/manifests/skc_library/deployment.yml`  
+
 * Update `skc-bootstrap.sh` with key id inside function `deploy_SKC_library()`   for the following line `$KUBECTL create secret generic kbs-cert-secret --from-file=resources/<key id>.crt --namespace=isecl`
 
 #### Initiate Key Transfer Flow
 
 * Deploy the SKC Library using `./skc-bootstrap.sh up skclib`
 * It will initiate the key transfer
+
+### SKC Virtualization Flow
+
+* Update the `populate-users.env` under `aas/scripts` directory for `SCS_CERT_SAN_LIST` and `SHVS_CERT_SAN_LIST` to add the SGX enabled node IP's
+* Deploy all services on SGX Virtualization control plane
+* Ensure to update `agent.conf` for deploying SGX agent service
+  and run `./deploy_sgx_agent.sh` to deploy `SGX_AGENT` as binary deployment
+* Deploy `SKC LIBRARY` on SGX Host, update `skc_library.conf` and execute
+   `./deploy_skc_library.sh`
+* Follow the [Generating keys](#generating-keys) section to generate the keys
+
+* Copy the generated Key to SGX Host
+* Update `keys.txt` and `nginx.conf`
+
+* Initiate key transfer
 
 ### Setup Task Flow
 
