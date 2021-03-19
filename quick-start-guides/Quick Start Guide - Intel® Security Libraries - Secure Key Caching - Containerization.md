@@ -851,7 +851,6 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   * `hosts`
   * `keys.txt`
   * `nginx.conf`
-  * `pkcs11-apimodule.ini` 
   * `sgx_default_qcnl.conf` 
   * `skc_library.conf`
   
