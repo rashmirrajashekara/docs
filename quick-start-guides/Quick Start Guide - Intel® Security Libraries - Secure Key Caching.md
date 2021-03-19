@@ -772,7 +772,7 @@ Note: All the configuration files required for SKC Library container are modifie
 
 1. Docker should be installed, enabled and services should be active
 
-2.To get the SKC library tar file, `cd utils/build/skc-tools/skc_library/build_scripts/` and do `./build_skclib_docker.sh`. 
+2.To get the SKC library tar file, "cd utils/build/skc-tools/skc_library/build_scripts/" and run "./build_skclib_docker.sh"
   In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
 
 3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
@@ -781,13 +781,13 @@ Note: All the configuration files required for SKC Library container are modifie
 
 5. Generate the RSA key in the kbs host and copy it to SGX host.
 
-6. Refer to openssl and nginx sub sections of QSG in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf present resource in the directory.
+6. Refer to openssl and nginx sub sections of Quick Start Guide in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf present resource in the directory.
 
 7. Update keyID in the keys.txt and nginx.conf. 
 
 8. Under [core] section of pkcs11-apimodule.ini in the "/root/resources/" directory add preload_keys=/tmp/keys.txt.
 
-9. Update SKC_library.conf with IP addresses where SKC services are deployed.
+9. Update skc_library.conf with IP addresses where SKC services are deployed.
 
 10. On the SGX Compute node, load the skc library docker image provided in the tar file. 
    docker load < <SKC_Library>.tar
