@@ -949,8 +949,8 @@ When the installation completes, the SGX Quote Verification Service is available
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v3.4.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.4.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v3.4.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.4.0
+     skopeo copy oci-archive:isecl-k8s-controller-v3.5.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.5.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v3.5.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.5.0
   ```
   
 * Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.4.0). It will automatically pull the images from registry.
