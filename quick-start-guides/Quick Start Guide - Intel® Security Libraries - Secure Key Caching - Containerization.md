@@ -908,7 +908,7 @@ Configuration Update flows have been updated to have K8s native flow to be more 
 
 #### Single-node
 
-In order to cleanup and setup fresh again on single node without data,config from previous deployment
+In order to cleanup and setup fresh again on single node without data, config from previous deployment
 
 ```shell
 #Purge all data and pods,deploy,cm,secrets
@@ -939,7 +939,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 
 
-In order to cleanup and setup fresh again on single node with data,config from previous deployment
+In order to cleanup and setup fresh again on single node with data, config from previous deployment
 
 ```shell
 #Down all data and pods,deploy,cm,secrets with deleting config,data,logs
@@ -965,7 +965,22 @@ vi /var/snap/microk8s/current/args/kube-scheduler
 systemctl restart snap.microk8s.daemon-kubelet.service
 ```
 
+In order to clean single service and bring up again on single node without data, config from previous deployment
+```shell script
+./skc-bootstrap.sh down <service-name>
+rm -rf /etc/<service-name>
+rm -rf /var/log/<service-name>
 
+# Only in case of KBS, perform one more step along with above 2 steps
+rm -rf /opt/kbs
+./skc-bootstrap.sh up <service-name>
+```
+
+In order to redeploy again on single node with data, config from previous deployment
+```shell
+./skc-bootstrap.sh down <service-name>
+./skc-bootstrap.sh up <service-name>
+```
 
 #### Multi-node
 
@@ -1105,3 +1120,22 @@ volumes:
 systemctl restart kubelet
 ```
 
+In order to clean single service and bring up again on multi node without data, config from previous deployment
+```./skc-bootstrap.sh down <service-name>```
+log into nfs system 
+```shell script
+
+rm -rf /<nfs-mount-path>/isecl/<service-name>/config
+rm -rf /<nfs-mount-path>/isecl/<service-name>/logs
+
+# Only in case of KBS, perform one more step along with above 2 steps
+rm -rf /<nfs-mount-path>/isecl/<service-name>/opt
+```
+log into master
+```./skc-bootstrap.sh up <service-name>```
+
+In order to redeploy again on multi node with data, config from previous deployment
+```shell
+./skc-bootstrap.sh down <service-name>
+./skc-bootstrap.sh up <service-name>
+```
