@@ -419,24 +419,32 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 ## **10. Deployment Using Binaries**
 
-#### Setup K8S Cluster & Deploy Isecl-k8s-extensions
+### Setup K8S Cluster and Deploy Isecl-k8s-extensions
 
-* Setup master and worker node for k8s. Worker node should be setup on SGX host machine. Master node can be any system.
-* Please note whatever hostname has been used on worker node which pushes platform enablement info to SHVS from SGX Agent, use same node-name in join command.
-* Once the master/worker setup is done, follow below steps:
+* Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
-##### Untar packages and load docker images
+* To setup k8 cluster follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos Once the master/worker setup is done, follow below steps on Master Node:
+
+### Untar packages and push OCI images to registry
+
 * Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Master Node and extract the contents.
-```
+  
+  ```shell
     cd /opt/
     tar -xvzf isecl-k8s-extensions-*.tar.gz
-```
-* Load the docker images
-```
-    cd isecl-k8s-extensions
-    docker load -i docker-isecl-controller-v*.tar
-    docker load -i docker-isecl-scheduler-v*.tar
-```
+    cd isecl-k8s-extensions/
+  ```
+  
+* Configure private registry
+
+* Push images to private registry using skopeo command, (this can be done from build vm also)
+  
+  ```shell
+     skopeo copy oci-archive:isecl-k8s-controller-v3.4.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.4.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v3.4.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.4.0
+  ```
+  
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.4.0). It will automatically pull the images from registry.
 
 ##### Deploy isecl-controller
 * Create hostattributes.crd.isecl.intel.com crd
