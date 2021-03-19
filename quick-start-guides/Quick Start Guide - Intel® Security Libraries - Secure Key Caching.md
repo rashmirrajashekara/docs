@@ -779,7 +779,7 @@ Note: All the configuration files required for SKC Library container are modifie
 
 4. To create user and role for skc library, update the create_roles.conf, and run ./skc_library_create_roles.sh, which is inside the resources folder.
 
-5. Generate the RSA key in the kbs host and copy it to SGX host under /root/.
+5. Generate the RSA key in the kbs host and copy the generated KBS certificate to SGX host under /root/.
 
 6. Refer to openssl and nginx sub sections of Quick Start Guide in the "Configuration for NGINX testing" to configure nginx.conf and openssl.conf files which are under resource directory.
 
