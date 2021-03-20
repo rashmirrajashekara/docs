@@ -278,6 +278,52 @@ DB scripts:
 - Postgres installation script: install_pg.sh
 - AAS, SCS and SHVS DB creation script: create_db.sh
 
+## Building from Source - OCI images & K8s Manifests
+
+Intel® Security Libraries is distributed as open source code and must be compiled into OCI images before installation.
+
+Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.5/sgx-containers-qsg/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#build)
+
+After the components have been built, the OCI images and pre-req scripts can be found in the `K8s` directory created by the build scripts.
+
+Generated components `OCI images`  under `<working directory>/k8s/container-images`:
+
+* Authentication Authorization Service: `aas-v3.5.0.tar`
+* Certificate Management Service: `cms-v3.5.0.tar`
+* Integration Hub: `ihub-v3.5.0.tar`
+* Key Broker Service: `kbs-v3.5.0.tar`
+* K8s Extensions Custom Controller: `isecl-k8s-controller-v3.5.0.tar`
+* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v3.5.0.tar`
+* SGX Caching Service: `scs-v3.5.0.tar`
+* SGX Quote Verification Service: `sqvs-v3.5.0.tar`
+* SGX Host Verification Service: `shvs-v3.5.0.tar`
+* SGX Agent: `sgx-agent-v3.5.0.tar`
+* SKC Library: `skc-lib-3.5.0.tar`
+
+Generated Components `K8s Manifests` directories under `<working directory>/k8s/manifests`:
+
+* Authentication Authorization Service Database: `aas-db`
+* SGX Caching Service Database: `scs-db`
+* SGX Host Verification Service Database: `shvs-db`
+* Certificate Management Service: `cms`
+* Authentication Authorization Service: `aas`
+* Integration Hub: `ihub`
+* Key Broker Service: `kbs`
+* SGX Caching Service: `scs`
+* SGX Host Verification Service: `shvs`
+* SGX Quote Verification Service: `sqvs`
+* K8s Extensions Custom Controller: `k8s-extensions-controller`
+* K8s Extensions Extended Scheduler: `k8s-extensions-scheduler`
+* SGX Agent: `sgx_agent`
+* SKC Library: `skc_library`
+
+Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
+
+* Pre-req: `pre-requisites.sh`
+* Bootstrap DB: `skc-bootstrap-db-services.sh`
+* Answer file: `isecl-skc-k8s.env`
+* Bootstrap: `skc-bootstrap.sh`
+
 ## Hardware Considerations
 
 ### Supported **Hardware**
@@ -295,8 +341,29 @@ DB scripts:
 
 ### OS Requirements (Intel® SGX does not supported on 32-bit OS):
 
--   Linux\*:\
-    • RHEL 8.2
+-   Linux: RHEL 8.2
+
+### Requirements for Containerized Deployment with K8s
+
+#### Operating System:
+
+* RHEL 8.2
+* Ubuntu 18.04
+
+#### Kubernetes
+
+* Single-node: `microk8s` (1.17.17)
+* Multi-node: `kubeadm` (1.17.17)
+
+#### Container Runtime
+
+* Docker 19.03.13 on RHEL 8.2
+* Docker 20.03. on Ubuntu 18.04
+
+#### Storage:
+
+* `hostPath` for Single Node `microk8s` for all services and agents
+* `NFS` for Multi Node `kubeadm` for all services, `hostPath ` for sgx_agent and skc_library
 
 ##  Recommended Service Layout
 
@@ -329,6 +396,50 @@ This Includes:
 SGX Agent & SKC Library needs to be installed on SGX Enabled Machine.
 
 Isecl-K8s-extensions must be installed on separate VM.
+
+## Recommended Service Layout & Architecture - Containerized Deployment with K8s
+
+The containerized deployment makes use of Kubernetes orchestrator for single node and multi node deployments. The supported deployment models are as below:
+
+**Single Node:**
+
+![k8s-single-node](./images/k8s-single-node.png)
+
+
+
+**Multi Node:**
+
+![K8s Deployment-sqx](./images/k8s-deployment-sgx.jpg)
+
+
+
+**Services Deployments & Agent DaemonSets:**
+
+Every service including databases will be deployed as separate K8s deployment with 1 replica, i.e(1 pod per deployment). Each deployment will be further exposed through k8s service and also will be having corresponding Persistent Volume Claims(PV) for configuration and log directories and mounted on persistent storage. In case of daemonsets/agents, the configuration and log directories will be mounted on respective Baremetal worker nodes.
+
+![Each pod consist of only one container with service](./images/pod-deployment.jpg)
+
+For stateful services which requires database like shvs, aas, scs, A separate database deployment will be created for each of such services. The data present on the database deployment will also made to persist on a NFS, through K8s persistent storage mechanism
+
+![database deployment](./images/shvs-db.jpg)
+
+
+
+**Networking within the Cluster:**
+
+![Networking within cluster](./images/within-cluster-communication-sgx.jpg)
+
+
+
+**Networking Outside the Cluster:**
+
+![Networking outside cluster](./images/inter-cluster-communication-sgx.jpg)
+
+**SKC Virtualization:**
+
+![](.\Images\sgx-virtualization-model.jpg)
+
+Follow the [Installation of Containerized Services and Agent in K8s Cluster](#Installation of Containerized Services and Agent in K8s Cluster) for installation instructions once deployment model is chosen
 
 ### Using the provided Database Installation Script 
 
@@ -377,6 +488,30 @@ If the database server will be run separately from the Intel® SecL service(s), 
 
 The database client for Intel® SecL services will validate that the Subject Alternative Names in the database server's TLS certificate contain the hostname(s)/IP address(es) that the clients will use to access the database server. If configuring a database without using the provided scripts, ensure that these attributes are present in the database TLS certificate.
 
+## Installation of Containerized Services and Agent in K8s Cluster
+
+The containerized deployment utilizes K8s orchestrator to deploy SGX components. The deployments are fairly automated once the pre-reqs are in place for K8s cluster deployments. 
+
+> **Note:** The K8s manifests are declarative in nature and the same can be modified as required for SGX services deployments for single node and multi node deployments. Modifications would require specific steps to ensure services and agents get updated as per the required configuration. More details for the same present in [Intel Security Libraries Configuration Settings ](#Intel Security Libraries Configuration Settings) under Setup tasks and Configuration Options for K8s Deployments
+
+### Pre-requisites
+
+* Ensure based on the deployment model , `microk8s` or `kubeadm` in installed. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
+* Docker runtime is configured for each of these deployments. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
+* The build would generate a script for platform dependencies under `<working directory>/k8s/platform dependencies`
+* Follow the deployment pre-reqs as given in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#deployment) based on the chosen deployment model
+
+### Deploy Steps
+
+* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#deploy-steps) based on the deployment model. Follow the instructions for the deployment using the scripts
+
+### Additional Details
+
+* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#default-service-and-agent-mount-paths)
+* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#multi-node-deployments)
+* [Default Service Ports](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#default-service-ports)
+* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/v3.5.0/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#setup-1)
+
 ## Installing the Certificate Management Service
 
 ### Required For
@@ -403,13 +538,13 @@ To install the Intel® SecL-DC Certificate Management Service:
 
 1.  Copy the Certificate Management Service installation binary to the /root/ directory.
 
-2.  Create the cms.env installation answer file for an unattended installation:
+2.  Create the `cms.env` installation answer file for an unattended installation:
 
 AAS_TLS_SAN=\< Comma-Separated list of IPs and hostnames for the AAS\>
 
 AAS_API_URL=https://\< Authentication and Authorization Service IP or Hostname\>:8444/aas/v1
 
-SAN_LIST=\< Comma-Separated list of IP addresses and hostnames for the CMS\>
+SAN_LIST=< Comma-Separated list of IP addresses and hostnames for the CMS>
 
 The SAN list will be used to authenticate the Certificate Signing Request from the AAS to the CMS. Only a CSR originating from a host matching the SAN list will be honored. Later, in the AAS authservice.env installation answer file, this same SAN list will be provided for the AAS installation. These lists must match and must be valid for IPs and/or hostnames used by the AAS system. The SAN list variables also accept the wildcards "?" (for single-character wildcards) and "\*" (for multiple-character wildcards) to allow address ranges or multiple FQDNs.
 
@@ -433,7 +568,7 @@ In addition, the SHA384 digest of the CMS TLS certificate will be needed for ins
 
 cms tlscertsha384
 
- 
+
 ## Installing the Authentication and Authorization Service 
 
 ### Required For
@@ -489,7 +624,7 @@ Create the authservice.env installation answer file in /root/ directory as below
       CMS_TLS_CERT_SHA384=<CMS TLS certificate sha384>
       
       AAS_DB_SSLMODE=verify-full
-
+    
       AAS_DB_HOSTNAME=<IP or hostname of database server>
     
       AAS_DB_PORT=<database port number; default is 5432>
@@ -566,8 +701,8 @@ SKC_LIBRARY_CERT_COMMON_NAME=<SKC Library Certificate Common Name>
 
 SKC_LIBRARY_KEY_TRANSFER_CONTEXT=<SKC Library KeyTransfer Role Context>
 
-INSTALL_ADMIN_USERNAME=<Username for the Admin user>
-INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
+INSTALL_ADMIN_USERNAME=<Username for the Admin user>
+INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
 
 CSP_ADMIN_USERNAME=<Username for the CSP Admin user>
 CSP_ADMIN_PASSWORD=<Password for the CSP Admin user>
@@ -782,7 +917,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      SHVS_HOST_PLATFORM_EXPIRY_TIME=240
      
      SHVS_AUTO_REFRESH_TIMER=120
-
+    
      BEARER_TOKEN=<Installation token> 
     
      AAS_API_URL=https://<Authentication and Authorization Service IP or Hostname>:8444/aas/v1
@@ -790,7 +925,7 @@ A sample minimal shvs.env file is provided below. For all configuration options 
      CMS_BASE_URL=https://<Certificate Management Service IP or Hostname>:8445/cms/v1/
     
      SCS_BASE_URL=https://<SGX Caching Service IP or Hostname>:9000/scs/sgx/
-
+    
      SAN_LIST=<Comma-separated list of IP addresses and hostnames for the SHVS> 
 
 Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
@@ -1474,7 +1609,7 @@ Note: All the configuration files required for SKC Library container are modifie
     Download index.html
     wget https://localhost:2443 --no-check-certificate
 ```
-    
+
 # Authentication
 
 Authentication is centrally managed by the Authentication and Authorization Service (AAS). This service uses a Bearer Token authentication method. This service also centralizes the creation of roles and users, allowing much easier management of users, passwords, and permissions across all Intel® SecL-DC services.
@@ -1691,7 +1826,33 @@ The SGX Agent communicates with SGX Caching Service (SCS) and SGX Host Verificat
 
 Host Registration creates a host record with host information in the SGX Host Verification Service database when SGX Agent update SGX enablement information for the first time.
 
+# Setup Task Flows for K8s Deployments
+
+Setup tasks flows have been updated to have K8s native flow to be more agnostic to K8s workflows. Following would be the flow for setup task. The setup task options are detailed under [Intel Security Libraries Configuration Settings](#Intel Security Libraries Configuration Settings ) for each service and agent
+
+- User would create a new `configMap`  object with the environment variables specific to the setup task. The Setup task variables would be documented in the Product Guide
+- Users can provide variables for more than one setup task
+- Users need to add `SETUP_TASK: "<setup task name>/<comma separated setup task name>"` in the same `configMap`
+- Provide a unique name to the new `configMap`
+- Provide the same name in the `deployment.yaml` under `configMapRef` section
+- Deploy the specific service again with  ` kubectl kustomize . | kubectl  apply -f -`
+
+# Configuration Update Flows for K8s Deployments
+
+Configuration Update flows have been updated to have K8s native flow to be more agnostic to K8s workflows using `configMap` only. Following would be the flow for configuration update. The config task options are are detailed under [Intel Security Libraries Configuration Settings](#Intel Security Libraries Configuration Settings ) for each service and agent
+
+- User would create a new `configMap`  object using existing one and update the new values. The list of config variables would be documented in the Product Guide
+- Users can update variables for more than one
+- Users need to add `SETUP_TASK: "update-service-config"` in the same `configMap`
+- Provide a unique name to the new `configMap`
+- Provide the same name in the `deployment.yaml` under `configMapRef` section
+- Deploy the specific service again with  ` kubectl  kustomize . | kubectl  apply -f -`
+
+> **Note:** Incase of agents, setup tasks or configuration updates done through above flows will be applied for all the agents running on different BMs. In order to run setup task or update configuration for individual agents, then user need to perform `kubectl exec -it <pod_name> /bin/bash` into a particular agent pod and run the specific setup task.
+
 # Intel Security Libraries Configuration Settings 
+
+> **Note:** All the answer file options would remain common for containerized K8s deployments with the except of URLS where Kubernetes DNS would be used. The respective `configMap.yml` for each service and agent would carry the defaults for the same when built under `<working directory>/k8s/manifests/<service/agent/db names>`
 
 ##  SGX Host Verification Service 
 
@@ -1765,6 +1926,68 @@ Removes the service. Use \--purge option to remove configuration directory(/etc/
 shvs version
 
 Shows the version of the service.
+
+### Setup tasks and Configuration Options for K8s deployments
+
+```shell
+Available Tasks for setup:
+    all                       Runs all setup tasks
+                              Required env variables:
+                                  - get required env variables from all the setup tasks
+                              Optional env variables:
+                                  - get optional env variables from all the setup tasks
+
+    shvs setup database
+        - Available arguments are:
+            SHVS_DB_HOSTNAME
+            SHVS_DB_PORT
+            SHVS_DB_USERNAME
+            SHVS_DB_PASSWORD
+            SHVS_DB_NAME
+            SHVS_DB_SSLMODE <disable|allow|prefer|require|verify-ca|verify-full>
+            SHVS_DB_SSLCERT path to where the certificate file of database. Only applicable
+                         for db-sslmode=<verify-ca|verify-full. If left empty, the cert
+                         will be copied to /etc/shvs/shvs-dbcert.pem
+                         alternatively, set environment variable 
+            - SHVS_DB_SSLCERTSRC <path to where the database ssl/tls certificate file>
+                         mandatory if db-sslcert does not already exist
+                         alternatively, set environment variable 
+
+    update_service_config    Updates Service Configuration
+                             Required env variables:
+                                 - SHVS_PORT                                         : SGX Host Verification Service port
+                                 - SHVS_SERVER_READ_TIMEOUT                          : SGX Host Verification Service Read Timeout
+                                 - SHVS_SERVER_READ_HEADER_TIMEOUT                   : SGX Host Verification Service Read Header Timeout Duration
+                                 - SHVS_SERVER_WRITE_TIMEOUT                         : SGX Host Verification Service Request Write Timeout Duration
+                                 - SHVS_SERVER_IDLE_TIMEOUT                          : SGX Host Verification Service Request Idle Timeout
+                                 - SHVS_SERVER_MAX_HEADER_BYTES                      : SGX Host Verification Service Max Length Of Request Header Bytes
+                                 - SHVS_LOG_LEVEL                                    : SGX Host Verification Service Log Level
+                                 - SHVS_LOG_MAX_LENGTH                               : SGX Host Verification Service Log maximum length
+                                 - SHVS_ENABLE_CONSOLE_LOG                           : SGX Host Verification Service Enable standard output
+                                 - SHVS_ADMIN_USERNAME                               : SHVS Service Username
+                                 - SHVS_ADMIN_PASSWORD                               : SHVS Service Password
+                                 - SHVS_SCHEDULER_TIMER                              : SHVS Scheduler Timeout Seconds
+                                 - SHVS_AUTO_REFRESH_TIMER                           : SHVS autoRefresh Timeout Seconds
+                                 - SHVS_HOST_PLATFORM_EXPIRY_TIME                    : SHVS Host Platform Expiry Time in seconds
+                                 - SCS_BASE_URL                                      : SGX Caching Service URL
+                                 - AAS_API_URL                                       : AAS API URL
+
+    download_ca_cert         Download CMS root CA certificate
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>                                : for CMS API url
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that SHVS is talking to the right CMS instance
+                                 
+    download_cert TLS        Generates Key pair and CSR, gets it signed from CMS
+                             Required env variable if SHVS_NOSETUP=true or variable not set in config.yml:
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>      : to ensure that SHVS is talking to the right CMS instance
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>               : for CMS API url
+                                 - BEARER_TOKEN=<token>             : for authenticating with CMS
+                                 - SAN_LIST=<san>                   : list of hosts which needs access to service
+                             Optional env variables specific to setup task are:
+                                 - KEY_PATH=<key_path>              : Path of file where TLS key needs to be stored
+                                 - CERT_PATH=<cert_path>            : Path of file/directory where TLS certificate needs to be stored
+```
 
 ### Directory Layout 
 
@@ -1843,6 +2066,37 @@ sgx_agent stop
 Get the status of the SGX Agent Service. 
 
 sgx_agent status
+
+### Setup Tasks and Configuration Options for K8s deployments
+
+```shell
+Available Tasks for setup:
+    all                       Runs all setup tasks
+                              Required env variables:
+                                  - get required env variables from all the setup tasks
+                              Optional env variables:
+                                  - get optional env variables from all the setup tasks
+
+    update_service_config    Updates Service Configuration
+                             Required env variables:
+                                 - SCS_BASE_URL                                     : SCS Base URL
+                                 - SGX_AGENT_LOGLEVEL                               : SGX_AGENT Log Level
+                                 - SGX_AGENT_LOG_MAX_LENGTH                         : SGX Agent Log maximum length
+                                 - SGX_AGENT_ENABLE_CONSOLE_LOG                     : SGX Agent Enable standard output
+                                 - SHVS_UPDATE_INTERVAL                             : SHVS update interval in minutes
+                                 - WAIT_TIME                                        : Time between each retries to PCS
+                                 - RETRY_COUNT                                      : Push Data Retry Count to SCS
+                                 - SHVS_BASE_URL                                    : HVS Base URL
+                                 - BEARER_TOKEN                                     : BEARER TOKEN
+
+    download_ca_cert         Download CMS root CA certificate
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>                                : for CMS API url
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that SGX-Agent is talking to the right CMS instance
+
+```
+
+
 
 ### Directory Layout 
 
@@ -1950,6 +2204,65 @@ This folder /etc/ihub/ contains certificates, keys, and configuration files.
 
 This folder contains log files: /var/log/ihub/
 
+### Setup Tasks and Configuration Options for K8s deployments
+
+```shell
+Available Tasks for setup:
+        all                                 Runs all setup tasks
+        download-ca-cert                    Download CMS root CA certificate
+        download-cert-tls                   Download CA certificate from CMS for tls
+        attestation-service-connection      Establish Attestation service connection
+        tenant-service-connection           Establish Tenant service connection
+        create-signing-key                  Create signing key for IHUB
+        download-saml-cert                  Download SAML certificate from Attestation service
+        update-service-config               Sets or Updates the Service configuration
+
+Following environment variables are required for "download-ca-cert"
+    CMS_BASE_URL                CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    CMS_TLS_CERT_SHA384         SHA384 hash value of CMS TLS certificate
+
+Following environment variables are required in "download-cert-tls"
+    CMS_BASE_URL        CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    BEARER_TOKEN        Bearer token for accessing CMS api
+Following environment variables are optionally used in download-cert-tls
+    TLS_CERT_FILE       The file to which certificate is saved
+    TLS_KEY_FILE        The file to which private key is saved
+    TLS_COMMON_NAME     The common name of signed certificate
+
+    TLS_SAN_LIST        Comma separated list of hostnames to add to Certificate, including IP addresses and DNS names
+
+Following environment variables are required for 'attestation-service-connection' setup:
+    ATTESTATION_TYPE            Type of Attestation Service
+    ATTESTATION_SERVICE_URL     Base URL for the Attestation Service
+    
+Following environment variables are required for 'tenant-service-connection' setup:
+    TENANT      Type of Tenant Service (OpenStack or Kubernetes)
+Following environment variables are required for Kubernetes tenant:
+    KUBERNETES_TOKEN            Token for Kubernetes deployment
+    KUBERNETES_CERT_FILE        Certificate path for Kubernetes deployment
+    KUBERNETES_URL              URL for Kubernetes deployment
+    KUBERNETES_CRD              CRD Name for Kubernetes deployment
+Following environment variables are required for OpenStack tenant:
+    OPENSTACK_PLACEMENT_URL     Placement API endpoint for OpenStack deployment
+    OPENSTACK_USERNAME          UserName for OpenStack deployment
+    OPENSTACK_PASSWORD          Password for OpenStack deployment
+    OPENSTACK_AUTH_URL          Keystone API endpoint for OpenStack deployment
+    
+Following environment variables are required for 'download-saml-cert':
+    ATTESTATION_SERVICE_URL     Base URL for the Attestation Service
+    ATTESTATION_TYPE            Type of Attestation Service
+
+Following environment variables are required for update-service-config setup:
+    LOG_LEVEL           Log level
+    LOG_MAX_LENGTH      Max length of log statement
+    LOG_ENABLE_STDOUT   Enable console log
+    AAS_BASE_URL        AAS Base URL
+    SERVICE_USERNAME    The service username as configured in AAS
+    SERVICE_PASSWORD    The service password as configured in AAS
+```
+
+
+
 ## Certificate Management Service
 
 ### Installation Answer File Options
@@ -2045,6 +2358,53 @@ Available Tasks for setup:
 -   Option \[\--force\] overwrites any existing files, and always generate new
 
 JWT keypair and token
+
+### Setup Tasks and Configuration Options for K8s Deployments
+
+```shell
+Available Tasks for setup:
+    all                       Runs all setup tasks
+    root-ca                   Creates a self signed Root CA key pair in /etc/cms/root-ca/ for quality of life
+    intermediate-ca           Creates a Root CA signed intermediate CA key pair(signing, tls-server and tls-client) in /etc/cms/intermediate-ca/ for quality of life
+    tls                       Creates an intermediate-ca signed TLS key pair in /etc/cms for quality of life
+    cms-auth-token            Create its own self signed JWT key pair in /etc/cms/jwt for quality of life
+    update-service-config     Sets or Updates the Service configuration
+
+Following environment variables are required for 'tls' setup:
+    SAN_LIST    TLS SAN list
+
+Following environment variables are required for 'authToken' setup:
+    AAS_JWT_CN          Common Name for JWT Signing Certificate used in Authentication and Authorization Service
+    AAS_TLS_CN          Common Name for TLS Signing Certificate used in  Authentication and Authorization Service
+    AAS_TLS_SAN         TLS SAN list for Authentication and Authorization Service
+
+Following environment variables are required for 'update-service-config' setup:
+    AAS_BASE_URL                AAS Base URL
+    SERVER_PORT                 The Port on which Server Listens to
+    SERVER_READ_TIMEOUT         Request Read Timeout Duration in Seconds
+    SERVER_READ_HEADER_TIMEOUT  Request Read Header Timeout Duration in Seconds
+    SERVER_IDLE_TIMEOUT         Request Idle Timeout in Seconds
+    LOG_LEVEL                   Log level
+    LOG_MAX_LENGTH              Max length of log statement
+    SERVER_WRITE_TIMEOUT        Request Write Timeout Duration in Seconds
+    SERVER_MAX_HEADER_BYTES     Max Length Of Request Header in Bytes
+    LOG_ENABLE_STDOUT           Enable console log
+    TOKEN_DURATION_MINS         Validity of token duration
+
+Following environment variables are required for 'root-ca' setup:
+    CMS_CA_PROVINCE             CA Certificate Province
+    CMS_CA_COUNTRY              CA Certificate Country
+    CMS_CA_CERT_VALIDITY        CA Certificate Validity
+    CMS_CA_ORGANIZATION         CA Certificate Organization
+    CMS_CA_LOCALITY             CA Certificate Locality
+
+Following environment variables are required for 'intermediate-ca' setup:
+    CMS_CA_PROVINCE             CA Certificate Province
+    CMS_CA_COUNTRY              CA Certificate Country
+    CMS_CA_CERT_VALIDITY        CA Certificate Validity
+    CMS_CA_ORGANIZATION         CA Certificate Organization
+    CMS_CA_LOCALITY             CA Certificate Locality
+```
 
 ### Directory Layout 
 
@@ -2193,6 +2553,78 @@ authservice version
 
 Shows the version of the service.
 
+### Setup Tasks and Configuration Updates for K8s Deployments
+
+```shell
+ Available Tasks for setup:
+                all                      Runs all setup tasks
+                download-ca-cert         Download CMS root CA certificate
+                download-cert-tls        Download CA certificate from CMS for tls
+                database                 Setup authservice database
+                admin                    Add authservice admin username and password to database and assign respective
+                                         roles to the user
+                jwt                      Create jwt signing key and jwt certificate signed by CMS
+                update-service-config    Sets or Updates the Service configuration
+
+
+Following environment variables are required for 'download-ca-cert'
+    CMS_BASE_URL                CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    CMS_TLS_CERT_SHA384         SHA384 hash value of CMS TLS certificate
+
+Following environment variables are required in 'download-cert-tls'
+    CMS_BASE_URL        CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    BEARER_TOKEN        Bearer token for accessing CMS api
+Following environment variables are optionally used in download-cert-tls
+    TLS_CERT_FILE       The file to which certificate is saved
+    TLS_KEY_FILE        The file to which private key is saved
+    TLS_COMMON_NAME     The common name of signed certificate
+
+    TLS_SAN_LIST        Comma separated list of hostnames to add to Certificate, including IP addresses and DNS names
+
+Following environment variables are required for 'Database' related setups:
+    DB_VENDOR                   Vendor of database, or use AAS_DB_VENDOR alternatively
+    DB_HOST                     Database host name, or use AAS_DB_HOSTNAME alternatively
+    DB_USERNAME                 Database username, or use AAS_DB_USERNAME alternatively
+    DB_PASSWORD                 Database password, or use AAS_DB_PASSWORD alternatively
+    DB_SSL_MODE                 Database SSL mode, or use AAS_DB_SSL_MODE alternatively
+    DB_SSL_CERT                 Database SSL certificate, or use AAS_DB_SSLCERT alternatively
+    DB_PORT                     Database port, or use AAS_DB_PORT alternatively
+    DB_NAME                     Database name, or use AAS_DB_NAME alternatively
+    DB_SSL_CERT_SOURCE          Database SSL certificate to be copied from, or use AAS_DB_SSLCERTSRC alternatively
+    DB_CONN_RETRY_ATTEMPTS      Database connection retry attempts
+    DB_CONN_RETRY_TIME          Database connection retry time
+
+Following environment variables are required for 'admin' setup:
+    AAS_ADMIN_USERNAME  Authentication and Authorization Service Admin Username
+    AAS_ADMIN_PASSWORD  Authentication and Authorization Service Admin Password
+
+Following environment variables are required in 'jwt'
+    CMS_BASE_URL        CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    BEARER_TOKEN        Bearer token for accessing CMS api
+Following environment variables are optionally used in jwt
+    CERT_FILE           The file to which certificate is saved
+    KEY_FILE            The file to which private key is saved
+    COMMON_NAME         The common name of signed certificate
+    
+Following environment variables are required for 'update-service-config' setup:
+    AUTH_DEFENDER_LOCKOUT_DURATION_MINS         Auth defender lockout duration in minutes
+    SERVER_MAX_HEADER_BYTES                     Max Length Of Request Header in Bytes
+    JWT_INCLUDE_KID                             Includes JWT Key Id for token validation
+    SERVER_READ_HEADER_TIMEOUT                  Request Read Header Timeout Duration in Seconds
+    AUTH_DEFENDER_MAX_ATTEMPTS                  Auth defender maximum attempts
+    SERVER_PORT                                 The Port on which Server Listens to
+    SERVER_READ_TIMEOUT                         Request Read Timeout Duration in Seconds
+    LOG_MAX_LENGTH                              Max length of log statement
+    LOG_ENABLE_STDOUT                           Enable console log
+    JWT_CERT_COMMON_NAME                        Common Name for JWT Certificate
+    SERVER_WRITE_TIMEOUT                        Request Write Timeout Duration in Seconds
+    SERVER_IDLE_TIMEOUT                         Request Idle Timeout in Seconds
+    LOG_LEVEL                                   Log level
+    JWT_TOKEN_DURATION_MINS                     Validity of token duration
+    AUTH_DEFENDER_INTERVAL_MINS                 Auth defender interval in minutes
+
+```
+
 ### Directory Layout 
 
 The Authendication and Authorization Service installs by default to /opt/authservice with the following folders.
@@ -2264,6 +2696,54 @@ Removes the service
 kbs version
 
 Displays the version of the service
+
+### Setup Tasks and Configuration Options for K8s Deployments
+
+```shell
+Available Tasks for setup:
+        all                                 Runs all setup tasks
+        download-ca-cert                    Download CMS root CA certificate
+        download-cert-tls                   Download CA certificate from CMS for tls
+        create-default-key-transfer-policy  Create default key transfer policy for KBS
+        update-service-config               Sets or Updates the Service configuration
+
+Following environment variables are required for 'update-service-config' setup:
+    SERVICE_USERNAME            The service username as configured in AAS
+    AAS_BASE_URL                AAS Base URL
+    KMIP_ROOT_CERT_PATH         KMIP Root Certificate path
+    KMIP_SERVER_IP              IP of KMIP server
+    KMIP_CLIENT_KEY_PATH        KMIP Client key path
+    SERVER_READ_TIMEOUT         Request Read Timeout Duration in Seconds
+    SERVER_READ_HEADER_TIMEOUT  Request Read Header Timeout Duration in Seconds
+    SERVER_IDLE_TIMEOUT         Request Idle Timeout in Seconds
+    SQVS_URL                    SQVS URL
+    SESSION_EXPIRY_TIME         Session Expiry Time
+    SERVER_PORT                 The Port on which Server Listens to
+    LOG_LEVEL                   Log level
+    LOG_MAX_LENGTH              Max length of log statement
+    LOG_ENABLE_STDOUT           Enable console log
+    KMIP_SERVER_PORT            PORT of KMIP server
+    KMIP_CLIENT_CERT_PATH       KMIP Client certificate path
+    SERVER_WRITE_TIMEOUT        Request Write Timeout Duration in Seconds
+    SERVER_MAX_HEADER_BYTES     Max Length Of Request Header in Bytes
+    SERVICE_PASSWORD            The service password as configured in AAS
+    SKC_CHALLENGE_TYPE          SKC challenge type
+
+Following environment variables are required for 'download-ca-cert'
+    CMS_BASE_URL                CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    CMS_TLS_CERT_SHA384         SHA384 hash value of CMS TLS certificate
+
+Following environment variables are required in 'download-cert-tls'
+    CMS_BASE_URL        CMS base URL in the format https://{{cms}}:{{cms_port}}/cms/v1/
+    BEARER_TOKEN        Bearer token for accessing CMS api
+Following environment variables are optionally used in download-cert-tls
+    TLS_KEY_FILE        The file to which private key is saved
+    TLS_COMMON_NAME     The common name of signed certificate
+    TLS_CERT_FILE       The file to which certificate is saved
+
+    TLS_SAN_LIST        Comma separated list of hostnames to add to Certificate, including IP addresses and DNS names
+
+```
 
 ### Directory Layout 
 
@@ -2339,6 +2819,66 @@ uninstall the SGX Caching Service. \--purge option needs to be applied to remove
 scs version
 
 Reports the version of the scs
+
+### Setup & Configuration Updates Options for K8s deployments
+
+```shell
+ Avaliable Tasks for setup:
+    all                       Runs all setup tasks
+                              Required env variables:
+                                  - get required env variables from all the setup tasks
+                              Optional env variables:
+                                  - get optional env variables from all the setup tasks
+                                                                    
+    scs setup database
+        - Avaliable arguments are:
+            - SCS_DB_HOSTNAME
+            - SCS_DB_PORT
+            - SCS_DB_USERNAME
+            - SCS_DB_PASSWORD
+            - SCS_DB_NAME
+            - SCS_DB_SSLMODE <disable|allow|prefer|require|verify-ca|verify-full>
+            - SCS_DB_SSLCERT path to where the certificate file of database. Only applicable
+                         for db-sslmode=<verify-ca|verify-full. If left empty, the cert
+                         will be copied to /etc/scs/tdcertdb.pem
+            - SCS_DB_SSLCERTSRC <path to where the database ssl/tls certificate file>
+                         mandatory if db-sslcert does not already exist
+
+    update_service_config    Updates Service Configuration
+                             Required env variables:
+                                 - SCS_PORT                                         : SGX Caching Service port
+                                 - SCS_SERVER_READ_TIMEOUT                          : SGX Caching Service Read Timeout
+                                 - SCS_SERVER_READ_HEADER_TIMEOUT                   : SGX Caching Service Read Header Timeout Duration
+                                 - SCS_SERVER_WRITE_TIMEOUT                         : SGX Caching Service Request Write Timeout Duration
+                                 - SCS_SERVER_IDLE_TIMEOUT                          : SGX Caching Service Request Idle Timeout
+                                 - SCS_SERVER_MAX_HEADER_BYTES                      : SGX Caching Service Max Length Of Request Header Bytes
+                                 - INTEL_PROVISIONING_SERVER                        : Intel ECDSA Provisioning Server URL
+                                 - INTEL_PROVISIONING_SERVER_API_KEY                : Intel ECDSA Provisioning Server API Subscription key
+                                 - SCS_LOG_LEVEL                                    : SGX Caching Service Log Level
+                                 - SCS_LOG_MAX_LENGTH                               : SGX Caching Service Log maximum length
+                                 - SCS_ENABLE_CONSOLE_LOG                           : SGX Caching Service Enable standard output
+                                 - SCS_REFRESH_HOURS                                : SCS Automatic Refresh of SGX Data
+                                 - RETRY_COUNT                                      : Number of retry to PCS server
+                                 - WAIT_TIME                                        : Duration Time between each retries to PCS
+                                 - AAS_API_URL                                      : AAS API URL
+
+    download_ca_cert         Download CMS root CA certificate
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>                                : for CMS API url
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that AAS is talking to the right CMS instance
+
+    download_cert TLS        Generates Key pair and CSR, gets it signed from CMS
+                             Required env variable if SCS_NOSETUP=true or variable not set in config.yml:
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>      : to ensure that AAS is talking to the right CMS instance
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>               : for CMS API url
+                                 - BEARER_TOKEN=<token>             : for authenticating with CMS
+                                 - SAN_LIST=<san>                   : list of hosts which needs access to service
+                             Optional env variables specific to setup task are:
+                                 - KEY_PATH=<key_path>              : Path of file where TLS key needs to be stored
+                                 - CERT_PATH=<cert_path>            : Path of file/directory where TLS certificate needs to be stored
+
+```
 
 ### Directory Layout 
 
@@ -2416,6 +2956,50 @@ uninstalls the SGX Quote Verification Service. \--purge option needs to be appli
 sqvs version
 
 Reports the version of the sqvs
+
+### Setup Tasks and Configuration Options for K8s deployments
+
+```shell
+Available Tasks for setup:
+                              Required env variables:
+                                  - get required env variables from all the setup tasks
+                              Optional env variables:
+                                  - get optional env variables from all the setup tasks
+
+    update_service_config    Updates Service Configuration
+                             Required env variables:
+                                 - SQVS_PORT                                         : SGX Verification Service port
+                                 - SQVS_SERVER_READ_TIMEOUT                          : SGX Verification Service Read Timeout
+                                 - SQVS_SERVER_READ_HEADER_TIMEOUT                   : SGX Verification Service Read Header Timeout Duration
+                                 - SQVS_SERVER_WRITE_TIMEOUT                         : SGX Verification Service Request Write Timeout Duration
+                                 - SQVS_SERVER_IDLE_TIMEOUT                          : SGX Verification Service Request Idle Timeout
+                                 - SQVS_SERVER_MAX_HEADER_BYTES                      : SGX Verification Service Max Length Of Request Header Bytes
+                                 - SQVS_LOGLEVEL                                    : SGX Verification Service Log Level
+                                 - SQVS_LOG_MAX_LENGTH                               : SGX Verification Service Log maximum length
+                                 - SQVS_ENABLE_CONSOLE_LOG                           : SGX Verification Service Enable standard output
+                                 - SQVS_INCLUDE_TOKEN                                : Boolean value to decide whether to use token based auth or no auth for quote verifier API
+                                 - SGX_TRUSTED_ROOT_CA_PATH                          : SQVS Trusted Root CA
+                                 - SCS_BASE_URL                                      : SGX Caching Service URL
+                                 - AAS_API_URL                                       : AAS API URL
+
+    download_ca_cert         Download CMS root CA certificate
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>                                : for CMS API url
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that AAS is talking to the right CMS instance
+
+    download_cert TLS        Generates Key pair and CSR, gets it signed from CMS
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>      : to ensure that AAS is talking to the right CMS instance
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>               : for CMS API url
+                                 - BEARER_TOKEN=<token>             : for authenticating with CMS
+                                 - SAN_LIST=<san>                   : list of hosts which needs access to service
+                             Optional env variables specific to setup task are:
+                                - KEY_PATH=<key_path>              : Path of file where TLS key needs to be stored
+                                - CERT_PATH=<cert_path>            : Path of file/directory where TLS certificate needs to be stored
+
+```
+
+
 
 # Uninstallation 
 
@@ -2587,13 +3171,13 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
 On the Enterprise VM, where Key broker service is running
 
     cd into /root/binaries/kbs_script folder
-	
-	Update kbs.conf with the following
-	- Enterprise system IP address where CMS/AAS/KBS services are deployed
-	- Port of CMS, AAS and KBS services deployed on enterprise system
-	- AAS admin and Enterprise admin credentials
-  
-	Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
+    
+    Update kbs.conf with the following
+    - Enterprise system IP address where CMS/AAS/KBS services are deployed
+    - Port of CMS, AAS and KBS services deployed on enterprise system
+    - AAS admin and Enterprise admin credentials
+      
+    Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
@@ -2652,7 +3236,7 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 
 	pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
 	
-    Sample /opt/skc/etc/pkcs11-apimodule.ini file
+	Sample /opt/skc/etc/pkcs11-apimodule.ini file
 	
 	[core]
 	preload_keys=/root/keys.txt
@@ -2660,9 +3244,9 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	mode=SGX
 	debug=true
 	
-    [SW]
+	[SW]
 	module=/usr/lib64/pkcs11/libsofthsm2.so
-
+	
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
