@@ -970,12 +970,14 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   
 * Update `mountPath` and `subPath` with generated key id, along with image name in `k8s/manifests/skc_library/deployment.yml`  
 
-* Update `isecl-skc-k8s.env` by uncommenting `KBS_PUBLIC_CERTIFICATE=<key id>.crt` and update the `<key id>` value
+* Update `isecl-skc-k8s.env` by uncommenting `KBS_PUBLIC_CERTIFICATE=<key id>.crt` and update the `<key id>` value
 
 #### Initiate Key Transfer Flow
 
 * Deploy the SKC Library using `./skc-bootstrap.sh up skclib`
 * It will initiate the key transfer
+* Establish tls session with the nginx using the key transferred inside the enclave
+   `wget https://<Master IP>:30443 --no-check-certificate`
 
 ### SKC Virtualization Flow
 
