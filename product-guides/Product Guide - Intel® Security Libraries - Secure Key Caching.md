@@ -256,7 +256,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 6)
 
-https://github.com/intel-secl/docs/blob/v3.4/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
+https://github.com/intel-secl/docs/blob/v3.5/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md
 
 After the components have been built, the installation binaries and database scripts can be found in the binaries directory created by the build scripts.
 
@@ -953,7 +953,7 @@ When the installation completes, the SGX Quote Verification Service is available
      skopeo copy oci-archive:isecl-k8s-scheduler-v3.5.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.5.0
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.4.0). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.5.0). It will automatically pull the images from registry.
   
 
 ##### Deploy isecl-controller
