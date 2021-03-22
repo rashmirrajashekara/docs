@@ -749,7 +749,7 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 
 Update create_roles.conf with the following
   - IP address of AAS deployed on Enterprise system
-  - Admin account credentials of AAS deployed on Enterprise system
+  - Admin account credentials of AAS deployed on Enterprise system. These credentials should match with the AAS admin credentials provided in authservice.env on enterprise side.
   - Permission string to be embedded into skc_libraty client TLS Certificate
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
 
