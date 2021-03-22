@@ -341,35 +341,89 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * Update all the K8s manifests with the image names to be pulled from the registry
 
-* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
+* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
 ##### Deploy steps
 
-The bootstrap script would facilitate the deployment of all SGX components at a usecase level. Sample one given below. All the env files will be updated dynamically as per the system on which its deployed
+The bootstrap script would facilitate the deployment of all SGX components at a usecase level. Sample one given below.
 
 ###### Update .env file
 
 ```shell
-#Update isecl-k8s-skc.env for the following fields
+#Kubernetes Distribution microk8s or kubeadm
 K8S_DISTRIBUTION=microk8s
-K8S_MASTER_IP=<ip-address of K8s master>
-K8S_MASTER_HOSTNAME=<hostname of K8s master>
-AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master HOSTNAME>
+K8S_MASTER_IP=<Master IP>
+K8S_MASTER_HOSTNAME=<Master hostname>
 
-#For microk8s
-#K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
-K8S_API_SERVER_CERT=
+# cms
+CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
-#For microk8s
-#IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
-IHUB_PUB_KEY_PATH=
+# authservice
+AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP/Hostname>:30444/aas/v1
+AAS_ADMIN_USERNAME=admin@aas
+AAS_ADMIN_PASSWORD=aasAdminPass
+AAS_DB_USERNAME=aasdb
+AAS_DB_PASSWORD=aasdbuser
+AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
-# ISECL-Scheduler
+# SGX Caching Service
+SCS_ADMIN_USERNAME=scsuser@scs
+SCS_ADMIN_PASSWORD=scspassword
+SCS_DB_USERNAME=scsdbuser
+SCS_DB_PASSWORD=scsdbpassword
+INTEL_PROVISIONING_SERVER_API_KEY=??
+SCS_CERT_SAN_LIST=scs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# SGX host verification service
+SHVS_ADMIN_USERNAME=shvsuser@shvs
+SHVS_ADMIN_PASSWORD=shvsuser@shvs
+SHVS_DB_USERNAME=shvsdbuser
+SHVS_DB_PASSWORD=shvsdbpassword
+SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# ihub bootstrap
+IHUB_SERVICE_USERNAME=admin@hub
+IHUB_SERVICE_PASSWORD=hubAdminPass
+IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+# For microk8s
+# K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
+K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
+# This is valid for multinode deployment, should be populated once ihub is deployed successfully
+IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
+
+# KBS bootstrap credentials
+KBS_SERVICE_USERNAME=admin@kbs
+KBS_SERVICE_PASSWORD=kbsAdminPass
+# For SKC Virtualization use case set ENDPOINT_URL=https://<K8s Master IP>:30448/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# ISecl Scheduler
 # For microk8s
 # K8S_CA_KEY=/var/snap/microk8s/current/certs/ca.key
 # K8S_CA_CERT=/var/snap/microk8s/current/certs/ca.crt
-K8S_CA_KEY=
-K8S_CA_CERT=
+K8S_CA_KEY=/var/snap/microk8s/current/certs/ca.key
+K8S_CA_CERT=/var/snap/microk8s/current/certs/ca.crt
+
+#Skc Library
+KBS_PUBLIC_CERTIFICATE=<key id>.crt
+
+SCS_SERVICE_USERNAME=scsuser@scs
+SCS_SERVICE_PASSWORD=scspassword
+
+SHVS_SERVICE_USERNAME=shvsuser@shvs
+SHVS_SERVICE_PASSWORD=shvsuser@shvs
+
+SQVS_SERVICE_USERNAME=sqvsuser@sqvs
+SQVS_SERVICE_PASSWORD=sqvspassword
+
+CSP_ADMIN_USERNAME=csp_admin
+CSP_ADMIN_PASSWORD=password
+
+GLOBAL_ADMIN_USERNAME=global_admin_user
+GLOBAL_ADMIN_PASSWORD=globalAdminPass
+
+INSTALL_ADMIN_USERNAME=superadmin
+INSTALL_ADMIN_PASSWORD=superAdminPass
 ```
 
 ###### Run scripts on K8s master
@@ -500,27 +554,82 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 ###### Update .env file
 
 ```shell
-#Update isecl-k8s-skc.env for the following fields
+#Kubernetes Distribution microk8s or kubeadm
 K8S_DISTRIBUTION=kubeadm
-K8S_MASTER_IP=<ip-address of K8s master>
-K8S_MASTER_HOSTNAME=<hostname of K8s master>
-AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master HOSTNAME>
+K8S_MASTER_IP=<Master IP>
+K8S_MASTER_HOSTNAME=<Master hostname>
 
+# cms
+CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# authservice
+AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP/Hostname>:30444/aas/v1
+AAS_ADMIN_USERNAME=admin@aas
+AAS_ADMIN_PASSWORD=aasAdminPass
+AAS_DB_USERNAME=aasdb
+AAS_DB_PASSWORD=aasdbuser
+AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# SGX Caching Service
+SCS_ADMIN_USERNAME=scsuser@scs
+SCS_ADMIN_PASSWORD=scspassword
+SCS_DB_USERNAME=scsdbuser
+SCS_DB_PASSWORD=scsdbpassword
+INTEL_PROVISIONING_SERVER_API_KEY=??
+SCS_CERT_SAN_LIST=scs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# SGX host verification service
+SHVS_ADMIN_USERNAME=shvsuser@shvs
+SHVS_ADMIN_PASSWORD=shvspassword
+SHVS_DB_USERNAME=shvsdbuser
+SHVS_DB_PASSWORD=shvsdbpassword
+SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
+
+# ihub bootstrap
+IHUB_SERVICE_USERNAME=admin@hub
+IHUB_SERVICE_PASSWORD=hubAdminPass
+IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 # For Kubeadm
 # K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
-K8S_API_SERVER_CERT=
+K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
+# This is valid for multinode deployment, should be populated once ihub is deployed successfully
+IHUB_PUB_KEY_PATH=<skip this during initial deploy of K8s multi-node>
 
-# For Kubeadm
-# In case of kubeadm, user needs to manually copy the pub key from NFS server location under <NFS-path-for-isecl>/ihub/config/ihub_public_key.pem to K8s master and update the path variable below
-IHUB_PUB_KEY_PATH=
+# KBS bootstrap credentials
+KBS_SERVICE_USERNAME=admin@kbs
+KBS_SERVICE_PASSWORD=kbsAdminPass
+# For SKC Virtualization use case set ENDPOINT_URL=https://<K8s Master IP>:30448/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
-# ISECL-Scheduler
+# ISecl Scheduler
 # For Kubeadm
 # K8S_CA_KEY=/etc/kubernetes/pki/ca.key
 # K8S_CA_CERT=/etc/kubernetes/pki/ca.crt
-K8S_CA_KEY=
-K8S_CA_CERT=
+K8S_CA_KEY=/etc/kubernetes/pki/ca.key
+K8S_CA_CERT=/etc/kubernetes/pki/ca.crt
+
+#Skc Library
+KBS_PUBLIC_CERTIFICATE=<key id>.crt
+
+SCS_SERVICE_USERNAME=scsuser@scs
+SCS_SERVICE_PASSWORD=scspassword
+
+SHVS_SERVICE_USERNAME=shvsuser@shvs
+SHVS_SERVICE_PASSWORD=shvsuser@shvs
+
+SQVS_SERVICE_USERNAME=sqvsuser@sqvs
+SQVS_SERVICE_PASSWORD=sqvspassword
+
+CSP_ADMIN_USERNAME=csp_admin
+CSP_ADMIN_PASSWORD=password
+
+GLOBAL_ADMIN_USERNAME=global_admin_user
+GLOBAL_ADMIN_PASSWORD=globalAdminPass
+
+INSTALL_ADMIN_USERNAME=superadmin
+INSTALL_ADMIN_PASSWORD=superAdminPass
+
 ```
 
 ###### Run scripts on K8s master
@@ -542,7 +651,6 @@ chmod +x create-skc-dirs.nfs.sh
 #    -help          print help and exit
 #    up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 #    purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-
 ./skc-bootstrap-db-services.sh
 
 #skc-bootstrap
@@ -843,7 +951,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 * Copy generated key to `k8s/manifests/skc_library/resources`  
 
-* Update `create_roles.conf` under ``k8s/manifests/skc_library/resources` for `AAS_IP` to K8s Master& `AAS_PORT` to K8s pod exposed service port (Default:`30444`)
+* Update `create_roles.conf` under ``k8s/manifests/skc_library/resources` for `AAS_IP` to K8s Master& `AAS_PORT` to K8s pod exposed service port (Default:`30444`)
 
 * Execute `skc_library_create_roles.sh` to create skc token
 
@@ -854,7 +962,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   * `sgx_default_qcnl.conf` 
   * `skc_library.conf`
   
-  >  **Note: ** Update skc token in the `skc_library.conf` generated in previous step
+  >  **Note: ** Update skc token in the `skc_library.conf` generated in previous step
   
 * Update `mountPath` and `subPath` with generated key id, along with image name in `k8s/manifests/skc_library/deployment.yml`  
 
@@ -873,7 +981,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   and run `./deploy_sgx_agent.sh` to deploy `SGX_AGENT` as binary deployment
 * Deploy `SKC LIBRARY` on SGX Host, update `skc_library.conf` and execute
    `./deploy_skc_library.sh`
-* Follow the [Generating keys](#generating-keys) section to generate the keys
+* Follow the [Generating keys](#generating-keys) section to generate the keys
 
 * Copy the generated Key to SGX Host
 * Update `keys.txt` and `nginx.conf`
