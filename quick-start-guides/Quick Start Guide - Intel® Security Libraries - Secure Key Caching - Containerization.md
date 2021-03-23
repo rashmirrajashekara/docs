@@ -1151,6 +1151,8 @@ Run `sgx_sign` utility on the signed enclave (This command should be run on the 
   ```
   "sgx_enclave_measurement_anyof":["ad46749ed41ebaa2327252041ee746d3791a9f2431830fee0883f7993caf316a"]
   ```
+Please note that the SGX Enclave measurement value will depend on the toolchain used to build and link the SGX enclave. Hence the SGX Enclave measurement value would differ across OS flavours.
+For more details please refer https://github.com/intel/linux-sgx/tree/master/linux/reproducibility
 
 
 
@@ -1412,4 +1414,3 @@ In order to redeploy again on multi node with data, config from previous deploym
 ```shell
 ./skc-bootstrap.sh down <service-name>
 ./skc-bootstrap.sh up <service-name>
-```

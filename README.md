@@ -458,7 +458,7 @@ Pod should be in running state and launched on the worker host as per values in 
 
 ## Known Issues
 
- 1. SKC workflow does not supported on openstack setup. So end to end SKC key transfer flow will not work with openstack.
+ 1. SKC workflow is not supported on openstack setup. So end to end SKC key transfer flow will not work with openstack.
 
 ## Contributing 
 
