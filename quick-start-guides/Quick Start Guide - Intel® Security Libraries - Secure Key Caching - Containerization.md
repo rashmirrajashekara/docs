@@ -328,14 +328,18 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 ###### Setup
 
 * `microk8s` being the default supported single node K8s distribution, users would need to install microk8s on a Physical server
+
 * Copy all manifests and OCI container images as required to K8s master
+
 * Ensure docker registry is running locally or remotely
+
 * The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
   ```shell
   #Label node
-  kubectl label <node-name> node.type=SGX.ENABLED
+  kubectl label node <node-name> node.type=SGX-ENABLED
   ```
-* In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-api-server` and restarted to allow running of privileged containers 
+  
+* In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-apiserver` under `/var/snap/microk8s/current/args/kube-apiserver` and restart `kube-apiserver` with `systemctl restart snap.microk8s.daemon-apiserver` to allow running of privileged containers 
   like `SGX-AGENT` and `SKC-LIBRARY`
 
 ###### Manifests
@@ -362,8 +366,8 @@ CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP/Hostname>:30444/aas/v1
 AAS_ADMIN_USERNAME=admin@aas
 AAS_ADMIN_PASSWORD=aasAdminPass
-AAS_DB_USERNAME=aasdb
-AAS_DB_PASSWORD=aasdbuser
+AAS_DB_USERNAME=aasdbuser
+AAS_DB_PASSWORD=aasdbpassword
 AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
 # SGX Caching Service
@@ -490,7 +494,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 * The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: SGX-ENABLED` can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/sgx_agent/daemonset.yml` , `k8s/manifests/skc_library/deployment.yml`
   ```shell
   #Label node
-  kubectl label nodes <node-name> node.type=SGX.ENABLED
+  kubectl label node <node-name> node.type=SGX-ENABLED
   ```
 
 * `NFS` storage class is used in kubernetes environment for data persistence and supported in SKC. User needs to setup NFS server and create directory structure along with granting permission for a given user id. From security point of view, its been recommended to create a separate user id and grant the permission for all isecl directories for this user id. Below are some samples for reference
@@ -568,8 +572,8 @@ CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP/Hostname>:30444/aas/v1
 AAS_ADMIN_USERNAME=admin@aas
 AAS_ADMIN_PASSWORD=aasAdminPass
-AAS_DB_USERNAME=aasdb
-AAS_DB_PASSWORD=aasdbuser
+AAS_DB_USERNAME=aasdbuser
+AAS_DB_PASSWORD=aasdbpassword
 AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
 # SGX Caching Service
@@ -710,15 +714,13 @@ volumes:
 
 > **Note:** Make sure to use proper indentation and don't delete existing `mountPath` and `hostPath` sections in `kube-scheduler.yaml`
 
-
-
 * Restart `kubelet` which restart all the k8s services including kube-scheduler
 
 ```shell
 systemctl restart kubelet
 ```
 
-
+> **Note:** For external communication to Intel PCS server, the cluster admin needs to ensure K8s is able to talk to Intel PCS server beyond the cluster by configuring K8s
 
 ## Default Service and Agent Mount Paths
 
@@ -906,7 +908,7 @@ export no_proxy=<ip_address/hostname>
 
 ### Git Config Sample (~/.gitconfig)
 
-```
+```ini
 [user]
         name = <username>
         email = <email-id>
@@ -961,17 +963,17 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 * Update below files available under `k8s/manifests/skc_library/resources` with required values
   * `hosts`
-    * Update <K8s Master IP> and <K8s Master Host Name> where we generate KBS key
+    * Update K8s Master IP and K8s Master Host Name where we generate KBS key
   * `keys.txt`
-    * Update <KBS Key ID> 
+    * Update KBS Key ID
   * `nginx.conf`
-    * Update <KBS Key ID> in both ssl_certificate and ssl_certificate_key lines.
+    * Update KBS Key ID in both `ssl_certificate` and `ssl_certificate_key` lines.
   * `sgx_default_qcnl.conf`
-    * Update <K8s Master IP> and <SCS K8s Service Port>
+    * Update K8s Master IP and SCS K8s Service Port
   * `skc_library.conf`
-    * Update KBS_HOSTNAME, KBS_IP and KBS_PORT with K8s Master Hostname, K8s Master IP and  KBS K8s Service Port.
-    * Update CMS_IP and CMS_PORT with K8s Master IP and  CMS K8s Service Port.
-    * Update CSP_SCS_IP and CSP_SCS_PORT with K8s Master IP and  SCS K8s Service Port.
+    * Update `KBS_HOSTNAME`, `KBS_IP` and `KBS_PORT` with K8s Master Hostname, K8s Master IP and  KBS K8s Service Port.
+    * Update `CMS_IP` and `CMS_PORT` with K8s Master IP and  CMS K8s Service Port.
+    * Update `CSP_SCS_IP` and `CSP_SCS_PORT` with K8s Master IP and  SCS K8s Service Port.
   
   >  **Note: ** Update skc token in the `skc_library.conf` generated in previous step
   
@@ -985,6 +987,8 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 * It will initiate the key transfer
 * Establish tls session with the nginx using the key transferred inside the enclave
    `wget https://<Master IP>:30443 --no-check-certificate`
+
+
 
 ### SKC Virtualization Flow
 
@@ -1007,8 +1011,9 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 ##### OpenSSL
 
-Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
+Update openssl configuration file `/etc/pki/tls/openssl.cnf` with below changes
 
+```ini
 [openssl_def]
 engines = engine_section
 
@@ -1023,10 +1028,11 @@ dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
 MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
 
 init = 0
+```
 
 ##### Nginx
 
-Update nginx configuration file /etc/nginx/nginx.conf with below changes:
+Update nginx configuration file `/etc/nginx/nginx.conf` with below changes
 
 ssl_engine pkcs11;
 
@@ -1040,115 +1046,121 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 ##### SKC Configuration
 
- Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
+* Create `keys.txt` in /root folder. This provides key preloading functionality in skc_library.
 
-  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
+  > **Note:** Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
-  Sample PKCS11 url is as below
+* Sample PKCS11 url is as below
 
+  ```
   pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
+  ```
 
-  Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
+  > **Note:**  Last PKCS11 url entry in `keys.txt` should match with the one in `nginx.conf`
 
-  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
+* The keyID should match the keyID of RSA key created in KBS. Other contents should match with `nginx.conf`. File location should match with `preload_keys directive` in `pkcs11-apimodule.ini`
 
-  Sample /opt/skc/etc/pkcs11-apimodule.ini file
-	
-	[core]
-	preload_keys=/root/keys.txt
-	keyagent_conf=/opt/skc/etc/key-agent.ini
-	mode=SGX
-	debug=true
-	
-	[SW]
-	module=/usr/lib64/pkcs11/libsofthsm2.so
-	
-	[SGX]
-	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+* Sample `/opt/skc/etc/pkcs11-apimodule.ini` file
+  	
+
+  ```ini
+  [core]
+  preload_keys=/root/keys.txt
+  keyagent_conf=/opt/skc/etc/key-agent.ini
+  mode=SGX
+  debug=true
+  
+  [SW]
+  module=/usr/lib64/pkcs11/libsofthsm2.so
+  
+  [SGX]
+  module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+  ```
 
 ##### Key-transfer flow validation
 
-On SGX Compute node, Execute below commands for KBS key-transfer:
+* On SGX Compute node, Execute below commands for KBS key-transfer:
 
-```
-    pkill nginx
-```
+  ```shell
+  pkill nginx
+  ```
 
-Remove any existing pkcs11 token
+* Remove any existing pkcs11 token
 
-```
-    rm -rf /opt/intel/cryptoapitoolkit/tokens/*
-```
+  ```shell
+   rm -rf /opt/intel/cryptoapitoolkit/tokens/*  
+  ```
 
-Initiate Key transfer from KBS
+* Initiate Key transfer from KBS
 
-```
-    systemctl restart nginx
-```
+  ```shell
+  systemctl restart nginx
+  ```
 
-Changing group ownership and permissions of pkcs11 token
+* Changing group ownership and permissions of pkcs11 token
 
-```
-    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
-```
+  ```shell
+  chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+  ```
 
-```
-    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
-```
+  ```shell
+  chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/    
+  ```
 
-Establish a tls session with the nginx using the key transferred inside the enclave
+* Establish a tls session with the nginx using the key transferred inside the enclave
 
-```
-    wget https://localhost:2443 --no-check-certificate
-```
+  ```shell
+  wget https://localhost:2443 --no-check-certificate
+  ```
 
 ##### Note on Key Transfer Policy
 
 Key Transfer Policy is used to enforce a set of policies which need to be compiled before the secret can be securely provisioned onto a sgx enclave
 
 Sample Key Transfer Policy:
+```yaml
+"sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
+"sgx_enclave_issuer_product_id_anyof":[0],
+"sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
+"tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
+"client_permissions_allof":["nginx","USA"],
+"sgx_enforce_tcb_up_to_date":false
 ```
-        "sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
-        "sgx_enclave_issuer_product_id_anyof":[0],
-        "sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
-        "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
-        "client_permissions_allof":["nginx","USA"],
-        "sgx_enforce_tcb_up_to_date":false
-```
-   a.    sgx_enclave_issuer_anyof - Establishes the signing identity provided by an authority who has signed the SGX enclave. In other words the owner of the enclave.
+   a.    `sgx_enclave_issuer_anyof` - Establishes the signing identity provided by an authority who has signed the SGX enclave. In other words the owner of the enclave.
 
-   b.    sgx_enclave_measurement_anyof - Represents the cryptographic hash of the enclave log (enclave code, data)
+   b.    `sgx_enclave_measurement_anyof` - Represents the cryptographic hash of the enclave log (enclave code, data)
 
-   c.    sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+   c.    `sgx_enforce_tcb_up_to_date` - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
 
-   d.    client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
-         In the above example, key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
+   d.    `client_permissions_allof `- Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictions on who can get access to the key. In the above example, key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
 ##### Extracting SGX Enclave values for Key Transfer Policy
 
-Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
+Values that are specific to the enclave such as `sgx_enclave_issuer_anyof`, `sgx_enclave_measurement_anyof` and `sgx_enclave_issuer_product_id_anyof` can be retrieved using `sgx_sign` utility that is available as part of Intel SGX SDK.
 
-Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
-```
-    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
-```
+* Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
 
-- For `sgx_enclave_issuer_anyof`, in info.txt, search for "mrsigner->value" . E.g mrsigner->value :
+  ```shell
+  /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
   ```
+
+* For `sgx_enclave_issuer_anyof`, in info.txt, search for `mrsigner->value` . E.g.. mrsigner->value :
+  ```shell
   mrsigner->value: "0x83 0xd7 0x19 0xe7 0x7d 0xea 0xca 0x14 0x70 0xf6 0xba 0xf6 0x2a 0x4d 0x77 0x43 0x03 0xc8 0x99 0xdb 0x69 0x02 0x0f 0x9c 0x70 0xee 0x1d 0xfc 0x08 0xc7 0xce 0x9e"
   ```
-  Remove the whitespace and 0x characters from the above string and add it to the policy file. E.g :
-  ```
+  Remove the whitespace and 0x characters from the above string and add it to the policy file. E.g.. :
+  ```yaml
   "sgx_enclave_issuer_anyof":["83d719e77deaca1470f6baf62a4d774303c899db69020f9c70ee1dfc08c7ce9e"]
   ```
-- For `sgx_enclave_measurement_anyof`, in info.txt, search for metadata->enclave_css.body.enclave_hash.m . E.g metadata->enclave_css.body.enclave_hash.m :
-  ```
+
+* For `sgx_enclave_measurement_anyof`, in info.txt, search for `metadata->enclave_css.body.enclave_hash.m` . E.g. metadata->enclave_css.body.enclave_hash.m :
+  ```shell
   metadata->enclave_css.body.enclave_hash.m:
   0xad 0x46 0x74 0x9e 0xd4 0x1e 0xba 0xa2 0x32 0x72 0x52 0x04 0x1e 0xe7 0x46 0xd3
   0x79 0x1a 0x9f 0x24 0x31 0x83 0x0f 0xee 0x08 0x83 0xf7 0x99 0x3c 0xaf 0x31 0x6a
   ```
   Remove the whitespace and 0x characters from the above string and add it to the policy file. E.g :
-  ```
+  ```shell
   "sgx_enclave_measurement_anyof":["ad46749ed41ebaa2327252041ee746d3791a9f2431830fee0883f7993caf316a"]
   ```
 Please note that the SGX Enclave measurement value will depend on the toolchain used to build and link the SGX enclave. Hence the SGX Enclave measurement value would differ across OS flavours.
@@ -1414,3 +1426,5 @@ In order to redeploy again on multi node with data, config from previous deploym
 ```shell
 ./skc-bootstrap.sh down <service-name>
 ./skc-bootstrap.sh up <service-name>
+
+```
