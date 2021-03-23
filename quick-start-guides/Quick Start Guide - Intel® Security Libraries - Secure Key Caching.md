@@ -285,6 +285,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
+    backend_pykmip: <yes/no to install pykmip server along with KMIP KBS>
   roles:   
   - ansible-role
   environment:
@@ -292,6 +293,8 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
     https_proxy: "{{https_proxy}}"
     no_proxy: "{{no_proxy}}"
 ```
+
+NOTE: 'backend_pykmip' is optional variable, if it is set to 'yes' then KBS will be installed in KMIP mode and PyKMIP server will be installed. If it is not set or set to 'no' then KBS will be installed in Directory mode. PyKMIP server will not be installed. 
 
 and
 
@@ -834,10 +837,42 @@ GIT Configuration**
 
 ## Creating RSA Keys in Key Broker Service
 
+**Create RSA key in PyKMIP and generate certificate**
+
+NOTE: This step is required only when PyKMIP is configured as backend KMIP. Run this script to generate keys and certificate to register in KMIP KBS.
+
+Prerequisite:
+    
+    Install Python3 and PyKMIP.
+    
+    - yum install python3
+    
+    - pip3 install pykmip=0.9.1
+    
+    Edit rsa_create.py proper HOSTNAME_IP, CERT_PATH, KEY_PATH and CA_PATH (certificates will be available in PyKMIP server in the location /etc/pykmip/) 
+    
+    > python rsa_create.py
+
+NOTE: The server certificate can be provided in kbs.conf
+
 **Configuration Update to create Keys in KBS**
     
 	cd into /root/binaries/kbs_script folder
 	
+	Update SYSTEM_IP address in kbs.conf (where AAS and KBS are deployed)
+	
+	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
+	
+    **To register keys with KBS KMIP**
+    
+    Update the following variables in kbs.conf:
+    
+        KMIP_KEY_ID (Private key ID registered in KMIP server)
+        
+        SERVER_CERT (Server certificate for created private key)
+        
+NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
+  
 	Update kbs.conf with the following
   - Enterprise system IP address where CMS, AAS and KBS services are deployed
   - Port of CMS, AAS and KBS services deployed on enterprise system
@@ -851,7 +886,7 @@ GIT Configuration**
 	
 	./run.sh reg
 
-- copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
+copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
 ## Configuration for NGINX testing
 

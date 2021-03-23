@@ -1461,6 +1461,14 @@ The following must be completed before installing the Key Broker:
 
 -   The Certificate Management Service must be installed and available
 
+If a 3rd-party Key Management server will be used following must be completed before installing the Key Broker:
+
+-   A KMIP 3rd-party Key management Server must be available.
+
+-   The Key Broker will require the KMIP server’s client certificate, client key and root ca certificate. This key and certificate will be available in KMIP server.
+
+NOTE: The Key Broker has been validated using the pykmip 0.9.1 KMIP server as a 3rd-party Key Management Server. While any general KMIP 2.0-compliant Key Management Server should work, implementation differences among KMIP providers may prevent functionality with specific providers.
+
 ### Package Dependencies
 
 N/A
@@ -1490,8 +1498,10 @@ NA
        CMS_BASE_URL=https://<CMS IP or hostname>:8445/cms/v1/
         
        SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1
+       
+       ### KEY_MANAGER can be set to either Directory or KMIP
         
-       KEY_MANAGER=Directory
+       KEY_MANAGER=
        
        ENDPOINT_URL=https://kbshostname:9443/v1
        
@@ -1506,12 +1516,31 @@ NA
        BEARER_TOKEN=<Installation token from AAS>
        
        SESSION_EXPIRY_TIME=60
+       
+       ### OPTIONAL - If KEY_MANAGER set to KMIP then need to use following configuration.
+       
+       KMIP_SERVER_IP=<IP address of KMIP server>
+       
+       KMIP_SERVER_PORT=<Port number of KMIP server>
+       
+       KMIP_VERSION=<kmip version>
+       
+       ### Retrieve the following certificates and keys from the KMIP server
+       
+       KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
+       
+       KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
+       
+       KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
 
 Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
 4.  Execute the KBS installer.
 
 ./kbs-3.5.0.bin
+
+NOTE: When a 3rd-party Key Management Server is used, KBS supports only association of RSA key. User needs to create RSA key in backend kmip server and note the Private key Id. User also needs to create the tls certificate for the private key (it will be used during key transfer).
+rsa-create.py available in kbs_scripts can be used to create the private key and generate the certificate by providing the kmip server ip and certificates path in the script.
 
 ##  Installing the SKC Library
 
