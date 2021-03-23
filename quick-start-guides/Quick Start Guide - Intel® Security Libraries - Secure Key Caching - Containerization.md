@@ -67,6 +67,7 @@ Table of Contents
             * [Setup configurations](#setup-configurations)
             * [Initiate Key Transfer Flow](#initiate-key-transfer-flow)
          * [SKC Virtualization Flow](#skc-virtualization-flow)
+            * [Configuration for NGINX testing On SGX Virtualization Setup](#Configuration for NGINX testing On SGX Virtualization Setup)
          * [Setup Task Flow](#setup-task-flow)
          * [Configuration Update Flow](#configuration-update-flow)
          * [Cleanup workflows](#cleanup-workflows)
@@ -993,6 +994,159 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 * Update `keys.txt` and `nginx.conf`
 
 * Initiate key transfer
+
+#### Configuration for Key Transfer On SGX Virtualization Setup
+
+> **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
+
+##### OpenSSL
+
+Update openssl configuration file /etc/pki/tls/openssl.cnf with below changes:
+
+[openssl_def]
+engines = engine_section
+
+[engine_section]
+pkcs11 = pkcs11_section
+
+[pkcs11_section]
+engine_id = pkcs11
+
+dynamic_path =/usr/lib64/engines-1.1/pkcs11.so
+
+MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+
+init = 0
+
+##### Nginx
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the loaction where it was copied into the skc_library machine. 
+
+ssl_certificate "add absolute path of crt file";
+
+Update the KeyID with the KeyID received when RSA key was generated in KBS
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234";
+
+##### SKC Configuration
+
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
+
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
+
+  Sample PKCS11 url is as below
+  
+  pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
+  
+  Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
+
+  The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
+
+  Sample /opt/skc/etc/pkcs11-apimodule.ini file
+	
+	[core]
+	preload_keys=/root/keys.txt
+	keyagent_conf=/opt/skc/etc/key-agent.ini
+	mode=SGX
+	debug=true
+	
+	[SW]
+	module=/usr/lib64/pkcs11/libsofthsm2.so
+	
+	[SGX]
+	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
+##### Key-transfer flow validation
+
+On SGX Compute node, Execute below commands for KBS key-transfer:
+
+```
+    pkill nginx
+```
+
+Remove any existing pkcs11 token
+
+```
+    rm -rf /opt/intel/cryptoapitoolkit/tokens/*
+```
+
+Initiate Key transfer from KBS
+
+```
+    systemctl restart nginx
+```
+
+Changing group ownership and permissions of pkcs11 token
+
+```
+    chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
+```
+
+```
+    chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
+```
+
+Establish a tls session with the nginx using the key transferred inside the enclave
+
+```
+    wget https://localhost:2443 --no-check-certificate
+```
+
+##### Note on Key Transfer Policy
+
+Key Transfer Policy is used to enforce a set of policies which need to be compiled before the secret can be securely provisioned onto a sgx enclave
+
+Sample Key Transfer Policy:
+```
+        "sgx_enclave_issuer_anyof":["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
+        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_measurement_anyof":["7df0b7e815bd4b4af41239038d04a740daccf0beb412a2056c8d900b45b621fd"],
+        "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
+        "client_permissions_allof":["nginx","USA"],
+        "sgx_enforce_tcb_up_to_date":false
+```
+   a.    sgx_enclave_issuer_anyof - Establishes the signing identity provided by an authority who has signed the SGX enclave. In other words the owner of the enclave.
+   
+   b.    sgx_enclave_measurement_anyof - Represents the cryptographic hash of the enclave log (enclave code, data)
+   
+   c.    sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+   
+   d.    client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
+         In the above example, key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
+
+##### Extracting SGX Enclave values for Key Transfer Policy
+
+Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
+
+Run `sgx_sign` utility on the signed enclave (This command should be run on the build system).
+```
+    /opt/intel/sgxsdk/bin/x64/sgx_sign dump -enclave <path to the signed enclave> -dumpfile info.txt
+```
+
+- For `sgx_enclave_issuer_anyof`, in info.txt, search for "mrsigner->value" . E.g mrsigner->value :
+  ```
+  mrsigner->value: "0x83 0xd7 0x19 0xe7 0x7d 0xea 0xca 0x14 0x70 0xf6 0xba 0xf6 0x2a 0x4d 0x77 0x43 0x03 0xc8 0x99 0xdb 0x69 0x02 0x0f 0x9c 0x70 0xee 0x1d 0xfc 0x08 0xc7 0xce 0x9e"
+  ```
+  Remove the whitespace and 0x characters from the above string and add it to the policy file. E.g :
+  ```
+  "sgx_enclave_issuer_anyof":["83d719e77deaca1470f6baf62a4d774303c899db69020f9c70ee1dfc08c7ce9e"]
+  ```
+- For `sgx_enclave_measurement_anyof`, in info.txt, search for metadata->enclave_css.body.enclave_hash.m . E.g metadata->enclave_css.body.enclave_hash.m :
+  ```
+  metadata->enclave_css.body.enclave_hash.m:
+  0xad 0x46 0x74 0x9e 0xd4 0x1e 0xba 0xa2 0x32 0x72 0x52 0x04 0x1e 0xe7 0x46 0xd3
+  0x79 0x1a 0x9f 0x24 0x31 0x83 0x0f 0xee 0x08 0x83 0xf7 0x99 0x3c 0xaf 0x31 0x6a
+  ```
+  Remove the whitespace and 0x characters from the above string and add it to the policy file. E.g :
+  ```
+  "sgx_enclave_measurement_anyof":["ad46749ed41ebaa2327252041ee746d3791a9f2431830fee0883f7993caf316a"]
+  ```
+
+
 
 ### Setup Task Flow
 
