@@ -377,7 +377,7 @@ SCS_CERT_SAN_LIST=scs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
 
 # SGX host verification service
 SHVS_ADMIN_USERNAME=shvsuser@shvs
-SHVS_ADMIN_PASSWORD=shvsuser@shvs
+SHVS_ADMIN_PASSWORD=shvspassword
 SHVS_DB_USERNAME=shvsdbuser
 SHVS_DB_PASSWORD=shvsdbpassword
 SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,<Master IP/Hostname>
@@ -413,7 +413,7 @@ SCS_SERVICE_USERNAME=scsuser@scs
 SCS_SERVICE_PASSWORD=scspassword
 
 SHVS_SERVICE_USERNAME=shvsuser@shvs
-SHVS_SERVICE_PASSWORD=shvsuser@shvs
+SHVS_SERVICE_PASSWORD=shvspassword
 
 SQVS_SERVICE_USERNAME=sqvsuser@sqvs
 SQVS_SERVICE_PASSWORD=sqvspassword
@@ -620,7 +620,7 @@ SCS_SERVICE_USERNAME=scsuser@scs
 SCS_SERVICE_PASSWORD=scspassword
 
 SHVS_SERVICE_USERNAME=shvsuser@shvs
-SHVS_SERVICE_PASSWORD=shvsuser@shvs
+SHVS_SERVICE_PASSWORD=shvspassword
 
 SQVS_SERVICE_USERNAME=sqvsuser@sqvs
 SQVS_SERVICE_PASSWORD=sqvspassword
@@ -1039,9 +1039,9 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
   Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
 
   Sample PKCS11 url is as below
-  
+
   pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
-  
+
   Last PKCS11 url entry in keys.txt should match with the one in nginx.conf
 
   The keyID should match the keyID of RSA key created in KBS. Other contents should match with nginx.conf. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
@@ -1110,11 +1110,11 @@ Sample Key Transfer Policy:
         "sgx_enforce_tcb_up_to_date":false
 ```
    a.    sgx_enclave_issuer_anyof - Establishes the signing identity provided by an authority who has signed the SGX enclave. In other words the owner of the enclave.
-   
+
    b.    sgx_enclave_measurement_anyof - Represents the cryptographic hash of the enclave log (enclave code, data)
-   
+
    c.    sgx_enforce_tcb_up_to_date - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
-   
+
    d.    client_permissions_allof - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
          In the above example, key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
