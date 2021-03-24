@@ -166,8 +166,8 @@ The below steps need to be done on RHEL 8.2 Build machine (VM/Physical Node)
 #### System Tools and Utilities
 
 ```shell
-dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
-dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
+dnf install -y git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
+dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 ```
@@ -189,16 +189,16 @@ tar -xzf go1.14.4.linux-amd64.tar.gz
 sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.1.linux-amd64.tar.gz
+rm -rf go1.14.4.linux-amd64.tar.gz
 ```
 
 #### Docker
 
 ```shell
-dnf module enable container-tools
-yum install -y yum-utils
+dnf module enable -y container-tools
+dnf install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install docker-ce-19.03.13 docker-ce-cli-19.03.13
+dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
 
 systemctl enable docker
 systemctl start docker
@@ -220,7 +220,7 @@ systemctl restart docker
 #### Skopeo
 
 ```shell
-dnf install skopeo
+dnf install -y skopeo
 ```
 
 #### Libkmip for KBS
@@ -342,7 +342,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 * In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-apiserver` under `/var/snap/microk8s/current/args/kube-apiserver` and restart `kube-apiserver` with `systemctl restart snap.microk8s.daemon-apiserver` to allow running of privileged containers 
   like `SGX-AGENT` and `SKC-LIBRARY`
   
-* Enable external API communication for `microk8s` to talk to external Intel PCS server
+* Enable external API communication for `microk8s` to talk to external Intel PCS server
 
   ```shell
   kubectl get configmap -n kube-system
@@ -456,7 +456,7 @@ INSTALL_ADMIN_PASSWORD=superAdminPass
 #    -help          print help and exit
 #    up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 #    purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-./skc-bootstrap-db-services.sh
+./skc-bootstrap-db-services.sh up
 
 #skc-bootstrap
 #Reference
@@ -669,7 +669,7 @@ chmod +x create-skc-dirs.nfs.sh
 #    -help          print help and exit
 #    up        Bootstrap Database Services for Authservice, SGX Caching Service and SGX Host verification Service
 #    purge     Delete Database Services for Authservice, SGX Caching Service and SGX Host verification Service
-./skc-bootstrap-db-services.sh
+./skc-bootstrap-db-services.sh up
 
 #skc-bootstrap
 #Reference

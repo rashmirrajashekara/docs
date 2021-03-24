@@ -318,7 +318,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   make all
   ```
   
-  > **Note:** The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.3.7`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.3.7 in that case.
+  > **Note:** The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
   
 * Built binaries
   
@@ -707,9 +707,6 @@ deployment in the `isecl` namespace.
 
 #### Deploy Intel® SecL Custom Controller
 
-    #Install skopeo to load docker image for controller and scheduler from archive
-    dnf install -y skopeo
-
 1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
     
     ```shell
@@ -721,16 +718,16 @@ deployment in the `isecl` namespace.
     cd /<path>/isecl-k8s-extensions/
     ```
     
-2.  Create `hostattributes.crd.isecl.intel.com` CRD
-    
-    ```shell
-    #1.14<=k8s_version<=1.16
-    kubectl apply -f yamls/crd-1.14.yaml
+2. Create `hostattributes.crd.isecl.intel.com` CRD
 
-    #1.16<=k8s_version<=1.18
-    kubectl apply -f yamls/crd-1.17.yaml
-    ```
-    
+   ```shell
+   #1.14<=k8s_version<=1.16
+   kubectl apply -f yamls/crd-1.14.yaml
+   
+   #1.16<=k8s_version<=1.18
+   kubectl apply -f yamls/crd-1.17.yaml
+   ```
+
 3. Check whether the CRD is created
 
    ```shell
@@ -740,15 +737,20 @@ deployment in the `isecl` namespace.
 4. Load the `isecl-controller` docker image
 
    ```shell
+   #Install skopeo to load docker image for controller and scheduler from archive
+   dnf install -y skopeo
+   
+   #Push image to registry
    cd /<path>/isecl-k8s-extensions/
    skopeo copy oci-archive:<isecl-k8s-controller-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
-5. Udate image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
+
+5. Update image name as above in `/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml`
    ``` shell
       containers:
         - name: isecl-controller
           image: <docker_private_registry_server>:5000/<imageName>:<tagName>
-    ```
+   ```
 
 6. Deploy `isecl-controller`
 
@@ -762,7 +764,7 @@ deployment in the `isecl` namespace.
    kubectl get deploy -n isecl
    ```
 
-8. Create clusterRoleBinding for ihub to get access to cluster nodes
+8. Create `clusterRoleBinding` for ihub to get access to cluster nodes
 
    ```shell
    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
@@ -779,12 +781,12 @@ deployment in the `isecl` namespace.
 
 10. Additional Optional Configurable fields for isecl-controller configuration in `isecl-controller.yaml`
 
-   | Field                 | Required   | Type     | Default | Description                                                  |
-   | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX            | `Optional` | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
-   | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
+| Field                 | Required   | Type     | Default | Description                                                  |
+| --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
+| LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
+| LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+| TAG_PREFIX            | `Optional` | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
+| TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
 
@@ -853,16 +855,17 @@ deployment in the `isecl` namespace.
 4. Load the `isecl-scheduler` docker image
 
    ```shell
+   #Push image to registry
    cd /<path>/isecl-k8s-extensions/
    skopeo copy oci-archive:<isecl-k8s-scheduler-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
- 
-5. Udate image name as above in scheduler yaml "/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml"
+
+5. Update image name as above in `/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml`
    ``` shell
       containers:
         - name: isecl-scheduler
           image: <docker_private_registry_server>:5000/<imageName>:<tagName>
-    ```
+   ```
 
 6. Create scheduler-secret for isecl-scheduler
 
@@ -893,16 +896,16 @@ deployment in the `isecl` namespace.
 
 10. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                    | Required   | Type     | Default | Description                                                  |
-   | ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
-   | PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
-   | TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
-   | TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
+| Field                    | Required   | Type     | Default | Description                                                  |
+| ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
+| LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
+| LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+| TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
+| PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
+| HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+| SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+| TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
+| TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
 
 
 
