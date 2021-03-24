@@ -2,7 +2,7 @@
 
 **Product Guide**
 
-**February 2020**
+**March 2021**
 
 **Revision 3.5**
 
@@ -1272,7 +1272,7 @@ deployment in the `isecl` namespace.
       containers:
         - name: isecl-controller
           image: <docker_private_registry_server>:5000/<imageName>:<tagName>
-    ```
+   ```
 
 6. Deploy `isecl-controller`
 
@@ -1303,12 +1303,12 @@ deployment in the `isecl` namespace.
 
 10. Additional Optional Configurable fields for isecl-controller configuration in `isecl-controller.yaml`
 
-   | Field                 | Required   | Type     | Default | Description                                                  |
-   | --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX            | `Optional` | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
-   | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
+| Field                 | Required   | Type     | Default | Description                                                  |
+| --------------------- | ---------- | -------- | ------- | ------------------------------------------------------------ |
+| LOG_LEVEL             | `Optional` | `string` | INFO    | Determines the log level                                     |
+| LOG_MAX_LENGTH        | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+| TAG_PREFIX            | `Optional` | `string` | isecl   | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is **isecl.** and **trusted** attribute in CRD becomes **isecl.trusted**. |
+| TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
 ### 3.15.2  Installing the Intel® SecL Integration Hub
@@ -1512,7 +1512,7 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
       containers:
         - name: isecl-scheduler
           image: <docker_private_registry_server>:5000/<imageName>:<tagName>
-    ```
+   ```
   
 6. Create scheduler-secret for isecl-scheduler
 
@@ -1543,16 +1543,16 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
 
 10. Additional optional fields for isecl-scheduler configuration in `isecl-scheduler.yaml`
 
-   | Field                    | Required   | Type     | Default | Description                                                  |
-   | ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
-   | LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
-   | LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
-   | TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
-   | PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
-   | HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
-   | SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
-   | TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
-   | TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
+| Field                    | Required   | Type     | Default | Description                                                  |
+| ------------------------ | ---------- | -------- | ------- | ------------------------------------------------------------ |
+| LOG_LEVEL                | `Optional` | `string` | INFO    | Determines the log level                                     |
+| LOG_MAX_LENGTH           | `Optional` | `int`    | 1500    | Determines the maximum length of characters in a line in log file |
+| TAG_PREFIX               | `Optional` | `string` | isecl.  | A custom prefix which can be applied to isecl attributes that are pushed from IH. For example, if the tag-prefix is ***\*isecl.\**** and ***\*trusted\**** attribute in CRD becomes ***\*isecl.trusted\****. |
+| PORT                     | `Optional` | `int`    | 8888    | ISecl scheduler service port                                 |
+| HVS_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with HVS Attestation                       |
+| SGX_IHUB_PUBLIC_KEY_PATH | `Required` | `string` |         | Required for IHub with SGX Attestation                       |
+| TLS_CERT_PATH            | `Required` | `string` |         | Path of tls certificate signed by kubernetes CA              |
+| TLS_KEY_PATH             | `Required` | `string` |         | Path of tls key                                              |
 
 
 
