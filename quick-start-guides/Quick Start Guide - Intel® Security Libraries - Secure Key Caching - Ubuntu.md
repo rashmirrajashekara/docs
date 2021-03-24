@@ -97,7 +97,9 @@ apt-get update
 apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
+add-apt-repository ppa:projectatomic/ppa
 apt-get update
+apt-get install skopeo
 apt-get install makeself
 
 Install latest libkmip for KBS
@@ -707,7 +709,7 @@ Copy skc_library.tar, skc_library.sha2 and skclib_untar.sh from binaries directo
 
 Update create_roles.conf with the following
   - IP address of AAS deployed on Enterprise system
-  - Admin account credentials of AAS deployed on Enterprise system
+  - Admin account credentials of AAS deployed on Enterprise system. These credentials should match with the AAS admin credentials provided in authservice.env on enterprise side.
   - Permission string to be embedded into skc_libraty client TLS Certificate
   - For Each SKC Library installation on a SGX compute node, please change SKC_USER and SKC_USER_PASSWORD
 
@@ -772,7 +774,7 @@ GIT Configuration**
 	
 	./run.sh reg
 
-- copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
+copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
 ## Configuration for NGINX testing
 
