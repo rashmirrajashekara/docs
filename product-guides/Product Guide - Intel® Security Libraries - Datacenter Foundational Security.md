@@ -5606,17 +5606,25 @@ Deletes all non-user information from the database.  All data in teh following t
 
 #### 11.1.3.16  Setup
 
-`hvs setup <task> [--help] [--force] [-f <answer-file>]`
+Usage of hvs setup:
+        hvs setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      show help message for setup task
+                --force                     existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
-​                --help                      show help message for setup task
-
-​                --force                     existing configuration will be overwritten if this flag is set
-
-​                -f|--file <answer-file>     the answer file with required argument
-
- 
-
-Re-runs the installation setup tasks, or the specific tasks listed.
+Available Tasks for setup:
+        all                             Runs all setup tasks
+        database                        Setup hvs database
+        create-default-flavorgroup      Create default flavor groups in database
+        create-dek                      Create data encryption key for HVS
+        download-ca-cert                Download CMS root CA certificate
+        download-cert-tls               Download CA certificate from CMS for tls
+        download-cert-saml              Download CA certificate from CMS for saml
+        download-cert-flavor-signing    Download CA certificate from CMS for flavor signing
+        create-endorsement-ca           Generate self-signed endorsement certificate
+        create-privacy-ca               Generate self-signed privacy certificate
+        create-tag-ca                   Generate self-signed tag certificate
+        update-service-config           Sets or Updates the Service configuration
 
 ### 11.1.4  Directory Layout
 
@@ -6165,29 +6173,21 @@ Reports the version of the service.
 ihub setup <task> [--help] [--force] [-f <answer-file>]
 ```
 
-Re-runs the installation setup tasks, or the specific tasks listed.
-
---help                      Shows help message for setup tasks  
-
---force                     Any existing configuration will be overwritten if this flag is set
-
- -f|--file <answer-file>     Path to the ihub.env answer file
+Usage of ihub setup:
+        ihub setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      show help message for setup task
+                --force                     existing configuration will e overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
 Available Tasks for setup:
-
-​        all                                 Runs all setup tasks
-
-​        download-ca-cert                    Download CMS root CA certificate
-
-​        download-cert-tls                   Download CA certificate from CMS for tls
-
-​        attestation-service-connection      Establish Attestation service connection
-
-​        tenant-service-connection           Establish Tenant service connection
-
-​        create-signing-key                  Create signing key for IHUB
-
-​        download-saml-cert                  Download SAML certificate from Attestation service
+        all                                 Runs all setup tasks
+        download-ca-cert                    Download CMS root CA certificate
+        download-cert-tls                   Download CA certificate from CMS for tls
+        attestation-service-connection      Establish Attestation service connection
+        tenant-service-connection           Establish Tenant service connection
+        create-signing-key                  Create signing key for IHUB
+        download-saml-cert                  Download SAML certificate from Attestation service
+        update-service-config               Sets or Updates the Service configuration
 
 ### 11.3.4  Directory Layout
 
@@ -6328,45 +6328,19 @@ Shows the SHA384 of the TLS certificate.
 
 #### 11.4.3.9  setup \[task\]
 
-Runs a specific setup task.
+Usage of cms setup:
+        cms setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      show help message for setup task
+                --force                     existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
-Avaliable Tasks for setup:
-
-#####  `cms setup server [--port=<port>]`
-
-\- Setup http server on \<port\>
-
-\- Environment variable CMS\_PORT=\<port\> can be set alternatively
-
-#####  `cms setup root_ca [--force]`
-
-\- Create its own self signed Root CA keypair in /etc/cms for quality of
-life
-
-\- Option \[--force\] overwrites any existing files, and always generate
-new Root CA keypair
-
-#####  `cms setup tls [--force] [--host_names=<host_names>]`
-
-\- Create its own root\_ca signed TLS keypair in /etc/cms for quality of
-life
-
-\- Option \[--force\] overwrites any existing files, and always generate
-root\_ca signed TLS keypair
-
-\- Argument \<host\_names\> is a list of host names used by local
-machine, seperated by comma
-
-\- Environment variable CMS\_HOST\_NAMES=\<host\_names\> can be set
-alternatively
-
-#####  `cms setup cms_auth_token [--force]`
-
-\- Create its own self signed JWT keypair in /etc/cms/jwt for quality of
-life
-
-\- Option \[--force\] overwrites any existing files, and always generate
-new JWT keypair and token
+Available Tasks for setup:
+    all                       Runs all setup tasks
+    root-ca                   Creates a self signed Root CA key pair in /etc/cms/root-ca/ for quality of life
+    intermediate-ca           Creates a Root CA signed intermediate CA key pair(signing, tls-server and tls-client) in /etc/cms/intermediate-ca/ for quality of life
+    tls                       Creates an intermediate-ca signed TLS key pair in /etc/cms for quality of life
+    cms-auth-token            Create its own self signed JWT key pair in /etc/cms/jwt for quality of life
+    update-service-config     Sets or Updates the Service configuration
 
 ### 11.4.4  Directory Layout
 
@@ -6418,148 +6392,21 @@ Displays the list of available CLI commands.
 
 #### 11.5.3.2  setup \<task\>
 
-Executes a specific setup task. Can be used to change the current
-configuration.
+Usage of authservice setup:
+        authservice setup [task] [--help] [--force] [-f <answer-file>]
+                --help                      show help message for setup task
+                --force                     existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
-Available Tasks for setup:
-
-#####  11.5.3.2.1  authservice setup all
-
-\- Runs all setup tasks
-
-#####  11.5.3.2.2  authservice setup database \[-force\] \[--arguments=\<argument\_value\>\]
-
-\- Available arguments are:
-
-\- db-host alternatively, set environment variable AAS\_DB\_HOSTNAME
-
-\- db-port alternatively, set environment variable AAS\_DB\_PORT
-
-\- db-user alternatively, set environment variable AAS\_DB\_USERNAME
-
-\- db-pass alternatively, set environment variable AAS\_DB\_PASSWORD
-
-\- db-name alternatively, set environment variable AAS\_DB\_NAME
-
-\- db-sslmode
-\<disable\|allow\|prefer\|require\|verify-ca\|verify-full\>
-
-alternatively, set environment variable AAS\_DB\_SSLMODE
-
-\- db-sslcert path to where the certificate file of database. Only
-applicable
-
-for db-sslmode=\<verify-ca\|verify-full. If left empty, the cert
-
-will be copied to /etc/authservice/tdcertdb.pem
-
-alternatively, set environment variable AAS\_DB\_SSLCERT
-
-\- db-sslcertsrc \<path to where the database ssl/tls certificate file\>
-
-mandatory if db-sslcert does not already exist
-
-alternatively, set environment variable AAS\_DB\_SSLCERTSRC
-
-\- Run this command with environment variable AAS\_DB\_REPORT\_MAX\_ROWS
-and
-
-AAS\_DB\_REPORT\_NUM\_ROTATIONS can update db rotation arguments
-
-#####  11.5.3.2.3  `authservice setup server [--port=<port>]`
-
-\- Setup http server on \<port\>
-
-\- Environment variable AAS\_PORT=\<port\> can be set alternatively
-
-authservice setup tls \[--force\] \[--host\_names=\<host\_names\>\]
-
-\- Use the key and certificate provided in /etc/threat-detection if
-files exist
-
-\- Otherwise create its own self-signed TLS keypair in /etc/authservice
-for quality of life
-
-\- Option \[--force\] overwrites any existing files, and always generate
-self-signed keypair
-
-\- Argument \<host\_names\> is a list of host names used by local
-machine, seperated by comma
-
-\- Environment variable AAS\_TLS\_HOST\_NAMES=\<host\_names\> can be set
-alternatively
-
-#####  11.5.3.2.4  `authservice setup admin [--user=<username>] [--pass=<password>]`
-
-\- Environment variable AAS\_ADMIN\_USERNAME=\<username\> can be set
-alternatively
-
-\- Environment variable AAS\_ADMIN\_PASSWORD=\<password\> can be set
-alternatively
-
-#####  11.5.3.2.5  `authservice setup download_ca_cert [--force]`
-
-\- Download CMS root CA certificate
-
-\- Option \[--force\] overwrites any existing files, and always
-downloads new root CA cert
-
-\- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-
-#####  11.5.3.2.6  `authservice setup download_cert TLS [--force]`
-
-\- Generates Key pair and CSR, gets it signed from CMS
-
-\- Option \[--force\] overwrites any existing files, and always
-downloads newly signed TLS cert
-
-\- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-
-\- Environment variable BEARER\_TOKEN=\<token\> for authenticating with
-CMS
-
-\- Environment variable KEY\_PATH=\<key\_path\> to override default
-specified in config
-
-\- Environment variable CERT\_PATH=\<cert\_path\> to override default
-specified in config
-
-\- Environment variable AAS\_TLS\_CERT\_CN=\<TLS CERT COMMON NAME\> to
-override default specified in config
-
-\- Environment variable AAS\_CERT\_ORG=\<CERTIFICATE ORGANIZATION\> to
-override default specified in config
-
-\- Environment variable AAS\_CERT\_COUNTRY=\<CERTIFICATE COUNTRY\> to
-override default specified in config
-
-\- Environment variable AAS\_CERT\_LOCALITY=\<CERTIFICATE LOCALITY\> to
-override default specified in config
-
-\- Environment variable AAS\_CERT\_PROVINCE=\<CERTIFICATE PROVINCE\> to
-override default specified in config
-
-\- Environment variable SAN\_LIST=\<san\> list of hosts which needs
-access to service
-
-#####  11.5.3.2.7  `authservice setup jwt`
-
-\- Create jwt signing key and jwt certificate signed by CMS
-
-\- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-
-\- Environment variable AAS\_JWT\_CERT\_CN=\<CERTIFICATE SUBJECT\> AAS
-JWT Certificate Subject
-
-\- Environment variable AAS\_JWT\_INCLUDE\_KEYID=\<KEY ID\> AAS include
-key id in JWT Token
-
-\- Environment variable AAS\_JWT\_TOKEN\_DURATION\_MINS=\<DURATION\> JWT
-Token validation minutes
-
-\- Environment variable BEARER\_TOKEN=\<token\> for authenticating with
-CMS
-
+        Available Tasks for setup:
+                all                      Runs all setup tasks
+                download-ca-cert         Download CMS root CA certificate
+                download-cert-tls        Download CA certificate from CMS for tls
+                database                 Setup authservice database
+                admin                    Add authservice admin username and password to database and assign respective
+                                         roles to the user
+                jwt                      Create jwt signing key and jwt certificate signed by CMS
+                update-service-config    Sets or Updates the Service configuration
 #### 11.5.3.2.8  Start
 
 Starts the service.
@@ -6780,88 +6627,97 @@ applied to remove configuration and data files
 
 ####  11.6.3.6  setup 
 
-Setup workload-service for use
+Setup command usage:     workload-service setup [task] [--force]
 
-Setup command usage: workload-service \<command\> \[task...\]
+Available tasks for setup:
+   all                              Runs all setup tasks
+                                    Required env variables:
+                                        - get required env variables from all the setup tasks
+                                    Optional env variables:
+                                        - get optional env variables from all the setup tasks
 
-#####  11.6.3.6.1  download\_ca\_cert
+   download_ca_cert                 Download CMS root CA certificate
+                                    - Option [--force] overwrites any existing files, and always downloads new root CA cert
+                                    Required env variables if WLS_NOSETUP=true or variables not set in config.yml:
+                                        - AAS_API_URL=<url>                            : AAS API url
+                                        - HVS_URL=<url>                                : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>      : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>      : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
 
-\- Download CMS root CA certificate
+   download_cert TLS                Generates Key pair and CSR, gets it signed from CMS
+                                    - Option [--force] overwrites any existing files, and always downloads newly signed WLS TLS cert
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                            : AAS API url
+                                        - HVS_URL=<url>                                : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>      : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>      : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - CMS_BASE_URL=<url>                       : for CMS API url
+                                        - BEARER_TOKEN=<token>                     : for authenticating with CMS
+                                        - SAN_LIST=<CSV List>                      : List of FQDNs to be added to the SAN field in TLS cert to override default specified in config
+                                    Optional env variables specific to setup task are:
+                                        - KEY_PATH=<key_path>                      : Path of file where TLS key needs to be stored
+                                        - CERT_PATH=<cert_path>                    : Path of file/directory where TLS certificate needs to be stored
+                                        - WLS_TLS_CERT_CN=<COMMON NAME>            : to override default specified in config
 
-\- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
+   database                         Setup workload-service database
+                                    - Option [--force] overwrites existing database config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - HVS_URL=<url>                                   : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - WLS_DB_HOSTNAME=<db host name>                   : database host name
+                                        - WLS_DB_PORT=<db port>                            : database port number
+                                        - WLS_DB=<db name>                                 : database schema name
+                                        - WLS_DB_USERNAME=<db user name>                   : database user name
+                                        - WLS_DB_PASSWORD=<db password>                    : database password
+                                    Optional env variables specific to setup task are:
+                                        - WLS_DB_SSLMODE=<db sslmode>                      : database SSL Connection Mode <disable|allow|prefer|require|verify-ca|verify-full>
+                                        - WLS_DB_SSLCERT=<ssl certificate path>            : database SSL Certificate target path. Only applicable for WLS_DB_SSLMODE=<verify-ca|verify-full>. If left empty, the cert will be copied to /etc/workload-service/wlsdbsslcert.pem
+                                        - WLS_DB_SSLCERTSRC=<ssl certificate source path>  : database SSL Certificate source path. Mandatory if WLS_DB_SSLCERT does not already exist
 
-#####  11.6.3.6.2  download\_cert TLS
+   server                           Setup http server on given port
+                                    - Option [--force] overwrites existing server config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - HVS_URL=<url>                                   : HVS API Endpoint URL
+                                    Optional env variables specific to setup task are:
+                                        - WLS_PORT=<port>    : WLS API listener port
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
 
-\- Generates Key pair and CSR, gets it signed from CMS
+   hvsconnection                    Setup task for setting up the connection to the Host Verification Service(HVS)
+                                    - Option [--force] overwrites existing HVS config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                    Required env variable specific to setup task is:
+                                        - HVS_URL=<url>      : HVS API Endpoint URL
 
-\- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-
-\- Environment variable BEARER\_TOKEN=\<token\> for authenticating with
-CMS
-
-\- Environment variable KEY\_PATH=\<key\_path\> to override default
-specified in config
-
-\- Environment variable CERT\_PATH=\<cert\_path\> to override default
-specified in config
-
-\- Environment variable WLS\_TLS\_CERT\_CN=\<COMMON NAME\> to override
-default specified in config
-
-\- Environment variable WLS\_CERT\_ORG=\<CERTIFICATE ORGANIZATION\> to
-override default specified in config
-
-\- Environment variable WLS\_CERT\_COUNTRY=\<CERTIFICATE COUNTRY\> to
-override default specified in config
-
-\- Environment variable WLS\_CERT\_LOCALITY=\<CERTIFICATE LOCALITY\> to
-override default specified in config
-
-\- Environment variable WLS\_CERT\_PROVINCE=\<CERTIFICATE PROVINCE\> to
-override default specified in config
-
-#####  11.6.3.6.3  server 
-
-Setup http server on given port
-
--Environment variable WLS\_PORT=\<port\> should be set
-
-#####  11.6.3.6.4  database 	Setup workload-service database
-
-Required env variables are:
-
-\- WLS\_DB\_HOSTNAME : database host name
-
-\- WLS\_DB\_PORT : database port number
-
-\- WLS\_DB\_USERNAME : database user name
-
-\- WLS\_DB\_PASSWORD : database password
-
-\- WLS\_DB : database schema name
-
-#####  11.6.3.6.5  hvsconnection 
-
-Setup task for setting up the connection to the Host Verification
-Service(HVS)
-
-Required env variables are:
-
-\- HVS\_URL : HVS URL
-
-#####  11.6.3.6.6  aasconnection 
-
-Setup to create workload service user roles in AAS
-
-\- AAS\_API\_URL : AAS API URL
-
-\- BEARER\_TOKEN : Bearer Token
-
-#####  11.6.3.6.7  logs 
-
-Setup workload-service log level
-
-\- Environment variable WLS\_LOG\_LEVEL=\<log level\> should be set
+   download_saml_ca_cert            Setup to download SAML CA certificates from HVS
+                                    - Option [--force] overwrites existing certificate
+                                                                        Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                                                        Required env variables specific to setup task are:
+                                        - HVS_URL=<url>      : HVS API Endpoint URL
+                                        - BEARER_TOKEN=<token> for authenticating with HVS
 
 ### 11.6.4 Directory Layout
 
@@ -6897,18 +6753,16 @@ Available Commands:
 
 Usage of kbs setup:
         kbs setup <task> [--help] [--force] [-f <answer-file>]
-                --help                      					 	show help message for setup task
-                --force                     						 existing configuration will be overwritten if this flag is set
-                -f|--file <answer-file>     	 	the answer file with required arguments
+                --help                      show help message for setup task
+                --force                     existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
 Available Tasks for setup:
-        all                                 							  Runs all setup tasks
-        server                              						  Setup http server on given port
-        download-ca-cert                    			    Download CMS root CA certificate
-        download-cert-tls                   				 Download CA certificate from CMS for tls
-        create-default-key-transfer-policy  	  Create default key transfer policy for KBS
-
-##### 
+        all                                 Runs all setup tasks
+        download-ca-cert                    Download CMS root CA certificate
+        download-cert-tls                   Download CA certificate from CMS for tls
+        create-default-key-transfer-policy  Create default key transfer policy for KBS
+        update-service-config               Sets or Updates the Service configuration
 
 ### 11.7.4  Directory Layout
 
