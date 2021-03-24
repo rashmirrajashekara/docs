@@ -103,8 +103,8 @@ Table of Contents
 
 ### Storage
 
-* `hostPath` in case of single-node `microk8s`
-* `NFS` in case of multi-node `kubeadm`
+* `hostPath` in case of single-node `microk8s` for all services and agents
+* `NFS` in case of multi-node `kubeadm` for services and `hostPath` for sgx_agent and skc_library
 
 
 ## Network Requirements
@@ -341,6 +341,16 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   
 * In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-apiserver` under `/var/snap/microk8s/current/args/kube-apiserver` and restart `kube-apiserver` with `systemctl restart snap.microk8s.daemon-apiserver` to allow running of privileged containers 
   like `SGX-AGENT` and `SKC-LIBRARY`
+  
+* Enable external API communication for `microk8s` to talk to external Intel PCS server
+
+  ```shell
+  kubectl get configmap -n kube-system
+  kubectl edit configmap -n kube-system coredns
+  #Replace forward IP 8.8.8.x.x with new IPs separated by space (as listed in /etc/resolv.conf) and Save the file
+  kubectl get  pods -n kube-system
+  #Delete coredns pod, it will relaunch
+  ```
 
 ###### Manifests
 
@@ -720,8 +730,6 @@ volumes:
 systemctl restart kubelet
 ```
 
-> **Note:** For external communication to Intel PCS server, the cluster admin needs to ensure K8s is able to talk to Intel PCS server beyond the cluster by configuring K8s
-
 ## Default Service and Agent Mount Paths
 
 ### Single Node Deployments
@@ -972,8 +980,8 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
     * Update K8s Master IP and SCS K8s Service Port
   * `skc_library.conf`
     * Update `KBS_HOSTNAME`, `KBS_IP` and `KBS_PORT` with K8s Master Hostname, K8s Master IP and  KBS K8s Service Port.
-    * Update `CMS_IP` and `CMS_PORT` with K8s Master IP and  CMS K8s Service Port.
-    * Update `CSP_SCS_IP` and `CSP_SCS_PORT` with K8s Master IP and  SCS K8s Service Port.
+    * Update `CMS_IP` and `CMS_PORT` with K8s Master IP and CMS K8s Service Port.
+    * Update `CSP_SCS_IP` and `CSP_SCS_PORT` with K8s Master IP and SCS K8s Service Port.
   
   >  **Note: ** Update skc token in the `skc_library.conf` generated in previous step
   
@@ -1115,7 +1123,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4
 
 ##### Note on Key Transfer Policy
 
-Key Transfer Policy is used to enforce a set of policies which need to be compiled before the secret can be securely provisioned onto a sgx enclave
+Key Transfer Policy is used to enforce a set of policies which need to be complied before the secret can be securely provisioned onto a sgx enclave
 
 Sample Key Transfer Policy:
 ```yaml
