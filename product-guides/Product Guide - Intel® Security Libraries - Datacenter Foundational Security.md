@@ -12947,223 +12947,40 @@ fvs:
 The Verification Service supports several command-line commands that can
 be executed only as the Root user:
 
-**Syntax:**
+Usage:
+        hvs <command> [arguments]
 
-​        <span style="font-family:Courier; color:brown">hvs <span style="font-family:Courier; color:blue">**\<command\>**</span> [arguments]</span>
+Available Commands:
+        help|-h|--help         Show this help message
+        version|-v|--version   Show the version of current hvs build
+        setup <task>           Run setup task
+        start                  Start hvs
+        status                 Show the status of hvs
+        stop                   Stop hvs
+        erase-data             Reset all tables in database and create default flavor groups
+        config-db-rotation     Configure database table rotaition for audit log table, reference db_rotation.sql in documents
+        uninstall [--purge]    Uninstall hvs
+                --purge            all configuration and data files will be removed if this flag is set
 
-**Available Commands:**
+Usage of hvs setup:
+        hvs setup <task> [--help] [--force] [-f <answer-file>]
+                --help                      show help message for setup task
+                --force                     existing configuration will be overwritten if this flag is set
+                -f|--file <answer-file>     the answer file with required arguments
 
-​         <span style="font-family:Courier; color:blue">**help|-h|--help**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs help|-h|--help</span> <br/>
-​                  Show help message
-
-​         <span style="font-family:Courier; color:blue">**start**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs start</span><br/>
-​                  Start hvs
-
-​         <span style="font-family:Courier; color:blue">**stop**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs stop</span><br/>
-​                  Stop hvs
-
-​         <span style="font-family:Courier; color:blue">**status**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs status</span><br/>
-​                  Show the status of hvs
-
-​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs uninstall [--purge\]</span><br/>
-​                  Uninstall hvs<br/>
-​                  <span style="font-family:Courier">--purge</span> all configuration and data files will be removed if this flag is set 
-
-​         <span style="font-family:Courier; color:blue">**version|-v|--version**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs version|-v|--version</span><br/>
-​                  Show the version of current hvs build
-
-​         <span style="font-family:Courier; color:blue">**config-db-rotation**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs config-db-rotation</span><br/>
-​                  Configure database table rotaition for audit log table, reference db_rotation.sql<br/> 
-​                in documents
-
-​         <span style="font-family:Courier; color:blue">**erase-data**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs erase-data</span><br/>
-​                  Reset all tables in database and create default flavor groups<br/>
-
-​         <span style="font-family:Courier; color:blue">**setup**</span><br/>
-​                  <span style="font-family:Courier; color:brown">hvs setup <span style="font-family:Courier; color:green">\<**task**\></span> [--help] [--force] [-f \<answer-file\>]</span><br/>
-​                  Run setup task
-
-​                  <span style="font-family:Courier">--help</span>                                       show help message for setup task<br/>
-​                  <span style="font-family:Courier">--force</span>                                     existing configuration will be overwritten if this flag is set<br/>
-​                  <span style="font-family:Courier">-f|--file \<answer-file></span>     the answer file with required arguments
-
-​              **Available tasks for setup:**
-
-​              <span style="font-family:Courier; color:green">all</span><br/>
-​                     Runs all setup tasks<br/>
-
-​               <span style="font-family:Courier; color:green">server</span><br/>
-​                     Setup http server on given port<br/> 
-​                     \- Required environment variables: `SERVER_PORT`<br/>
-
-​              <span style="font-family:Courier; color:green">database</span><br/>
-​                     Setup hvs database<br/> 
-​                   \- Required environment variables: `DB_USERNAME`, `DB_PASSWORD`,`DB_CONN_RETRY_ATTEMPTS`,<br/>
-​                       `DB_VENDOR`, `DB_HOST`, `DB_PORT`,
-​`DB_NAME`,`DB_SSL_MODE`,`DB_SSL_CERT`,<br/>
-​                       `DB_SSL_CERT_SOURCE`, `DB_CONN_RETRY_ATTEMPTS`<br/>
-
-​              <span style="font-family:Courier; color:green">create-default-flavorgroup</span><br/>
-​                     Create default flavor groups in database<br/>
-​                   \- Required environment variables: `DB_VENDOR`, `DB_HOST`,`DB_SSL_CERT`,<br/>
-​                       `DB_CONN_RETRY_ATTEMPTS`, `DB_CONN_RETRY_TIME`, `DB_PORT`, `DB_NAME`,`DB_USERNAME`,<br/>
-​                       `DB_PASSWORD`,`DB_SSL_MODE`, `DB_SSL_CERT_SOURCE`<br/>
-
-​              <span style="font-family:Courier; color:green">create-dek</span><br/>
-​                     Create data encryption key for HVS
-
-​              <span style="font-family:Courier; color:green">download\_ca\_cert</span><br/>
-​                     Download CMS root CA certificate<br/> 
-​                     \- Required environment variables: `CMS_BASE_URL`, `CMS_TLS_CERT_SHA384`<br/>
-
-​              <span style="font-family:Courier; color:green">download-cert-tls</span><br/>
-​                     Download CA certificate from CMS for tls<br/>
-​                     \- Required environment variables: `BEARER_TOKEN`, `CMS_BASE_URL`<br/>
-​                     \- Optional environmental variables: `TLS_CERT_FILE`,`TLS_KEY_FILE`, `TLS_COMMON_NAME`, <br/>
-​                       `TLS_SAN_LIST`,`TLS_ISSUER`, `TLS_VALIDITY_DAYS`, <br/>
-
-
-​              <span style="font-family:Courier; color:green">download-cert-saml</span><br/>
-​                     Download CA certificate from CMS for saml<br/>
-​                     \- Required environment variables: `CMS_BASE_URL`,`BEARER_TOKEN`<br/>
-​                     \- Optional environmental variables: `SAML_VALIDITY_DAYS`, `SAML_CERT_FILE`, `SAML_KEY_FILE`,<br/>
-​                       `SAML_COMMON_NAME`, `SAML_SAN_LIST`, `SAML_ISSUER`<br/>
-
-​              <span style="font-family:Courier; color:green">download-cert-flavor-signing</span><br/>
-​                     Download CA certificate from CMS for flavor signing<br/>
-​                     \- Required environment variables: `CMS_BASE_URL`,`BEARER_TOKEN`<br/>
-​                     \- Optional environmental variables: `FLAVOR_SIGNING_CERT_FILE`, `FLAVOR_SIGNING_KEY_FILE`,<br/>
-​                        `FLAVOR_SIGNING_COMMON_NAME`,
-​`FLAVOR_SIGNING_SAN_LIST`, `FLAVOR_SIGNING_ISSUER`,<br/>
-​                        `FLAVOR_SIGNING_VALIDITY_DAYS`<br/>
-
-​              <span style="font-family:Courier; color:green">create-endorsement-ca</span><br/>
-​                     Generate self-signed endorsement certificate
-
-​              <span style="font-family:Courier; color:green">create-privacy-ca</span><br/>
-​                     Generate self-signed privacy certificate
-
-​              <span style="font-family:Courier; color:green">create-tag-ca</span><br/>
-​                     Generate self-signed tag certificate
-
-​            **Environment variables used by Hvs setup:**<br/>
-​            *\* Indicates the environment variable is optional.*<br/>
-
-​             `DB_VENDOR`<br/>
-​                      \-  Vendor of database, or use `HVS_DB_VENDOR` alternatively<br/>
-
-​             `DB_PASSWORD`<br/>
-​                      \-  Database password, or use `HVS_DB_PASSWORD` alternatively<br/>
-
-​             `DB_SSL_CERT`<br/>
-​                      \- Database SSL certificate, or use `HVS_DB_SSLCERT` alternatively<br/>
-
-​             `DB_SSL_CERT_SOURCE`<br/>
-​                      \- Database SSL certificate to be copied from, or use `HVS_DB_SSLCERTSRC` alternatively<br/>
-
-​             `DB_CONN_RETRY_TIME`<br/>
-​                      \-  Database connection retry time<br/>
-
-​             `DB_HOST`<br/>
-​                      \-  Database host name, or use `HVS_DB_HOSTNAME` alternatively<br/>
-
-​             `DB_PORT`<br/>
-​                      \- Database port, or use `HVS_DB_PORT` alternatively<br/>
-
-​             `DB_NAME`<br/>
-​                      \- Database name, or use `HVS_DB_NAME` alternatively<br/>
-
-​             `DB_USERNAME`<br/>
-​                      \-  Database username, or use `HVS_DB_USERNAME` alternatively<br/>
-
-​             `DB_SSL_MODE`<br/>
-​                      \-  Database SSL mode, or use `HVS_DB_SSL_MODE` alternatively<br/>
-
-​             `DB_CONN_RETRY_ATTEMPTS`<br/>
-​                      \- Database connection retry attempts<br/>
-
-​             `BEARER_TOKEN`<br/>
-​                      \- Bearer token for accessing CMS api<br/>
-
-​             `CMS_BASE_URL`<br/>
-​                      \- CMS base URL in the format `https://{{cms}}:{{cms_port}}/cms/v1/`<br/>
-
-​             `SERVER_PORT`<br/>
-​                      \- The port on which to listen, or use `HVS_PORT` alternatively<br/>
-
-​             `HVS_SERVICE_USERNAME`<br/>
-​                      \-  The service username for HVS configured in AAS<br/>
-
-​             `HVS_SERVICE_PASSWORD`<br/>
-​                      \-  The service password for HVS configured in AAS<br/>
-
-​             `CMS_TLS_CERT_SHA384`<br/>
-​                      \- SHA384 hash value of CMS TLS certificate<br/>
-
-​             `TLS_ISSUER`\*<br/>
-​                      \- The issuer of signed certificate<br/>
-
-​             `TLS_VALIDITY_DAYS`\*<br/>
-​                      \-  The validity time in days of signed certificate<br/>
-
-​             `TLS_CERT_FILE`\*<br/>
-​                      \-  The file to which certificate is created<br/>
-
-​             `TLS_KEY_FILE`\*<br/>
-​                      \- The file to which private key is created<br/>
-
-​             `TLS_COMMON_NAME`\*<br/>
-​                      \- The common name of signed certificate<br/>
-
-​             `TLS_SAN_LIST`\*<br/>
-​                      \-  Comma separated list of hostnames to add to Certificate, including IP addresses and dns<br/>
-​                         names<br/>
-
-​             `SAML_VALIDITY_DAYS`\*<br/>
-​                      \- The validity time in days of signed certificate<br/>
-
-​             `SAML_CERT_FILE`\*<br/>
-​                      \- The file to which certificate is created<br/>
-
-​             `SAML_KEY_FILE`\*<br/>
-​                      \- The file to which private key is created<br/>
-
-​             `SAML_COMMON_NAME`\*<br/>
-​                      \-  The common name of signed certificate<br/>
-
-​             `SAML_SAN_LIST`\*<br/>
-​                      \-  Comma separated list of hostnames to add to Certificate, including IP addresses and dns<br/> 
-​                        names<br/>
-
-​             `SAML_ISSUER`\*<br/>
-​                      \- The issuer of signed certificate<br/>
-
-​             `FLAVOR_SIGNING_CERT_FILE`\*<br/>
-​                      \- The file to which certificate is created<br/>
-
-​             `FLAVOR_SIGNING_KEY_FILE`\*<br/>
-​                      \-  The file to which private key is created<br/>
-
-​             `FLAVOR_SIGNING_COMMON_NAME`\*<br/>
-​                      \-  The common name of signed certificate<br/>
-
-​             `FLAVOR_SIGNING_SAN_LIST`\*<br/>
-​                      \- Comma separated list of hostnames to add to Certificate, including IP addresses and dns <br/>
-​                        names<br/>
-
-​             `FLAVOR_SIGNING_ISSUER`\*<br/>
-​                      \- The issuer of signed certificate<br/>
-
-​             `FLAVOR_SIGNING_VALIDITY_DAYS`\*<br/>
-​                      \-  The validity time in days of signed certificate<br/>
+Available Tasks for setup:
+        all                             Runs all setup tasks
+        database                        Setup hvs database
+        create-default-flavorgroup      Create default flavor groups in database
+        create-dek                      Create data encryption key for HVS
+        download-ca-cert                Download CMS root CA certificate
+        download-cert-tls               Download CA certificate from CMS for tls
+        download-cert-saml              Download CA certificate from CMS for saml
+        download-cert-flavor-signing    Download CA certificate from CMS for flavor signing
+        create-endorsement-ca           Generate self-signed endorsement certificate
+        create-privacy-ca               Generate self-signed privacy certificate
+        create-tag-ca                   Generate self-signed tag certificate
+        update-service-config           Sets or Updates the Service configuration
 
 ### 11.1.4  Directory Layout
 
@@ -14034,163 +13851,109 @@ key_cache_seconds: 300
 The Workload Service supports several command-line commands that can be
 executed only as the Root user:
 
-**Syntax:**
+Usage:
+    workload-service <command> [arguments]
 
-​        <span style="font-family:Courier; color:brown">workload-service <span style="font-family:Courier; color:blue">**\<command\>**</span> [argument]</span>
+Available Commands:
+    -h|--help            Show this help message
+    -v|--version         Print version/build information
+    start                Start workload-service
+    stop                 Stop workload-service
+    status               Determine if workload-service is running
+    uninstall [--purge]  Uninstall workload-service. --purge option needs to be applied to remove configuration and data files
+    setup                Run workload-service setup tasks
 
-**Available Commands:**
+Setup command usage:     workload-service setup [task] [--force]
 
-​         <span style="font-family:Courier; color:blue">**Help**</span><br/>
-​              <span style="font-family:Courier; color:brown">-help\|--help</span>                       Show this help message<br/>
-​              <span style="font-family:Courier; color:brown">-v|--version</span>                       Print version/build information<br/>
-​              <span style="font-family:Courier; color:brown">start</span>                                       Start workload-service<br/>
-​              <span style="font-family:Courier; color:brown">stop</span> 									    Stop workload-service<br/>
-​              <span style="font-family:Courier; color:brown">status</span>                                    Determine if workload-service is running<br/>
-​              <span style="font-family:Courier; color:brown">uninstall [--purge]</span>      Uninstall workload-service. --purge option needs to be <br/>
-​                                                                applied to remove configuration and data files<br/>
-​              <span style="font-family:Courier; color:brown">setup</span>                                      Run workload-service setup tasks
+Available tasks for setup:
+   all                              Runs all setup tasks
+                                    Required env variables:
+                                        - get required env variables from all the setup tasks
+                                    Optional env variables:
+                                        - get optional env variables from all the setup tasks
 
-​         <span style="font-family:Courier; color:blue">**start**</span><br/>
-​                   <span style="font-family:Courier; color:brown">workload-service start</span><br/>
-​                   Start workload-service
+   download_ca_cert                 Download CMS root CA certificate
+                                    - Option [--force] overwrites any existing files, and always downloads new root CA cert
+                                    Required env variables if WLS_NOSETUP=true or variables not set in config.yml:
+                                        - AAS_API_URL=<url>                            : AAS API url
+                                        - HVS_URL=<url>                                : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>      : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>      : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
 
-​         <span style="font-family:Courier; color:blue">**stop**</span><br/>
-​                   <span style="font-family:Courier; color:brown">workload-service stop</span><br/>
-​                   Stop workload-service
+   download_cert TLS                Generates Key pair and CSR, gets it signed from CMS
+                                    - Option [--force] overwrites any existing files, and always downloads newly signed WLS TLS cert
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                            : AAS API url
+                                        - HVS_URL=<url>                                : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>      : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>      : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - CMS_BASE_URL=<url>                       : for CMS API url
+                                        - BEARER_TOKEN=<token>                     : for authenticating with CMS
+                                        - SAN_LIST=<CSV List>                      : List of FQDNs to be added to the SAN field in TLS cert to override default specified in config
+                                    Optional env variables specific to setup task are:
+                                        - KEY_PATH=<key_path>                      : Path of file where TLS key needs to be stored
+                                        - CERT_PATH=<cert_path>                    : Path of file/directory where TLS certificate needs to be stored
+                                        - WLS_TLS_CERT_CN=<COMMON NAME>            : to override default specified in config
 
-​         <span style="font-family:Courier; color:blue">**status**</span><br/>
-​                   <span style="font-family:Courier; color:brown">workload-service status</span><br/>
-​                   Determine if workload-service is running
+   database                         Setup workload-service database
+                                    - Option [--force] overwrites existing database config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - HVS_URL=<url>                                   : HVS API Endpoint URL
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                    Required env variables specific to setup task are:
+                                        - WLS_DB_HOSTNAME=<db host name>                   : database host name
+                                        - WLS_DB_PORT=<db port>                            : database port number
+                                        - WLS_DB=<db name>                                 : database schema name
+                                        - WLS_DB_USERNAME=<db user name>                   : database user name
+                                        - WLS_DB_PASSWORD=<db password>                    : database password
+                                    Optional env variables specific to setup task are:
+                                        - WLS_DB_SSLMODE=<db sslmode>                      : database SSL Connection Mode <disable|allow|prefer|require|verify-ca|verify-full>
+                                        - WLS_DB_SSLCERT=<ssl certificate path>            : database SSL Certificate target path. Only applicable for WLS_DB_SSLMODE=<verify-ca|verify-full>. If left empty, the cert will be copied to /etc/workload-service/wlsdbsslcert.pem
+                                        - WLS_DB_SSLCERTSRC=<ssl certificate source path>  : database SSL Certificate source path. Mandatory if WLS_DB_SSLCERT does not already exist
 
-​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
-​                   <span style="font-family:Courier; color:brown">workload-service uninstall</span><br/>
-​                   Uninstall workload-service<br/>
-​                   <span style="font-family:Courier; color:brown">[--purge\]</span> option needs to be applied to remove configuration and data files
+   server                           Setup http server on given port
+                                    - Option [--force] overwrites existing server config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - HVS_URL=<url>                                   : HVS API Endpoint URL
+                                    Optional env variables specific to setup task are:
+                                        - WLS_PORT=<port>    : WLS API listener port
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
 
-​         <span style="font-family:Courier; color:blue">**setup**</span><br/>
-​                   Setup workload-service for use<br/>
-​                   <span style="font-family:Courier; color:brown">workload-service setup <span style="font-family:Courier; color:green"> \<**task**\></span> [--force]</span>
+   hvsconnection                    Setup task for setting up the connection to the Host Verification Service(HVS)
+                                    - Option [--force] overwrites existing HVS config
+                                    Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                    Required env variable specific to setup task is:
+                                        - HVS_URL=<url>      : HVS API Endpoint URL
 
-​              ***Available tasks for setup:***<br/>
-​              <span style="font-family:Courier; color:green">all</span><br/>
-​                     Runs all setup tasks<br/>
-​                     \- Required env variables: get required env variables from all the setup tasks<br/>
-​                     \- Optional env variables: get optional env variables from all the setup tasks
-
-​              <span style="font-family:Courier; color:green">download\_ca\_cert</span><br/>
-​                     Download CMS root CA certificate<br/>
-​                     \- Fetches the latest CMS Root CA Certificates, overwriting existing files.<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password<br/>
-​                     \- Required environment variables specific to setup task are:<br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is <br/>
-​                            talking to the right CMS instance
-
-​              <span style="font-family:Courier; color:green">download\_cert TLS</span><br/>
-​                     Generates Key pair and CSR, gets it signed from CMS<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is <br/>
-​                            talking to the right CMS instance<br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password<br/>
-​                     \- Required env variables specific to setup task are:<br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `BEARER_TOKEN=<token>` for authenticating with CMS<br/>
-​                         \- `SAN_LIST=<CSV List>` \- List of FQDNs to be added to the SAN field in TLS cert<br/> 
-​                            to override <br/>
-​                     \- Optional env variables specific to setup task are:<br/>
-​                         \- `KEY_PATH=<key_path>` \- Path of file where TLS key needs to be stored<br/>
-​                         \- `CERT_PATH=<cert_path>` \- Path of file/directory where TLS certificate needs <br/>
-​                            to be stored<br/>
-​                         \- `WLS_TLS_CERT_CN=<COMMON NAME>` to override default specified in config
-
-​              <span style="font-family:Courier; color:green">database</span><br/>
-​                     Setup workload-service database<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is <br/>
-​                            talking to the right CMS instance<br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password<br/>
-​                     \- Required env variables specific to setup task are:<br/>
-​                         \- `WLS_DB_HOSTNAME=<db host name>` \- database host name<br/>
-​                         \- `WLS_DB_PORT=<db port>` \- database port number<br/>
-​                         \- `WLS_DB=<db name>` \- database schema name<br/>
-​                         \- `WLS_DB_USERNAME=<db user name>` \- database user name<br/>
-​                         \- `WLS_DB_PASSWORD=<db password>` \- database password<br/>
-​                     \- Optional env variables specific to setup task are:<br/>
-​                         \- `WLS_DB_SSLMODE=<db sslmode>` \- database SSL Connection Mode <br/>
-​                            \<disable|allow|prefer|require|verify-ca|verify-full><br/>
-​                         \- `WLS_DB_SSLCERT=<ssl certificate path>` \- database SSL Certificate <br/>
-​                            target path. <br/>
-​                            Only applicable for WLS_DB_SSLMODE=<verify-ca|verify-full>. If left empty, <br/>
-​                            the cert will be copied to /etc/workload-service/wlsdbsslcert.pem<br/>
-​                         \- `WLS_DB_SSLCERTSRC=<ssl certificate source path>` \- database SSL Certificate<br/>
-​                            source path. Mandatory if `WLS_DB_SSLCERT` does not already exist
-
-​              <span style="font-family:Courier; color:green">server</span><br/>
-​                     Setup http server on given port<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root<br/> 
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is <br/>
-​                            talking to the right CMS instance<br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL<br/>
-​                     \- Required env variables specific to setup task are:<br/>
-​                         \- `WLS_PORT=<port>` \- database port number<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password
-
-​              <span style="font-family:Courier; color:green">hvsconnection</span><br/>
-​                     Setup task for setting up the connection to the Host Verification Service (HVS)<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is<br/> 
-​                          talking to the right CMS instance<br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password<br/>
-​                     \- Required env variables specific to setup task are:<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL
-
-​              <span style="font-family:Courier; color:green">download_saml_ca_cert</span><br/>
-​                     Setup to download SAML CA certificates from HVS<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Required environment variables if `WLS_NOSETUP=true` or variables not set <br/>
-​                        in `config.yml`: <br/>
-​                         \- `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                         \- `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to ensure that WLS is <br/>
-​                            talking to the right CMS instance<br/>
-​                         \- `AAS_API_URL=<url>` \- AAS API url<br/>
-​                         \- `WLS_SERVICE_USERNAME=<service username>` \- WLS service username<br/>
-​                         \- `WLS_SERVICE_PASSWORD=<service password>` \- WLS service password<br/>
-​                     \- Required env variables specific to setup task are:<br/>
-​                         \- `HVS_URL=<url>` \- HVS API Endpoint URL<br/>
-​                         \- `BEARER_TOKEN=<token>` for authenticating with HVS
+   download_saml_ca_cert            Setup to download SAML CA certificates from HVS
+                                    - Option [--force] overwrites existing certificate
+                                                                        Required env variables if WLS_NOSETUP=true or variable not set in config.yml:
+                                        - CMS_BASE_URL=<url>                              : for CMS API url
+                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>  : to ensure that WLS is talking to the right CMS instance
+                                        - AAS_API_URL=<url>                               : AAS API url
+                                        - WLS_SERVICE_USERNAME=<service username>         : WLS service username
+                                        - WLS_SERVICE_PASSWORD=<service password>         : WLS service password
+                                                                        Required env variables specific to setup task are:
+                                        - HVS_URL=<url>      : HVS API Endpoint URL
+                                        - BEARER_TOKEN=<token> for authenticating with HVS
 
 ### 11.6.4 Directory Layout
 
