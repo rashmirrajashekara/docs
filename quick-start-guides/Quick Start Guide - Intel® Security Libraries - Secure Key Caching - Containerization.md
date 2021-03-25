@@ -347,8 +347,8 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   ```shell
   kubectl get configmap -n kube-system
   kubectl edit configmap -n kube-system coredns
-  #Replace forward IP 8.8.8.x.x with new IPs separated by space (as listed in /etc/resolv.conf) and Save the file
-  kubectl get  pods -n kube-system
+  #edit coredns config map and change the name server as:
+  "forward . /etc/resolv.conf"
   #Delete coredns pod, it will relaunch
   ```
 
@@ -469,7 +469,7 @@ INSTALL_ADMIN_PASSWORD=superAdminPass
 #    Available Options for up/down command:
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
-#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization
+#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization,csp,enterprise
 ./skc-bootstrap.sh up <all/usecase of choice>
 ```
 
@@ -682,7 +682,7 @@ chmod +x create-skc-dirs.nfs.sh
 #    Available Options for up/down command:
 #        agent      Can be one of sagent,skclib
 #        service    Can be one of cms,authservice,scs,shvs,ihub,sqvs,kbs,isecl-controller,isecl-scheduler
-#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization
+#        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization,csp,enterprise
 ./skc-bootstrap.sh up <all/usecase of choice>
 
 #NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following
