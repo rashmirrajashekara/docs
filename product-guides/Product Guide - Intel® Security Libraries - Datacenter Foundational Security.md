@@ -2302,7 +2302,7 @@ Any Trust Agent or VMware ESXi host/cluster can be registered using a
 Verification Service API request. Registration can be performed with or
 without a set of existing Flavors. Rules for Flavor matching can be set
 by using the Flavor Group in the request; if no Flavor Group is
-specified, the `mtwilson_automatic` Flavor Group will be used. See the
+specified, the `automatic` Flavor Group will be used. See the
 Flavor Management section for additional details on Flavors, Flavor
 Groups, and Flavor matching.
 
@@ -9777,7 +9777,7 @@ Any Trust Agent or VMware ESXi host/cluster can be registered using a
 Verification Service API request. Registration can be performed with or
 without a set of existing Flavors. Rules for Flavor matching can be set
 by using the Flavor Group in the request; if no Flavor Group is
-specified, the `mtwilson_automatic` Flavor Group will be used. See the
+specified, the `automatic` Flavor Group will be used. See the
 Flavor Management section for additional details on Flavors, Flavor
 Groups, and Flavor matching.
 
@@ -12877,19 +12877,19 @@ file `/etc/hvs/config.yml`:
 tls:
   cert-file: /etc/hvs/tls-cert.pem
   key-file: /etc/hvs/tls.key
-  common-name: Mt Wilson TLS Certificate
+  common-name: HVS TLS Certificate
   san-list: 127.0.0.1,localhost
 saml:
   common:
     cert-file: /etc/hvs/certs/trustedca/saml-cert.pem
     key-file: /etc/hvs/trusted-keys/saml.key
-    common-name: mtwilson-saml
+    common-name: HVS SAML Certificate
   issuer: AttestationService
   validity-days: 1
 flavor-signing:
   cert-file: /etc/hvs/certs/trustedca/flavor-signing.pem
   key-file: /etc/hvs/trusted-keys/flavor-signing.key
-  common-name: VS Flavor Signing Certificate
+  common-name: HVS Flavor Signing Certificate
 privacy-ca:
   cert-file: /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
   key-file: /etc/hvs/trusted-keys/privacy-ca.key
@@ -13252,167 +13252,102 @@ The Trust Agent configuration settings are managed in
 ​        <span style="font-family:Courier; color:brown">tagent <span style="font-family:Courier; color:blue">**\<command\>**</span> [arguments]</span>
 
 **Available Commands**<br/>
-         <span style="font-family:Courier; color:blue">**help|-h|-help**</span><br/>
-                   <span style="font-family:Courier; color:brown">tagent help|-h|-help</span><br/>
-                   Show the help message.
+        Available Commands:
 
-​         <span style="font-family:Courier; color:blue">**setup**</span><br/>
-​                  <span style="font-family:Courier; color:brown">tagent setup <span style="font-family:Courier; color:green">**\[task\]** </span></span><br/>
-​                  Run setup task. 
+  help|-h|-help                    Show this help message.
+  setup [all] [task]               Run setup task.
+  uninstall                        Uninstall trust agent.
+  version                          Print build version info.
+  start                            Start the trust agent service.
+  stop                             Stop the trust agent service.
+  status                           Get the status of the trust agent service.
+  fetch-ekcert-with-issuer         Print Tpm Endorsement Certificate in Base64 encoded string along with issuer
 
-​            **Available Tasks for 'setup':**<br/>
-​            <span style="font-family:Courier; color:green">[all] [/path/to/trustagent.env]</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup [all] [/path/to/trustagent.env]</span><br/>
-​                   \- Runs all setup tasks to provision the trust agent.<br/>
-​                   \- If path to trustagent.env not provided, settings are sourced from the environment.<br/>
-​                   \- Required environment variables: `AAS_API_URL`, `CMS_BASE_URL`,<br/> 
-​                    `CMS_TLS_CERT_SHA384`,  `BEARER_TOKEN`, `MTWILSON_API_URL`<br/>
-​                   \- Optional environment variables: `TA_ENABLE_CONSOLE_LOG`,<br/>
-​                      `TA_SERVER_IDLE_TIMEOUT`, `TA_SERVER_MAX_HEADER_BYTES`,<br/>
-​                      `TA_SERVER_READ_HEADER_TIMEOUT`, `TA_SERVER_WRITE_TIMEOUT`, `SAN_LIST`,<br/> 
-​                    `TA_TLS_CERT_CN`, `TPM_OWNER_SECRET`, `TPM_QUOTE_IPV4`, `TRUSTAGENT_LOG_LEVEL`, <br/>
-​                      `TRUSTAGENT_PORT`, `TA_SERVER_READ_TIMEOUT`
+Setup command usage:  tagent setup [cmd] [-f <env-file>]
 
-​            <span style="font-family:Courier; color:green">download-ca-cert</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup download-ca-cert</span><br/>
-​                   \- Fetches the latest CMS Root CA Certificates, overwriting existing files.<br/>
-​                   \- Required environment variables:  `CMS_BASE_URL`, `CMS_TLS_CERT_SHA384`
+Available Tasks for 'setup', all commands support env file flag
 
-​            <span style="font-family:Courier; color:green">download-cert</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup download-cert</span><br/>
-​                   \- Fetches a signed TLS Certificate from CMS, overwriting existing files.<br/>
-​                   \- Required environment variables: `CMS_BASE_URL`, `BEARER_TOKEN`,<br/>
-​                   \- Optional environment variables: `SAN_LIST`, `TA_TLS_CERT_CN`
+   all                                      - Runs all setup tasks to provision the trust agent. This command can be omitted with running only tagent setup
+                                                Required environment variables [in env/trustagent.env]:
+                                                  - AAS_API_URL=<url>                                 : AAS API URL
+                                                  - CMS_BASE_URL=<url>                                : CMS API URL
+                                                  - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
+                                                  - BEARER_TOKEN=<token>                              : for authenticating with CMS and VS
+                                                  - HVS_URL=<url>                            : VS API URL
+                                                Optional Environment variables:
+                                                  - TA_ENABLE_CONSOLE_LOG=<true/false>                : When 'true', logs are redirected to stdout. Defaults to false.
+                                                  - TA_SERVER_IDLE_TIMEOUT=<t seconds>                : Sets the trust agent service's idle timeout. Defaults to 10 seconds.
+                                                  - TA_SERVER_MAX_HEADER_BYTES=<n bytes>              : Sets trust agent service's maximum header bytes.  Defaults to 1MB.
+                                                  - TA_SERVER_READ_TIMEOUT=<t seconds>                : Sets trust agent service's read timeout.  Defaults to 30 seconds.
+                                                  - TA_SERVER_READ_HEADER_TIMEOUT=<t seconds>         : Sets trust agent service's read header timeout.  Defaults to 30 seconds.
+                                                  - TA_SERVER_WRITE_TIMEOUT=<t seconds>               : Sets trust agent service's write timeout.  Defaults to 10 seconds.
+                                                  - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                        Defaults to "127.0.0.1,localhost".
+                                                  - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.  Defaults to "Trust Agent TLS Certificate".
+                                                  - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                        owner password. Auto-generated when not provided.
+                                                  - TRUSTAGENT_LOG_LEVEL=<trace|debug|info|error>     : Sets the verbosity level of logging. Defaults to 'info'.
+                                                  - TRUSTAGENT_PORT=<portnum>                         : The port on which the trust agent service will listen.
+                                                                                                        Defaults to 1443
 
-​            <span style="font-family:Courier; color:green">update-certificates</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup update-certificates</span><br/>
-​                   \- Runs 'download-ca-cert' and 'download-cert'<br/>
-​                   \- Required environment variables: `CMS_BASE_URL`, `CMS_TLS_CERT_SHA384`,<br/>
-​                     `BEARER_TOKEN`<br/>
-​                   \- Optional environment variables: `SAN_LIST`, `TA_TLS_CERT_CN`
+  download-ca-cert                          - Fetches the latest CMS Root CA Certificates, overwriting existing files.
+                                                    Required environment variables:
+                                                       - CMS_BASE_URL=<url>                                : CMS API URL
+                                                       - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
 
-​            <span style="font-family:Courier; color:green">provision-attestation</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup provision-attestation</span><br/>
-​                   \- Runs setup tasks associated with HVS/TPM provisioning.<br/>
-​                   \- Required environment variables: `BEARER_TOKEN`, `MTWILSON_API_URL`<br/>
-​                   \- Optional environment variables: `TPM_OWNER_SECRET`, `TPM_QUOTE_IPV4`
+  download-cert                             - Fetches a signed TLS Certificate from CMS, overwriting existing files.
+                                                    Required environment variables:
+                                                       - CMS_BASE_URL=<url>                                : CMS API URL
+                                                       - BEARER_TOKEN=<token>                              : for authenticating with CMS and VS
+                                                    Optional Environment variables:
+                                                       - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                             Defaults to "127.0.0.1,localhost".
+                                                       - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.
+                                                                                                             Defaults to "Trust Agent TLS Certificate".
 
-​            <span style="font-family:Courier; color:green">create-host</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup create-host</span><br/>
-​                   \- Registers the trust agent with the verification service.<br/>
-​                   \- Required environment variables: `BEARER_TOKEN`, `MTWILSON_API_URL`<br/>
-​                   \- Optional environment variables: `TPM_OWNER_SECRET`, `TPM_QUOTE_IPV4`
+  update-certificates                       - Runs 'download-ca-cert' and 'download-cert'
+                                                    Required environment variables:
+                                                        - CMS_BASE_URL=<url>                                : CMS API URL
+                                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with CMS
+                                                    Optional Environment variables:
+                                                        - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                              Defaults to "127.0.0.1,localhost".
+                                                        - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.  Defaults to "Trust Agent TLS Certificate".
 
-​            <span style="font-family:Courier; color:green">create-host-unique-flavor</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup create-host-unique-flavor</span><br/>
-​                   \- Populates the verification service with the host unique flavor<br/>
-​                   \- Required environment variables: `BEARER_TOKEN`, `MTWILSON_API_URL`
+  provision-attestation                     - Runs setup tasks associated with HVS/TPM provisioning.
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                                                                                - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                                                                        Optional environment variables:
+                                                                                                                - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                              owner password. Auto-generated when not provided.
 
-​            <span style="font-family:Courier; color:green">get-configured-manifest</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent setup get-configured-manifest</span><br/>
-​                   \- Uses environment variables to pull application-integrity manifests from the <br/>
-​                     verification service.<br/>
-​                   \- Required Environment variables: `BEARER_TOKEN`, `MTWILSON_API_URL`,<br/>
-​                     `FLAVOR_UUIDS` or `FLAVOR_LABELS`
+  create-host                                 - Registers the trust agent with the verification service.
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                        - CURRENT_IP=<ip address of host>                   : IP or hostname of host with which the host will be registered with HVS
+                                                    Optional environment variables:
+                                                        - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                              owner password. Auto-generated when not provided.
 
-​            **Environment variables used by tagent setup:**<br/>
-​            *\* Indicates the environment variable is optional.*<br/>
+  create-host-unique-flavor                 - Populates the verification service with the host unique flavor
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                        - CURRENT_IP=<ip address of host>                   : Used to associate the flavor with the host
 
-​             `AAS_API_URL`<br/>
-​                      \- AAS API URL<br/>
-​                      \- Ex. <span style="font-family:Courier">AAS_API_URL=https://{host}:{port}/aas/v1</span>
+  get-configured-manifest                   - Uses environment variables to pull application-integrity
+                                              manifests from the verification service.
+                                                     Required environment variables:
 
-​             `CMS_BASE_URL`<br/>
-​                      \- CMS API URL<br/>
-​                      \- Ex. <span style="font-family:Courier">CMS\_BASE\_URL=https://{host}:{port}/cms/v1</span>
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                                                                                - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                                                                                - FLAVOR_UUIDS=<uuid1,uuid2,[...]>                  : CSV list of flavor UUIDs
+                                                                                                                                                                        - FLAVOR_LABELS=<flavorlabel1,flavorlabel2,[...]>   : CSV list of flavor labels
 
-​             `CMS_TLS_CERT_SHA384`<br/>
-​                      \- to ensure that TA is communicating with the right CMS instance<br/>
-​                      \- Ex. <span style="font-family:Courier">CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...</span>
-
-​             `BEARER_TOKEN`<br/>
-​                      \- for authenticating with CMS and VS<br/>
-​                      \- Ex. <span style="font-family:Courier">BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...</span>
-
-​             `MTWILSON_API_URL`<br/>
-​                      \- VS API URL<br/>
-​                      \- Ex. <span style="font-family:Courier">MTWILSON\_API\_URL=https://{host}:{port}/hvs/v2</span>
-
-​             `TA_ENABLE_CONSOLE_LOG`\*<br/>
-​                      \- When set to 'true', trust agent logs are redirected to stdout. Defaults to false.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_ENABLE\_CONSOLE\_LOG=true</span>
-
-​             `TA_SERVER_IDLE_TIMEOUT`\*<br/>
-​                      \- Sets the trust agent service's idle timeout. Defaults to 10 seconds.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_SERVER\_IDLE\_TIMEOUT=10</span>
-
-​             `TA_SERVER_MAX_HEADER_BYTES`\*<br/>
-​                      \- Sets trust agent service's maximum header bytes. Defaults to 1MB.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_SERVER\_MAX\_HEADER\_BYTES=1048576</span>
-
-​             `TA_SERVER_READ_TIMEOUT`\*<br/>
-​                      \- Sets trust agent service's read timeout. Defaults to 30 seconds.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_SERVER\_READ\_TIMEOUT=30</span>
-
-​             `TA_SERVER_READ_HEADER_TIMEOUT`\*<br/>
-​                      \- Sets trust agent service's read header timeout. Defaults to 30 seconds.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_SERVER\_READ\_HEADER\_TIMEOUT=10</span>
-
-​             `TA_SERVER_WRITE_TIMEOUT`\*<br/>
-​                      \- Sets trust agent service's write timeout. Defaults to 10 seconds.<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_SERVER\_WRITE\_TIMEOUT=10</span>
-
-​             `SAN_LIST`\*<br/>
-​                      \- CSV list that sets the value for SAN list in the TA TLS certificate.<br/>
-​                        Defaults to "127.0.0.1,localhost".<br/>
-​                      \- Ex. <span style="font-family:Courier">SAN\_LIST=10.123.100.1,201.102.10.22,my.example.com</span>
-
-​             `TA_TLS_CERT_CN`\*<br/>
-​                      \- Sets the value for Common Name in the TA TLS certificate.<br/>
-​                        Defaults to "Trust Agent TLS Certificate".<br/>
-​                      \- Ex. <span style="font-family:Courier">TA\_TLS\_CERT\_CN=Acme Trust Agent 007</span>
-
-​             `TPM_OWNER_SECRET`\*<br/>
-​                      \- When provided, setup uses the 40 character hex string for the TPM owner <br/>
-​                        password. The TPM owner secret is generated when not provided.<br/>
-​                      \- Ex. <span style="font-family:Courier">TPM\_OWNER\_SECRET=625d6d8a18f98bf764760fa392b8c01be0b4e959</span>
-
-​             `TPM_QUOTE_IPV4`\*<br/>
-​                      \- When 'Y', used the local system's ip address a salt when processing TPM quotes.<br/> 
-​                        Defaults to 'N'.<br/>
-​                      \- Ex. <span style="font-family:Courier">TPM\_QUOTE\_IPV4=Y</span>
-
-​             `TRUSTAGENT_LOG_LEVEL`\*<br/>
-​                      \- Sets the verbosity level of logging (trace\|debug\|info\|error). Defaults to 'info'.<br/>
-​                      \- Ex. <span style="font-family:Courier">TRUSTAGENT\_LOG\_LEVEL=debug</span>
-
-​             `TRUSTAGENT_PORT`\*<br/>
-​                      \- The port on which the trust agent service will listen.<br/>
-​                      \- Ex. <span style="font-family:Courier">TRUSTAGENT\_PORT=10433</span>
-
-​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent uninstall</span><br/>
-​                   Uninstall trust agent.
-
-​         <span style="font-family:Courier; color:blue">**version**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent version</span><br/>
-​                   Print build version info.
-
-​         <span style="font-family:Courier; color:blue">**start**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent start</span><br/>
-​                   Start the trust agent service.
-
-​         <span style="font-family:Courier; color:blue">**stop**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent stop</span><br/>
-​                   Stop the trust agent service.
-
-​         <span style="font-family:Courier; color:blue">**status**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent status</span><br/>
-​                   Get the status of the trust agent service.
-
-​         <span style="font-family:Courier; color:blue">**fetch-ekcert-with-issuer**</span><br/>
-​                   <span style="font-family:Courier; color:brown">tagent fetch-ekcert-with-issuer</span><br/>
-​                   Print Tpm Endorsement Certificate in Base64 encoded string along with issue.
+​      
 
 ### 11.2.4  Directory Layout
 
@@ -14390,78 +14325,38 @@ Contains additional scripts
 
 ### 11.8.3  Command-Line Options
 
-**Syntax:**
+Usage:
+    wlagent <command> [arguments]
 
-​        <span style="font-family:Courier; color:brown">wlagent <span style="font-family:Courier; color:blue">**\<command\>**</span></span>
+Available Commands:
+    help|-help|--help      Show this help message
+    -v|--version           Print version/build information
+    start                  Start wlagent
+    stop                   Stop wlagent
+    status                 Reports the status of wlagent service
+    fetch-key-url <keyUrl>      Fetch a key from the keyUrl
+    uninstall  [--purge]   Uninstall wlagent. --purge option needs to be applied to remove configuration and secureoverlay2 data files
+    setup [task]           Run setup task
 
-**Available Commands:**<br/>
-​         <span style="font-family:Courier; color:blue">**help|-help|--help**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent help\|-help\|--help</span><br/>
-​                  Show help message
-
-​         <span style="font-family:Courier; color:blue">**setup**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent setup <span style="font-family:Courier; color:green"> \<**task**\> </span></span><br/>
-​                  Run setup task
-
-​            **Available Tasks for setup**<br/>
-​            <span style="font-family:Courier; color:green">download_ca_cert</span><br/>
-​                   Download CMS root CA certificate<br/>
-​                     \- Option [--force] overwrites any existing files, and always downloads new root <br/>
-​                        CA cert<br/>
-​                     \- Environment variable `CMS_BASE_URL=<url>` for CMS API url<br/>
-​                     \- Environment variable `CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>` to <br/>
-​                        ensure that WLS is talking to the right CMS in
-
-​            <span style="font-family:Courier; color:green">SigningKey</span><br/>
-​                   Generate a TPM signing key<br/>
-​                     \- Option [--force] overwrites any existing files, and always creates a new Signing key
-
-​            <span style="font-family:Courier; color:green">BindingKey</span><br/>
-​                   Generate a TPM binding key<br/>
-​                     \- Option [--force] overwrites any existing files, and always creates a new Binding key
-
-​            <span style="font-family:Courier; color:green">RegisterSigningKey</span><br/>
-​                   Register a signing key with the host verification service<br/>
-​                     \- Option [--force] Always registers the Signing key with Verification service<br/>
-​                     \- Environment variable `MTWILSON_API_URL=<url>` for registering the key with <br/>
-​                        Verification service<br/>
-​                     \- Environment variable `BEARER_TOKEN=<token>` for authenticating with <br/>
-​                        Verification service
-
-​            <span style="font-family:Courier; color:green">RegisterBindingKey</span><br/>
-​                   Register a binding key with the host verification service<br/>
-​                     \- Option [--force] Always registers the Binding key with Verification service<br/>
-​                     \- Environment variable `MTWILSON_API_URL=<url>` for registering the key with <br/>
-​                        Verification service<br/>
-​                     \- Environment variable `BEARER_TOKEN=<token>` for authenticating with <br/>
-​                        Verification service<br/>
-​                     \- Environment variable `TRUSTAGENT_USERNAME=<TA user>` for changing binding <br/>
-​                        key file ownership to TA application user
-
-​         <span style="font-family:Courier; color:blue">**start**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent start</span><br/>
-​                  Start wlagent
-
-​         <span style="font-family:Courier; color:blue">**stop**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent stop</span><br/>
-​                  Stop wlagent
-
-​         <span style="font-family:Courier; color:blue">**status**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent status</span><br/>
-​                  Reports the status of wlagent service
-
-​         <span style="font-family:Courier; color:blue">**uninstall**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent uninstall [--purge]</span><br/>
-​                  Uninstall wlagent<br/>
-​                  <span style="font-family:Courier; color:brown">[--purge\]</span> Uninstalls workload agent and deletes the existing configuration directory
-
-​         <span style="font-family:Courier; color:blue">**-v|--version**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent -v|--version</span><br/>
-​                  Print version/build information
-
-​         <span style="font-family:Courier; color:blue">**fetch-key-url \<keyUrl>**</span><br/>
-​                  <span style="font-family:Courier; color:brown">wlagent fetch-key-url \<keyUrl></span><br/>
-​                  Fetch a key from the keyUrl
+    Available Tasks for setup:
+    download_ca_cert       Download CMS root CA certificate
+                                           - Option [--force] overwrites any existing files, and always downloads new root CA cert
+                           - Environment variable CMS_BASE_URL=<url> for CMS API url
+                           - Environment variable CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash> to ensure that WLS is talking to the right CMS instance
+    SigningKey             Generate a TPM signing key
+                                           - Option [--force] overwrites any existing files, and always creates a new Signing key
+    BindingKey             Generate a TPM binding key
+                                           - Option [--force] overwrites any existing files, and always creates a new Binding key
+    RegisterSigningKey     Register a signing key with the host verification service
+                                           - Option [--force] Always registers the Signing key with Verification service
+                           - Environment variable HVS_URL=<url> for registering the key with Verification service
+                           - Environment variable BEARER_TOKEN=<token> for authenticating with Verification service
+    RegisterBindingKey     Register a binding key with the host verification service
+                                           - Option [--force] Always registers the Binding key with Verification service
+                           - Environment variable HVS_URL=<url> for registering the key with Verification service
+                           - Environment variable BEARER_TOKEN=<token> for authenticating with Verification service
+                           - Environment variable TRUSTAGENT_USERNAME=<TA user> for changing binding key file ownership to TA application user
+​     
 
 
 
