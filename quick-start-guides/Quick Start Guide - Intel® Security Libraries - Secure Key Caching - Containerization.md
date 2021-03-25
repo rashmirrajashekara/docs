@@ -347,8 +347,8 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   ```shell
   kubectl get configmap -n kube-system
   kubectl edit configmap -n kube-system coredns
-  #Replace forward IP 8.8.8.x.x with new IPs separated by space (as listed in /etc/resolv.conf) and Save the file
-  kubectl get  pods -n kube-system
+  #edit coredns config map and change the name server as:
+  "forward . /etc/resolv.conf"
   #Delete coredns pod, it will relaunch
   ```
 
