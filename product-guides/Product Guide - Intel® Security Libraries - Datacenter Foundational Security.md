@@ -5470,19 +5470,19 @@ file `/etc/hvs/config.yml`:
 tls:
   cert-file: /etc/hvs/tls-cert.pem
   key-file: /etc/hvs/tls.key
-  common-name: Mt Wilson TLS Certificate
+  common-name: HVS TLS Certificate
   san-list: 127.0.0.1,localhost
 saml:
   common:
     cert-file: /etc/hvs/certs/trustedca/saml-cert.pem
     key-file: /etc/hvs/trusted-keys/saml.key
-    common-name: mtwilson-saml
+    common-name: HVS SAML Certificate
   issuer: AttestationService
   validity-days: 1
 flavor-signing:
   cert-file: /etc/hvs/certs/trustedca/flavor-signing.pem
   key-file: /etc/hvs/trusted-keys/flavor-signing.key
-  common-name: VS Flavor Signing Certificate
+  common-name: HVS Flavor Signing Certificate
 privacy-ca:
   cert-file: /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
   key-file: /etc/hvs/trusted-keys/privacy-ca.key
@@ -6413,7 +6413,7 @@ Usage of authservice setup:
                                          roles to the user
                 jwt                      Create jwt signing key and jwt certificate signed by CMS
                 update-service-config    Sets or Updates the Service configuration
-    
+
 
 
 ### 11.5.4  Directory Layout
