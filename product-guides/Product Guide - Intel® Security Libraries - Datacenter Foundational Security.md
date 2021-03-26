@@ -6386,11 +6386,17 @@ This folder contains the CMS root CA certificate.
 
 ### 11.5.3  Command-Line Options
 
-#### 11.5.3.1  Help
+Usage:
+        authservice <command> [arguments]
 
-Displays the list of available CLI commands.
-
-#### 11.5.3.2  setup \<task\>
+Available Commands:
+        -h|--help | help                 Show this help message
+        setup <task>                     Run setup task
+        start                            Start authservice
+        status                           Show the status of authservice
+        stop                             Stop authservice
+        uninstall [--purge]              Uninstall authservice. --purge option needs to be applied to remove configuration and data files
+        -v|--version | version           Show the version of authservice
 
 Usage of authservice setup:
         authservice setup [task] [--help] [--force] [-f <answer-file>]
@@ -6407,29 +6413,8 @@ Usage of authservice setup:
                                          roles to the user
                 jwt                      Create jwt signing key and jwt certificate signed by CMS
                 update-service-config    Sets or Updates the Service configuration
-#### 11.5.3.2.8  Start
+    
 
-Starts the service.
-
-#### 11.5.3.2.9  Status
-
-Displays the current status of the service.
-
-#### 11.5.3.2.10  Stop
-
-Stops the service.
-
-#### 11.5.3.2.11  tlscertsha384
-
-Shows the SHA384 of the TLS certificate.
-
-#### 11.5.3.2.12  Uninstall
-
-Removes the service. Use the “--purge” flag to also delete all data.
-
-#### 11.5.3.2.13  Version
-
-Shows the version of the service.
 
 ### 11.5.4  Directory Layout
 
