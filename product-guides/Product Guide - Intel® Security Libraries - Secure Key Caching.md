@@ -403,13 +403,13 @@ The containerized deployment makes use of Kubernetes orchestrator for single nod
 
 **Single Node:**
 
-![k8s-single-node](./images/k8s-single-node.png)
+![k8s-single-node](./Images/k8s-single-node.png)
 
 
 
 **Multi Node:**
 
-![K8s Deployment-sqx](./images/k8s-deployment-sgx.jpg)
+![K8s Deployment-sqx](./Images/k8s-deployment-sgx.jpg)
 
 
 
@@ -417,23 +417,23 @@ The containerized deployment makes use of Kubernetes orchestrator for single nod
 
 Every service including databases will be deployed as separate K8s deployment with 1 replica, i.e(1 pod per deployment). Each deployment will be further exposed through k8s service and also will be having corresponding Persistent Volume Claims(PV) for configuration and log directories and mounted on persistent storage. In case of daemonsets/agents, the configuration and log directories will be mounted on respective Baremetal worker nodes.
 
-![Each pod consist of only one container with service](./images/pod-deployment.jpg)
+![Each pod consist of only one container with service](./Images/pod-deployment.jpg)
 
 For stateful services which requires database like shvs, aas, scs, A separate database deployment will be created for each of such services. The data present on the database deployment will also made to persist on a NFS, through K8s persistent storage mechanism
 
-![database deployment](./images/shvs-db.jpg)
+![database deployment](./Images/shvs-db.jpg)
 
 
 
 **Networking within the Cluster:**
 
-![Networking within cluster](./images/within-cluster-communication-sgx.jpg)
+![Networking within cluster](./Images/within-cluster-communication-sgx.jpg)
 
 
 
 **Networking Outside the Cluster:**
 
-![Networking outside cluster](./images/inter-cluster-communication-sgx.jpg)
+![Networking outside cluster](./Images/inter-cluster-communication-sgx.jpg)
 
 **SKC Virtualization:**
 

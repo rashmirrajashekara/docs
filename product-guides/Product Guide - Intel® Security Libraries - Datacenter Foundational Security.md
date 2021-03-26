@@ -3341,7 +3341,7 @@ Attestation reports. In this way, if a host is compromised in a method
 detectable by the Platform Integrity feature, protected images will be
 unable to launch on this server.
 
-<img src="C:\Users\raghave2\Desktop\Product Guide Markdown\images\workload-decryption" alt="image-20200622081137301" style="zoom:150%;" />
+<img src="Images\workload-decryption" alt="image-20200622081137301" style="zoom:150%;" />
 
 7.1  Virtual Machine Confidentiality
 -------------------------------
