@@ -562,7 +562,7 @@ When the installation completes, the Certificate Management Service is available
 
 After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, use the following command:
 
-cms setup cms_auth_token \--force
+cms setup cms-auth-token \--force
 
 In addition, the SHA384 digest of the CMS TLS certificate will be needed for installation of the remaining Intel® SecL services. The digest can be obtained using the following command:
 
@@ -585,7 +585,7 @@ The following must be completed before installing the Authentication and Authori
 
 ### Package Dependencies
 
-The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. A script (install_pgdb.sh) is provided with the AAS that will automatically add the Postgresql repositories and install/configure a sample database. If this script will not be used, a Postgresql 11 database must be installed by the user before executing the AAS installation.
+The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. script (install_pg.sh) is provided with the AAS that will install Postgresql repositories.
 
 ### Supported Operating Systems
 
@@ -615,7 +615,7 @@ copy install_pg.sh and create_db.sh to /root/ directory
 
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
 
-cms setup cms_auth_token --force
+cms setup cms-auth-token --force
 
 Create the authservice.env installation answer file in /root/ directory as below:
 
@@ -657,11 +657,7 @@ Note: the AAS_ADMIN credentials specified in this answer file will have administ
 
 Before deployment is initiated, user account and roles must be generated for each component.  Most of these accounts will be service users, used by the various Intel® SecL SKC services to work together.
 
-Creating these required users and roles is facilitated by the scripts in the corresponding components (Refer to dist/linux directory of each component) and needs to be executed before installation of each component.
-
-For Key Broker Service and Integration Hub User/Roles creation, Please refer to the appendix section for sample scripts
-
-The output of these scripts is a bearer-token which needs to be updated in the BEARER_TOKEN env variable in the corresponding component’s env file.
+Creating these required users and roles is facilitated by the populate-user script.
 
 ### Creating Users and Roles 
 
@@ -693,13 +689,6 @@ SHVS_SERVICE_PASSWORD=<Password for the SHVS service user>
 
 KBS_SERVICE_USERNAME=<Username for the KBS service user>
 KBS_SERVICE_PASSWORD=<Password for the KBS service user>
-
-SKC_LIBRARY_USERNAME=<Username for the SKC Library user>
-SKC_LIBRARY_PASSWORD=<Password for the SKC Library user>
-
-SKC_LIBRARY_CERT_COMMON_NAME=<SKC Library Certificate Common Name>
-
-SKC_LIBRARY_KEY_TRANSFER_CONTEXT=<SKC Library KeyTransfer Role Context>
 
 INSTALL_ADMIN_USERNAME=<Username for the Admin user>
 INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
@@ -754,7 +743,7 @@ The following must be completed before installing the SGX Caching Service
 
 The Intel® SecL-DC SGX Caching Service (SCS) requires a
 
-Postgresql 11 database. A script (install_pgscsdb.sh) is provided with the SCS
+Postgresql 11 database. A set of scripts (install_pg.sh and create_db.sh) is provided with the SCS
 
 that will automatically add the Postgresql repositories and install/configure a
 
@@ -1503,7 +1492,7 @@ NA
         
        KEY_MANAGER=
        
-       ENDPOINT_URL=https://kbshostname:9443/v1
+       ENDPOINT_URL=https://<KBS Hostname>:9443/v1
        
        TLS_COMMON_NAME="KBS TLS Certificate"
        
@@ -2380,7 +2369,7 @@ Available Tasks for setup:
 
 -   Environment variable CMS_HOST_NAMES=\<host_names\> can be set alternatively
 
-##### cms setup cms_auth_token \[\--force\] 
+##### cms setup cms-auth-token \[\--force\] 
 
 -   Create its own self signed JWT keypair in /etc/cms/jwt for quality of life
 
