@@ -42,7 +42,7 @@ For more details please visit : https://01.org/intel-secl
 
 The below diagram depicts the high level architecture of the Intel®SecL-DC,
 
-[![isecl-arch](https://github.com/intel-secl/intel-secl/raw/v3.5/develop/docs/diagrams/isecl-arch.png)](https://github.com/intel-secl/intel-secl/blob/v3.5.0/docs/diagrams/isecl-arch.png)
+[![isecl-arch](https://github.com/intel-secl/intel-secl/raw/v3.5.0/docs/diagrams/isecl-arch.png)](https://github.com/intel-secl/intel-secl/raw/v3.5.0/docs/diagrams/isecl-arch.png)
 
 
 
