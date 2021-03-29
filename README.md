@@ -42,7 +42,7 @@ For more details please visit : https://01.org/intel-secl
 
 The below diagram depicts the high level architecture of the Intel®SecL-DC,
 
-[![isecl-arch](https://github.com/intel-secl/intel-secl/raw/v3.5/develop/docs/diagrams/isecl-arch.png)](https://github.com/intel-secl/intel-secl/blob/v3.5.0/docs/diagrams/isecl-arch.png)
+[![isecl-arch](https://github.com/intel-secl/intel-secl/raw/v3.5.0/docs/diagrams/isecl-arch.png)](https://github.com/intel-secl/intel-secl/raw/v3.5.0/docs/diagrams/isecl-arch.png)
 
 
 
@@ -70,7 +70,7 @@ The SGX Attestation infrastructure does not make any assumption on the user SGX 
 
 [SGX Attestation Infrastructure and Secure Key Caching Product Guide](https://github.com/intel-secl/docs/blob/v3.5/develop/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md)
 
-[SGX Attestation Infrastructure and Secure Key Caching Quick Start Guide](https://github.com/intel-sec/docs/-/blob/v3.5/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md)
+[SGX Attestation Infrastructure and Secure Key Caching Quick Start Guide](https://github.com/intel-secl/docs/blob/v3.5/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching.md)
 
 [SGX Attestation Infrastructure and Secure Key Caching Swagger Documents](https://github.com/intel-secl/docs/tree/v3.5/develop/swagger-docs/secure-key-caching)
 
