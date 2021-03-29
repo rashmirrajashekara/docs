@@ -2369,7 +2369,7 @@ Available Tasks for setup:
 
 -   Environment variable CMS_HOST_NAMES=\<host_names\> can be set alternatively
 
-##### cms setup cms-auth-token \[\--force\] 
+##### cms setup cms-auth-token \[\--force\]
 
 -   Create its own self signed JWT keypair in /etc/cms/jwt for quality of life
 

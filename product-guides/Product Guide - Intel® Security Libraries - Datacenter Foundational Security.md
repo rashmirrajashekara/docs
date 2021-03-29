@@ -5470,19 +5470,19 @@ file `/etc/hvs/config.yml`:
 tls:
   cert-file: /etc/hvs/tls-cert.pem
   key-file: /etc/hvs/tls.key
-  common-name: Mt Wilson TLS Certificate
+  common-name: HVS TLS Certificate
   san-list: 127.0.0.1,localhost
 saml:
   common:
     cert-file: /etc/hvs/certs/trustedca/saml-cert.pem
     key-file: /etc/hvs/trusted-keys/saml.key
-    common-name: mtwilson-saml
+    common-name: HVS SAML Certificate
   issuer: AttestationService
   validity-days: 1
 flavor-signing:
   cert-file: /etc/hvs/certs/trustedca/flavor-signing.pem
   key-file: /etc/hvs/trusted-keys/flavor-signing.key
-  common-name: VS Flavor Signing Certificate
+  common-name: HVS Flavor Signing Certificate
 privacy-ca:
   cert-file: /etc/hvs/certs/trustedca/privacy-ca/privacy-ca-cert.pem
   key-file: /etc/hvs/trusted-keys/privacy-ca.key
@@ -5694,28 +5694,28 @@ This directory contains the config.yml configuration file, the database connecti
 
 ### 11.2.1  Installation Answer File Options
 
-| Key                               | Sample Value                                         | Description                                                  |
-| --------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
-| AAS\_API\_URL                     | AAS\_API\_URL=https://{host}:{port}/aas/v1           | API URL for Authentication Authorization Service (AAS).      |
-| AUTOMATIC\_PULL\_MANIFEST         | AUTOMATIC\_PULL\_MANIFEST=Y                          | Instructs the installer to automatically pull application-manifests from HVS similar to tagent setup get-configured-manifest |
-| AUTOMATIC\_REGISTRATION           | AUTOMATIC\_REGISTRATION=Y                            | Instructs the installer to automatically register the host with HVS similar to running tagent setup create-host and tagent setup create-host-unique-flavor. |
-| BEARER\_TOKEN                     | BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...     | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
-| CMS\_BASE\_URL                    | CMS\_BASE\_URL=https://{host}:{port}/cms/v1          | API URL for Certificate Management Service (CMS).            |
-| CMS\_TLS\_CERT\_SHA384            | CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...   | SHA384 Hash sum for verifying the CMS TLS certificate.       |
-| MTWILSON\_API\_URL                | MTWILSON\_API\_URL=https://{host}:{port}/hvs/v2      | The url used during setup to request information from HVS.   |
-| PROVISION\_ATTESTATION            | PROVISION\_ATTESTATION=Y                             | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). |
-| SAN\_LIST                         | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. |
-| TA\_TLS\_CERT\_CN                 | TA\_TLS\_CERT\_CN=Acme Trust Agent 007               | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. |
-| TPM\_OWNER\_SECRET                | TPM\_OWNER\_SECRET=625d6...                          | 20 byte hex value to be used as the secret key when taking ownership of the TPM. *Note: If this field is not specified, GTA will generate a random secret key.* |
-| TPM\_QUOTE\_IPV4                  | TPM\_QUOTE\_IPV4=no                                  | When enabled (=y), uses the local system's ip address as a salt when processing a quote nonce. This field must align with the configuration of HVS. |
-| TA\_SERVER\_READ\_TIMEOUT         | TA\_SERVER\_READ\_TIMEOUT=30                         | Sets tagent server ReadTimeout. Defaults to 30 seconds.      |
-| TA\_SERVER\_READ\_HEADER\_TIMEOUT | TA\_SERVER\_READ\_HEADER\_TIMEOUT=10                 | Sets tagent server ReadHeaderTimeout. Defaults to 30 seconds. |
-| TA\_SERVER\_WRITE\_TIMEOUT        | TA\_SERVER\_WRITE\_TIMEOUT=10                        | Sets tagent server WriteTimeout. Defaults to 10 seconds.     |
-| TA\_SERVER\_IDLE\_TIMEOUT         | TA\_SERVER\_IDLE\_TIMEOUT=10                         | Sets tagent server IdleTimeout. Defaults to 10 seconds.      |
-| TA\_SERVER\_MAX\_HEADER\_BYTES    | TA\_SERVER\_MAX\_HEADER\_BYTES=1048576               | Sets tagent server MaxHeaderBytes. Defaults to 1MB(1048576)  |
-| TA\_ENABLE\_CONSOLE\_LOG          | TA\_ENABLE\_CONSOLE\_LOG=true                        | When set true, tagent logs are redirected to stdout. Defaults to false |
-| TRUSTAGENT\_LOG\_LEVEL            | TRUSTAGENT\_LOG\_LEVEL=debug                         | The logging level to be saved in config.yml during installation ("trace", "debug", "info"). |
-| TRUSTAGENT\_PORT                  | TRUSTAGENT\_PORT=10433                               | The port on which the trust-agent service will listen.       |
+| Key                               | Description                                                  | Sample Value                                         |
+| --------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
+| AAS\_API\_URL                     | API URL for Authentication Authorization Service (AAS).      | AAS\_API\_URL=https://{host}:{port}/aas/v1           |
+| AUTOMATIC\_PULL\_MANIFEST         | Instructs the installer to automatically pull application-manifests from HVS similar to tagent setup get-configured-manifest | AUTOMATIC\_PULL\_MANIFEST=Y                          |
+| AUTOMATIC\_REGISTRATION           | Instructs the installer to automatically register the host with HVS similar to running tagent setup create-host and tagent setup create-host-unique-flavor. | AUTOMATIC\_REGISTRATION=Y                            |
+| BEARER\_TOKEN                     | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration | BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...     |
+| CMS\_BASE\_URL                    | API URL for Certificate Management Service (CMS).            | CMS\_BASE\_URL=https://{host}:{port}/cms/v1          |
+| CMS\_TLS\_CERT\_SHA384            | SHA384 Hash sum for verifying the CMS TLS certificate.       | CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...   |
+| HVS\_API\_URL                     | The url used during setup to request information from HVS.   | HVS\_API\_URL=https://{host}:{port}/hvs/v2           |
+| PROVISION\_ATTESTATION            | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). | PROVISION\_ATTESTATION=Y                             |
+| SAN\_LIST                         | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com |
+| TA\_TLS\_CERT\_CN                 | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. | TA\_TLS\_CERT\_CN=Acme Trust Agent 007               |
+| TPM\_OWNER\_SECRET                | 20 byte hex value to be used as the secret key when taking ownership of the TPM. *Note: If this field is not specified, GTA will generate a random secret key.* | TPM\_OWNER\_SECRET=625d6...                          |
+| TPM\_QUOTE\_IPV4                  | When enabled (=y), uses the local system's ip address as a salt when processing a quote nonce. This field must align with the configuration of HVS. | TPM\_QUOTE\_IPV4=no                                  |
+| TA\_SERVER\_READ\_TIMEOUT         | Sets tagent server ReadTimeout. Defaults to 30 seconds.      | TA\_SERVER\_READ\_TIMEOUT=30                         |
+| TA\_SERVER\_READ\_HEADER\_TIMEOUT | Sets tagent server ReadHeaderTimeout. Defaults to 30 seconds. | TA\_SERVER\_READ\_HEADER\_TIMEOUT=10                 |
+| TA\_SERVER\_WRITE\_TIMEOUT        | Sets tagent server WriteTimeout. Defaults to 10 seconds.     | TA\_SERVER\_WRITE\_TIMEOUT=10                        |
+| TA\_SERVER\_IDLE\_TIMEOUT         | Sets tagent server IdleTimeout. Defaults to 10 seconds.      | TA\_SERVER\_IDLE\_TIMEOUT=10                         |
+| TA\_SERVER\_MAX\_HEADER\_BYTES    | Sets tagent server MaxHeaderBytes. Defaults to 1MB(1048576)  | TA\_SERVER\_MAX\_HEADER\_BYTES=1048576               |
+| TA\_ENABLE\_CONSOLE\_LOG          | When set true, tagent logs are redirected to stdout. Defaults to false | TA\_ENABLE\_CONSOLE\_LOG=true                        |
+| TRUSTAGENT\_LOG\_LEVEL            | The logging level to be saved in config.yml during installation ("trace", "debug", "info"). | TRUSTAGENT\_LOG\_LEVEL=debug                         |
+| TRUSTAGENT\_PORT                  | The port on which the trust-agent service will listen.       | TRUSTAGENT\_PORT=10433                               |
 
 ### 11.2.2  Configuration Options
 
@@ -5752,256 +5752,103 @@ The Trust Agent configuration settings are managed in
 
 ### 11.2.3  Command-Line Options
 
-#### 11.2.3.1  Available Commands
-
-#####  11.2.3.1.1  help 
-
-Show the help message.
-
-#####  11.2.3.1.2  setup \[task\] 
-
-Run setup task. Available Tasks for 'setup':
-
-######  tagent setup (all)
-
-\- Runs all setup tasks to provision the trust agent.
-
-\- Required environment variables: AAS\_API\_URL, CMS\_BASE\_URL,
-
-CMS\_TLS\_CERT\_SHA384, BEARER\_TOKEN, MTWILSON\_API\_URL
-
-######  tagent setup trustagent.env
-
-\- Runs all setup tasks to provision the trust agent using
-trustagent.env
-
-file for environment variables (the file must contain all of the
-
-required environment variables listed in 'tagent setup (all)'. See
-
-"Environment variables" below).
-
-######  tagent setup download-ca-cert
-
-\- Fetches the latest CMS Root CA Certificates, overwriting existing
-
-files.
-
-\- Required environment variables: BEARER\_TOKEN, CMS\_BASE\_URL
-
-######  tagent setup download-cert
-
-\- Fetches a signed TLS Certificate from CMS, overwriting existing
-
-files.
-
-\- Required environment variables: CMS\_BASE\_URL,
-CMS\_TLS\_CERT\_SHA384
-
-######  tagent setup update-certificates
-
-\- Runs 'download-ca-cert' and 'download-cert'
-
-\- Required environment variables: CMS\_BASE\_URL,
-CMS\_TLS\_CERT\_SHA384, BEARER\_TOKEN
-
-######  tagent setup provision-attestation
-
-\- Runs setup tasks associated with HVS/TPM provisioning.
-
-\- Required environment variables: BEARER\_TOKEN, MTWILSON\_API\_URL
-
-######  tagent setup create-host
-
-\- Registers the trust agent with the verification service.
-
-\- Required environment variables: BEARER\_TOKEN, MTWILSON\_API\_URL
-
-######  tagent setup create-host-unique-flavor
-
-\- Populates the verification service with the host unique flavor
-
-\- Required environment variables: BEARER\_TOKEN, MTWILSON\_API\_URL
-
-######  tagent setup get-configured-manifest
-
-\- Uses environment variables to pull application-integrity.
-
-manifests from the verification service.
-
-\- Required Environment variables: BEARER\_TOKEN, MTWILSON\_API\_URL,
-
-FLAVOR\_UUIDS or FLAVOR\_LABELS
-
-###### Environment variables used by tagent setup:
-
-\* Indicates the environment variable is optional.
-
-AAS\_API\_URL
-
-\- Used by the trust agent service to validate jwt/bearer tokens.
-
-\- Ex. AAS\_API\_URL=https://{host}:{port}/aas/v1
-
-AUTOMATIC\_PULL\_MANIFEST\*
-
-\- When 'Y', instructs the installer to download application manifests
-
-using the FLAVOR\_UUIDS or FLAVOR\_LABELS environment variables by
-running
-
-'get-configured-manifest'. Defaults to 'N'.
-
-\- Ex. AUTOMATIC\_PULL\_MANIFEST=Y
-
-AUTOMATIC\_REGISTRATION\*
-
-\- When 'Y', instructs the installer to register the host with HVS by
-
-running 'create-host' and 'create-host-unique-flavor'. Defaults to 'N'.
-
-\- Ex. AUTOMATIC\_REGISTRATION=Y
-
-BEARER\_TOKEN
-
-\- 'jwt' token used during setup to communicate to CMS and HVS.
-
-\- Ex. BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...
-
-CMS\_BASE\_URL
-
-\- URL used by setup to download root-ca and tls certificates from
-
-CMS.
-
-\- Ex. CMS\_BASE\_URL=https://{host}:{port}/cms/v1
-
-CMS\_TLS\_CERT\_SHA384
-
-\- SHA384 sum used during setup to secure communications with CMS.
-
-\- Ex. CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...
-
-MTWILSON\_API\_URL
-
-\- The URL used during setup to collect information from HVS.
-
-\- MTWILSON\_API\_URL=https://{host}:{port}/hvs/v2
-
-PROVISION\_ATTESTATION\*
-
-\- When 'Y', instructs the installer to provision the host with HVS by
-
-calling 'tagent setup'. Defaults to 'N'.
-
-\- Ex. AUTOMATIC\_REGISTRATION=Y
-
-SAN\_LIST\*
-
-\- CSV list that sets the value for SAN list in the TA TLS certificate.
-
-Defaults to "127.0.0.1,localhost".
-
-\- Ex. SAN\_LIST=10.123.100.1,201.102.10.22,my.example.com
-
-TA\_ENABLE\_CONSOLE\_LOG\*
-
-\- When set to 'true', trust agent logs are redirected to stdout.
-Defaults
-
-to false.
-
-\- Ex. TA\_ENABLE\_CONSOLE\_LOG=true
-
-TA\_SERVER\_IDLE\_TIMEOUT\*
-
-\- Sets the trust agent service's idle timeout. Defaults to 10 seconds.
-
-\- Ex. TA\_SERVER\_IDLE\_TIMEOUT=10
-
-TA\_SERVER\_MAX\_HEADER\_BYTES\*
-
-\- Sets trust agent service's maximum header bytes. Defaults to 1MB.
-
-\- Ex. TA\_SERVER\_MAX\_HEADER\_BYTES=1048576
-
-TA\_SERVER\_READ\_TIMEOUT\*
-
-\- Sets trust agent service's read timeout. Defaults to 30 seconds.
-
-\- Ex. TA\_SERVER\_READ\_TIMEOUT=30
-
-TA\_SERVER\_READ\_HEADER\_TIMEOUT\*
-
-\- Sets trust agent service's read header timeout. Defaults to 30
-seconds.
-
-\- Ex. TA\_SERVER\_READ\_HEADER\_TIMEOUT=10
-
-TA\_SERVER\_WRITE\_TIMEOUT\*
-
-\- Sets trust agent service's write timeout. Defaults to 10 seconds.
-
-\- Ex. TA\_SERVER\_WRITE\_TIMEOUT=10
-
-TA\_TLS\_CERT\_CN\*
-
-\- Sets the value for Common Name in the TA TLS certificate. Defaults
-
-to "Trust Agent TLS Certificate".
-
-\- Ex. TA\_TLS\_CERT\_CN=Acme Trust Agent 007
-
-TPM\_OWNER\_SECRET\*
-
-\- When provided, setup uses the 40 character hex string for the TPM
-
-owner password. The TPM owner secret is generated when not provided.
-
-\- Ex. TPM\_OWNER\_SECRET=625d6d8a18f98bf764760fa392b8c01be0b4e959
-
-TPM\_QUOTE\_IPV4\*
-
-\- When 'Y', used the local system's ip address a salt when processing
-
-TPM quotes. Defaults to 'N'.
-
-\- Ex. TPM\_QUOTE\_IPV4=Y
-
-TRUSTAGENT\_LOG\_LEVEL\*
-
-\- Sets the verbosity level of logging (trace\|debug\|info\|error).
-Defaults
-
-to 'info'.
-
-\- Ex. TRUSTAGENT\_LOG\_LEVEL=debug
-
-TRUSTAGENT\_PORT\*
-
-\- The port on which the trust agent service will listen.
-
-\- Ex. TRUSTAGENT\_PORT=10433
-
-#####  11.2.3.1.3  uninstall 
-
-Uninstall trust agent.
-
-#####  11.2.3.1.4  version 
-
-Print build version info.
-
-#####  11.2.3.1.5  start 
-
-Start the trust agent service.
-
-#####  11.2.3.1.6  stop 
-
-Stop the trust agent service.
-
-#####  11.2.3.2.7  status 
-
-Get the status of the trust agent service.
+Usage:
+
+  tagent <command> [arguments]
+
+Available Commands:
+
+  help|-h|-help                    Show this help message.
+  setup [all] [task]               Run setup task.
+  uninstall                        Uninstall trust agent.
+  version                          Print build version info.
+  start                            Start the trust agent service.
+  stop                             Stop the trust agent service.
+  status                           Get the status of the trust agent service.
+  fetch-ekcert-with-issuer         Print Tpm Endorsement Certificate in Base64 encoded string along with issuer
+
+Setup command usage:  tagent setup [cmd] [-f <env-file>]
+
+Available Tasks for 'setup', all commands support env file flag
+
+   all                                      - Runs all setup tasks to provision the trust agent. This command can be omitted with running only tagent setup
+                                                Required environment variables [in env/trustagent.env]:
+                                                  - AAS_API_URL=<url>                                 : AAS API URL
+                                                  - CMS_BASE_URL=<url>                                : CMS API URL
+                                                  - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
+                                                  - BEARER_TOKEN=<token>                              : for authenticating with CMS and VS
+                                                  - HVS_URL=<url>                            : VS API URL
+                                                Optional Environment variables:
+                                                  - TA_ENABLE_CONSOLE_LOG=<true/false>                : When 'true', logs are redirected to stdout. Defaults to false.
+                                                  - TA_SERVER_IDLE_TIMEOUT=<t seconds>                : Sets the trust agent service's idle timeout. Defaults to 10 seconds.
+                                                  - TA_SERVER_MAX_HEADER_BYTES=<n bytes>              : Sets trust agent service's maximum header bytes.  Defaults to 1MB.
+                                                  - TA_SERVER_READ_TIMEOUT=<t seconds>                : Sets trust agent service's read timeout.  Defaults to 30 seconds.
+                                                  - TA_SERVER_READ_HEADER_TIMEOUT=<t seconds>         : Sets trust agent service's read header timeout.  Defaults to 30 seconds.
+                                                  - TA_SERVER_WRITE_TIMEOUT=<t seconds>               : Sets trust agent service's write timeout.  Defaults to 10 seconds.
+                                                  - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                        Defaults to "127.0.0.1,localhost".
+                                                  - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.  Defaults to "Trust Agent TLS Certificate".
+                                                  - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                        owner password. Auto-generated when not provided.
+                                                  - TRUSTAGENT_LOG_LEVEL=<trace|debug|info|error>     : Sets the verbosity level of logging. Defaults to 'info'.
+                                                  - TRUSTAGENT_PORT=<portnum>                         : The port on which the trust agent service will listen.
+                                                                                                        Defaults to 1443
+
+  download-ca-cert                          - Fetches the latest CMS Root CA Certificates, overwriting existing files.
+                                                    Required environment variables:
+                                                       - CMS_BASE_URL=<url>                                : CMS API URL
+                                                       - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
+
+  download-cert                             - Fetches a signed TLS Certificate from CMS, overwriting existing files.
+                                                    Required environment variables:
+                                                       - CMS_BASE_URL=<url>                                : CMS API URL
+                                                       - BEARER_TOKEN=<token>                              : for authenticating with CMS and VS
+                                                    Optional Environment variables:
+                                                       - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                             Defaults to "127.0.0.1,localhost".
+                                                       - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.
+                                                                                                             Defaults to "Trust Agent TLS Certificate".
+
+  update-certificates                       - Runs 'download-ca-cert' and 'download-cert'
+                                                    Required environment variables:
+                                                        - CMS_BASE_URL=<url>                                : CMS API URL
+                                                        - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>    : to ensure that TA is communicating with the right CMS instance
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with CMS
+                                                    Optional Environment variables:
+                                                        - SAN_LIST=<host1,host2.acme.com,...>               : CSV list that sets the value for SAN list in the TA TLS certificate.
+                                                                                                              Defaults to "127.0.0.1,localhost".
+                                                        - TA_TLS_CERT_CN=<Common Name>                      : Sets the value for Common Name in the TA TLS certificate.  Defaults to "Trust Agent TLS Certificate".
+
+  provision-attestation                     - Runs setup tasks associated with HVS/TPM provisioning.
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                    Optional environment variables:
+                                                        - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                              owner password. Auto-generated when not provided.
+
+  create-host                                 - Registers the trust agent with the verification service.
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                        - CURRENT_IP=<ip address of host>                   : IP or hostname of host with which the host will be registered with HVS
+                                                    Optional environment variables:
+                                                        - TPM_OWNER_SECRET=<40 byte hex>                    : When provided, setup uses the 40 character hex string for the TPM
+                                                                                                              owner password. Auto-generated when not provided.
+
+  create-host-unique-flavor                 - Populates the verification service with the host unique flavor
+                                                    Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                        - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                        - CURRENT_IP=<ip address of host>                   : Used to associate the flavor with the host
+
+  get-configured-manifest                   - Uses environment variables to pull application-integrity
+                                              manifests from the verification service.
+                                                     Required environment variables:
+                                                        - HVS_URL=<url>                            : VS API URL
+                                                                                                                - BEARER_TOKEN=<token>                              : for authenticating with VS
+                                                                                                                - FLAVOR_UUIDS=<uuid1,uuid2,[...]>                  : CSV list of flavor UUIDs
+                                                                                                                                                                        - FLAVOR_LABELS=<flavorlabel1,flavorlabel2,[...]>   : CSV list of flavor labels
 
 ### 11.2.4  Directory Layout
 
@@ -6386,11 +6233,17 @@ This folder contains the CMS root CA certificate.
 
 ### 11.5.3  Command-Line Options
 
-#### 11.5.3.1  Help
+Usage:
+        authservice <command> [arguments]
 
-Displays the list of available CLI commands.
-
-#### 11.5.3.2  setup \<task\>
+Available Commands:
+        -h|--help | help                 Show this help message
+        setup <task>                     Run setup task
+        start                            Start authservice
+        status                           Show the status of authservice
+        stop                             Stop authservice
+        uninstall [--purge]              Uninstall authservice. --purge option needs to be applied to remove configuration and data files
+        -v|--version | version           Show the version of authservice
 
 Usage of authservice setup:
         authservice setup [task] [--help] [--force] [-f <answer-file>]
@@ -6407,29 +6260,8 @@ Usage of authservice setup:
                                          roles to the user
                 jwt                      Create jwt signing key and jwt certificate signed by CMS
                 update-service-config    Sets or Updates the Service configuration
-#### 11.5.3.2.8  Start
 
-Starts the service.
 
-#### 11.5.3.2.9  Status
-
-Displays the current status of the service.
-
-#### 11.5.3.2.10  Stop
-
-Stops the service.
-
-#### 11.5.3.2.11  tlscertsha384
-
-Shows the SHA384 of the TLS certificate.
-
-#### 11.5.3.2.12  Uninstall
-
-Removes the service. Use the “--purge” flag to also delete all data.
-
-#### 11.5.3.2.13  Version
-
-Shows the version of the service.
 
 ### 11.5.4  Directory Layout
 
@@ -7053,7 +6885,7 @@ Verification Service.
 The SAML Certificate can be replaced with a user-specified keypair and
 certificate chain using the following command:
 
-mtwilson replace-saml-key-pair --private-key=new.key.pem
+hvs replace-saml-key-pair --private-key=new.key.pem
 --cert-chain=new.cert-chain.pem
 
 This will:
@@ -7091,7 +6923,7 @@ This certificate is unique to the Verification Service.
 The Asset Tag Certificate can be replaced with a user-specified keypair
 and certificate chain using the following command:
 
-`mtwilson replace-tag-key-pair --private-key=new.key.pem
+`hvs replace-tag-key-pair --private-key=new.key.pem
 --cert-chain=new.cert-chain.pem`
 
 This will:
@@ -7129,7 +6961,7 @@ Agent nodes will need to be re-provisioned.
 The Privacy CA Certificate can be replaced with a user-specified keypair
 and certificate chain using the following command:
 
-`mtwilson replace-pca-key-pair --private-key=new.key.pem
+`hvs replace-pca-key-pair --private-key=new.key.pem
 --cert-chain=new.cert-chain.pem`
 
 This will:
@@ -7142,8 +6974,8 @@ This will:
 -   Update configuration properties:
 
 ```shell
-mtwilson.privacyca.aik.issuer
-mtwilson.privacyca.aik.validity.days
+hvs.privacyca.aik.issuer
+hvs.privacyca.aik.validity.days
 ```
 After the Privacy CA certificate is replaced, all Trust Agent hosts will
 need to be re-provisioned with a new AIK:
@@ -7166,7 +6998,7 @@ provisioning.
 The Endorsement CA Certificate can be replaced with a user-specified
 keypair and certificate chain using the following command:
 
-`mtwilson replace-eca-key-pair --private-key=new.key.pem
+`hvs replace-eca-key-pair --private-key=new.key.pem
 --cert-chain=new.cert-chain.pem`
 
 This will:
@@ -7180,8 +7012,8 @@ This will:
 -   Update configuration properties:
 
 ```{=html}
-mtwilson.privacyca.ek.issuer
-mtwilson.privacyca.ek.validity.days
+hvs.privacyca.ek.issuer
+hvs.privacyca.ek.validity.days
 ```
 After the Endorsement CA certificate is replaced, all Trust Agent hosts
 will need to be re-provisioned with a new Endorsement Certificate:
@@ -13014,7 +12846,7 @@ This directory contains the config.yml configuration file, the database connecti
 | BEARER\_TOKEN                     | BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...     | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS\_BASE\_URL                    | CMS\_BASE\_URL=https://{host}:{port}/cms/v1          | API URL for Certificate Management Service (CMS).            |
 | CMS\_TLS\_CERT\_SHA384            | CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...   | SHA384 Hash sum for verifying the CMS TLS certificate.       |
-| MTWILSON\_API\_URL                | MTWILSON\_API\_URL=https://{host}:{port}/hvs/v2      | The url used during setup to request information from HVS.   |
+| HVS_URL                           | HVS_URL=https://{host}:{port}/hvs/v2                 | The url used during setup to request information from HVS.   |
 | PROVISION\_ATTESTATION            | PROVISION\_ATTESTATION=Y                             | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). |
 | SAN\_LIST                         | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. |
 | TA\_TLS\_CERT\_CN                 | TA\_TLS\_CERT\_CN=Acme Trust Agent 007               | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. |
@@ -13254,7 +13086,7 @@ report-signing:
   cert-url: https://isecl-cms:8445/cms/v1
   service-tls-cert-sha384: bb3a1…
 attestation-service:
-  url: https://isecl-hvs:8443/mtwilson/v2
+  url: https://isecl-hvs:8443/hvs/v2
 endpoint:
   url: http://openstack:5000/v3
   username: admin
