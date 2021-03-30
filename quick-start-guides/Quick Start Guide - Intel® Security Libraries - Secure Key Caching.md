@@ -1,48 +1,78 @@
-​	
-
 # **SGX Attestation Infrastructure and Secure Key Caching (SKC) Quick Start Guide**
 
-[[_TOC_]]
+Table of Contents
+-----------------
+
+   * [<strong>SGX Attestation &amp; Secure Key Caching Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+      * [Table of Contents](#table-of-contents)
+      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware-os-requirements)
+      * [<strong>2. Network Requirements</strong>](#2-network-requirements)
+      * [<strong>3. RHEL Package Requirements</strong>](#3-rhel-package-requirements)
+      * [<strong>4. Deployment Model</strong>](#4-deployment-model)
+      * [<strong>5. System Tools and Utilities</strong>](#5-system-tools-and-utilities)
+      * [<strong>6. Build Services, Libraries and Install packages</strong>](#6-build-services-libraries-and-install-packages)
+      * [<strong>7. Deployment & Usecase Workflow Tools Installation</strong>](#7-deployment-usecase-workflow-tools-installation)
+         * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
+      * [<strong>8. Deployment</strong>](#8-deployment)
+         * [Download the Ansible Role](#download-the-ansible-role)
+         * [Update the Ansible Role](#update-ansible-inventory)
+         * [Create and Run Playbook](#create-and-run-playbook)
+         * [Additional Examples & Tips](#additional-examples-tips)
+         * [Usecase Setup Options](#usecase-setup-options)
+      * [<strong>9. Usecase Workflows with Postman API Collections</strong>](#9-usecase-workflows-with-postman-api-collections)
+         * [Use Case Collections](#use-case-collections)
+         * [Download Postman API Collections](#download-postman-api-collections)
+         * [Running API Collections](#running-api-collections)
+      * [<strong>10. Deployment Using Binaries</strong>](#10-deployment-using-binaries)
+         * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+      * [<strong>11. System User Configuration</strong>](#11-system-user-configuration)
+      * [<strong>Appendix</strong>](#appendix)
+         * [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
+         * [Configuration for NGINX testing](#configuration-for-nginx-testing)
+         * [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
+         * [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+         * [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
+
+        
 
 ## **1. Hardware & OS Requirements**
 
-1. **Four Hosts or VMs**
+#### Four Hosts or VMs
 
-   a.    Build System
+    Build System
 
-   b.    CSP managed Services 
+    CSP managed Services 
 
-   c.    Enterprise Managed Services
+    Enterprise Managed Services
 
-   d.    K8S Master Node Setup
+    K8S Master Node Setup
 
-2. **SGX Enabled Host**
+#### SGX Enabled Host
 
-3. **OS Requirements**
+### OS Requirements
 
    RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
    **Assumption:**
 
-   CSP and Enterprise side deployment will be done through Ansible-Galaxy role;
+   CSP and Enterprise side deployment will be done through Ansible-Galaxy role
 
 ## **2. Network Requirements**
 
-1. **Build System**
+Internet access is required for the following
 
-   Internet access required
+##### Build System
 
-2. **CSP Managed Services** 
+##### CSP Managed Services
 
-   Internet access required for SGX Caching Service deployed on CSP system/SGX Compute Node;
+##### Enterprise Managed Services
 
-3. **Enterprise Managed Services**
+##### SGX Enabled Host
 
-   Internet access required for SGX Caching Service deployed on Enterprise system;
-
-4. **SGX Enabled Host**
-
-   Internet access required to access KBS running on Enterprise environment
 
 **Setting Proxy and No Proxy**
 
@@ -828,14 +858,14 @@ GIT Configuration**
 [color]
         ui = auto
  [push]
-        default = matching 
+        default = matching +
 ```
 
 * Make sure system date and time of SGX machine and CSP machine both are in sync. Also, if the system is configured to read the RTC time in the local time zone, then use RTC in UTC by running `timedatectl set-local-rtc 0` command on both the machine. Otherwise SGX Agent deployment will fail with certificate expiry error. 
 
-## Appendix
+## **Appendix**
 
-## Creating RSA Keys in Key Broker Service
+### Creating RSA Keys in Key Broker Service
 
 **Create RSA key in PyKMIP and generate certificate**
 
@@ -845,7 +875,7 @@ Prerequisite:
     
     Install Python3 and PyKMIP.
     
-    - yum install python3
+    - dnf install python3
     
     - pip3 install pykmip=0.9.1
     
@@ -888,7 +918,7 @@ NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with key
 
 copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
 
-## Configuration for NGINX testing
+### Configuration for NGINX testing
 
 **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
@@ -953,7 +983,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-# KBS key-transfer flow validation
+### KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
 
@@ -989,7 +1019,7 @@ Establish a tls session with the nginx using the key transferred inside the encl
     wget https://localhost:2443 --no-check-certificate
 ```
 
-# Note on Key Transfer Policy
+### Note on Key Transfer Policy
 
 Key transfer policy is used to enforce a set of policies which need to be compiled with before the secret can be securely provisioned onto a sgx enclave
 
@@ -1012,7 +1042,7 @@ A typical Key Transfer Policy would look as below
 **client_permissions_allof** - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
     In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
-## Extracting SGX Enclave values for Key Transfer Policy
+### Extracting SGX Enclave values for Key Transfer Policy
 
 Values that are specific to the enclave such as sgx_enclave_issuer_anyof, sgx_enclave_measurement_anyof and sgx_enclave_issuer_product_id_anyof can be retrived using `sgx_sign` utility that is available as part of Intel SGX SDK.
 
