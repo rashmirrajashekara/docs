@@ -3,7 +3,7 @@
 Table of Contents
 -----------------
 
-   * [<strong>SGX Attestation &amp; Secure Key Caching Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
+   * [<strong>SGX Attestation &amp; Secure Key Caching Quick Start Guide</strong>](#sgx-attestation-secure-key-caching-quick-start-guide)
       * [Table of Contents](#table-of-contents)
       * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware-os-requirements)
       * [<strong>2. Network Requirements</strong>](#2-network-requirements)
@@ -24,11 +24,18 @@ Table of Contents
          * [Download Postman API Collections](#download-postman-api-collections)
          * [Running API Collections](#running-api-collections)
       * [<strong>10. Deployment Using Binaries</strong>](#10-deployment-using-binaries)
-         * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
-         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
-         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
-         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
-         * * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#)
+         * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-kbs-extensions)
+         * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
+         * [Deploy isecl-controller](#deploy-isecl-controller)
+         * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+         * [Configure kube-scheduler to establish communication with isecl-scheduler](#configute-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+         * [Deploying SKC Services on Single System](#deploying-skc-services-on-single-system)
+         * [Deploy CSP SKC Services](#deploy-csp-skc-services)
+         * [Openstack Setup and Associate Traits](#openstack-setup-and-associate-traits)
+         * [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
+         * [Deploy SGX Agent](#deploy-sgx-agent)
+         * [Deploy SKC Library](#deploy-skc-library)
+         * [Deploy SKC Library as a container](#deploying-skc-library-as-a-container)
       * [<strong>11. System User Configuration</strong>](#11-system-user-configuration)
       * [<strong>Appendix</strong>](#appendix)
          * [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
@@ -37,7 +44,6 @@ Table of Contents
          * [Note on Key Transfer Policy](#note-on-key-transfer-policy)
          * [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
-        
 
 ## **1. Hardware & OS Requirements**
 
