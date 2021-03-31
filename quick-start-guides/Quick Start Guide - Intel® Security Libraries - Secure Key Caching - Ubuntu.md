@@ -49,7 +49,7 @@ Table of Contents
 
    Build System
 
-   CSP managed Services 
+   CSP managed Services
 
    Enterprise Managed Services
 
