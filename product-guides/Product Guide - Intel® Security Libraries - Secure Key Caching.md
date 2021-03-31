@@ -2040,7 +2040,6 @@ This folder contains log files: /var/log/shvs/
 | SHVS_BASE_URL       | https://< SHVS IP or hostname>:13000/sgx-hvs/v2/ | The url used during setup to request information from SHVS.  |
 | BEARER_TOKEN        |                                                  | Long Lived JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration |
 | CMS_TLS_CERT_SHA384 | < Certificate Management Service TLS digest>     | SHA384 Hash for verifying the CMS TLS certificate.           |
-| SGX_PORT            | 11001                                            | The port on which the SGX Agent service will listen.         |
 | SHVS_UPDATE_INTERVAL| 120                                              | Interval for SHVS updates in minutes. Values should be in the range of 1 minutes to 120 minutues.|
 | SGX_AGENT_NOSETUP   | false                                            | Skips setup during installation if set to true               |
 
