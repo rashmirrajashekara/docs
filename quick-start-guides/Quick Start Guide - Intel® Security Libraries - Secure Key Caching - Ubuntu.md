@@ -1,24 +1,63 @@
-​	
+# **SGX Attestation Infrastructure and Secure Key Caching (SKC) Quick Start Guide for Ubuntu**
 
-# **SGX Attestation Infrastructure and Secure Key Caching (SKC) Quick Start Guide**
+Table of Contents
+-----------------
 
-[[_TOC_]]
+   * [<strong>SGX Attestation &amp; Secure Key Caching Quick Start Guide for Ubuntu</strong>](#sgx-attestation-secure-key-caching-quick-start-guide-for-ubuntu)
+      * [Table of Contents](#table-of-contents)
+      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware-os-requirements)
+      * [<strong>2. Network Requirements</strong>](#2-network-requirements)
+      * [<strong>3. Ubuntu Package Requirements</strong>](#3-ubuntu-package-requirements)
+      * [<strong>4. Deployment Model</strong>](#4-deployment-model)
+      * [<strong>5. System Tools and Utilities</strong>](#5-system-tools-and-utilities)
+      * [<strong>6. Build Services, Libraries and Install packages</strong>](#6-build-services-libraries-and-install-packages)
+      * [<strong>7. Deployment & Usecase Workflow Tools Installation</strong>](#7-deployment-usecase-workflow-tools-installation)
+         * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
+      * [<strong>8. Deployment</strong>](#8-deployment)
+         * [Download the Ansible Role](#download-the-ansible-role)
+         * [Update the Ansible Role](#update-ansible-inventory)
+         * [Create and Run Playbook](#create-and-run-playbook)
+         * [Additional Examples & Tips](#additional-examples-tips)
+         * [Usecase Setup Options](#usecase-setup-options)
+      * [<strong>9. Usecase Workflows with Postman API Collections</strong>](#9-usecase-workflows-with-postman-api-collections)
+         * [Use Case Collections](#use-case-collections)
+         * [Download Postman API Collections](#download-postman-api-collections)
+         * [Running API Collections](#running-api-collections)
+      * [<strong>10. Deployment Using Binaries</strong>](#10-deployment-using-binaries)
+         * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-kbs-extensions)
+         * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
+         * [Deploy isecl-controller](#deploy-isecl-controller)
+         * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+         * [Configure kube-scheduler to establish communication with isecl-scheduler](#configute-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+         * [Deploying SKC Services on Single System](#deploying-skc-services-on-single-system)
+         * [Deploy CSP SKC Services](#deploy-csp-skc-services)
+         * [Openstack Setup and Associate Traits](#openstack-setup-and-associate-traits)
+         * [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
+         * [Deploy SGX Agent](#deploy-sgx-agent)
+         * [Deploy SKC Library](#deploy-skc-library)
+      * [<strong>11. System User Configuration</strong>](#11-system-user-configuration)
+      * [<strong>Appendix</strong>](#appendix)
+         * [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
+         * [Configuration for NGINX testing](#configuration-for-nginx-testing)
+         * [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
+         * [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+         * [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
 ## **1. Hardware & OS Requirements**
 
-1. **Four Hosts or VMs**
+#### Four Hosts or VMs
 
-   a.    Build System
+   Build System
 
-   b.    CSP managed Services 
+   CSP managed Services
 
-   c.    Enterprise Managed Services
+   Enterprise Managed Services
 
-   d.    K8S Master Node Setup
+   K8S Master Node Setup
 
-2. **SGX Enabled Host**
+#### SGX Enabled Host**
 
-3. **OS Requirements**
+### OS Requirements
 
    UBUNTU 18.04. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
@@ -28,21 +67,16 @@
 
 ## **2. Network Requirements**
 
-1. **Build System**
+Internet access is required for the following
 
-   Internet access required
+##### Build System
 
-2. **CSP Managed Services** 
+##### CSP Managed Services
 
-   Internet access required for SGX Caching Service deployed on CSP system/SGX Compute Node;
+##### Enterprise Managed Services
 
-3. **Enterprise Managed Services**
+##### SGX Enabled Host
 
-   Internet access required for SGX Caching Service deployed on Enterprise system;
-
-4. **SGX Enabled Host**
-
-   Internet access required to access KBS running on Enterprise environment
 
 **Setting Proxy and No Proxy**
 
