@@ -55,7 +55,7 @@ Table of Contents
 
     Enterprise Managed Services
 
-    K8S Master Node Setup
+    Orchestrator Node Setup
 
 #### SGX Enabled Host
 
