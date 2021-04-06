@@ -110,7 +110,7 @@ The SGX Attestation Infrastructure allows to fetch PCK certificates and SGX coll
 
 ### SGX Support in Orchestrators
 
-The SGX Attestation Infrastructure can optionally push the SGX information on compute nodes to cloud orchestrators so that SGX workloads (like SKC) can be scheduled on compute nodes that support SGX. Currently, the Kubernetes orchestrator is supported.
+The SGX Attestation Infrastructure can optionally push the SGX information on compute nodes to cloud orchestrators so that SGX workloads (like SKC) can be scheduled on compute nodes that support SGX. Currently, the Kubernetes and Openstack orchestrators are supported.
 
 ### Key Protection
 
@@ -189,8 +189,6 @@ HSM -- Hardware Security Module
 KBS -- Key Broker Service
 
 CSP -- Cloud Service Provider
-
-TEE -- Trusted Execution Environment
 
 PCS -- Provisioning Certification Service
 
@@ -1897,17 +1895,19 @@ Configuration Update flows have been updated to have K8s native flow to be more 
 | SHVS_AUTO_REFRESH_TIMER        | 120                                                     | SHVS Auto-refresh timeout                                    |
 
 
-###  Configuration Options 
+### Configuration Options 
 
-The SGX Host Verification Service configuration in path /etc/shvs/config.yml.
+The SGX Host Verification Service configuration is in path /etc/shvs/config.yml.
 
-###  Command-Line Options 
+### Command-Line Options 
 
-The SGX Host Verification Service supports several command-line commands that can be executed only as the Root user:
+The SGX Host Verification Service supports several command-line options that can be executed only as the Root user:
 
 Syntax:
 
 shvs \<command\>
+
+#### Available Commands
 
 #### Help 
 
@@ -1921,7 +1921,7 @@ shvs start
 
 Starts the SGX Host Verification service
 
-####  Stop 
+#### Stop 
 
 shvs stop
 
@@ -1945,7 +1945,15 @@ shvs version
 
 Shows the version of the service.
 
-### Setup tasks and Configuration Options for K8s deployments
+#### Setup \[task\]
+
+Runs a specific setup task.
+
+Syntax:
+
+shvs setup [task]
+
+### Setup tasks and its Configuration Options for SGX Host Verification Service
 
 ```shell
 Available Tasks for setup:
@@ -2015,12 +2023,6 @@ The SGX Host Verification Service installs by default to /opt/shvs with the foll
 
 This folder contains executable scripts.
 
-**9.1.4.2 Dbscripts**
-
-Contains database scripts.
-
-**Other folders which are created during installation are:**
-
 #### Configuration 
 
 This folder /etc/shvs contains certificates, keys, and configuration files.
@@ -2029,7 +2031,7 @@ This folder /etc/shvs contains certificates, keys, and configuration files.
 
 This folder contains log files: /var/log/shvs/
 
-##  SGX Agent
+## SGX Agent
 
 ### Installation Answer File Options 
 
@@ -2044,47 +2046,63 @@ This folder contains log files: /var/log/shvs/
 | SGX_AGENT_NOSETUP   | false                                            | Skips setup during installation if set to true               |
 
 
-### Configuration Options - This is same as above. 
+### Configuration Options 
+
+The SGX Agent configuration is in path /etc/sgx_agent/config.yml.
 
 ### Command-Line Options 
 
+The SGX Agent supports several command-line options that can be executed only as the Root user:
+
+Syntax:
+
 sgx_agent \<command\>
 
-####  Available Commands 
+#### Available Commands 
 
-#####  help 
+#### Help 
 
 Show the help message.
 
-##### Version 
+#### Start 
+
+sgx_agent start
+
+Start the SGX Agent service. 
+
+#### Stop 
+
+sgx_agent stop
+
+Stop the SGX Agent service. 
+
+#### Status 
+
+sgx_agent status
+
+Get the status of the SGX Agent Service. 
+
+#### Uninstall
+
+sgx_agent uninstall \--purge
+
+Removes the service. Use \--purge option to remove configuration directory(/etc/sgx_agent/)
+
+#### Version
 
 sgx_agent version
 
 Reports the version of the service.
 
-##### uninstall 
+#### Setup \[task\]
 
-sgx_agent uninstall \--purge
+Runs a specific setup task.
 
-#####  start 
+Syntax:
 
-Start the SGX Agent service. 
+sgx_agent setup [task]
 
-sgx_agent start
-
-##### stop 
-
-Stop the SGX Agent service. 
-
-sgx_agent stop
-
-##### status 
-
-Get the status of the SGX Agent Service. 
-
-sgx_agent status
-
-### Setup Tasks and Configuration Options for K8s deployments
+### Setup Tasks and its Configuration Options for SGX Agent
 
 ```shell
 Available Tasks for setup:
@@ -2113,25 +2131,28 @@ Available Tasks for setup:
 
 ```
 
-
-
 ### Directory Layout 
 
 #### Linux 
 
 The Linux SGX Agent installs by default to /opt/sgx_agent, with the following subfolders:
 
-##### Bin 
+#### Bin 
 
 Contains executables and scripts.
 
-##### Configuration 
+#### Configuration 
 
 Contains the config.yml configuration file.
 
+#### Logs
+
+This folder contains log files: /var/log/sgx_agent
+
+
 ## Integration Hub
 
-### Installation Answer File
+### Installation Answer File Options
 
 | Key                     | sample Value                                                 | Description                                                  |
 | ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -2157,7 +2178,7 @@ The Integration Hub configuration can be found in /etc/ihub/config.yml.
 
 ### Command-Line Options 
 
-The Integrtion HUB supports several command-line commands that can be executed only as the Root user:
+The Integrtion HUB supports several command-line options that can be executed only as the Root user:
 
 Syntax:
 
@@ -2165,63 +2186,51 @@ ihub \<command\>
 
 #### Available Commands 
 
-##### Help 
+#### Help 
 
 ihub help
 
 Displays the list of available CLI commands
 
-##### Start
+#### Start
 
 ihub start
 
 Start the service
 
-##### Stop
+#### Stop
 
 ihub stop
 
 stops the service
 
-##### Status
+#### Status
 
 ihub status
 
 Reports whether the service is currently running.
 
-#####  Uninstall 
+#### Uninstall 
 
 ihub uninstall \[\--purge\]
 
 Removes the service. Use \--purge option to remove configuration directory(/etc/ihub/)
 
-##### Version 
+#### Version 
 
 ihub version
 
 Reports the version of the service.
 
-###  Directory Layout 
+#### Setup \[task\]
 
-#### Logs 
+Runs a specific setup task.
 
-The Integration HUB installs by default to /opt/ihub with the following folders.
+Syntax:
 
-#### Bin 
+ihub setup [task]
 
-This folder contains executable scripts.
-
-**Other folders which are created during installation are:**
-
-#### Configuration 
-
-This folder /etc/ihub/ contains certificates, keys, and configuration files.
-
-#### Logs 
-
-This folder contains log files: /var/log/ihub/
-
-### Setup Tasks and Configuration Options for K8s deployments
+### Setup Tasks and its Configuration Options for Integration Hub
 
 ```shell
 Available Tasks for setup:
@@ -2278,6 +2287,21 @@ Following environment variables are required for update-service-config setup:
     SERVICE_PASSWORD    The service password as configured in AAS
 ```
 
+### Directory Layout
+
+The Integration HUB installs by default to /opt/ihub with the following folders.
+
+#### Bin
+
+This folder contains executable scripts.
+
+#### Configuration
+
+This folder /etc/ihub/ contains certificates, keys, and configuration files.
+
+#### Logs
+
+This folder contains log files: /var/log/ihub/
 
 
 ## Certificate Management Service
@@ -2297,6 +2321,14 @@ Following environment variables are required for update-service-config setup:
 The CMS configuration can be found in /etc/cms/config.yml.
 
 ### Command-Line Options 
+
+The Certificate Management Service supports several command-line options that can be executed only as the Root user:
+
+Syntax:
+
+cms \<command\>
+
+#### Available Commands
 
 #### Help 
 
@@ -2340,13 +2372,17 @@ cms tlscertsha384
 
 Shows the SHA384 digest of the TLS certificate.
 
-#### setup \[task\] 
+#### Setup \[task\] 
 
 Runs a specific setup task.
 
+Syntax:
+
+cms setup [task]
+
 Available Tasks for setup:
 
-#####  cms setup server \[\--port=\<port\>\] 
+##### cms setup server \[\--port=\<port\>\] 
 
 -   Setup http server on \<port\>
 
@@ -2376,7 +2412,7 @@ Available Tasks for setup:
 
 JWT keypair and token
 
-### Setup Tasks and Configuration Options for K8s Deployments
+### Setup Tasks and its Configuration Options for Certificate Management Service
 
 ```shell
 Available Tasks for setup:
@@ -2431,6 +2467,14 @@ The Certificate Management Service installs by default to /opt/cms with the foll
 
 This folder contains executable scripts.
 
+#### Configuration
+
+This folder /etc/cms contains certificates, keys, and configuration files.
+
+#### Logs
+
+This folder contains log files: /var/log/cms/
+
 #### Cacerts 
 
 This folder contains the CMS root CA certificate.
@@ -2464,13 +2508,59 @@ This folder contains the CMS root CA certificate.
 
 The AAS configuration can be found in /etc/authservice/config.yml.
 
+### Command-Line Options
+
+The AAS supports several command-line options that can be executed only as the Root user:
+
+Syntax:
+
+authservice \<command\>
+
+#### Available Commands
+
 #### Help
+
+authservice help
 
 Displays the list of available CLI commands.
 
-#### setup \<task\> 
+#### Start
+
+authservice start
+
+Starts the service.
+
+#### Stop
+
+authservice stop
+
+Stops the service.
+
+#### Status
+
+authservice status
+
+Displays the current status of the service.
+
+#### Uninstall
+
+authservice uninstall \[\--purge\]
+
+Removes the service. Use the "\--purge" flag to also delete all data.
+
+#### Version
+
+authservice version
+
+Shows the version of the service.
+
+#### Setup \[task\]
 
 Executes a specific setup task. Can be used to change the current configuration.
+
+Syntax:
+
+authservice setup [task]
 
 Available Tasks for setup:
 
@@ -2478,7 +2568,7 @@ Available Tasks for setup:
 
  Runs all setup tasks
 
-#####  authservice setup database \[-force\] \[-arguments=\<argument_value\>\] 
+##### authservice setup database \[-force\] \[-arguments=\<argument_value\>\] 
 
 -   Available arguments are:
 
@@ -2540,37 +2630,8 @@ Certificate Subject
 
 -   Environment variable BEARER_TOKEN=\<token\> for authenticating with CMS
 
-#### Start 
 
-authservice start
-
-Starts the service.
-
-#### Status 
-
-authservice status
-
-Displays the current status of the service.
-
-#### Stop 
-
-authservice stop
-
-Stops the service.
-
-#### Uninstall
-
-authservice uninstall \[\--purge\]
-
-Removes the service. Use the "\--purge" flag to also delete all data.
-
-#### Version
-
-authservice version
-
-Shows the version of the service.
-
-### Setup Tasks and Configuration Updates for K8s Deployments
+### Setup Tasks and its Configuration Options for Authentication and Authorization Service
 
 ```shell
  Available Tasks for setup:
@@ -2644,15 +2705,24 @@ Following environment variables are required for 'update-service-config' setup:
 
 ### Directory Layout 
 
-The Authendication and Authorization Service installs by default to /opt/authservice with the following folders.
+The Authentication and Authorization Service installs by default to /opt/authservice with the following folders.
 
-####  Bin 
+#### Bin 
 
 Contains executable scripts and binaries.
 
-#### Dbscripts 
+#### Configuration
 
-Contains database scripts.
+This folder /etc/authservice contains certificates, keys, and configuration files.
+
+#### Logs
+
+This folder contains log files: /var/log/authservice
+
+#### Dbscripts
+
+This folder /opt/authservice/dbscripts Contains database scripts
+
 
 ## Key Broker Service
 
@@ -2676,33 +2746,43 @@ Contains database scripts.
 
 ### Configuration Options 
 
+The Key Broker Service configuration is in path /etc/kbs/config.yml.
+
 ### Command-Line Options 
 
-The Key Broker Service supports several command-line commands that can be executed only as the Root user:
+The Key Broker Service supports several command-line options that can be executed only as the Root user:
 
 Syntax:
 
 kbs \<command\>
 
-#### Start 
+#### Available Commands
+
+#### Help
+
+kbs help 
+
+Displays the list of available CLI commands.
+
+#### Start
 
 kbs start
 
 Starts the service
 
-#### Status 
-
-kbs status
-
-Displays the current status of the service.
-
-#### Stop 
+#### Stop
 
 kbs stop
 
 Stops the service
 
-#### Uninstall 
+#### Status
+
+kbs status
+
+Displays the current status of the service.
+
+#### Uninstall
 
 kbs uninstall \[\--purge\]
 
@@ -2714,7 +2794,15 @@ kbs version
 
 Displays the version of the service
 
-### Setup Tasks and Configuration Options for K8s Deployments
+#### Setup \[task\]
+
+Runs a specific setup task.
+
+Syntax:
+
+kbs setup [task]
+
+### Setup Tasks and its Configuration Options for Key Broker Service
 
 ```shell
 Available Tasks for setup:
@@ -2766,9 +2854,17 @@ Following environment variables are optionally used in download-cert-tls
 
 The Key Broker Service installs by default to /opt/kbs with the following folders.
 
-####  Bin 
+#### Bin 
 
 Contains executable scripts and binaries.
+
+#### Configuration
+
+This folder /etc/kbs contains certificates, keys, and configuration files.
+
+#### Logs
+
+This folder contains log files: /var/log/kbs
 
 
 ## SGX Caching Service
@@ -2803,41 +2899,59 @@ The SGX Caching Service configuration can be found in /etc/scs/config.yml.
 
 ### Command-Line Options 
 
+The SGX Caching Service supports several command-line options that can be executed only as the Root user:
+
+Syntax:
+
+scs \<command\>
+
+#### Available Commands
+
 #### Help 
+
+scs help
 
 Displays the list of available CLI commands.
 
-#### start 
+#### Start 
 
 scs start
 
 Starts the SGX Caching Service
 
-#### stop 
+#### Stop 
 
 scs stop
 
 Stops the SGX Caching Service
 
-#### status 
+#### Status 
 
 scs status
 
 Reports whether the SGX Caching Service is currently running
 
-#### uninstall 
+#### Uninstall 
 
 scs uninstall \[\--purge\]
 
 uninstall the SGX Caching Service. \--purge option needs to be applied to remove configuration files
 
-#### version 
+#### Version 
 
 scs version
 
 Reports the version of the scs
 
-### Setup & Configuration Updates Options for K8s deployments
+#### Setup \[task\]
+
+Runs a specific setup task.
+
+Syntax:
+
+scs setup [task]
+
+### Setup Tasks and its Configuration Options for SGX Caching Service
 
 ```shell
  Avaliable Tasks for setup:
@@ -2901,15 +3015,20 @@ Reports the version of the scs
 
 The SGX Caching Service installs by default to /opt/scs with the following folders.
 
-####  Bin 
+#### Bin
 
 Contains SGX Caching Service executable binary.
 
-#### Dbscripts
+#### Configuration
 
-Contains database scripts
+This folder /etc/scs contains certificates, keys, and configuration files.
 
-## SGX Quote Verification 
+#### Logs
+
+This folder contains log files: /var/log/scs
+
+
+## SGX Quote Verification Service
 
 ### Installation Answer File Options 
 
@@ -2934,47 +3053,59 @@ The SGX Quote Verification Service configuration can be found in /etc/sqvs/confi
 
 ### Command-Line Options 
 
-The SGX Quote Verifiction Service supports several command-line commands:
+The SGX Quote Verifiction Service supports several command-line options that can be executed only as the Root user:
 
 Syntax:
 
 sqvs \<command\>
 
+#### Available Commands
+
 #### Help 
+
+sqvs help
 
 Displays the list of available CLI commands.
 
-#### start 
+#### Start 
 
 sqvs start
 
 Starts the SGX Quote Verification Service
 
-#### stop 
+#### Stop 
 
 sqvs stop
 
 Stops the SGX Quote Verification Service
 
-#### status 
+#### Status 
 
 sqvs status
 
 Reports whether the SGX Quote Verification Service is currently running.
 
-#### uninstall 
+#### Uninstall 
 
 sqvs uninstall \[\--purge\]
 
 uninstalls the SGX Quote Verification Service. \--purge option needs to be applied to remove configuration files
 
-#### version 
+#### Version 
 
 sqvs version
 
 Reports the version of the sqvs
 
-### Setup Tasks and Configuration Options for K8s deployments
+#### Setup \[task\]
+
+Runs a specific setup task.
+
+Syntax:
+
+sqvs setup [task]
+
+### Setup Tasks and its Configuration Options for SGX Quote Verification Service
 
 ```shell
 Available Tasks for setup:
@@ -3016,6 +3147,21 @@ Available Tasks for setup:
 
 ```
 
+### Directory Layout
+
+The SGX Quote Verification Service installs by default to /opt/sqvs with the following folders.
+
+#### Bin
+
+This folder contains executable scripts.
+
+#### Configuration
+
+This folder /etc/sqvs contains certificates, keys, and configuration files.
+
+#### Logs
+
+This folder contains log files: /var/log/sqvs
 
 
 # Uninstallation 
