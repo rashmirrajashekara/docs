@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### March 2021
+### April 2021
 
-### Revision 3.5
+### Revision 3.6
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -241,7 +241,7 @@ Key Protection is implemented by the SKC Client -- a set of libraries - which mu
 
 Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are called Key Transfer Policies and are created by an Admin and assigned to Application keys.
 
-##  SKC Virtualization 
+##  SKC Virtualization (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)
 
 Virtualization enabled on SGX Host machines, uses SGX key features. With Virtualization being enabled on SGX host, SKC Library which uses Intel crypto tool kit to protect keys in SGX Enclave can be configured on Virtual Machines which are created on SGX Hosts. This enhancement further provides the privilege for a workload on a VM  allowing successful Secure Key transfer flow which meets the policy requirements. Hence virtualization on SGX Hosts supports key transfer flow for Workload on bare metal, Workload inside a VM, Workload in a container and Workload in a container inside a VM enabled on SGX Host.
 
@@ -341,6 +341,8 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 
 -   Linux: RHEL 8.2
 
+-   Linux: Ubuntu 18.04
+
 ### Requirements for Containerized Deployment with K8s
 
 #### Operating System:
@@ -356,7 +358,7 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 #### Container Runtime
 
 * Docker 19.03.13 on RHEL 8.2
-* Docker 20.03. on Ubuntu 18.04
+* Docker 19.03.5 on Ubuntu 18.04
 
 #### Storage:
 
@@ -518,7 +520,7 @@ The CMS is REQUIRED for all use cases.
 
 ### Supported Operating System 
 
-The Intel® Security Libraries Certificate Management Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries Certificate Management Service supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware
 
@@ -587,7 +589,7 @@ The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Po
 
 ### Supported Operating Systems
 
-The Intel® Security Libraries Authentication and Authorization Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries Authentication and Authorization Service supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware 
 
@@ -751,7 +753,7 @@ must be installed by the user before executing the SCS installation.
 
 ### Supported Operating System 
 
-The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware 
 
@@ -845,11 +847,11 @@ The Intel® Security Libraries SGX Host Verification Service requires the follow
 
 -   Golang packages
 
-If they are not already installed, the SGX Host Verification Service installer attempts to install these automatically using the package manager. Automatic installation requires access to package repositories (the RHEL subscription repositories, the EPEL repository, or a suitable mirror), which may require an Internet connection. If the packages are to be installed from the package repository, be sure to update the repository package lists before installation.
+If they are not already installed, the SGX Host Verification Service installer attempts to install these automatically using the package manager. Automatic installation requires access to package repositories (the RHEL/Ubuntu subscription repositories, the EPEL repository, or a suitable mirror), which may require an Internet connection. If the packages are to be installed from the package repository, be sure to update the repository package lists before installation.
 
 ### Supported Operating Systems 
 
-The Intel® Security Libraries SGX Host Verification Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries SGX Host Verification Service supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware
 
@@ -948,7 +950,7 @@ The Intel® Security Libraries SGX Agent Service requires the following packages
 
 ### Supported Operating Systems
 
-Red Hat Enterprise Linux 8.2.
+Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 **Recommended Hardware**
 
@@ -993,7 +995,7 @@ The Intel® Security Libraries Quote Verification Service requires the following
 
 ### Supported Operating Systems
 
-Red Hat Enterprise Linux 8.2.
+Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware 
 
@@ -1054,7 +1056,12 @@ When the installation completes, the SGX Quote Verification Service is available
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
-* To setup k8 cluster follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos Once the master/worker setup is done, follow below steps on Master Node:
+* To setup k8 cluster on RHEL 8.2, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos 
+
+* To setup k8 cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v3.6/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Ubuntu.md
+Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and follow from step 3 onwards.
+
+* Once the master/worker setup is done, follow below steps on Master Node:
 
 ### Untar packages and push OCI images to registry
 
@@ -1256,11 +1263,11 @@ The Intel® SecL Integration Hub requires a number of packages and their depende
 
 -   Golang packages
 
-If these are not already installed, the Integration Hub installer attempts to install these packages automatically using the package manager. Automatic installation requires access to package repositories (the RHEL subscription repositories, the EPEL repository, or a suitable mirror), which may require an Internet connection. If the packages are to be installed from the package repository, be sure to update your repository package lists before installation.
+If these are not already installed, the Integration Hub installer attempts to install these packages automatically using the package manager. Automatic installation requires access to package repositories (the RHEL/Ubuntu subscription repositories, the EPEL repository, or a suitable mirror), which may require an Internet connection. If the packages are to be installed from the package repository, be sure to update your repository package lists before installation.
 
 ### Supported Operating Systems
 
-The Intel Security Libraries Integration Hub supports Red Hat Enterprise Linux 8.2.
+The Intel Security Libraries Integration Hub supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware
 
@@ -1384,7 +1391,7 @@ Pod should be in running state and launched on the host as per values in pod.yml
 	docker ps
 ```
 
-## Integration with OpenStack
+## Integration with OpenStack (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)
 
 OpenStack can now use “Traits” to provide qualitative data about Nova Compute hosts to establish Trait requirements. The Integration Hub continually push SGX data to the OpenStack Traits resources. This means OpenStack scheduler natively supports workload scheduling incorporating SGX Host information, including SGX enabled/disabled, SGX supported/not supported, FLC enabled/not enabled, EPC memory size, TCB status upto date/not. The OpenStack Placement Service will automatically attempt to place images with Trait requirements on compute nodes that have those Traits.
 
@@ -1462,7 +1469,7 @@ N/A
 
 ### Supported Operating Systems
 
-supports Red Hat Enterprise Linux 8.2.
+supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware
 
@@ -1545,7 +1552,7 @@ Curl
 
 ### Supported Operation System 
 
-The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries SKC Library supports Red Hat Enterprise Linux 8.2 and Ubuntu 18.04.5 LTS(Bionic Beaver).
 
 ### Recommended Hardware 
 
@@ -1588,7 +1595,7 @@ Save and Close
 
 ./deploy_skc_library.sh
 ```
-#### Deploying SKC Library as a Container 
+#### Deploying SKC Library as a Container (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)
 ```
 Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
 
@@ -3350,7 +3357,7 @@ On the Enterprise VM, where Key broker service is running
 
 - copy the generated cert file to SGX compute node where skc_library is deployed. Also note down the the key id generated
 
-## Configuration for NGINX testing
+## Configuration for NGINX testing on RHEL 8.2
 
 **Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
 
@@ -3413,6 +3420,74 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
+## Configuration for NGINX testing for Ubuntu 18.04
+
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
+
+**OpenSSL**
+
+In the /etc/ssl/openssl.cnf file, look for the below line:
+[ new_oids ]
+
+Just before the line [ new_oids ], add the below section:
+
+openssl_conf = openssl_def
+
+[openssl_def]
+engines = engine_section
+oid_section = new_oids
+
+[engine_section]
+pkcs11 = pkcs11_section
+
+[pkcs11_section]
+engine_id = pkcs11
+dynamic_path =/usr/lib/x86_64-linux-gnu/engines-1.1/pkcs11.so
+MODULE_PATH =/opt/skc/lib/libpkcs11-api.so
+init = 0
+
+**Nginx**
+
+Update nginx configuration file /etc/nginx/nginx.conf with below changes:
+
+ssl_engine pkcs11;
+
+Update the location of certificate with the loaction where it was copied into the skc_library machine.
+
+ssl_certificate "add absolute path of crt file";
+
+Update the fields(token, object and pin-value) with the values given in keys.txt for the KeyID corresponding to the certificate.
+
+ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234";
+
+**SKC Configuration**
+
+ Create keys.txt in /root folder. This provides key preloading functionality in skc_library.
+
+  Any number of keys can be added in keys.txt. Each PKCS11 URL should contain different Key ID which need to be transferred from KBS along with respective object tag for each key id specified
+
+  Sample PKCS11 url is as below
+
+  pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
+
+  Token, object and pin-value given in PKCS11 url entry in keys.txt should match with the one in nginx.conf.
+
+  The keyID should match the keyID of RSA key created in KBS. File location should match with preload_keys directive in pkcs11-apimodule.ini;
+
+  Sample /opt/skc/etc/pkcs11-apimodule.ini file
+
+        [core]
+        preload_keys=/root/keys.txt
+        keyagent_conf=/opt/skc/etc/key-agent.ini
+        mode=SGX
+        debug=true
+
+        [SW]
+        module=/usr/lib/softhsm/libsofthsm2.so
+
+        [SGX]
+        module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
+
 # KBS key-transfer flow validation
 
 On SGX compute node, Execute below commands for KBS key-transfer:
@@ -3435,8 +3510,6 @@ Initiate Key tranfer from KBS
 
 Changing group ownership and permissions of pkcs11 token
 ```
-    groupadd intel
-    usermod -G intel nginx
     chown -R root:intel /opt/intel/cryptoapitoolkit/tokens/
     chmod -R 770 /opt/intel/cryptoapitoolkit/tokens/
 ```
