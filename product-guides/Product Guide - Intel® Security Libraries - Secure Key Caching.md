@@ -273,7 +273,7 @@ Generated component binaries/installers are:
 
 DB scripts:
 
-- Postgres installation script: install_pg.sh
+- Postgres installation script: install_pgdb.sh
 - AAS, SCS and SHVS DB creation script: create_db.sh
 
 ## Building from Source - OCI images & K8s Manifests
@@ -443,7 +443,7 @@ Follow the [Installation of Containerized Services and Agent in K8s Cluster](#In
 
 ### Using the provided Database Installation Script 
 
-Install a sample Postgresql 11 database using the install_pg.sh script provided in binaries directory. This script will automatically install the Postgresql database and client packages required.
+Install a sample Postgresql 11 database using the install_pgdb.sh script provided in binaries directory. This script will automatically install the Postgresql database and client packages required.
 
 Create the iseclpgdb.env answer file:
 
@@ -461,15 +461,15 @@ Note that the values above assume that the database will be accessed locally. If
 
 ### Provisioning the Database
 
-Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pg.sh script to install the database.
+Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the SGX host Verification Service, the SGX caching Service,) requires its own schema and access. The database must be created and initialized. Execute the install_pgdb.sh script to install the database.
 
-If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run install_pg.sh script only once and create_db.sh script for each component that uses a database.
+If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run install_pgdb.sh script only once and create_db.sh script for each component that uses a database.
 
-If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the install_pg.sh script on each server hosting a database and create_db.sh script for each component that uses a DB. 
+If separate database servers will be used (for example, if the management plane services will reside on separate systems and will use their own local database servers), execute the install_pgdb.sh script on each server hosting a database and create_db.sh script for each component that uses a DB. 
 
 Command to install postgres DB:
 ```
-./install_pg.sh
+./install_pgdb.sh
 ```
 Command to create DB for AAS/SCS/SHVS:
 ```
@@ -585,7 +585,7 @@ The following must be completed before installing the Authentication and Authori
 
 ### Package Dependencies
 
-The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. script (install_pg.sh) is provided with the AAS that will install Postgresql repositories.
+The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. script (install_pgdb.sh) is provided with the AAS that will install Postgresql repositories.
 
 ### Supported Operating Systems
 
@@ -606,9 +606,9 @@ The Intel® Security Libraries Authentication and Authorization Service supports
 
 Before AAS is installed, Database needs to be created. Use the following commands to install postgres and create AAS DB
 
-copy install_pg.sh and create_db.sh to /root/ directory
+copy install_pgdb.sh and create_db.sh to /root/ directory
 ```
-./install_pg.sh
+./install_pgdb.sh
 
 ./create_db.sh <db name> <db_user> <db_password>
 ```
@@ -743,7 +743,7 @@ The following must be completed before installing the SGX Caching Service
 
 The Intel® SecL-DC SGX Caching Service (SCS) requires a
 
-Postgresql 11 database. A set of scripts (install_pg.sh and create_db.sh) is provided with the SCS
+Postgresql 11 database. A set of scripts (install_pgdb.sh and create_db.sh) is provided with the SCS
 
 that will automatically add the Postgresql repositories and install/configure a
 
@@ -769,9 +769,9 @@ The Intel® Security Libraries SGX Caching Service supports Red Hat Enterprise L
 
 Before SCS is installed, Database needs to be created. Use the following commands to install postgres and create SCS DB
 
-copy install_pg.sh and create_db.sh to /root/ directory
+copy install_pgdb.sh and create_db.sh to /root/ directory
 ```
-./install_pg.sh (if services reside on separate VM)
+./install_pgdb.sh (if services reside on separate VM)
 
 ./create_db.sh <db name> <db_user> <db_password>
 ```
@@ -867,9 +867,9 @@ The Intel® Security Libraries SGX Host Verification Service supports Red Hat En
 
 Before SHVS is installed, Database needs to be created. Use the following commands to install postgres and create SHVS DB
 
-copy install_pg.sh and create_db.sh to /root/ directory
+copy install_pgdb.sh and create_db.sh to /root/ directory
 ```
-./install_pg.sh (if services reside on separate VM)
+./install_pgdb.sh (if services reside on separate VM)
 
 ./create_db.sh <db name> <db_user> <db_password>
 ```
