@@ -492,7 +492,7 @@ The database client for Intel® SecL services will validate that the Subject Alt
 
 The containerized deployment utilizes K8s orchestrator to deploy SGX components. The deployments are fairly automated once the pre-reqs are in place for K8s cluster deployments. 
 
-> **Note:** The K8s manifests are declarative in nature and the same can be modified as required for SGX services deployments for single node and multi node deployments. Modifications would require specific steps to ensure services and agents get updated as per the required configuration. More details for the same present in [Intel Security Libraries Configuration Settings ](#Intel Security Libraries Configuration Settings) under Setup tasks and Configuration Options for K8s Deployments
+> **Note:** The K8s manifests are declarative in nature and the same can be modified as required for SGX services deployments for single node and multi node deployments. Modifications would require specific steps to ensure services and agents get updated as per the required configuration. More details for the same present in Setup Task Flows for K8s Deployments, Configuration Update Flows for K8s Deployments and [Intel Security Libraries Configuration Settings ](#intel-security-libraries-configuration-settings)
 
 ### Pre-requisites
 
@@ -1851,7 +1851,7 @@ Host Registration creates a host record with host information in the SGX Host Ve
 
 # Setup Task Flows for K8s Deployments
 
-Setup tasks flows have been updated to have K8s native flow to be more agnostic to K8s workflows. Following would be the flow for setup task. The setup task options are detailed under [Intel Security Libraries Configuration Settings](#Intel Security Libraries Configuration Settings ) for each service and agent
+Setup tasks flows have been updated to have K8s native flow to be more agnostic to K8s workflows. Following would be the flow for setup task. The setup task options are detailed under [Intel Security Libraries Configuration Settings](#intel-security-libraries-configuration-settings) for each service and agent
 
 - User would create a new `configMap`  object with the environment variables specific to the setup task. The Setup task variables would be documented in the Product Guide
 - Users can provide variables for more than one setup task
@@ -1862,7 +1862,7 @@ Setup tasks flows have been updated to have K8s native flow to be more agnostic 
 
 # Configuration Update Flows for K8s Deployments
 
-Configuration Update flows have been updated to have K8s native flow to be more agnostic to K8s workflows using `configMap` only. Following would be the flow for configuration update. The config task options are are detailed under [Intel Security Libraries Configuration Settings](#Intel Security Libraries Configuration Settings ) for each service and agent
+Configuration Update flows have been updated to have K8s native flow to be more agnostic to K8s workflows using `configMap` only. Following would be the flow for configuration update. The config task options are are detailed under [Intel Security Libraries Configuration Settings](#intel-security-libraries-configuration-settings) for each service and agent
 
 - User would create a new `configMap`  object using existing one and update the new values. The list of config variables would be documented in the Product Guide
 - Users can update variables for more than one
