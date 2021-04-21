@@ -359,7 +359,7 @@ OR
 and
 
 ```shell
-ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
+ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars backend_pykmip=yes
 ```
 
 > **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
@@ -370,7 +370,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 * For `secure-key-caching`, `sgx-orchestration-kubernetes` , `sgx-attestation-kubernetes`, `sgx-orchestration-openstack`, `sgx-attestation-openstack` & `skc-no-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
-   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
+   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars backend_pykmip=yes
   ```
 
   or 
@@ -875,29 +875,48 @@ GIT Configuration**
 
 **Create RSA key in PyKMIP and generate certificate**
 
-NOTE: This step is required only when PyKMIP is configured as backend KMIP. Run this script to generate keys and certificate to register in KMIP KBS.
+NOTE: This step is required only when PyKMIP script is used as a backend KMIP server.
 
-Prerequisite:
-    
-    Install Python3 and PyKMIP.
-    
-    - dnf install python3
-    
-    - pip3 install pykmip=0.9.1
-    
-    Edit rsa_create.py proper HOSTNAME_IP, CERT_PATH, KEY_PATH and CA_PATH (certificates will be available in PyKMIP server in the location /etc/pykmip/) 
-    
-    > python rsa_create.py
+```    
+1. Install python3 and vim-common
+   # dnf install python3 vim-common
 
-NOTE: The server certificate can be provided in kbs.conf
+2. Install pykmip
+   # pip3 install pykmip==0.9.1
 
+3. In the /etc/ directory create pykmip and policies folders
+   mkdir -p /etc/pykimp/policies
+
+4. Copy the following to /etc/pykmip/ from kbs_script folder available under binaries directory
+   create_certificates.py, run_server.py, server.conf
+
+5. Create certificates
+   > python3 create_certificates.py
+
+6. Configure pykmip server using server.conf
+   Update hostname in the server.conf
+
+7. Run pykmip services using run_server.py script
+   > python3 run_server.py
+
+Note: 
+Sometime re-execution of “python3 run_server.py” might result the following error as port is already in use for PYKMIP server. In this case sometimes reboot of VM would resolve the issue:
+kmip.core.exceptions.NetworkingError: Server failed to bind socket handler to 10.80.245.230:5696
+
+8. In the kbs_script folder, update hostname_ip, cert_path, key_path, ca_path in the  rsa_create.py script
+   HOSTNAME_IP = '<host IP>'
+   CERT_PATH = '<client certificate path>'
+   KEY_PATH = '<client key path>'
+   CA_PATH = '<root certifaicate path>'
+
+9. Run rsa_create.py script
+    > python3 rsa_create.py
+
+This script will generate “Private Key ID”, which should be provided in the kbs.conf file for “KMIP_KEY_ID” 
+```
 **Configuration Update to create Keys in KBS**
     
 	cd into /root/binaries/kbs_script folder
-	
-	Update SYSTEM_IP address in kbs.conf (where AAS and KBS are deployed)
-	
-	Update CACERT_PATH variable with trustedca certificate (/etc/kbs/certs/trustedca/<id.pem>)
 	
     **To register keys with KBS KMIP**
     
@@ -906,15 +925,16 @@ NOTE: The server certificate can be provided in kbs.conf
         KMIP_KEY_ID (Private key ID registered in KMIP server)
         
         SERVER_CERT (Server certificate for created private key)
+		
+		Enterprise system IP address where CMS, AAS and KBS services are deployed
+        
+		Port of CMS, AAS and KBS services deployed on enterprise system
+    
+	    AAS admin and Enterprise admin credentials
         
 NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
-  
-	Update kbs.conf with the following
-  - Enterprise system IP address where CMS, AAS and KBS services are deployed
-  - Port of CMS, AAS and KBS services deployed on enterprise system
-  - AAS admin and Enterprise admin credentials
-  
-  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
+
+Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
@@ -922,7 +942,7 @@ NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with key
 	
 	./run.sh reg
 
-copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated
+Copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated.
 
 ### Configuration for NGINX testing
 
@@ -992,6 +1012,9 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
 ### KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
+
+
+Note: Before initiating key transfer make sure, PYKMIP server is running.
 
 ```
     pkill nginx
