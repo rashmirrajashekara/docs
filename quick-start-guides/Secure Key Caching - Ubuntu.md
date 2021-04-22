@@ -343,6 +343,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
+    backend_pykmip: <yes/no to install pykmip server along with KMIP KBS>
   roles:   
   - ansible-role
   environment:
@@ -350,6 +351,8 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
     https_proxy: "{{https_proxy}}"
     no_proxy: "{{no_proxy}}"
 ```
+
+NOTE: 'backend_pykmip' is optional variable, if it is set to 'yes' then KBS will be installed in KMIP mode and PyKMIP server will be installed. If it is not set or set to 'no' then KBS will be installed in Directory mode. PyKMIP server will not be installed.
 
 and
 
@@ -381,7 +384,7 @@ OR
 and
 
 ```shell
-ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to>
+ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars backend_pykmip=yes
 ```
 
 > **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
@@ -392,7 +395,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 * For `secure-key-caching` , `skc-no-orchestration` & `sgx-orchestration-kubernetes` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
-   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key>
+   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars backend_pykmip=yes
   ```
 
   or 
@@ -632,13 +635,15 @@ Update orchestrator.conf with the following
   - System IP address where Kubernetes deployed
   - Netowrk Port Number of Kubernetes
   - Database name, Database username and password for SHVS
-Update skc.conf with the following
+Update enterprise_skc.conf with the following
   - Deployment system IP address
   - SAN List (a list of ip address and hostname for the deployment system)
   - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
   - Install Admin and CSP Admin credentials
   - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys
+  - Key Manager can be set to either Directory or KMIP
+  - KMIP server configuration if KMIP is set
 Save and Close
 ./install_skc.sh
 ```
@@ -711,6 +716,8 @@ Update enterprise_skc.conf with the following
   - Install Admin credentials
   - Database name, Database username and passwords for AAS and SCS services
   - Intel PCS Server API URL and API Keys
+  - Key Manager can be set to either Directory or KMIP
+  - KMIP server configuration if KMIP is set
 Save and Close
 ./install_enterprise_skc.sh
 ```
@@ -789,18 +796,88 @@ GIT Configuration**
 
 ## Appendix
 
-## Creating RSA Keys in Key Broker Service
+### Creating RSA Keys in Key Broker Service
 
+**Steps to run KMIP Server**
+
+Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip.service) as part of kbs_script folder which will install KMIP Server as daemon. Refer to ‘Install KMIP Server as daemon’ section.
+
+```
+1. Install python3 and vim-common
+   #  apt -y install python3-pip vim-common   
+   ln -s /usr/bin/python3 /usr/bin/python  > /dev/null 2>&1
+   ln -s /usr/bin/pip3 /usr/bin/pip  > /dev/null 2>&1
+
+2. Install pykmip
+   # pip3 install pykmip==0.9.1
+
+3. In the /etc/ directory create pykmip and policies folders
+   mkdir -p /etc/pykimp/policies
+
+4. Configure pykmip server using server.conf
+   Update hostname in the server.conf
+
+5. Copy the following to /etc/pykmip/ from kbs_script folder available under binaries directory
+   create_certificates.py, run_server.py, server.conf
+
+6. Create certificates
+   > cd /etc/pykmip
+   > python3 create_certificates.py
+
+7. Kill running KMIP Server processes and wait for 10 seconds until all the KMIP Server processes are killed. 
+   > ps -ef | grep run_server.py | grep -v grep | awk '{print $2}' | xargs kill
+
+8. Run pykmip server using run_server.py script
+   > python3 run_server.py &
+
+```
+
+**Install KMIP Server as daemon**
+
+```
+1. cd into /root/binaries/kbs_script folder 
+
+2. Configure pykmip server using server.conf
+   Update hostname in the server.conf
+
+3. Run the install_pykmip.sh script and KMIP server will be installed as daemon process
+   ./install_pykmip.sh
+
+```
+**Create RSA key in PyKMIP and generate certificate**
+
+NOTE: This step is required only when PyKMIP script is used as a backend KMIP server.
+
+```
+1. Update Host IP in /root/binaries/kbs_script rsa_create.py script
+2. In the kbs_script folder, Run rsa_create.py script
+    > cd /root/binaries/kbs_script
+    > python3 rsa_create.py
+
+This script will generate “Private Key ID” and “Server certificate”, which should be provided in the kbs.conf file for “KMIP_KEY_ID” and “SERVER_CERT”.
+
+```
 **Configuration Update to create Keys in KBS**
     
 	cd into /root/binaries/kbs_script folder
 	
-	Update kbs.conf with the following
-  - Enterprise system IP address where CMS, AAS and KBS services are deployed
-  - Port of CMS, AAS and KBS services deployed on enterprise system
-  - AAS admin and Enterprise admin credentials
-  
-  Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
+    **To register keys with KBS KMIP**
+
+    Update the following variables in kbs.conf:
+
+        KMIP_KEY_ID (Private key ID registered in KMIP server)
+
+        SERVER_CERT (Server certificate for created private key)
+
+                Enterprise system IP address where CMS, AAS and KBS services are deployed
+
+                Port of CMS, AAS and KBS services deployed on enterprise system
+
+            AAS admin and Enterprise admin credentials
+
+NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
+
+Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
 **Create RSA Key**
 
@@ -887,6 +964,9 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
 # KBS key-transfer flow validation
 
 On SGX Compute node, Execute below commands for KBS key-transfer:
+
+
+Note: Before initiating key transfer make sure, PYKMIP server is running.
 
 ```
     pkill nginx
