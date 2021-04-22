@@ -812,7 +812,13 @@ copy the generated cert file to SGX Compute node where skc_library is deployed. 
 
 ## Configuration for NGINX testing
 
-**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script. Patch can be applied with default nginx and openssl file. In case nginx/openssl contains any external changes then refer manual step.
+
+**Apply Patch**
+        Execute the command with nginx version - nginx 1.14.0 (Ubuntu) and openssl version- Openssl 1.1.1 (Ubuntu)
+
+        patch -b /etc/nginx/nginx.conf < nginx_ubuntu.patch
+        patch -b /etc/ssl/openssl.cnf < openssl_ubuntu.patch
 
 **OpenSSL**
 
