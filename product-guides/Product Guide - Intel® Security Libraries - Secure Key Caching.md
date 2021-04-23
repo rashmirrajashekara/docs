@@ -3408,7 +3408,13 @@ Copy the generated cert file to SGX Compute node where skc_library is deployed. 
 
 ## Configuration for NGINX testing on RHEL 8.2
 
-**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script. Patch can be applied with default nginx and openssl file. In case nginx/openssl contains any external changes then refer manual step.
+
+**Apply Patch**
+        Execute the command with nginx version - nginx 1.14.1 (Rhel) and openssl version- Openssl 1.1.1g (Rhel)
+
+        patch -b /etc/nginx/nginx.conf < nginx.patch
+        patch -b /etc/ssl/openssl.cnf < openssl.patch
 
 **OpenSSL Configuration**
 
@@ -3471,7 +3477,13 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 
 ## Configuration for NGINX testing for Ubuntu 18.04
 
-**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script.
+**Note:** Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script. Patch can be applied with default nginx and openssl file. In case nginx/openssl contains any external changes then refer manual step.
+
+**Apply Patch**
+        Execute the command with nginx version - nginx 1.14.0 (Ubuntu) and openssl version- Openssl 1.1.1 (Ubuntu)
+
+        patch -b /etc/nginx/nginx.conf < nginx_ubuntu.patch
+        patch -b /etc/ssl/openssl.cnf < openssl_ubuntu.patch
 
 **OpenSSL**
 
