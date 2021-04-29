@@ -1238,7 +1238,7 @@ deployment in the `isecl` namespace.
     
     ```shell
     #Copy
-    scp /<build_path>/binaries/isecl-k8s-extensions-*.tar.gz <user>@<k8s_master_machine>:/<path>/
+    scp /<build_path>/binaries/isecl-k8s-extensions-*.tar.gz <user>@<k8s_controller_machine>:/<path>/
     
     #Extract
     tar -xvzf /<path>/isecl-k8s-extensions-*.tar.gz
@@ -1388,7 +1388,7 @@ Linux 8.2
 
 To install the Integration Hub, follow these steps:
 
-1. Copy the API Server certificate of K8s Master to machine where Integration Hub will be installed to `/root/` directory
+1. Copy the API Server certificate of the Kubernetes Controller to machine where Integration Hub will be installed to `/root/` directory
     >  **Note:**  In most  Kubernetes distributions the Kubernetes certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions.
 
     In ihub.env `KUBERNETES_TOKEN` token can be retrieved from Kubernetes using the following command:
@@ -1447,21 +1447,21 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
    ./ihub-v3.6.0.bin
    ```
 
-5. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Master machine to `/<path>/secrets/` directory
+5. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Controller machine to `/<path>/secrets/` directory
 
    ```shell
-   #On K8s-Master machine
+   #On K8s-Controller machine
    mkdir -p /<path>/secrets
    
    #On IHUB machine, copy
-   scp /etc/ihub/ihub_public_key.pem <user>@<k8s_master_machine>:/<path>/secrets/hvs_ihub_public_key.pem
+   scp /etc/ihub/ihub_public_key.pem <user>@<k8s_controller_machine>:/<path>/secrets/hvs_ihub_public_key.pem
    ```
 
 
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
 
-### 3.15.3  #### Deploy Intel® SecL Extended Scheduler
+### 3.15.3  Deploy Intel® SecL Extended Scheduler
 ------------------------------------------------------
 1. Install `cfssl` and `cfssljson` on Kubernetes Control Plane
 
@@ -1484,12 +1484,12 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
    cd /<path>/isecl-k8s-extensions/
    chmod +x create_k8s_extsched_cert.sh
    
-   #Set K8s_MASTER_IP,HOSTNAME
-   export MASTER_IP=<k8s_machine_ip>
+   #Set K8s_CONTROLLER_IP,HOSTNAME
+   export CONTROLLER_IP=<k8s_machine_ip>
    export HOSTNAME=<k8s_machine_hostname>
    
    #Create TLS key-pair
-   ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$MASTER_IP","$HOSTNAME" -c <k8s_ca_authority_cert> -k <k8s_ca_authority_key>
+   ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "$CONTROLLER_IP","$HOSTNAME" -c <k8s_ca_authority_cert> -k <k8s_ca_authority_key>
    ```
 
    > **Note:**  In most  Kubernetes distributions the Kubernetes certificate and key is normally present under `/etc/kubernetes/pki`. However this might differ in case of some specific Kubernetes distributions.
