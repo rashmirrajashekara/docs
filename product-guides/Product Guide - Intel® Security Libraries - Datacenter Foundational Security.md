@@ -246,6 +246,12 @@ The Key Broker Service is effectively a policy compliance engine. Its job is to 
 3  Intel® Security Libraries Installation
 ======================================
 
+The instructions in this document detail how to install Intel® SecL services as direct binary installations.  To deploy these services as containers, please see the Intel® SecL-DC Foundational Security QuickStart Guide.  
+
+It is recommended to deploy all control-plane services (CMS, AAS, HVS, WLS) as either containers or binaries, and not a mix of the two.
+
+The Trust Agent and KBS can be installed as binaries or deployed as container regardless of the installation method used for the control plane.
+
 ## 3.1  Building from Source
 
 Intel® Security Libraries is distributed as open source code, and must be compiled into installation binaries before installation.
@@ -428,7 +434,11 @@ The CMS is REQUIRED for all use cases.
 
 ### 3.5.2  Supported Operating Systems
 
-The Intel® Security Libraries Certificate Management Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries Certificate Management Service supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.5.3  Recommended Hardware
 
@@ -513,7 +523,11 @@ The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Po
 
 ### 3.6.4  Supported Operating Systems
 
-The Intel® Security Libraries Authentication and Authorization Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries Authentication and Authorization Service supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.6.5  Recommended Hardware
 
@@ -678,7 +692,11 @@ If they are not already installed, the Verification Service installer attempts t
 
 ### 3.7.4  Supported Operating Systems
 
-The Intel® Security Libraries Verification Service supports Red Hat Enterprise Linux 8.2.
+The Intel® Security Libraries Verification Service supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.7.5  Recommended Hardware
 
@@ -762,7 +780,11 @@ The following must be completed before installing the Workload Service:
 
 ### 3.8.3  Supported Operating Systems
 
-The Intel® Security Libraries Workload Service supports Red Hat Enterprise Linux 8.2
+The Intel® Security Libraries Workload Service supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.8.4  Recommended Hardware
 
@@ -828,7 +850,11 @@ Tboot will not be installed automatically. Instructions for installing and confi
 
 ### 3.9.3  Supported Operating Systems
 
-The Intel® Security Libraries Trust Agent for Linux supports Red Hat Enterprise Linux 8.2. Windows support is described in the section "Installing the Trust Agent for Windows"
+The Intel® Security Libraries Trust Agent for Linux supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.9.4  Prerequisites
 
@@ -1660,8 +1686,11 @@ The following must be completed before installing the Key Broker:
 
 ### 3.16.4  Supported Operating Systems
 
-The Intel® Security Libraries Key Broker Service supports Red Hat
-Enterprise Linux 8.2
+The Intel® Security Libraries Key Broker Service supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.16.5  Recommended Hardware
 
@@ -1854,8 +1883,11 @@ The WPM is REQUIRED for the following use cases.
 
 ### 3.17.3  Supported Operating Systems
 
-The Intel® Security Libraries Workload Policy Manager supports Red Hat
-Enterprise Linux 8.2.
+The Intel® Security Libraries Workload Policy Manager supports:
+
+Red Hat Enterprise Linux 8.2
+
+Ubuntu 18.04
 
 ### 3.17.4  Recommended Hardware
 
