@@ -14245,7 +14245,46 @@ Restart each service so that the changes take effect.
 
 
 <div style="page-break-after: always"></div> 
-# 13  Uninstallation
+# 13  Upgrades
+
+***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the HVS, WLS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
+
+```
+Backup to tar file:
+pg_dump -F t <database_name> > <database_backup_file>.tar
+Restore from tar file:
+pg_restore -d <database_name> <database_backup_file>.tar	
+```
+
+Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
+
+## Backward Compatibility
+
+In general Intel SecL services are made to be backward-compatible within a given major release (for example, the 3.6 HVS should be compatible with the 3.5 Trust Agent) in an upgrade priority order (see below).  Major version upgrades may require coordinated upgrades across all services.
+
+## Upgrade Order
+
+Upgrades should be performed in the following order to prevent misconfiguration or any service unavailability:
+
+1) CMS, AAS
+
+2)  HVS
+
+3) WLS, IHUB
+
+4) KBS, Trust Agents
+
+Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
+
+## Upgrade Process
+
+Binary Installations
+
+For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
+
+Container Deployments
+
+# 14  Uninstallation
 
 This section describes steps used for uninstalling Intel SecL-DC
 services.
@@ -14254,7 +14293,7 @@ services.
     uninstall a containerized deployment, simply shut down the container
     and delete the persistence volumes.
 
-## 13.1 Host Verification Service
+## 14.1 Host Verification Service
 
 To uninstall the Verification Service, run the following command:
 
@@ -14278,7 +14317,7 @@ the following:
 
 
 
-## 13.2  Trust Agent
+## 14.2  Trust Agent
 
 To uninstall the Trust Agent, run the following command:
 
@@ -14311,7 +14350,7 @@ reinstallation will require clearing TPM ownership.
 
 
 
-## 13.3  Integration Hub
+## 14.3  Integration Hub
 
 To uninstall the Integration Hub, run the following command:
 
@@ -14341,7 +14380,7 @@ without the –purge option):
 3.  Removes integration hub tenant configuration path
 
 <div style="page-break-after: always"></div>
-## 13.4 Kubernetes CRDs
+## 14.4 Kubernetes CRDs
 
 Uninstalling the Intel® SecL Custom Resource Definitions 
 
@@ -14357,13 +14396,13 @@ rm -rf /var/log/isecl-k8s-extensions
 
 
 
-# 14  Appendix
+# 15  Appendix
 
-## 14.1  PCR Definitions
+## 15.1  PCR Definitions
 
-### 14.1.1  Microsoft Windows Server 2016 Datacenter
+### 15.1.1  Microsoft Windows Server 2016 Datacenter
 
-#### 14.1.1.1  TPM 2.0
+#### 15.1.1.1  TPM 2.0
 
 <table>
 <thead>
@@ -14410,9 +14449,9 @@ rm -rf /var/log/isecl-k8s-extensions
 </tbody>
 </table>
 
-### 14.1.2  Red Had Enterprise Linux
+### 15.1.2  Red Had Enterprise Linux
 
-#### 14.1.2.1  TPM 2.0
+#### 15.1.2.1  TPM 2.0
 
 <table>
 <thead>
@@ -14491,9 +14530,9 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-### 14.1.3  VMWare ESXi
+### 15.1.3  VMWare ESXi
 
-#### 14.1.3.1  TPM 1.2
+#### 15.1.3.1  TPM 1.2
 
 <table>
 <thead>
@@ -14569,7 +14608,7 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-#### 14.1.3.2  TPM 2.0
+#### 15.1.3.2  TPM 2.0
 
 VMWare supports TPM 2.0 with Intel TXT starting in vSphere 6.7 Update 1.
 Earlier versions will support TPM 1.2 only.
