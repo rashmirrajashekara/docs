@@ -3094,14 +3094,14 @@ these Traits can be used simultaneously.
 > exclusive Asset Tag values.
 
 ```
-CUSTOM_ISECL_AT_TAG_<key>__<value>=required`
+CUSTOM_ISECL_AT_TAG_<key>_<value>=required`
 ```
 
 For example, to define a Trait that will require an Asset Tag where
 `State = CA` use the following:
 
 ```
-CUSTOM_ISECL_AT_TAG__STATE_CA= required
+CUSTOM_ISECL_AT_TAG_STATE_CA= required
 ```
 
 These Traits can be set using CLI commands for OpenStack Glance:
