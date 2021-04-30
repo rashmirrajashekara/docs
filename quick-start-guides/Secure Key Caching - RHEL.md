@@ -885,7 +885,7 @@ NOTE: This step is required only when PyKMIP script is used as a backend KMIP se
    # pip3 install pykmip==0.9.1
 
 3. In the /etc/ directory create pykmip and policies folders
-   mkdir -p /etc/pykimp/policies
+   mkdir -p /etc/pykmip/policies
 
 4. Copy the following to /etc/pykmip/ from kbs_script folder available under binaries directory
    create_certificates.py, run_server.py, server.conf
