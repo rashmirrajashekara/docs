@@ -693,8 +693,8 @@ KBS_SERVICE_PASSWORD=<Password for the KBS service user>
 INSTALL_ADMIN_USERNAME=<Username for the Admin user>
 INSTALL_ADMIN_PASSWORD=<Password for the Admin user>
 
-CSP_ADMIN_USERNAME=<Username for the CSP Admin user>
-CSP_ADMIN_PASSWORD=<Password for the CSP Admin user>
+CCC_ADMIN_USERNAME=<Username for the Custom Claims Creator Admin user>
+CCC_ADMIN_PASSWORD=<Password for the Custom Claims Creator Admin user>
 
 ```
 > **Note**: The `ISECL_INSTALL_COMPONENTS` variable is a comma-separated list of all the components that will be used in your environment. Not all services are required for every use case. Include only services which are required specific to the use case.
