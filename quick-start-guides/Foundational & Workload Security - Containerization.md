@@ -71,7 +71,6 @@
     - [Cleanup workflows](#cleanup-workflows)
       - [Single-node](#single-node-2)
       - [Multi-node](#multi-node-2)
-- [Only in case of KBS, perform one more step along with above 2 steps](#only-in-case-of-kbs-perform-one-more-step-along-with-above-2-steps)
 
 <!-- /code_chunk_output -->
 
