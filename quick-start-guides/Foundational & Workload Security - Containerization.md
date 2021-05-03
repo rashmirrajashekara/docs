@@ -1,6 +1,81 @@
 # Quick start Guide - Foundation & Workload Security - Containerization
 
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide-foundation-workload-security-containerization)
+  - [Hardware & OS Requirements](#hardware-os-requirements)
+    - [Physical Server requirements](#physical-server-requirements)
+    - [Machines](#machines)
+    - [OS Requirements](#os-requirements)
+    - [Container Runtime](#container-runtime)
+    - [K8s Distributions](#k8s-distributions)
+    - [Storage](#storage)
+  - [Network Requirements](#network-requirements)
+    - [Build System](#build-system)
+    - [CSP Managed Services](#csp-managed-services)
+    - [Enterprise Managed Services](#enterprise-managed-services)
+    - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
+    - [Firewall Settings](#firewall-settings)
+  - [RHEL RPMs Requirements](#rhel-rpms-requirements)
+  - [Deployment Model](#deployment-model)
+    - [Single Node](#single-node)
+    - [Multi Node](#multi-node)
+  - [Build](#build)
+    - [Pre-requisites](#pre-requisites)
+      - [System Tools and Utilities](#system-tools-and-utilities)
+      - [Repo tool](#repo-tool)
+      - [Golang](#golang)
+      - [Docker](#docker)
+      - [Skopeo](#skopeo)
+      - [Libkmip for KBS](#libkmip-for-kbs)
+    - [Build OCI Container images and K8s Manifests](#build-oci-container-images-and-k8s-manifests)
+      - [Foundational Security](#foundational-security)
+      - [Workload Security](#workload-security)
+        - [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
+        - [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
+  - [Deployment](#deployment)
+    - [Pre-requisites](#pre-requisites-1)
+    - [Deploy](#deploy)
+      - [Single-Node](#single-node-1)
+        - [Pre-requisites](#pre-requisites-2)
+          - [Setup](#setup)
+          - [Manifests](#manifests)
+        - [Deploy steps](#deploy-steps)
+          - [Update .env file](#update-env-file)
+          - [Run scripts on K8s master](#run-scripts-on-k8s-master)
+      - [Multi-Node](#multi-node-1)
+        - [Pre-requisites](#pre-requisites-3)
+          - [Setup](#setup-1)
+          - [Manifests](#manifests-1)
+        - [Deploy steps](#deploy-steps-1)
+          - [Update .env file](#update-env-file-1)
+          - [Run scripts on K8s master](#run-scripts-on-k8s-master-1)
+  - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
+    - [Single Node Deployments](#single-node-deployments)
+    - [Multi Node Deployments](#multi-node-deployments)
+  - [Default Service Ports](#default-service-ports)
+  - [Usecase Workflows API Collections](#usecase-workflows-api-collections)
+    - [Pre-requisites](#pre-requisites-4)
+    - [Use Case Collections](#use-case-collections)
+    - [Downloading API Collections](#downloading-api-collections)
+    - [Running API Collections](#running-api-collections)
+  - [Appendix](#appendix)
+    - [Running behind Proxy](#running-behind-proxy)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Rebuilding Repos](#rebuilding-repos)
+    - [Setup Task Flow](#setup-task-flow)
+    - [Configuration Update Flow](#configuration-update-flow)
+    - [Cleanup workflows](#cleanup-workflows)
+      - [Single-node](#single-node-2)
+      - [Multi-node](#multi-node-2)
+- [Only in case of KBS, perform one more step along with above 2 steps](#only-in-case-of-kbs-perform-one-more-step-along-with-above-2-steps)
+
+<!-- /code_chunk_output -->
+
+
 ## Hardware & OS Requirements
 
 ### Physical Server requirements
@@ -9,7 +84,7 @@
 
   > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. Only dTPM is supported on Intel® SecL-DC platform hardware. 
 
-  ![hardware-options](C:\Users\raghave2\git\core\docs\quick-start-guides\images\trusted-boot-options.PNG)
+  ![hardware-options](.\images\trusted-boot-options.PNG)
 
 > **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
