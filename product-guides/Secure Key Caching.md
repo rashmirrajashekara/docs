@@ -363,7 +363,7 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 #### Storage:
 
 * `hostPath` for Single Node `microk8s` for all services and agents
-* `NFS` for Multi Node `kubeadm` for all services, `hostPath ` for sgx_agent and skc_library
+* `NFS` for Multi Node `kubeadm` for all services, `hostPath ` for sgx_agent and skc_library
 
 ##  Recommended Service Layout
 
@@ -3403,20 +3403,20 @@ This script will generate “Private Key ID” and “Server certificate”, whi
     
 	cd into /root/binaries/kbs_script folder
 	
-    **To register keys with KBS KMIP**
-    
-    Update the following variables in kbs.conf:
-    
-        KMIP_KEY_ID (Private key ID registered in KMIP server)
-        
-        SERVER_CERT (Server certificate for created private key)
+	**To register keys with KBS KMIP**
+	
+	Update the following variables in kbs.conf:
+	
+	    KMIP_KEY_ID (Private key ID registered in KMIP server)
+	    
+	    SERVER_CERT (Server certificate for created private key)
 				
 		Enterprise system IP address where CMS, AAS and KBS services are deployed
-        
+	    
 		Port of CMS, AAS and KBS services deployed on enterprise system
-    
+	
 	    AAS admin and Enterprise admin credentials
-        
+
 NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
 
 Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
@@ -3426,7 +3426,7 @@ Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with 
 	Execute the command
 	
 	./run.sh reg
-	
+
 Copy the generated cert file to SGX Compute node where skc_library is deployed. Also make a note of the key id generated.
 
 ## Configuration for NGINX testing on RHEL 8.2
@@ -3565,10 +3565,10 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
         keyagent_conf=/opt/skc/etc/key-agent.ini
         mode=SGX
         debug=true
-
+    
         [SW]
         module=/usr/lib/softhsm/libsofthsm2.so
-
+    
         [SGX]
         module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 

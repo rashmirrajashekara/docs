@@ -88,10 +88,12 @@
 > **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
 > **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommended to use tboot version 1.9.10 for the time being.
+>
+> 
 
 ### Machines
 
-* RHEL 8.3 Build Machine
+* Build Machine
 
 * K8S Master Node Setup on CSP (VMs/Physical Nodes + TXT/SUEFI enabled Physical Nodes)
 
@@ -99,7 +101,7 @@
 
 ### OS Requirements
 
-* RHEL 8.3 for build
+* RHEL 8.3/Ubuntu 18.04 for build
 
 * RHEL 8.3 or Ubuntu 18.04 for K8s cluster deployments
 
@@ -107,7 +109,8 @@
 
 ### Container Runtime
 
-* Docker
+* Docker-19.03.13
+* CRIO-1.17.5
 
 ### K8s Distributions
 
@@ -235,20 +238,6 @@ systemctl daemon-reload
 systemctl restart docker
 ```
 
-#### Skopeo
-
-```shell
-dnf install -y skopeo
-```
-
-#### Libkmip for KBS
-
-```shell
-git clone https://github.com/openkmip/libkmip.git
-cd libkmip
-make install
-```
-
 ### Build OCI Container images and K8s Manifests
 
 #### Foundational Security
@@ -305,32 +294,6 @@ make install
   ./ws-prereq.sh -d
   ```
   
-* Enable and start the Docker daemon
-
-  ```shell
-  systemctl enable docker
-  systemctl start docker
-  ```
-
-* Ignore the below steps if not running behind a proxy
-
-  ```shell
-  mkdir -p /etc/systemd/system/docker.service.d
-  touch /etc/systemd/system/docker.service.d/proxy.conf
-  
-  #Add the below lines in proxy.conf
-  [Service]
-  Environment="HTTP_PROXY=<http_proxy>"
-  Environment="HTTPS_PROXY=<https_proxy>"
-  Environment="NO_PROXY=<no_proxy>"
-  ```
-
-  ```shell
-  #Reload docker
-  systemctl daemon-reload
-  systemctl restart docker
-  ```
-
 * Build
 
   ```shell
@@ -365,40 +328,6 @@ make install
   ./ws-prereq.sh -c
   ```
   
-* Enable and start the Docker daemon
-
-  ```shell
-  systemctl enable docker
-  systemctl start docker
-  ```
-
-* Ignore the below steps if not running behind a proxy
-
-  ```shell
-  mkdir -p /etc/systemd/system/docker.service.d
-  touch /etc/systemd/system/docker.service.d/proxy.conf
-  
-  #Add the below lines in proxy.conf
-  [Service]
-  Environment="HTTP_PROXY=<http_proxy>"
-  Environment="HTTPS_PROXY=<https_proxy>"
-  Environment="NO_PROXY=<no_proxy>"
-  ```
-
-  ```shell
-  #Reload docker
-  systemctl daemon-reload
-  systemctl restart docker
-  ```
-
-* Download go dependencies
-
-  ```shell
-  cd /root/
-  go get github.com/cpuguy83/go-md2man
-  mv /root/go/bin/go-md2man /usr/bin/
-  ```
-
 * Build
 
   ```shell
@@ -448,10 +377,11 @@ make install
     
     * Reboot the server
     
-    * Only for Ubuntu, install the following packages
+    * Only for Ubuntu, run the following commands
     
       ```shell
-      apt install -y modprobe msr
+      $ modprobe 
+      $ msr
       ```
   * Workload Security
     * Container Confidentiality with Docker runtime
@@ -466,19 +396,20 @@ make install
       * Only for Ubuntu, install the following packages
       
         ```shell
-        apt install -y modprobe msr
+        $ modprobe 
+        $ msr
         ```
-    * Container Confidentiality with CRIO runtime
-      * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
-
-      * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
-
-      * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-
-      * Reboot the server
-
-      * Only for Ubuntu, install the following packages
-
+  * Container Confidentiality with CRIO runtime
+    * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
+  
+    * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
+  
+    * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
+  
+    * Reboot the server
+  
+    * Only for Ubuntu, install the following packages
+    
         ```shell
         apt install -y modprobe msr
         ```
@@ -582,7 +513,6 @@ IHUB_PUB_KEY_PATH=
 HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2
 
 # TrustAgent
-GRUB_FILE=/boot/efi/EFI/redhat/grub.cfg
 TA_CERT_SAN_LIST=<ta-san-list>
 TPM_OWNER_SECRET=<tpm-owner-secret>(Can be left empty)
 
@@ -648,6 +578,18 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
 
+* Perform the following steps for isecl-scheduler
+
+```shell
+vi /var/snap/microk8s/current/args/kube-scheduler
+
+#Add the below line
+--policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+
+#Restart kubelet
+systemctl restart snap.microk8s.daemon-kubelet.service
+```
+
 #### Multi-Node
 
 ##### Pre-requisites
@@ -670,15 +612,15 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
     kubectl label node <node-name> node.type=SUEFI-ENABLED
     ```
 
-* `NFS` storage class is used in kubernetes environment for data persistence and supported in SKC. User needs to setup NFS server and create directory structure along with granting permission for a given user id. From security point of view, its been recommended to create a separate user id and grant the permission for all isecl directories for this user id. Below are some samples for reference
+* `NFS` storage class is used in kubernetes environment for data persistence and supported in ISecL FS/WS usecases. User needs to setup NFS server and create directory structure along with granting permission for a given user id. From security point of view, its been recommended to create a separate user id and grant the permission for all isecl directories for this user id. Below are some samples for reference
 
   * Snapshot showing directory structure for which user needs to create on NFS volumes manually or using custom scripts.
 
-  ![NFS Directory Structure SKC Usecase](./images/nfs-fsws-structure.png)
+  ![NFS Directory Structure FS/WS Usecase](./images/nfs-fsws-structure.png)
 
   * Snapshot showing ownership and permissions for directories for which user needs to manually grant the ownership.
 
-  ![NFS Directory Permissions SKC Usecase](./images/nfs-fsws-permissions.png)
+  ![NFS Directory Permissions FS/WS Usecase](./images/nfs-fsws-permissions.png)
 
   * Snapshot for configuring PV and PVC , user need to provide the NFS server IP or hostname and paths for each of the service directories. Sample manifest for creating `config-pv` for cms service
 
@@ -792,7 +734,6 @@ IHUB_PUB_KEY_PATH=
 HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/mtwilson/v2
 
 # TrustAgent
-GRUB_FILE=/boot/efi/EFI/redhat/grub.cfg
 TA_CERT_SAN_LIST=<ta-san-list>
 TPM_OWNER_SECRET=<tpm-owner-secret>(Can be left empty)
 
@@ -826,7 +767,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 ###### Run scripts on K8s master
 
-* The bootstrap scripts are sample scripts to allow for a quick start of SKC services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
+* The bootstrap scripts are sample scripts to allow for a quick start of FS,WS services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
 
 ```shell
 #Pre-reqs.sh
@@ -929,6 +870,7 @@ Log: /var/log/ihub
 #Workload Service
 Config: /etc/workload-service
 Logs: /var/log/workload-service
+Pg-data: /usr/local/kube/data/workload-service
 
 #Key-Broker-Service
 Config: /etc/kbs
@@ -946,6 +888,7 @@ ta-hosts-path: /etc/hosts
 #Workload Agent:
 Config: /etc/workload-agent/
 Logs: /var/log/workload-agent
+TA Config: /opt/trustagent/configuration
 WLA-Socket: /var/run/workload-agent
 ```
 
@@ -975,6 +918,7 @@ Log: <NFS-vol-base-path>/isecl/ihub/logs
 #Workload Service
 Config: <NFS-vol-base-path>/isecl/wls/config
 Logs: <NFS-vol-base-path>/isecl/wls/log
+Pg-data: <NFS-vol-base-path>/usr/local/kube/data/wls
 
 #Key-Broker-Service
 Config: <NFS-vol-base-path>/isecl/kbs/config
@@ -1010,7 +954,7 @@ IHUB: None
 KBS: 30448
 K8s-scheduler: 30888
 K8s-controller: None
-TA: None
+TA: 31443
 WLA: None
 ```
 
@@ -1259,8 +1203,10 @@ systemctl restart kubelet
 #Cleanup all data from NFS share --> User controlled
 
 #Cleanup data from each worker node --> User controlled
-rm -rf /etc/sgx_agent
-rm -rf /var/log/sgx_agent
+rm -rf /etc/workload-agent
+rm -rf /var/log/workload-agent
+rm -rf /opt/trustagent
+rm -rf /var/log/trustagent
 
 #Setup fresh
 ./isecl-bootstrap-db-services.sh up
