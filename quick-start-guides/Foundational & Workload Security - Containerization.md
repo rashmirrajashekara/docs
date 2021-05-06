@@ -411,7 +411,8 @@ systemctl restart docker
     * Only for Ubuntu, install the following packages
     
         ```shell
-        apt install -y modprobe msr
+        $ modprobe 
+        $ msr
         ```
 
 ### Deploy
@@ -620,7 +621,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
   * Snapshot showing ownership and permissions for directories for which user needs to manually grant the ownership.
 
-  ![NFS Directory Permissions FS/WS Usecase](./images/nfs-fsws-permissions.png)
+  ![NFS Directory Permissions FS/WS Usecase](./images/nfs-fsws-permissions.png)
 
   * Snapshot for configuring PV and PVC , user need to provide the NFS server IP or hostname and paths for each of the service directories. Sample manifest for creating `config-pv` for cms service
 
