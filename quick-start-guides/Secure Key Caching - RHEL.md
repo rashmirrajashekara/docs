@@ -823,12 +823,12 @@ Note: All the configuration files required for SKC Library container are modifie
 
 1. Docker should be installed, enabled and services should be active
 
-2.To get the SKC library tar file, "cd utils/build/skc-tools/skc_library/build_scripts/" and run "./build_skclib_docker.sh"
+2.To get the SKC library tar file, run "make skc_library_k8s".
   In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
 
 3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
 
-4. Update sgx_default_qcnl.conf file inside resources folder with SCS IP and SCS port and update hosts file present in same folder with KBS IP and hostname.
+4. Update sgx_default_qcnl.conf file inside resources folder with SCS IP and SCS port and also update the kms_npm.ini with KBS IP and KBS PORT and update hosts file present in same folder with KBS IP and hostname.
 
 5. To create user and role for skc library, update the create_roles.conf, and run ./skc_library_create_roles.sh, which is inside the resources folder.
 
@@ -846,7 +846,7 @@ Note: All the configuration files required for SKC Library container are modifie
    docker load < <SKC_Library>.tar
    
 12. Provide valid paramenets in the docker run command and execute the docker run command. Update the genertaed RSA Key ID and <keys>.crt in the resources directory.
-    docker run -p 8080:2443 -p 80:8080 --mount type=bind,source=/root/<KBS_cert>.crt,target=/root/<KBS_cert>.crt --mount type=bind,source=/root/resources/sgx_default_qcnl.conf,target=/etc/sgx_default_qcnl.conf --mount type=bind,source=/root/resources/nginx.conf,target=/etc/nginx/nginx.conf --mount type=bind,source=/root/resources/keys.txt,target=/root/keys.txt,readonly --mount type=bind,source=/root/resources/pkcs11-apimodule.ini,target=/opt/skc/etc/pkcs11-apimodule.ini,readonly --mount type=bind,source=/root/resources/openssl.cnf,target=/etc/pki/tls/openssl.cnf --mount type=bind,source=/root/resources/skc_library.conf,target=/skc_library.conf --add-host=<SGX_HOSTNAME>:<SGX_HOST_IP> --add-host=<KBS_Hostname>:<KBS host IP> --mount type=bind,source=/dev/sgx,target=/dev/sgx --cap-add=SYS_MODULE --privileged=true <SKC_LIBRARY_IMAGE_NAME>
+    docker run -p 8080:2443 -p 80:8080 --mount type=bind,source=/root/<KBS_cert>.crt,target=/root/<KBS_cert>.crt --mount type=bind,source=/root/resources/sgx_default_qcnl.conf,target=/etc/sgx_default_qcnl.conf --mount type=bind,source=/root/resources/nginx.conf,target=/etc/nginx/nginx.conf --mount type=bind,source=/root/resources/keys.txt,target=/root/keys.txt,readonly --mount type=bind,source=/root/resources/pkcs11-apimodule.ini,target=/opt/skc/etc/pkcs11-apimodule.ini,readonly --mount type=bind,source=/root/resources/kms_npm.ini,target=/opt/skc/etc/kms_npm.ini,readonly --mount type=bind,source=/root/resources/sgx_stm.ini,target=/opt/skc/etc/sgx_stm.ini,readonly --mount type=bind,source=/root/resources/openssl.cnf,target=/etc/pki/tls/openssl.cnf --mount type=bind,source=/root/resources/skc_library.conf,target=/skc_library.conf --add-host=<SGX_HOSTNAME>:<SGX_HOST_IP> --add-host=<KBS_Hostname>:<KBS host IP> --mount type=bind,source=/dev/sgx,target=/dev/sgx --cap-add=SYS_MODULE --privileged=true <SKC_LIBRARY_IMAGE_NAME>
     
     Note: In the above docker run command, source refers to the actual path of the files located on the host and the target always refers to the files which would be mounted inside the container
   
