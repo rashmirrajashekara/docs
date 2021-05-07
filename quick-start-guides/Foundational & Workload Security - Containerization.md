@@ -380,8 +380,7 @@ systemctl restart docker
     * Only for Ubuntu, run the following commands
     
       ```shell
-      $ modprobe 
-      $ msr
+      $ modprobe msr
       ```
   * Workload Security
     * Container Confidentiality with Docker runtime
@@ -396,8 +395,7 @@ systemctl restart docker
       * Only for Ubuntu, install the following packages
       
         ```shell
-        $ modprobe 
-        $ msr
+        $ modprobe msr
         ```
   * Container Confidentiality with CRIO runtime
     * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
@@ -411,8 +409,7 @@ systemctl restart docker
     * Only for Ubuntu, install the following packages
     
         ```shell
-        $ modprobe 
-        $ msr
+        $ modprobe msr
         ```
 
 ### Deploy
@@ -798,6 +795,15 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 #        usecase    Can be one of foundation-security, workload-security, isecl-orchestration-k8s
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
+```
+
+
+* Copy the `ihub_public_key.pem` from NFS path - `<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s Master
+* Update the `isecl-k8s.env` for `IHUB_PUB_KEY_PATH`
+* Bring up the `isecl-k8s-scheduler`
+
+```shell
+./isecl-bootstrap.sh up isecl-scheduler
 ```
 
 
