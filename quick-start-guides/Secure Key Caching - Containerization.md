@@ -241,14 +241,14 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-single-node && cd /root/intel-secl/build/skc-k8s-single-node
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/skc-k8s-single-node.xml -b refs/tags/v3.5.0
+  repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.6/develop-gitlab -m manifest/skc.xml
   repo sync
   ```
 
 * Build
 
   ```shell
-  make all
+  make k8s-aio
   ```
 
 * Built Container images,K8s manifests and deployment scripts
@@ -263,14 +263,14 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-multi-node && cd /root/intel-secl/build/skc-k8s-multi-node
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/skc-k8s-multi-node.xml -b refs/tags/v3.5.0
+  repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.6/develop-gitlab -m manifest/skc.xml
   repo sync
   ```
 
 * Build
 
   ```shell
-  make all
+  make k8s
   ```
 
 * Built Container images,K8s manifests and deployment scripts
@@ -768,6 +768,8 @@ Opt: /opt/kbs
 Config: /root/lib/resources/sgx_default_qcnl.conf
 openssl-config: /etc/pki/tls/openssl.cnf
 pkcs11-config: /opt/skc/etc/pkcs11-apimodule.ini
+kms-npm-config: /opt/skc/etc/kms_npm.ini
+sgx-stm-config: /opt/skc/etc/sgx_stm.ini
 kms-cert: /root/9e9db4b5-5893-40fe-b6c4-d54ec6609c55.crt
 haproxy-hosts: /etc/hosts
 nginx-config: /etc/nginx/nginx.conf
@@ -940,7 +942,10 @@ rm -rf .repo *
 #Rebuild as before
 repo init ...
 repo sync
-make all
+#To rebuild single node
+make k8s-aio
+#To rebuild multi node
+make k8s
 ```
 
 ### SKC Key Transfer Flow
@@ -978,6 +983,8 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
     * Update KBS Key ID in both `ssl_certificate` and `ssl_certificate_key` lines.
   * `sgx_default_qcnl.conf`
     * Update K8s Master IP and SCS K8s Service Port
+  * `kms_npm.ini`
+    * Update K8s Master IP and KBS K8s Service Port
   * `skc_library.conf`
     * Update `KBS_HOSTNAME`, `KBS_IP` and `KBS_PORT` with K8s Master Hostname, K8s Master IP and  KBS K8s Service Port.
     * Update `CMS_IP` and `CMS_PORT` with K8s Master IP and CMS K8s Service Port.
