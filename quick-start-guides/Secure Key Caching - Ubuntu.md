@@ -31,7 +31,6 @@ Table of Contents
          * [Configure kube-scheduler to establish communication with isecl-scheduler](#configute-kube-scheduler-to-establish-communication-with-isecl-scheduler)
          * [Deploying SKC Services on Single System](#deploying-skc-services-on-single-system)
          * [Deploy CSP SKC Services](#deploy-csp-skc-services)
-         * [Openstack Setup and Associate Traits](#openstack-setup-and-associate-traits)
          * [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
          * [Deploy SGX Agent](#deploy-sgx-agent)
          * [Deploy SKC Library](#deploy-skc-library)
@@ -55,15 +54,11 @@ Table of Contents
 
    Orchestrator Node Setup
 
-#### SGX Enabled Host**
+#### SGX Enabled Host
 
 ### OS Requirements
 
    UBUNTU 18.04. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
-
-   **Assumption:**
-
-   CSP and Enterprise side deployment will be done through Ansible-Galaxy role;
 
 ## **2. Network Requirements**
 
@@ -118,7 +113,7 @@ apt-get update
 
 * CSP - ISecL Services Machine
 
-* CSP - Physical Server as per supported configurations
+* Physical Server as per supported configurations
 
 * Enterprise - ISecL Services Machine
 
@@ -484,7 +479,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
-* To setup k8 cluster follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos Once the master/worker setup is done, follow below steps on Master Node:
+* To setup k8 cluster follow https://phoenixnap.com/kb/install-kubernetes-on-ubuntu Once the master/worker setup is done, follow below steps on Master Node:
 
 ### Untar packages and push OCI images to registry
 

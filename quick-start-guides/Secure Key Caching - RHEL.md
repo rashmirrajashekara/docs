@@ -63,10 +63,6 @@ Table of Contents
 
    RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
-   **Assumption:**
-
-   CSP and Enterprise side deployment will be done through Ansible-Galaxy role
-
 ## **2. Network Requirements**
 
 Internet access is required for the following
@@ -111,7 +107,7 @@ Access required for the following packages in all systems
 
 * CSP - ISecL Services Machine
 
-* CSP - Physical Server as per supported configurations
+* Physical Server as per supported configurations
 
 * Enterprise - ISecL Services Machine
 

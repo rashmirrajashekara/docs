@@ -714,11 +714,11 @@ The script will automatically generate the following users:
 -   Integration HUB (IHUB)
 -   Key Broker Service (KBS) with backend key management
 -   Installation Admin User
--   CSP Admin User
+-   CCC Admin User
 
 These user accounts will be used during installation of each components of SGX Attestation or SKC. In general, whenever credentials are required by an installation answer file, the variable name should match the name of the corresponding variable used in the `populate-users.env` file.
 
-The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and `INSTALLATION_ADMIN_PASSWORD`. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and `INSTALLATION_ADMIN_PASSWORD` can be used to generate an authentication token. 
+The populate-users script will also output an installation token. This token has all privileges needed for installation of the services, and uses the credentials provided with the `INSTALL_ADMIN_USERNAME` and `INSTALL_ADMIN_PASSWORD`. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALL_ADMIN_USERNAME` and `INSTALL_ADMIN_PASSWORD` can be used to generate an authentication token. 
 
 
 ## Installing the Caching Service
