@@ -392,7 +392,7 @@ systemctl restart docker
       
       * Reboot the server
       
-      * Only for Ubuntu, install the following packages
+      * Only for Ubuntu, run the following command
       
         ```shell
         $ modprobe msr
@@ -406,7 +406,7 @@ systemctl restart docker
   
     * Reboot the server
   
-    * Only for Ubuntu, install the following packages
+    * Only for Ubuntu, run the following command
     
         ```shell
         $ modprobe msr
@@ -438,6 +438,7 @@ systemctl restart docker
 * In case of `microk8s` cluster, the `--allow-privileged=true` flag needs to be added to the `kube-apiserver` under `/var/snap/microk8s/current/args/kube-apiserver` and restart `kube-apiserver` with `systemctl restart snap.microk8s.daemon-apiserver` to allow running of privileged containers 
   like `TRUST-AGENT` and `WORKLOAD-AGENT`
   
+* Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
 
 ###### Manifests
 
@@ -521,6 +522,13 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
+KMIP_SERVER_IP=<kmip-server-ip>
+KMIP_SERVER_PORT=<kmip-server-port>
+# Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
+# This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
+KMIP_CLIENT_CERT_NAME=client_certificate.pem
+KMIP_CLIENT_KEY_NAME=client_key.pem
+KMIP_ROOT_CERT_NAME=root_certificate.pem
 
 # ISecl Scheduler
 # For microk8s
@@ -579,6 +587,10 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 * Perform the following steps for isecl-scheduler
 
 ```shell
+#Copy scheduler-policy.json
+cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions/
+
+#Edit the kube-scheduler
 vi /var/snap/microk8s/current/args/kube-scheduler
 
 #Add the below line
@@ -660,6 +672,8 @@ systemctl restart snap.microk8s.daemon-kubelet.service
     ```
 
   > **Note:** The user id specified in security context in `deployment.yml` for a given service and owner of the service related directories in NFS must be same
+  
+* Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
 
 ###### Manifests
 
@@ -742,6 +756,13 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
+KMIP_SERVER_IP=<kmip-server-ip>
+KMIP_SERVER_PORT=<kmip-server-port>
+# Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
+# This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
+KMIP_CLIENT_CERT_NAME=client_certificate.pem
+KMIP_CLIENT_KEY_NAME=client_key.pem
+KMIP_ROOT_CERT_NAME=root_certificate.pem
 
 # ISecl Scheduler
 # For Kubeadm
@@ -798,7 +819,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 ```
 
 
-* Copy the `ihub_public_key.pem` from NFS path - `<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s Master
+* Copy the `ihub_public_key.pem` from NFS path -`<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s Master
 * Update the `isecl-k8s.env` for `IHUB_PUB_KEY_PATH`
 * Bring up the `isecl-k8s-scheduler`
 
