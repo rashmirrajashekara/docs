@@ -807,7 +807,7 @@ Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip
    # pip3 install pykmip==0.9.1
 
 3. In the /etc/ directory create pykmip and policies folders
-   mkdir -p /etc/pykimp/policies
+   mkdir -p /etc/pykmip/policies
 
 4. Configure pykmip server using server.conf
    Update hostname in the server.conf
