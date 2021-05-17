@@ -160,7 +160,6 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/skc.xml
 repo sync
 ```
 
@@ -238,12 +237,12 @@ The below installation is required on the Build & Deployment system only and the
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.5/develop/tools/api-collections)
+  > **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections)
 
 
 ## **8. Deployment**
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.5/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -397,7 +396,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ## **9. Usecase Workflows with Postman API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.5/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
 
 ### Use Case Collections
 
@@ -475,11 +474,11 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v3.5.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.5.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v3.5.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.5.0
+     skopeo copy oci-archive:isecl-k8s-controller-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.6.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.5.0). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0). It will automatically pull the images from registry.
 
 ##### Deploy isecl-controller
 * Create hostattributes.crd.isecl.intel.com crd
@@ -621,6 +620,12 @@ Save and Close
 ./install_skc.sh
 ```
 
+In case ihub installation fails, its recommended to run the following command to clear failed service instance
+
+```
+systemctl reset-failed 
+```
+
 #### Deploy CSP SKC Services
 ```
 Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
@@ -636,6 +641,12 @@ Update csp_skc.conf with the following
   - Intel PCS Server API URL and API Keys
 Save and Close
 ./install_csp_skc.sh
+```
+
+In case installation fails, its recommended to run the following command to clear failed service instance
+
+```
+systemctl reset-failed 
 ```
 
 Create sample yml file for nginx workload and add SGX labels to it such as:
