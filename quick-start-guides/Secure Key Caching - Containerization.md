@@ -1036,7 +1036,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 ### SGX Discovery Flow
 
-* Create below sample yml file for nginx workload and add SGX labels as node affinity to it.
+* Create below sample pod.yml file for nginx workload and add SGX labels as node affinity to it.
 ```
 apiVersion: v1
 kind: Pod
