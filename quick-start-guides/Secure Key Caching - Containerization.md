@@ -421,7 +421,8 @@ ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>
-KMIP_SERVER_PORT=<KMIP Server Port, default:5696>
+KMIP_SERVER_PORT=<KMIP Server Port>
+#Default port for kmip server is 5696
 
 # ISecl Scheduler
 # For microk8s
@@ -631,7 +632,9 @@ ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>, <Master Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>
-KMIP_SERVER_PORT=<KMIP Server Port, dafault:5696>
+KMIP_SERVER_PORT=<KMIP Server Port>
+#Default port for kmip server is 5696
+
 
 # ISecl Scheduler
 # For Kubeadm
