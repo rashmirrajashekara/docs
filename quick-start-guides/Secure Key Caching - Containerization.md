@@ -320,6 +320,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
 
+
 * Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
     * Retrieve KMIP server's key and certificates i.e. client_certificate.pem, client_key.pem and root_certificate.pem files from /etc/pykmip (default path) to master node under `k8s/manifests/kbs/kmip-secrets/` path.
     > **Note:** Under `k8s/manifests/kbs/` , if kmip-secrets folder not available then please create it before copying above key and certs 
@@ -983,6 +984,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   * `CMS_PORT` : k8s exposed port for CMS (default 30445)
   * `KMIP_KEY_ID` : KMIP KEY ID generated on KMIP server in previous step.
   * `SERVER_CERT` : Complete path of copied server.crt file generated in previous step.
+
 
 * Generate the key using `./run.sh reg`
 
