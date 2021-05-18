@@ -160,6 +160,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
+repo init -u https://gitlab.devtools.intel.com/sst/isecl/build-manifest -b v3.6/develop-gitlab -m manifest/skc.xml
 repo sync
 ```
 
