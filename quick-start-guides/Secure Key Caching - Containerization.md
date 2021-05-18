@@ -685,7 +685,7 @@ chmod +x create-skc-dirs.nfs.sh
 #        usecase    Can be one of secure-key-caching,sgx-attestation,sgx-orchestration-k8s,sgx-virtualization,csp,enterprise
 ./skc-bootstrap.sh up <all/usecase of choice>
 
-#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following
+#NOTE: The isecl-scheduler will not be deployed in case of multi-node K8s as there is dependency on the NFS server IHUB public key to be copied from NFS to k8s master to allow the successful installation of isecl-scheduler. Post update of the isecl-k8s-skc.env for IHUB_PUB_KEY_PATH on K8s master, user needs to run the following
 ./skc-bootstrap.sh up isecl-scheduler
 ```
 
@@ -750,6 +750,11 @@ Pg-data: /usr/local/kube/data/authservice/pgdata
 Config: /etc/shvs
 Logs: /var/log/shvs
 Pg-data: /usr/local/kube/data/shvs
+
+#SGX Caching Service
+Config: /etc/scs
+Logs: /var/log/scs
+Pg-data: /usr/local/kube/data/scs
 
 #Integration-Hub
 Config: /etc/ihub
@@ -954,7 +959,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 #### Generating keys
 
-* Navigate to `k8s/manifests/kbs/kbs_script/`  
+* Navigate to `k8s/manifests/kbs/`  
 
 * Update `kbs.conf` with `SYSTEM_IP` and `CACERT_PATH`
 
@@ -1002,6 +1007,51 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 * It will initiate the key transfer
 * Establish tls session with the nginx using the key transferred inside the enclave
    `wget https://<Master IP>:30443 --no-check-certificate`
+
+
+
+### SKC Discovery Flow
+
+* Create below sample yml file for nginx workload and add SGX labels as node affinity to it.
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
+
+* Launch the pod and validate if pod can be launched on the node. Run following commands:
+```
+    kubectl apply -f pod.yml
+    kubectl get pods
+    kubectl describe pods nginx
+```
+
+* Pod should be in running state and launched on the host as per values in yml. Validate by running below command on worker node:
+```
+	docker ps
+```
 
 
 
