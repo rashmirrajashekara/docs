@@ -66,6 +66,7 @@ Table of Contents
             * [Generating keys](#generating-keys)
             * [Setup configurations](#setup-configurations)
             * [Initiate Key Transfer Flow](#initiate-key-transfer-flow)
+         * [SGX Discovery Flow](#sgx-discovery-flow)
          * [SKC Virtualization Flow](#skc-virtualization-flow)
             * [Configuration for NGINX testing On SGX Virtualization Setup](#Configuration for NGINX testing On SGX Virtualization Setup)
          * [Setup Task Flow](#setup-task-flow)
@@ -319,6 +320,12 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
 
+* Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
+    * Retrieve KMIP server's key and certificates i.e. client_certificate.pem, client_key.pem and root_certificate.pem files from /etc/pykmip (default path) to master node under `k8s/manifests/kbs/kmip-secrets/` path.
+    > **Note:** Under `k8s/manifests/kbs/` , if kmip-secrets folder not available then please create it before copying above key and certs 
+
+* Ensure that system date and time are in sync across all servers (master node, worker node, nfs server, kmip server)
+
 ### Deploy
 
 #### Single-Node
@@ -411,6 +418,9 @@ KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s Master IP>:30448/v1
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
+
+KMIP_SERVER_IP=<KMIP Server IP>
+KMIP_SERVER_PORT=<KMIP Server Port, default:5696>
 
 # ISecl Scheduler
 # For microk8s
@@ -618,6 +628,9 @@ KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s Master IP>:30448/v1
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>, <Master Hostname>
+
+KMIP_SERVER_IP=<KMIP Server IP>
+KMIP_SERVER_PORT=<KMIP Server Port, dafault:5696>
 
 # ISecl Scheduler
 # For Kubeadm
@@ -959,17 +972,21 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 #### Generating keys
 
-* Navigate to `k8s/manifests/kbs/`  
+* From cluster node, copy `k8s/manifests/kbs/rsa_create.py` to KMIP server and execute it using `python3 rsa_create.py`. It will generate the KMIP KEY ID and server.crt. Copy server.crt to cluster node.
 
-* Update `kbs.conf` with `SYSTEM_IP` and `CACERT_PATH`
+* On cluster node, navigate to `k8s/manifests/kbs/` 
 
-  * `CACERT_PATH` for Single-Node deployments:  `/etc/kbs/certs/trustedca/<sha1>.pem`
-
-  * `CACERT_PATH` for Multi-Node deployments: `<NFS-PATH>/kbs/config/certs/trustedca/<sha1>.pem`
-
-    > **Note:** The CACERT needs to be copied to K8s master for the key transfer flow
+* Update `kbs.conf` with `SYSTEM_IP`, `AAS_PORT`, `KBS_PORT`, `CMS_PORT`, `KMIP_KEY_ID` and `SERVER_CERT`
+  * `SYSTEM_IP` : k8s Master IP
+  * `AAS_PORT` : k8s exposed port for AAS (default 30444)
+  * `KBS_PORT` : k8s exposed port for KBS (default 30448)
+  * `CMS_PORT` : k8s exposed port for CMS (default 30445)
+  * `KMIP_KEY_ID` : KMIP KEY ID generated on KMIP server in previous step.
+  * `SERVER_CERT` : Complete path of copied server.crt file generated in previous step.
 
 * Generate the key using `./run.sh reg`
+
+> **Note:** Before generating new key, every time we have to follow above 4 steps. rsa_create.py script will generate new `KMIP_KEY_ID` and `SERVER_CERT` everytime.
 
 #### Setup configurations
 
@@ -1005,12 +1022,14 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 * Deploy the SKC Library using `./skc-bootstrap.sh up skclib`
 * It will initiate the key transfer
+>  **Note: ** To enable debug log, make `debug=true` in pkcs11-apimodule.ini, kms_npm.ini and sgx_stm.ini files available under `k8s/manifests/skc_library/resources`
+
 * Establish tls session with the nginx using the key transferred inside the enclave
    `wget https://<Master IP>:30443 --no-check-certificate`
 
 
 
-### SKC Discovery Flow
+### SGX Discovery Flow
 
 * Create below sample yml file for nginx workload and add SGX labels as node affinity to it.
 ```
@@ -1346,7 +1365,7 @@ In order to cleanup and setup fresh again on multi-node with data,config from pr
 #Delete 'scheduler-policy.json'
 rm -rf /opt/isecl-k8s-extensions
 
-#Comment/Remove '--policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+#Comment/Remove '- --policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
  containers:
   - command:
     - kube-scheduler
@@ -1359,7 +1378,7 @@ containers:
       name: extendedsched
       readOnly: true
       
-#Comment/Remove '-hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
+#Comment/Remove '- hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 volumes:
   - hostPath:
       path: /opt/isecl-k8s-extensions/
