@@ -985,8 +985,8 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
   * `AAS_PORT` : k8s exposed port for AAS (default 30444)
   * `KBS_PORT` : k8s exposed port for KBS (default 30448)
   * `CMS_PORT` : k8s exposed port for CMS (default 30445)
-  * `KMIP_KEY_ID` : KMIP KEY ID generated on KMIP server in previous step.
-  * `SERVER_CERT` : Complete path of copied server.crt file generated in previous step.
+  * `KMIP_KEY_ID` : KMIP KEY ID obtained by running rsa_create.py on KMIP server.
+  * `SERVER_CERT` : Complete path of copied server.crt file obtained by running rsa_create.py on KMIP server.
 
 
 * Generate the key using `./run.sh reg`
@@ -1069,7 +1069,7 @@ spec:
 ```
     kubectl apply -f pod.yml
     kubectl get pods
-    kubectl describe pods nginx
+    kubectl describe pod nginx
 ```
 
 * Pod should be in running state and launched on the host as per values in yml. Validate by running below command on worker node:
