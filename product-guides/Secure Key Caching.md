@@ -2271,7 +2271,7 @@ Following environment variables are optionally used in download-cert-tls
     TLS_SAN_LIST        Comma separated list of hostnames to add to Certificate, including IP addresses and DNS names
 
 Following environment variables are required for 'attestation-service-connection' setup:
-    SHVS_BASE_URL       Base URL for the Attestation Service
+    SHVS_BASE_URL       Base URL for the SGX Host Verification Service
     
 Following environment variables are required for 'tenant-service-connection' setup:
     TENANT      Type of Tenant Service (OpenStack or Kubernetes)
@@ -2993,7 +2993,7 @@ scs setup [task]
                                  - SCS_SERVER_MAX_HEADER_BYTES                      : SGX Caching Service Max Length Of Request Header Bytes
                                  - INTEL_PROVISIONING_SERVER                        : Intel ECDSA Provisioning Server URL
                                  - INTEL_PROVISIONING_SERVER_API_KEY                : Intel ECDSA Provisioning Server API Subscription key
-                                 - SCS_LOG_LEVEL                                    : SGX Caching Service Log Level
+                                 - SCS_LOGLEVEL                                     : SGX Caching Service Log Level
                                  - SCS_LOG_MAX_LENGTH                               : SGX Caching Service Log maximum length
                                  - SCS_ENABLE_CONSOLE_LOG                           : SGX Caching Service Enable standard output
                                  - SCS_REFRESH_HOURS                                : SCS Automatic Refresh of SGX Data
