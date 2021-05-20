@@ -83,7 +83,7 @@
 
   > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. Only dTPM is supported on Intel® SecL-DC platform hardware. 
 
-  ![hardware-options](.\images\trusted-boot-options.PNG)
+  ![hardware-options](./images/trusted-boot-options.PNG)
 
 > **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
@@ -152,10 +152,9 @@ Ensure that all the FS,WS service ports are accessible with firewall
 Access required for the following rpms in all systems
 
 * BaseOS
-
 * Appstream
-
 * CodeReady
+* EPEL8
 
 
 
@@ -165,9 +164,7 @@ Access required for the following rpms in all systems
 
 The single Node uses `microk8s` as a supported K8s distribution
 
-![k8s-single-node](./images/)
-
-> TODO: Praveen to provide
+![k8s-single-node](./images/k8s-single-node.png)
 
 ### Multi Node
 
