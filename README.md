@@ -131,7 +131,7 @@ Following steps facilitate the building of all components:
 
   ```shell
   mkdir -p /root/isecl/all && cd /root/isecl/all
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/all-components.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/all-components.xml
   repo sync
   ```
 
