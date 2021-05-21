@@ -4475,6 +4475,7 @@ Also, if Notary is being used, set the following environment variable
 before uploading the image to the Registry:
 
 `export DOCKER_CONTENT_TRUST=1`
+`export DOCKER_CONTENT_TRUST_SERVER=https://<notary-system-IP:4443>`
 
 After generating the encrypted image with the WPM, the encrypted image
 can be uploaded to a local Docker Registry.
