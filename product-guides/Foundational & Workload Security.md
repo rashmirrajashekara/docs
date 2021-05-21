@@ -458,30 +458,6 @@ The database client for Intel® SecL services requires the database TLS certific
 
 The database client for Intel® SecL services will validate that the Subject Alternative Names in the database server’s TLS certificate contain the hostname(s)/IP address(es) that the clients will use to access the database server. If configuring a database without using the provided scripts, ensure that these attributes are present in the database TLS certificate.
 
-## Installation of Containerized Services and Agent in a Kubernetes Cluster
-
-The containerized deployment utilizes the Kubernetes orchestrator to deploy Foundational & Workload Security components. The deployments are automated once the prerequisites are in place. #intel-security-libraries-configuration-settings)
-
-### Prerequisites
-
-* (Required for single-node deployments) `microk8s` must be installed 
-* (Required for multi-node deployments) `kubeadm` must be installed
-* Execute the prerequisite scripts under `<working directory>/k8s/platform dependencies`  and `<working directory>/k8s/container-runtime`(these are created by the build process)
-* Follow the deployment pre-reqs as given in the [Quick Start guide](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md) based on the chosen deployment model
-
-### Deploy Steps
-
-* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md) based on the deployment model. Follow the instructions for the deployment using the scripts
-
-### Additional Details
-
-* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md)
-* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md)
-* [Default Service Ports](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md)
-* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/master/product-guides/Product%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Datacenter%20Foundational%20Security.md)
-
-
-
 
 
 3.5  Installing the Certificate Management Service
