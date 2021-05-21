@@ -284,7 +284,7 @@ https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections
 
 Intel® Security Libraries is distributed as open source code and must be compiled into OCI images before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.5/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#build)
+Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6/develop/quick-start-guides/Quick%20Start%20Guide%20-%20Intel%C2%AE%20Security%20Libraries%20-%20Secure%20Key%20Caching%20-%20Containerization.md#build)
 
 After the components have been built, the OCI images and pre-req scripts can be found in the `K8s` directory created by the build scripts.
 
