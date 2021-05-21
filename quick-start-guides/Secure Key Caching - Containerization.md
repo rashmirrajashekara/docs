@@ -158,6 +158,8 @@ The multi node supports `kubeadm` as a supported K8s distribution
 
 ![K8s Deployment-sqx](./images/k8s-deployment-sgx.jpg)
 
+![K8s Multi Deployment-sqx](./images/k8s-multi-deployment-sgx.jpg)
+
 ## Build
 
 ### Pre-requisites
@@ -242,7 +244,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-single-node && cd /root/intel-secl/build/skc-k8s-single-node
-  repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.6/develop-gitlab -m manifest/skc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/skc.xml
   repo sync
   ```
 
@@ -264,7 +266,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-multi-node && cd /root/intel-secl/build/skc-k8s-multi-node
-  repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.6/develop-gitlab -m manifest/skc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/skc.xml
   repo sync
   ```
 
@@ -867,13 +869,13 @@ SGXAgent: 31001
 
 ## Usecase Workflows API Collections
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.5/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.5/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections)
 
 ### Use Case Collections
 
