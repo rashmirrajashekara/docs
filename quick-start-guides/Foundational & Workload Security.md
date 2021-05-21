@@ -145,7 +145,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/fs.xml
   repo sync
   ```
 
@@ -178,7 +178,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -208,7 +208,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/cc-docker.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/cc-docker.xml
   repo sync
   ```
   
@@ -265,7 +265,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.5.0 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/cc-crio.xml
   repo sync
   ```
 
