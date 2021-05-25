@@ -76,25 +76,25 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 
 [TOC]
 
-1  Introduction
+Introduction
 ============
 
-## 1.1  Overview
+## Overview
 
 Intel Security Libraries for Datacenter is a collection of software applications and development libraries intended to help turn Intel platform security  features into real-world security use cases.
 
-### 1.1.1  Trusted Computing
+### Trusted Computing
 
 Trusted Computing consists of a set of industry standards defined by the Trusted Computing Group to harden systems and data against attack. These
 standards include verifying platform integrity, establishing identity, protection of keys and secrets, and more. One of the functions of Intel Security Libraries is to provide a “Trusted Platform,” using Intel security technologies to add visibility, auditability, and control to server platforms.
 
-#### 1.1.1.1  The Chain of Trust
+#### The Chain of Trust
 
 In a Trusted Computing environment, a key concept is verification of the integrity of the underlying platform. Verifying platform integrity typically means cryptographic measurement and/or verification of firmware and software components. The process by which this measurement and verification takes place affects the overall strength of the assertion that the measured and verified components have not been altered. Intel refers to this process as the “*Chain of Trust*,” whereby at boot time, a sequence of cryptographic measurements and signature verification events happen in a defined order, such that
 measurement/verification happens before execution, and each entity responsible for performing a measurement or verification is measured by
 another step earlier in the process. Any break in this chain leads to an opportunity for an attacker to modify code and evade detection.
 
-#### 1.1.1.2  Hardware Root of Trust
+#### Hardware Root of Trust
 
 The *Root of Trust,* the first link in the chain, can be one of several different options. Anything that happens in the boot process before the Root of Trust must be considered to be within the “trust boundary,” signifying components whose trustworthiness cannot be assessed. For this reason, it’s best to use a Root of Trust that starts as early in the system boot process as possible, so that the Chain of Trust during the boot process can cover as much as possible. 
 
@@ -102,11 +102,11 @@ Multiple Root of Trust options exist, ranging from firmware to hardware. In gene
 boundary” than a firmware Root of Trust. A hardware Root of Trust will also have the benefit of immutability – where firmware can easily be
 flashed and modified, hardware is much more difficult to tamper with.
 
-##### 1.1.1.2.1  Intel® Trusted Execution Technology (Intel® TXT)
+##### Intel® Trusted Execution Technology (Intel® TXT)
 
 Intel® Trusted Execution Technology is a hardware Root of Trust feature available on Intel® server platforms starting with the Grantley generation. Intel® TXT is enabled in the system BIOS (typically under the Processor \> Advanced tab), and requires Intel® VT-d and Intel VT-x features to be enabled as prerequisites (otherwise the option will be grayed out). Intel® TXT will ship “disabled” by default.
 
-##### 1.1.1.2.2  Intel® BootGuard (Intel® BtG)
+##### Intel® BootGuard (Intel® BtG)
 
 Intel® BootGuard is a hardware Root of Trust feature available on Intel® server platforms starting with the Purley-Refresh generation. Unlike
 Intel® TXT, Intel® BtG is configured in platform fuses, not in the system BIOS. Intel® BtG is fused into several “profiles” that determine the behavior of the feature. Intel® BtG supports both “verify” and “measure” profiles; in “verify” profiles, Intel® BtG will verify the signature of the platform Initial Boot Block (IBB). In “measure”profiles, Intel® BtG will hash the IBB and extend that measurement to a TPM PCR. It is recommended that Intel® BtG be fused into the “measure and verify” profile for maximum protection and auditability.
@@ -115,7 +115,7 @@ Because the Intel® BtG profile is configured using fuses, the server OEM/ODM wi
 
 Because Intel® BtG only measures/verifies the integrity of the IBB, it’s important to have an additional technology handle measurements later in the boot process. Intel® TXT can provide this function using tboot to invoke SINIT, and UEFI SecureBoot can alternatively provide similar functionality (note that Linux users should properly configure Shim and use a signed kernel for UEFI SecureBoot).
 
-#### 1.1.1.3  Supported Trusted Boot Options
+#### Supported Trusted Boot Options
 
 Intel® SecL-DC supports several options for Trusted Computing, depending
 on the features available on the platform.
@@ -127,7 +127,7 @@ on the features available on the platform.
 > **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on
 > RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
-#### 1.1.1.4  Remote Attestation
+#### Remote Attestation
 
 Trusted computing consists primarily of two activities – measurement, and attestation. Measurement is the act of obtaining cryptographic representations for the system state. Attestation is the act of comparing those cryptographic measurements against expected values to determine whether the system booted into an acceptable state. 
 
@@ -137,21 +137,21 @@ Intel® SecL utilizes remote attestation, providing a remote Verification Servic
 
 Both local and remote attestation can be used concurrently. However, Intel® SecL, and this document, will focus only on remote attestation. For more information on TPM Launch Control Policies, consult the *Intel Trusted Execution Technology (Intel TXT) Software Development Guide* (https://www.intel.com/content/dam/www/public/us/en/documents/guides/intel-txt-software-development-guide.pdf).
 
-### 1.1.2  Intel® Security Libraries for Datacenter Features
+### Intel® Security Libraries for Datacenter Features
 
-#### 1.1.2.1  Platform Integrity
+#### Platform Integrity
 
 Platform Integrity is the use case enabled by the specific implementation of the Chain of Trust and Remote Attestation concepts. This involves the use of a Root of Trust to begin an unbroken chain of platform measurements at server boot time, with measurements extended to the Trusted Platform Module and compared against expected values to verify the integrity of measured components. This use case is foundational for other Intel® SecL use cases.
 
-#### 1.1.2.2  Data Sovereignty
+#### Data Sovereignty
 
 Data Sovereignty builds on the Platform Integrity use case to allow physical TPMs to be written with Asset Tags containing any number of key/value pairs. This use case is typically used to identify the geographic location of the physical server, but can also be used to identify other attributes. For example, the Asset Tags provided by the Data Sovereignty use case could be used to identify hosts that meet specific compliance requirements and can run controlled workloads.
 
-#### 1.1.2.3  Application Integrity
+#### Application Integrity
 
 Added in the Intel® SecL-DC 1.5 release, Application Integrity allows any files and folders on a Linux host system to be included in the Chain of Trust integrity measurements. These measurements are attested by the Verification Service along with the other platform measurements, and are included in determining the host’s overall Trust status. The measurements are performed by a measurement agent called tbootXM, which is built into initrd during Trust Agent installation. Because initrd is included in other Trusted Computing measurements, this allows Intel® SecL-DC to carry the Chain of Trust all the way to the Linux filesystem.
 
-#### 1.1.2.4  Workload Confidentiality for Virtual Machines and Containers
+#### Workload Confidentiality for Virtual Machines and Containers
 
 Added in the Intel® SecL-DC 1.6 release, Workload Confidentiality allows virtual machine and Docker container images to be encrypted at rest, with key access tied to platform integrity attestation. Because security attributes contained in the platform integrity attestation report are used to control access to the decryption keys, this feature provides both protection for at-rest data, IP, code, etc in Docker container or virtual machine images, and also enforcement of image-owner-controlled placement policies. When decryption keys are released, they are sealed to the physical TPM of the host that was attested, meaning that only a server that has successfully met the policy requirements for the image can actually gain access.
 
@@ -161,13 +161,13 @@ This functionality means that a physical host must pass policy requirements in o
 
 Beginning with the Intel® SecL-DC version 2.1 release, the Key Broker now supports 3rd-party key managers that are KMIP-compliant. The Key Broker has been updated to use the “libkmip” client.
 
-#### 1.1.2.5  Signed Flavors
+#### Signed Flavors
 
 Added in the Intel® SecL-DC 1.6 release, Flavor signing is an improvement to the existing handling of expected attestation measurements, called “Flavors.” This feature adds the ability to digitally sign Flavors so that the integrity of the expected measurements themselves can be verified when attestations occur. This also means that Flavors can be more securely transferred between different Verification Service instances.
 
 Flavor signing is seamlessly added to the existing Flavor creation process (both importing from a sample host and “manually” creating a Flavor using the POST method to the /v2/flavors resource). When a Flavor is created, the Verification Service will sign it using a signing certificate signed by the Certificate Management Service (this is created during Verification Service setup). Each time that the Verification Service evaluates a Flavor, it will first verify the signature on that Flavor to ensure the integrity of the Flavor contents before it is used to attest the integrity of any host.
 
-#### 1.1.2.6  Trusted Virtual Kubernetes Worker Nodes
+#### Trusted Virtual Kubernetes Worker Nodes
 
 Added in the Intel® SecL-DC version 2.1 release, this feature provides a Chain of Trust solution extending to Kubernetes Worker Nodes deployed as Virtual Machines. This feature addresses Kubernetes deployments that use Virtual Machines as Worker Nodes, rather than using bare-metal servers. 
 
@@ -177,23 +177,23 @@ By using Platform Integrity and Data Sovereignty-based orchestration (or Workloa
 
 
 
-2  Intel® Security Libraries Components
+Intel® Security Libraries Components
 ====================================
 
-2.1  Certificate Management Service
+Certificate Management Service
 ------------------------------
 
 Starting with Intel® SecL-DC 1.6, most non-TPM-related certificates used by Intel® SecL-DC applications will be issued by the new Certificate Management Service. This includes acting as a root CA and issuing TLS certificates for all of the various web services. 
 
 
 
-## 2.2  Authentication and Authorization Service
+## Authentication and Authorization Service
 
 Starting with Intel® SecL-DC 1.6, authentication and authorization for all Intel® SecL applications will be centrally managed by the new Authentication and Authorization Service (AAS). Previously, each application would manage its own users and permissions independently; this change allows authentication and authorization management to be centralized.
 
 
 
-## 2.3  Verification Service
+## Verification Service
 
 The Verification Service component of Intel® Security Libraries performs the core Platform Integrity and Data Sovereignty functionality by acting as a remote attestation authority.
 
@@ -201,13 +201,13 @@ Platform security technologies like Intel® TXT, Intel® BootGuard, and UEFI Sec
 
 
 
-## 2.4  Workload Service
+## Workload Service
 
 The Workload Service acts as a management service for handling Workload Flavors (Flavors used for Virtual Machines and Containers). In the Intel® SecL-DC 1.6 release, the Workload Service uses Flavors to map decryption key IDs to image IDs. When a launch request for an encrypted workload image is intercepted by the Workload Agent, the Workload Service will handle mapping the image ID to the appropriate key ID and key request URL, and will initiate the key transfer request to the Key Broker. 
 
 
 
-## 2.5  Trust Agent
+## Trust Agent
 
 The Trust Agent resides on physical servers and enables both remote attestation and the extended chain of trust capabilities. The Agent maintains ownership of the server's Trusted Platform Module, allowing secure attestation quotes to be sent to the Verification Service. Incorporating the Intel® SecL HostInfo and TpmProvider libraries, the Trust Agent serves to report on platform security capabilities and platform integrity measurements. 
 
@@ -215,13 +215,13 @@ The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Ent
 
 
 
-## 2.6  Workload Agent
+## Workload Agent
 
 The Workload Agent is the component responsible for handling all of the functions needed for Workload Confidentiality for virtual machines and Docker containers on a physical server. The Workload Agent uses libvirt hooks to identify VM lifecycle events (VM start, stop, hibernate, etc), and intercepts those events to perform needed functions like requesting decryption keys, creation and deletion of encrypted LUKS volumes, using the TPM to unseal decryption keys, etc. The WLA also includes the Docker SecureOverlay Driver that performs analogous functionality for Docker containers.
 
 
 
-## 2.7  Integration Hub
+## Integration Hub
 
 The Integration Hub acts as a middle-man between the Verification Service and one or more scheduler services (such as OpenStack* Nova), and "pushes" attestation information retrieved from the Verification Service to one or more scheduler services according to an assignment of hosts to specific tenants. In this way, Tenant A can receive attestation information for hosts that belong to Tenant A, but receive no information about hosts belonging to Tenant B. 
 
@@ -231,19 +231,19 @@ The Integration Hub features a plugin design for adding new scheduler endpoint t
 
 
 
-## 2.8  Workload Policy Manager
+## Workload Policy Manager
 
 The Workload Policy Manager is a Linux command line utility used by an image owner to encrypt VM (qcow2) or container (Docker) images, and to create an Image Flavor used to provide the encryption key transfer URL during launch requests. The WPM utility will use an existing or request a new key from the Key Broker Service, use that key to encrypt the image, and output the Image Flavor in JSON format. The encrypted image can then be uploaded to the image store of choice (like OpenStack Glance), and the Image Flavor can be uploaded to the Workload Service. The ID of the image on the image storage system is then mapped to the Image Flavor in the WLS; when the image is used to launch a new instance, the WLS will find the Image Flavor associated with that image ID, and use the Image Flavor to determine the key transfer URL.
 
 
 
-## 2.9  Key Broker Service
+## Key Broker Service
 
 The Key Broker Service is effectively a policy compliance engine. Its job is to manage key transfer requests, releasing keys only to servers that meet policy requirements. The Key Broker registers one or more SAML signing certificates from any Verification Services that it will trust. When a key transfer request is received, the request includes a trust attestation report signed by the Verification Service. If the signature matches a registered SAML key, the Broker will then look at the actual report to ensure the server requesting the key matches the image policy (currently only overall system trust is supported as a policy requirement). If the report indicates the policy requirements are met, the image decryption key is wrapped using a public key unique to the TPM of the host that was attested in the report, such that only the host that was attested can unseal the decryption key and gain access to the image.
 
 
 
-3  Intel® Security Libraries Binary Installation
+Intel® Security Libraries Binary Installation
 ======================================
 
 Intel® SecL services can be deployed as direct binary installations (on bare metal or in VMs), or can be deployed as containers.  This section details the binary-based installation of Intel SecL services; the next major section details container-based deployments.
@@ -252,7 +252,7 @@ It is recommended to deploy all control-plane services (CMS, AAS, HVS, WLS) as e
 
 The Trust Agent/Workload Agent, KBS, and WPM can be installed as binaries or deployed as containers regardless of the installation method used for the control plane.
 
-## 3.1  Building Binary Installers
+## Building Binary Installers
 
 Intel® Security Libraries is distributed as open source code, and must be compiled into installation binaries before installation.
 
@@ -280,7 +280,7 @@ Also provided are sample API calls organized by workflows for Postman:
 
 https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections
 
-## 3.3  Hardware Considerations
+## Hardware Considerations
 
 Intel® SecL-DC supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL. 
 
@@ -300,7 +300,7 @@ Use the chart below for a guide to acceptable configuration options. .
 
 * 
 
-3.3  Recommended Service Layout
+Recommended Service Layout
 --------------------------
 
 The Intel® SecL-DC services can be installed in a variety of layouts, partially depending on the use cases desired and the OS of the server(s) to be protected. In general, the Intel® SecL-DC applications can be divided into management services that are deployed on the network on the management plane, and host or node components that must be installed on each protected server. 
@@ -309,13 +309,13 @@ Management services can typically be deployed anywhere with network access to al
 
 Node components must be installed on each protected physical server. Typically this is needed for Windows and Linux deployments.
 
-### 3.3.1  Platform Integrity 
+### Platform Integrity 
 
 The most basic use case enabled by Intel® SecL-DC, Platform Integrity requires only the Verification Service and, to protect Windows or Linux hosts, the Trust Agent. This also enables the Application Integrity use case by default for Linux systems.
 
 The Integration Hub may be added to provide integration support for OpenStack or Kubernetes. The Hub is often installed on the same machine as the Verification Service, but optionally can be installed separately.
 
-### 3.3.2  Workload Confidentiality
+### Workload Confidentiality
 
 Workload Confidentiality introduces a number of additional services and agents. For a POC environment, all of the management services can be installed on a single machine or VM. This includes:
 
@@ -387,12 +387,12 @@ For stateful services which requires database like shvs, aas, scs, A separate da
 
 ![Networking outside cluster](.\Images\)
 
-3.4  Installing/Configuring the Database
+Installing/Configuring the Database
 -----------------------------------
 
 The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. Scripts (install_pgdb.sh, create_db.sh) are provided with the AAS that will automatically add the Postgresql repositories and install/configure a sample database. If this script will not be used, a Postgresql 11 database must be installed by the user before executing the AAS installation.
 
-### 3.4.1  Using the Provided Database Installation Script
+### Using the Provided Database Installation Script
 
 Install a sample Postgresql 11 database using the install_pgdb.sh script. This script will automatically install the Postgresql database and client packages required.
 
@@ -426,7 +426,7 @@ Execute the installation script:
 
 > **Note**: the database installation only needs to be performed once if the same database server will be used for all services that require a database. Only the "create_db" step needs to be repeated if the database server will be shared.
 
-### 3.4.2  Provisioning the Database
+### Provisioning the Database
 
 Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the Verification Service, the Integration Hub, the Workload Service) requires its own schema and access. After installation, the database must be created initialized and tables created. Execute the create_db.sh script to configure the database. 
 
@@ -448,7 +448,7 @@ If separate database servers will be used (for example, if the management plane 
 
 Note that the database name, username, and password details for each service must be used in the corresponding installation answer file for that service. 
 
-### 3.4.3  Database Server TLS Certificate
+### Database Server TLS Certificate
 
 The database client for Intel® SecL services requires the database TLS certificate to authenticate communication with the database server. 
 
@@ -460,10 +460,10 @@ The database client for Intel® SecL services will validate that the Subject Alt
 
 
 
-3.5  Installing the Certificate Management Service
+Installing the Certificate Management Service
 ---------------------------------------------
 
-### 3.5.1  Required For
+### Required For
 
 The CMS is REQUIRED for all use cases.
 
@@ -473,7 +473,7 @@ The CMS is REQUIRED for all use cases.
 
 - Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.5.2  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Certificate Management Service supports:
 
@@ -481,7 +481,7 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.5.3  Recommended Hardware
+### Recommended Hardware
 
 - 1 vCPUs
 
@@ -491,7 +491,7 @@ Ubuntu 18.04
 
 - One network interface with network access to all Intel® SecL-DC services
 
-### 3.5.4  Installation
+### Installation
 
 To install the Intel® SecL-DC Certificate Management Service:
 
@@ -537,10 +537,10 @@ cms setup cms_auth_token --force
    
    
 
-3.6  Installing the Authentication and Authorization Service
+Installing the Authentication and Authorization Service
 -------------------------------------------------------
 
-### 3.6.1  Required For
+### Required For
 
 The AAS is REQUIRED for all use cases.
 
@@ -550,7 +550,7 @@ The AAS is REQUIRED for all use cases.
 
 *  Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.6.2  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Authentication and Authorization Service:
 
@@ -558,11 +558,11 @@ The following must be completed before installing the Authentication and Authori
 
 * The Authentication and Authorization Service database must be available
 
-### 3.6.3  Package Dependencies
+### Package Dependencies
 
 The Intel® SecL-DC Authentication and Authorization Service (AAS) requires a Postgresql 11 database. A script (install_pgdb.sh) is provided with the AAS that will automatically add the Postgresql repositories and install/configure a sample database. If this script will not be used, a Postgresql 11 database must be installed by the user before executing the AAS installation.
 
-### 3.6.4  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Authentication and Authorization Service supports:
 
@@ -570,7 +570,7 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.6.5  Recommended Hardware
+### Recommended Hardware
 
 * 1 vCPUs
 
@@ -580,7 +580,7 @@ Ubuntu 18.04
 
 * One network interface with network access to all Intel® SecL-DC services
 
-### 3.6.6  Installation
+### Installation
 
 To install the AAS, a bearer token from the CMS is required. This bearer token is output at the end of the CMS installation. However, if a new token is needed, simply use the following command from the CMS command line:
 
@@ -613,7 +613,7 @@ Execute the AAS installer:
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
 
-### 3.6.7  Creating Users
+### Creating Users
 
 After installation is complete, a number of roles and user accounts must be generated. Most of these accounts will be service users, used by the various Intel® SecL services to work together. Another set of users will be used for installation permissions, and a final administrative user will be created to provide the initial authentication interface for the actual human user. The administrative user can be used to create additional users with appropriately restricted roles based on organizational needs.
 
@@ -692,12 +692,12 @@ The populate-users script will also output an installation token. This token has
 
  
 
-3.7  Installing the Host Verification Service
+Installing the Host Verification Service
 -----------------------------------
 
 This section details how to install the Intel® SecL-DC services. For instructions on running these services as containers, see the following section.
 
-### 3.7.1  Required For
+### Required For
 
 The Host Verification Service is REQUIRED for all use cases.
 
@@ -707,7 +707,7 @@ The Host Verification Service is REQUIRED for all use cases.
 
 * Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.7.2  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Verification Service:
 
@@ -716,7 +716,7 @@ The following must be completed before installing the Verification Service:
 * The Authentication and Authorization Service must be installed and available
 * The Verification Service database must be available
 
-### 3.7.3  Package Dependencies
+### Package Dependencies
 
 The Intel® Security Libraries Verification Service requires the following packages and their dependencies:
 
@@ -731,7 +731,7 @@ The Intel® Security Libraries Verification Service requires the following packa
 
 If they are not already installed, the Verification Service installer attempts to install these automatically using the package manager. Automatic installation requires access to package repositories (the RHEL subscription repositories, the EPEL repository, or a suitable mirror), which may require an Internet connection. If the packages are to be installed from the package repository, be sure to update the repository package lists before installation.
 
-### 3.7.4  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Verification Service supports:
 
@@ -739,7 +739,7 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.7.5  Recommended Hardware
+### Recommended Hardware
 
 * 4 vCPUs
 
@@ -751,7 +751,7 @@ Ubuntu 18.04
 
 * (Optional) One network interface for Asset Tag provisioning (only required for “pull” tag provisioning; required to provision Asset Tags to VMware ESXi servers).
 
-### 3.7.6  Installation
+### Installation
 
 To install the Verification Service, follow these steps:
 
@@ -798,16 +798,16 @@ To install the Verification Service, follow these steps:
    
    
 
-3.8  Installing the Workload Service
+Installing the Workload Service
 -------------------------------
 
-### 3.8.1  Required For
+### Required For
 
 The WLS is REQUIRED for the following use cases.
 
 * Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.8.2  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Workload Service:
 
@@ -819,7 +819,7 @@ The following must be completed before installing the Workload Service:
 
 * The Workload Service database must be available
 
-### 3.8.3  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Workload Service supports:
 
@@ -827,9 +827,9 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.8.4  Recommended Hardware
+### Recommended Hardware
 
-### 3.8.5  Installation
+### Installation
 
 * Copy the Workload Service installation binary to the `/root` directory.
 
@@ -860,10 +860,10 @@ Ubuntu 18.04
   
   
 
-3.9  Installing the Trust Agent for Linux
+Installing the Trust Agent for Linux
 ------------------------------------
 
-### 3.9.1  Required For
+### Required For
 
 The Trust Agent for Linux is REQUIRED for all use cases.
 
@@ -873,7 +873,7 @@ The Trust Agent for Linux is REQUIRED for all use cases.
 
 * Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.9.2  Package Dependencies
+### Package Dependencies
 
 The Trust Agent requires the following packages and their dependencies:
 
@@ -889,7 +889,7 @@ If they are not already installed, the Trust Agent installer attempts to install
 
 Tboot will not be installed automatically. Instructions for installing and configuring tboot are documented later in this section.
 
-### 3.9.3  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Trust Agent for Linux supports:
 
@@ -897,7 +897,7 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.9.4  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Trust Agent:
 
@@ -925,7 +925,7 @@ The following must be completed before installing the Trust Agent:
 
 > **Note**: The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.
 
-#### 3.9.4.1  Tboot Installation
+#### Tboot Installation
 
 > **Note**: A solution to a security bug has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
@@ -1033,7 +1033,7 @@ Intel(r) TXT Configuration Registers:
    ***********************************************************
    ```
 
-### 3.9.5  Installation
+### Installation
 
 Installation of the Trust Agent is split into two major steps: Installation, which covers the creation of system files and folders, and Provisioning, which involves the creation of keys and secrets and links the Trust Agent to a specific Verification Service. Both operations can be performed at the same time using an installation answer file. Without the answer file, the Trust Agent can be installed and left in an un-provisioned state regardless of whether a Verification Service is up and running, until such time as the datacenter administrator is ready to run the provisioning step and link the Trust Agent to a Verification Service.
 
@@ -1104,19 +1104,19 @@ The Trust Agent will add a new grub menu entry for application measurement. This
 
 
 
-3.10  Installing the Workload Agent
+Installing the Workload Agent
 -----------------------------
 
-### 3.10.1  Required For
+### Required For
 
 -   Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.10.2  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Workload Agent supports Red Hat Enterprise
 Linux 8.2
 
-### 3.10.3  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Workload Agent:
 
@@ -1137,7 +1137,7 @@ The following must be completed before installing the Workload Agent:
     > Docker Container Confidentiality. Only this version is supported for
     > this use case.
 
-### 3.10.4  Installation
+### Installation
 
 * Copy the Workload Agent installation binary to the /root/ directory
 
@@ -1166,11 +1166,7 @@ The following must be completed before installing the Workload Agent:
 
   
 
-
-
-
-
-3.12  Trust Agent Provisioning
+Trust Agent Provisioning
 ------------------------
 
 "Provisioning" the Trust Agent involves connecting to a Verification
@@ -1205,7 +1201,7 @@ path>`
 
 
 
-3.13  Trust Agent Registration
+Trust Agent Registration
 ------------------------
 
 Registration creates a host record with connectivity details and other
@@ -1245,7 +1241,7 @@ POST <https://verification.service.com:8443/hvs/v2/hosts>
 
 
 
-3.14  Importing the HOST\_UNIQUE Flavor
+Importing the HOST\_UNIQUE Flavor
 ---------------------------------
 
 RHEL and VMWare ESXi hosts have measured components that are unique to
@@ -1282,7 +1278,7 @@ POST https://verification.service.com:8443/hvs/v2/flavors
 
 
 
-3.15  Installing the Intel® SecL Kubernetes Extensions and Integration Hub
+Installing the Intel® SecL Kubernetes Extensions and Integration Hub
 -------------------------------------------------------------------------
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
@@ -1295,7 +1291,7 @@ Two CRDs are required for integration with Intel® SecL – an extension
 for the Control Plane nodes, and a scheduler extension. The extensions are deployed as a Kubernetes
 deployment in the `isecl` namespace.
 
-### 3.15.1  Deploy Intel® SecL Custom Controller
+### Deploy Intel® SecL Custom Controller
 ------------------------------------------
 
     #Install skopeo to load docker image for controller and scheduler from archive
@@ -1379,7 +1375,7 @@ deployment in the `isecl` namespace.
 | TAINT_UNTRUSTED_NODES | `Optional` | `string` | false   | If set to true. NoExec taint applied to the nodes for which trust status is set to false, Applicable only for HVS based attestation |
 
 
-### 3.15.2  Installing the Intel® SecL Integration Hub
+### Installing the Intel® SecL Integration Hub
 ------------------------------------------------------
 
 > **Note:**The Integration Hub is only required to integrate Intel® SecL with
@@ -1388,7 +1384,7 @@ deployment in the `isecl` namespace.
 > require Intel® SecL security attributes to be pushed to an
 > integration endpoint.
 
-### 3.15.2.1  Required For
+### Required For
 
 The Hub is REQUIRED for the following use cases.
 
@@ -1400,11 +1396,11 @@ orchestration or other integration support is needed):
 - Platform Integrity with Data Sovereignty and Signed Flavors
 - Application Integrity
 
-### 3.15.2.2  Deployment Architecture Considerations for the Hub
+### Deployment Architecture Considerations for the Hub
 
 A separate Hub instance is REQUIRED for each Cloud environment (also referred to as a Hub "tenant").  For example, if a single datacenter will have an OpenStack cluster and also two separate Kubernetes clusters, a total of three Hub instances must be installed, though additional instances of other Intel SecL services are not required (in the same example, only a single Verification Service is required).  Each Hub will manage a single orchestrator environment.  Each Hub instance should be installed on a separate VM or physical server
 
-### 3.15.2.3  Prerequisites
+### Prerequisites
 
 The Intel® Security Libraries Integration Hub can be run as a VM or as a
 bare-metal server. The Hub may be installed on the same server (physical
@@ -1416,7 +1412,7 @@ or VM) as the Verification Service.
 -   The Certificate Management Service must be installed and available
 -   (REQUIRED for Kubernetes integration only) The Intel SecL Custom Resource Definitions must be installed and available (see the Integration section for details)
 
-### 3.15.2.4  Package Dependencies
+### Package Dependencies
 
 The Intel® SecL Integration Hub requires a number of packages and their
 dependencies:
@@ -1429,12 +1425,12 @@ mirror), which may require an Internet connection. If the packages are
 to be installed from the package repository, be sure to update your
 repository package lists before installation.
 
-### 3.15.2.5  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel Security Libraries Integration Hub supports Red Hat Enterprise
 Linux 8.2
 
-### 3.15.2.6  Recommended Hardware
+### Recommended Hardware
 
 -   1 vCPUs
 
@@ -1451,7 +1447,7 @@ Linux 8.2
 -   One network interface with network access to any integration
     endpoints (for example, OpenStack Nova).
 
-### 3.15.2.7  Installing the Integration Hub
+### Installing the Integration Hub
 
 To install the Integration Hub, follow these steps:
 
@@ -1528,7 +1524,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
 
 After installation, the Hub must be configured to integrate with a Cloud orchestration platform (for example, OpenStack or Kubernetes).  See the Integration section for details.
 
-### 3.15.3  Deploy Intel® SecL Extended Scheduler
+### Deploy Intel® SecL Extended Scheduler
 ------------------------------------------------------
 1. Install `cfssl` and `cfssljson` on Kubernetes Control Plane
 
@@ -1663,10 +1659,10 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
 
 4. Restart kubelet 
 
-   ```shell
    systemctl restart kubelet
-   ```
-    ### Logs will be appended to older logs in
+   
+   Logs will be appended to older logs in
+   
     /var/log/isecl-k8s-extensions
 
 5. Whenever the CRD's are deleted and restarted for updates, the CRD's
@@ -1688,16 +1684,16 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
     kubectl get -o json hostattributes.crd.isecl.intel.com
     ```
 
-3.16  Installing the Key Broker Service
+Installing the Key Broker Service
 ---------------------------------
 
-### 3.16.1  Required For
+### Required For
 
 The KBS is REQUIRED for the following use cases:
 
 -   Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.16.2  Prerequisites
+### Prerequisites
 
 The following must be completed before installing the Key Broker:
 
@@ -1723,9 +1719,9 @@ The following must be completed before installing the Key Broker:
         implementation differences among KMIP providers may prevent
         functionality with specific providers.
 
-### 3.16.3  Package Dependencies
+### Package Dependencies
 
-### 3.16.4  Supported Operating Systems
+###   Supported Operating Systems
 
 The Intel® Security Libraries Key Broker Service supports:
 
@@ -1733,9 +1729,9 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.16.5  Recommended Hardware
+### Recommended Hardware
 
-### 3.16.6  Installation
+### Installation
 
 1.  Copy the Key Broker installation binary to the /root/ directory.
 
@@ -1762,10 +1758,10 @@ Ubuntu 18.04
 3.  Execute the KBS installer.
 
     ```shell
-    ./kbs-3.3.0.bin
+    ./kbs-3.6.0.bin
     ```
 
-#### 3.16.6.1  Configure the Key Broker to use a KMIP-compliant Key Management Server
+#### Configure the Key Broker to use a KMIP-compliant Key Management Server
 
 The Key Broker can be configured to use a 3rd-party KMIP key manager as part of installation using optional kbs.env installation variables.  Without using these variables, the Key Broker will be configured to use a filesystem key management solution. This should be used only for testing and POC purposes; using a secure 3rd-party Key management Server should be used for production deployments. 
 
@@ -1798,7 +1794,7 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
     kbs start
     ```
 
-### 3.16.7  Importing Verification Service Certificates
+### Importing Verification Service Certificates
 
 After installation, the Key Broker must import the SAML and PrivacyCA
 certificates from any Verification Services it will trust. This provides
@@ -1806,7 +1802,7 @@ the Key Broker a way to ensure that only attestations that come from a
 “known” Verification Service. The SAML and PrivacyCA certificates needed
 can be found on the Verification Service.
 
-#### 3.16.7.1  Importing a SAML certificate
+#### Importing a SAML certificate
 
 Display the SAML certificate:
 
@@ -1846,7 +1842,7 @@ JAF53vmU+1jE
 -----END CERTIFICATE-----
 ```
 
-#### 3.16.7.2  Importing a PrivacyCA Certificate
+#### Importing a PrivacyCA Certificate
 
 Use OpenSSL to display the PrivacyCA certificate content:
 
@@ -1906,23 +1902,23 @@ WTeXt+1HCFSo5WcAZWV8R9FYv7tzFxPY8aoLj82sgrOE4IwRqaA8KMbq3anF4RCk
 
 
 
-3.17  Installing the Workload Policy Manager
+Installing the Workload Policy Manager
 --------------------------------------
 
-### 3.17.1  Required For
+### Required For
 
 The WPM is REQUIRED for the following use cases.
 
 -   Workload Confidentiality (both VMs and Docker Containers)
 
-### 3.17.2  Package Dependencies
+### Package Dependencies
 
 -   (Required only if Docker Container encryption is needed) `Docker-ce
     19.03.13` must be installed. This is needed only if the option
     `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
     file.
 
-### 3.17.3  Supported Operating Systems
+### Supported Operating Systems
 
 The Intel® Security Libraries Workload Policy Manager supports:
 
@@ -1930,7 +1926,7 @@ Red Hat Enterprise Linux 8.2
 
 Ubuntu 18.04
 
-### 3.17.4  Recommended Hardware
+### Recommended Hardware
 
 -   2 vCPUs
 
@@ -1944,7 +1940,7 @@ Ubuntu 18.04
 -   Additional memory and disk space may be required depending on the
     size of images to be encrypted
 
-### 3.17.5  Installation
+### Installation
 
 1.  Copy the WPM installer to the `/root` directory
 
@@ -2860,7 +2856,7 @@ account the token was generated for.
 
 
 
-4.1  Create Token
+Create Token
 ------------
 
 To request a new token from the AAS:
@@ -2884,7 +2880,7 @@ minutes that issued tokens will remain valid before expiring.
 
 
 
-4.2  User Management
+User Management
 ---------------
 
 Users in Intel® SecL-DC are no longer restrained to a specific service,
@@ -2892,7 +2888,7 @@ as they are now centrally managed by the Authentication and
 Authorization Service. Any user may now be assigned roles for any
 service, allowing user accounts to be fully defined by the tasks needed.
 
-### 4.2.1  Username and Password requirements
+### Username and Password requirements
 
 Passwords have the following constraints:
 
@@ -2919,7 +2915,7 @@ Usernames have the following requirements:
     -   admin, admin\_wls, admin@wls, <admin@wls.intel.com>,
         <wls-admin@intel.com>
 
-### 4.2.2  Create User
+### Create User
 
 ```
 POST https://<IP or hostname of AAS>:8444/aas/v1/users
@@ -2931,13 +2927,13 @@ Authorization: Bearer <token>
 }
 ```
 
-### 4.2.3  Search Users by Username
+### Search Users by Username
 
 ```
 GET https://<IP or hostname of AAS>:8444/aas/v1/users?name=<value>
 ```
 
-### 4.2.4  Change User Password
+### Change User Password
 
 ```
 PATCH https://<IP or hostname of AAS>:8444/aas/v1/users/changepassword
@@ -2950,7 +2946,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### 4.2.5  Delete User
+### Delete User
 
 ```
 DELETE https://<IP or hostname of AAS>:8444/aas/v1/users/<User ID>
@@ -2959,7 +2955,7 @@ Authorization: Bearer <token>
 
 
 
-4.3  Roles and Permissions
+Roles and Permissions
 ---------------------
 
 Permissions in Intel® SecL-DC are managed by Roles. Roles are a set of
@@ -2973,7 +2969,7 @@ user management to be centrally managed on the AAS. When a new service
 is installed, it will use the Role creation functions to define roles
 applicable for that service in the AAS.
 
-### 4.3.1  Create Role
+### Create Role
 
 ```
 POST https://<AAS IP or Hostname>:8444/aas/v1/roles
@@ -3008,7 +3004,7 @@ formatted as `resource:action:`
 Permissions required to execute specific API requests are listed with
 the API resource and method definitions in the API documentation.
 
-### 4.3.2  Search Roles
+### Search Roles
 
 ```
 GET https://<AAS IP or Hostname>:8444/aas/v1/roles?<parameter>=<value>
@@ -3026,14 +3022,14 @@ allContexts=<true or false>
 filter=false
 ```
 
-### 4.3.3  Delete Role
+### Delete Role
 
 ```
 DELETE https://<AAS IP or Hostname>:8444/aas/v1/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
-### 4.3.4  Assign Role to User
+### Assign Role to User
 
 ```
 POST https://<AAS IP or Hostname>:8444/aas/v1/users/<user ID>/roles
@@ -3044,21 +3040,21 @@ Authorization: Bearer <token>
 }
 ```
 
-### 4.3.5  List Roles Assigned to User
+### List Roles Assigned to User
 
 ```
 GET https://<AAS IP or Hostname\>:8444/aas/v1/users/<user ID>/roles
 Authorization: Bearer <token>
 ```
 
-### 4.3.6  Remove Role from User
+### Remove Role from User
 
 ```
 DELETE https://<AAS IP or Hostname>:8444/aas/v1/users/<userID>/roles/<role ID>
 Authorization: Bearer <token>
 ```
 
-### 4.3.7  Role Definitions
+### Role Definitions
 
 The following roles are created during installation (or by the
 CreateUsers script) and exist by default.
@@ -3080,7 +3076,7 @@ CreateUsers script) and exist by default.
 
 
 
-5  Connection Strings
+Connection Strings
 ==================
 
 Connection Strings define a remote API resource endpoint that will be
@@ -3088,7 +3084,7 @@ used to communicate with the registered host for retrieving TPM quotes
 and other host information. Connection Strings differ based on the type
 of host.
 
-5.1  Trust Agent 
+Trust Agent 
 -------------------------------
 
 The Trust Agent connection string connects directly to the Trust Agent
@@ -3104,10 +3100,10 @@ connection strings connecting to Trust Agent resources.
 
 
 
-5.2  VMware ESXi
+VMware ESXi
 -----------
 
-### 5.2.1 Importing VMware TLS Certificates
+### Importing VMware TLS Certificates
 
 Before connecting to vCenter to register hosts or clusters, the vCenter TLS certificate needs to be imported to the Verification Service.  This must be done for each vCenter server that the Verification Service will connect to, for importing Flavors or registering hosts.
 
@@ -3149,7 +3145,7 @@ wget --no-proxy "*" https://<vCenter IP or hostname>/certs/download.zip --no-che
    hvs restart
    ```
 
-### 5.2.2  Registering a VMware ESXi Host
+### Registering a VMware ESXi Host
 
 The VMware ESXi connection string is actually directed to vCenter, not
 the actual ESXi host. Many ESXi hosts managed by the same vCenter server
@@ -3163,7 +3159,7 @@ vmware:https://<vCenterHostNameOrIp>:443/sdk;h=<hostname of ESXi host>;u=<userna
 
 
 
-6  Platform Integrity Attestation
+Platform Integrity Attestation
 ==============================
 
 Platform attestation is the cornerstone use case for ISecL. Platform
@@ -3207,7 +3203,7 @@ Typical workflows in the datacenter might include:
 
 -   Remediating an untrusted attestation
 
-6.1  Host Registration
+Host Registration
 -----------------
 
 Registration creates a host record with connectivity details and other
@@ -3215,9 +3211,9 @@ host information in the Verification Service database. This host record
 will be used by the Verification Service to retrieve TPM attestation
 quotes from the Trust Agent to generate an attestation report.
 
-### 6.1.1  Trust Agent
+### Trust Agent
 
-#### 6.1.1.1  Registration via Trust Agent Command Line
+#### Registration via Trust Agent Command Line
 
 The Trust Agent can register the host with a Verification Service by
 running the following command:
@@ -3229,7 +3225,7 @@ tagent create-host <Verification Service base URL> <username> <password>
 > **Note**: Because VMWare ESXi hosts do not use a Trust Agent, this method is
 > not applicable for registration of ESXi hosts.
 
-### 6.1.2  Registration via Verification Service API
+### Registration via Verification Service API
 
 Any Trust Agent or VMware ESXi host/cluster can be registered using a
 Verification Service API request. Registration can be performed with or
@@ -3239,9 +3235,7 @@ specified, the `automatic` Flavor Group will be used. See the
 Flavor Management section for additional details on Flavors, Flavor
 Groups, and Flavor matching.
 
-#### 6.1.2.1  Special Note for VMware ESXi Hosts and the vCenter TLS Certificate
-
-#### 6.1.2.2  Sample Call
+#### Sample Call
 
 ```
 POST https://verification.service.com:8443/hvs/v2/hosts
@@ -3257,7 +3251,7 @@ Authorization: Bearer <token>
 
 Requires the permission `hosts:create`
 
-#### 6.1.2.3  Sample Call for ESXi Cluster Registration
+#### Sample Call for ESXi Cluster Registration
 
 ```
 POST https://verification.service.com:8443/hvs/v2/hosts
@@ -3277,7 +3271,7 @@ Requires the permission `esxi_clusters:create`
 
 
 
-6.2  Flavor Creation for Automatic Flavor Matching
+Flavor Creation for Automatic Flavor Matching
 ---------------------------------------------
 
 Flavor creation is the process of adding one or more sets of acceptable
@@ -3323,7 +3317,7 @@ perhaps an OS kernel with a known security vulnerability.
 > The sample workflow provided here is intended to be an introduction
 > only.
 
-### 6.2.1  Importing a Flavor from a Sample Host
+### Importing a Flavor from a Sample Host
 
 ```
 POST https://verification.service.com:8443/hvs/v2/flavors
@@ -3359,7 +3353,7 @@ Authorization: Bearer <token>
 
 Requires the permission `flavors:create`
 
-### 6.2.2  Creating a Flavor Manually
+### Creating a Flavor Manually
 
 Flavors can be directly created (rather than importing from a sample
 host) if the required information is known. If no Flavorgroup is
@@ -3417,7 +3411,7 @@ Requires the permission `flavors:create`
 
 
 
-6.3  Creating the Default SOFTWARE Flavor (Linux Only)
+Creating the Default SOFTWARE Flavor (Linux Only)
 -------------------------------------------------
 
 As part of the new Application Integrity feature added in Intel® SecL-DC
@@ -3461,7 +3455,7 @@ Requires the permission `flavors:create`
 
 
 
-6.4  Creating and Provisioning Asset Tags
+Creating and Provisioning Asset Tags
 ------------------------------------
 
 Asset Tags represent a set of key/value pairs that can be associated
@@ -3476,7 +3470,7 @@ written to an NVRAM index in the host’s TPM. This value is included in
 TPM quotes, and can be attested using an Asset Tag flavor that matches
 up the expected value and the actual key/value pairs.
 
-### 6.4.1  Creating Asset Tag Certificates
+### Creating Asset Tag Certificates
 
 Asset Tag certificates can be created with a single REST API call, with
 any number of key/value pairs. Note that one certificate must be created
@@ -3506,9 +3500,9 @@ Authorization: Bearer <token>
 }
 ```
 
-### 6.4.2  Deploying Asset Tags
+### Deploying Asset Tags
 
-#### 6.4.2.1  Red Hat Enterprise Linux
+#### Red Hat Enterprise Linux
 
 Asset Tags can be provisioned to a Windows or RHEL host via a REST API
 request on the Verification Service that will in turn make a request to
@@ -3523,7 +3517,7 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 6.4.2.2  VMWare
+#### VMWare
 
 Since VMWare ESXi hosts do not use a Trust Agent, the process for
 writing Asset Tags to a VMWare host is different from RHEL. A
@@ -3542,7 +3536,7 @@ The high-level workflow for using Asset Tags with VMWare ESXi is:
 > **Note**: Asset Tag is currently not supported for VMWare hosts
 > using TPM 2.0.
 
-##### 6.4.2.2.1  Calculate the Certificate Hash Value
+##### Calculate the Certificate Hash Value
 
 Only the hash value of the Asset Tag Certificate can be provisioned to
 the TPM, due to the low size of the NVRAM.
@@ -3567,7 +3561,7 @@ the TPM, due to the low size of the NVRAM.
     
     This hash value will be what is actually written to the TPM NVRAM.
 
-##### 6.4.2.2.2  Provision the Certificate Hash to the Host TPM
+##### Provision the Certificate Hash to the Host TPM
 
 Due to a new feature added in vSphere 6.5 Update 2, the process for
 provisioning Asset Tags on VMWare ESXi hosts has been significantly
@@ -3635,7 +3629,7 @@ When the system is rebooted to ESXi, the Trusted Boot process will
 extend the value to PCR22, and this value can be used during
 attestation.
 
-##### 6.4.2.2.3  Creating the Asset Tag Flavor (VMWare ESXi Only)
+##### Creating the Asset Tag Flavor (VMWare ESXi Only)
 
 While for RHEL and Windows hosts the Asset Tag Flavor is automatically
 created during the Tag Provisioning step, for VMWare ESXi hosts the
@@ -3657,7 +3651,7 @@ including Asset Tags as normal.
 
 
 
-6.5  Retrieving Current Attestation Reports
+Retrieving Current Attestation Reports
 --------------------------------------
 
 ```
@@ -3667,7 +3661,7 @@ Authorization: Bearer <token>
 
 
 
-6.6  Retrieving Current Host State Information
+Retrieving Current Host State Information
 -----------------------------------------
 
 ```
@@ -3677,7 +3671,7 @@ Authorization: Bearer <token>
 
 
 
-6.7  Upgrading Hosts in the Datacenter to a New BIOS or OS Version
+Upgrading Hosts in the Datacenter to a New BIOS or OS Version
 -------------------------------------------------------------
 
 Software and firmware updates are a common occurrence in the datacenter.
@@ -3715,7 +3709,7 @@ Automatic Flavor matching makes this process relatively simple:
 
     
 
-6.8  Removing Hosts From the Verification Service
+Removing Hosts From the Verification Service
 --------------------------------------------
 
 Hosts can be deleted at any time. Reports for that host will remain in
@@ -3731,7 +3725,7 @@ by searching hosts using the host’s hostname.
 
 
 
-6.9  Removing Flavors
+Removing Flavors
 ----------------
 
 Flavors can be deleted; this will cause any hosts that match the deleted
@@ -3746,7 +3740,7 @@ DELETE https://verification.service.com:8443/hvs/v2/flavors/<flavorId>
 
 
 
-6.10 Invalidating Asset Tags
+Invalidating Asset Tags
 -----------------------
 
 Asset Tags can be deleted in two ways.
@@ -3772,7 +3766,7 @@ Authorization: Bearer <token>
 
 
 
-6.11  Remediating an Untrusted attestation
+Remediating an Untrusted attestation
 ------------------------------------
 
 Hosts can become Untrusted for a wide variety of causes. The first clue
@@ -3822,7 +3816,7 @@ flashed or OS reloaded.
 
 
 
-6.12  Attestation Reporting
+Attestation Reporting
 ---------------------
 
 Attestation results are delivered in the form of Host Reports. A Report
@@ -3865,7 +3859,7 @@ generation of a new TPM quote from the TPM of the host being attested;
 TPM performance differs greatly between vendors, and a quote can take
 anywhere between 2-7 seconds to generate.
 
-### 6.12.1  Sample Call – Generating a New Attestation Report
+### Sample Call – Generating a New Attestation Report
 
 ```
 POST https://verification.service.com:8443/hvs/v2/reports
@@ -3878,7 +3872,7 @@ Authorization: Bearer <token>
 
 Requires the permission `reports:create`
 
-### 6.12.2  Sample Call – Retrieving an Existing Attestation Report
+### Sample Call – Retrieving an Existing Attestation Report
 
 ```
 GET https://verification.service.com:8443/hvs/v2/reports?hostName=HostName.server.com
@@ -3920,7 +3914,7 @@ over the last 30 days, for example.
 
 
 
-6.13  Integration
+Integration
 -----------
 
 Intel® SecL can be integrated with scheduler services (or potentially
@@ -3929,7 +3923,7 @@ integrating Intel® SecL with the OpenStack scheduler service, the
 OpenStack placement service can incorporate the Intel® SecL security
 attributes into VM scheduling.
 
-### 6.13.1  The Integration Hub
+### The Integration Hub
 
 The Integration Hub acts as the integration point between the Verification Service and a third party service. The primary purpose of the Hub is to collect and maintain up-to-date attestation information, and to “push” that information to the external service. The secondary purpose is to allow for multitenancy, the Verification Service does not allow for permissions to be applied for specific hosts, so a user with the “attestation” role can access all attestations for all hosts. By using separate Integration Hub instances for each Cloud environment (or "tenant"), the Hub will push attestations only for the associated hosts to a given tenant’s integration endpoints.
 
@@ -3939,7 +3933,7 @@ Different integration endpoints can be added to the Integration Hub through a pl
 
 <img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
-### 6.13.2  Integration with OpenStack 
+### Integration with OpenStack 
 
 Starting in the Rocky release, OpenStack can now use “Traits” to provide qualitative data about Nova Compute hosts, and to establish Trait requirements for VM instances. The updated scheduler will place VMs
 requiring a given Trait on Nova Compute nodes that meet the Trait requirements.
@@ -3956,7 +3950,7 @@ Intel SecL-DC uses the Integration Hub to continually push platform integrity an
 > Intel recommends following published OpenStack security best
 > practices.
 
-#### 6.13.2.1  Prerequisites
+#### Prerequisites
 
 -   Verification Service must be installed and running.
 
@@ -3965,7 +3959,7 @@ Intel SecL-DC uses the Integration Hub to continually push platform integrity an
 
 -   The Integration Hub must be installed and running.
 
-#### 6.13.2.2  Setting Image Traits
+#### Setting Image Traits
 
 Image Traits define the policy for which Traits are required for that
 Image to be launched on a Nova Compute node. By setting these Traits to
@@ -4024,7 +4018,7 @@ openstack image unset --property trait:CUSTOM_ISECL_AT_STATE__CA <image_name>
 openstack image unset --property trait:CUSTOM_ISECL_TRUSTED <image_name>
 ```
 
-#### 6.13.2.3  Configuring the Integration Hub for Use with OpenStack
+#### Configuring the Integration Hub for Use with OpenStack
 
 The Integration Hub must be configured with the API URLs and credentials for the OpenStack instance it will integrate with.  This can be done during installation using the "OPENSTACK_..." variables shown in the `ihub.env` answer file  sample (see the Installing the Integration Hub section).
 
@@ -4036,7 +4030,7 @@ ihub setup openstack --endpoint-url="http://openstack:5000/v3" --endpoint-user="
 
 Restart the Integration Hub after configuring the endpoint. Note that "endpoint name" should be replaced with any user-friendly name for the OpenStack instance you would prefer.
 
-#### 6.13.2.7  Scheduling Instances
+#### Scheduling Instances
 
 Once Trait requirements are set for Images and the Integration Hub is
 configured to push attributes to OpenStack, instances can be launched in
@@ -4054,7 +4048,7 @@ to run instances of controlled Images.
 > Intel recommends following published OpenStack security best
 > practices.
 
-### 6.13.3  Integration with Kubernetes
+### Integration with Kubernetes
 
 Through the use of Custom Resource Definitions for the Kubernetes
 Control Plane, Intel® Security Libraries can make Kubernetes aware of Intel®
@@ -4074,7 +4068,7 @@ Asset Tag values.
 > Kubernetes workload scheduling process in general, and Intel
 > recommends following published Kubernetes security best practices.
 
-#### 6.13.3.1  Prerequisites
+#### Prerequisites
 
 -   Verification Service must be installed and running.
 
@@ -4087,7 +4081,7 @@ Asset Tag values.
     attached to the Control Plane Node
 
 
-#### 6.13.3.2  Installing the Intel® SecL Custom Resource Definitions
+#### Installing the Intel® SecL Custom Resource Definitions
 
 Intel® SecL uses Custom Resource Definitions to add the ability to base
 orchestration decisions on Intel® SecL security attributes to
@@ -4104,7 +4098,7 @@ deployment in the `isecl` namespace.
 > **Note:** Please refer detail steps given for  `3.15 Installing the Intel® SecL Kubernetes Extensions and Integration Hub` section.
 
 
-#### 6.13.3.3  Configuring Pods to Require Intel® SecL Attributes
+#### Configuring Pods to Require Intel® SecL Attributes
 
 1.  (Optional) Verify that the worker nodes have had their Intel® SecL
     security attributes populated:
@@ -4159,7 +4153,7 @@ able to be launched on that node. However, if one of the specified
 Tags is missing or has a different value, that worker node will not be
 used for that pod.
 
-#### 6.13.3.4  Tainting Untrusted Worker Nodes
+#### Tainting Untrusted Worker Nodes
 
 Optionally, the Intel® SecL Kubernetes CRDs can be configured to flag
 worker nodes as `tainted` to prevent any pods from launching on them.
@@ -4188,7 +4182,7 @@ worker will be able to launch pods again.
 
 
 
-7  Workload Confidentiality
+Workload Confidentiality
 ========================
 
 Workload Confidentiality builds upon Platform Attestation to protect
@@ -4276,10 +4270,10 @@ unable to launch on this server.
 
 <img src="Images\workload-decryption" alt="image-20200622081137301" style="zoom:150%;" />
 
-7.1  Virtual Machine Confidentiality
+Virtual Machine Confidentiality
 -------------------------------
 
-### 7.1.1  Prerequisites
+### Prerequisites
 
 To enable Virtual Machine Confidentiality, the following Intel® SecL-DC
 components must be installed and available:
@@ -4324,9 +4318,9 @@ Hosts that are not trusted (including servers where there is no trust
 status, like hosts with no Trust Agent) will fail to launch any
 encrypted workloads.
 
-### 7.1.2  Workflow
+### Workflow
 
-#### 7.1.2.1  Encrypting Images
+#### Encrypting Images
 
 ```shell
 wpm create-image-flavor -l <user-friendly unique label> -i <path to image file> -e <output path and filename for encrypted image> -o <output path for JSON image flavor>`
@@ -4337,7 +4331,7 @@ can be uploaded to the Image Storage service of choice (for example,
 OpenStack Glance). Note that the ID of the image in this Image Storage
 service must be retained and used for the next steps.
 
-#### 7.1.2.2  Uploading the Image Flavor
+#### Uploading the Image Flavor
 
 ```
 POST https://<Workload Service IP or Hostname>:5000/wls/flavors
@@ -4350,7 +4344,7 @@ Use the above API request to upload the Image Flavor to the WLS. The
 Image Flavor will tell other Intel® SecL-DC components the Key Transfer
 URL for this image.
 
-#### 7.1.2.3  Creating the Image Flavor to Image ID Association
+#### Creating the Image Flavor to Image ID Association
 
 The WLS needs to know the ID of the image as it exists in the image
 storage service used by the CSP (for example, OpenStack Glance). Use the
@@ -4367,7 +4361,7 @@ Authorization: Bearer <token>
 }
 ```
 
-#### 7.1.2.4  Launching Encrypted VMs
+#### Launching Encrypted VMs
 
 Instances of the protected images can now be launched as normal.
 Encrypted images will only be accessible on hosts with a Platform
@@ -4378,19 +4372,19 @@ fail, as the decryption key will not be provided.
 
 
 
-7.2  Container Confidentiality
+Container Confidentiality
 --------------------------------
 
-### 7.2.1  Container Integrity and Confidentiality with Docker
+### Container Integrity and Confidentiality with Docker
 
-#### 7.2.1.1  Docker Container Integrity
+#### Docker Container Integrity
 
 Intel® recommends using Docker Notary to verify the integrity of Docker
 container images at launch.
 
 <https://docs.docker.com/notary/getting_started/>
 
-#### 7.2.1.2  Prerequisites
+#### Prerequisites
 
 To enable Docker Container Confidentiality, the following Intel® SecL-DC
 components must be installed and available:
@@ -4456,9 +4450,9 @@ encrypted workloads.
 > use OCI-standard container encryption without the need for
 > recompilation or file replacement.
 
-#### 7.2.1.3  Workflow
+#### Workflow
 
-##### 7.2.1.3.1  Encrypting Docker Container Images
+##### Encrypting Docker Container Images
 
 The first step is encryption of a Docker Container image. The WPM is a
 command line utility that will perform the actual image encryption and
@@ -4485,7 +4479,7 @@ before uploading the image to the Registry:
 After generating the encrypted image with the WPM, the encrypted image
 can be uploaded to a local Docker Registry.
 
-##### 7.2.1.3.2  Uploading the Image Flavor
+##### Uploading the Image Flavor
 
 ```
 POST https://<Workload Service IP or Hostname>:5000/wls/flavors
@@ -4498,7 +4492,7 @@ Use the above API request to upload the Image Flavor to the WLS. The
 Image Flavor will tell other Intel® SecL-DC components the Key Transfer
 URL for this image.
 
-##### 7.2.1.3.3  Creating the Image Flavor to Image ID Association
+##### Creating the Image Flavor to Image ID Association
 
 For Docker images stored in a Docker Registry, the ID is typically an
 MD5 hash. This format must be converted for use with the Workload
@@ -4527,7 +4521,7 @@ Authorization: Bearer <token>
 }
 ```
 
-##### 7.2.1.3.4  Launching Encrypted Docker Containers
+##### Launching Encrypted Docker Containers
 
 Containers of the protected images can now be launched as normal using
 Kubernetes pods and deployments. Encrypted images will only be
@@ -4537,11 +4531,11 @@ the host is trusted.
 If the Docker Container is launched on a host that is not trusted, the
 launch will fail, as the decryption key will not be provided.
 
-### 7.2.2  Container Confidentiality with Cri-o and Skopeo
+### Container Confidentiality with Cri-o and Skopeo
 
 
 
-#### 7.2.2.1  Prerequisites
+#### Prerequisites
 
 Container Confidentiality with Cri-o and Skopeo requires modified versions of both Cri-o and Skopeo.  Both of these are automatically built with the Intel SecL build scripts, and can be found here after the script has executed:
 
@@ -4608,7 +4602,7 @@ isecl/cc-crio/binaries/
   
 - Only physical Worker Nodes are supported at this time.  
 
-#### 7.2.2.2  Workflow
+#### Workflow
 
 ###### Skopeo Commands
 
@@ -4689,14 +4683,14 @@ $ skopeo copy --encryption-key secl:any oci:custom-image:latest docker://registr
 ```
 
 
-##### 7.2.2.2.1 Pulling and Encrypting a Container Image
+##### Pulling and Encrypting a Container Image
 
 Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in teh examples below). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
 
 The modified Cri-o and wrapper will modify the Cri-o commands to allow Intel SecL policies to be utilized.
 
 
-#####  7.2.2.2.2 Launching an Encrypted Container Image
+#####  Launching an Encrypted Container Image
 
 Cri-o allows for pulling and decryption of an encrypted container image from a container registry. When trying to pull and decrypt a container image, Cri-o has a hook that calls into the Workload Agent (WLA). The WLA will call into the Workload Service (WLS) and pass it the key URL associated with the encrypted image as well as the host's hardware UUID. These two serve as input to /keys endpoint of the WLS. The WLS initializes a HVS client in order to retrieve the host SAML report and then validates the report. If the host is trusted, the WLS will attempt to get the key. First, it will check if it's been cached alredy. If not, it will initialize a KBS client. The WLS uses this client to retrieve the key from the KBS. If the key is retrieved, it will be cached in the WLS temporarily so that the WLS will not need to requery the KBS if attempting to decrypt with the same key. The key is then passed back to the WLA as the return of the WLS's keys API. Finally, the key is returned to Cri-o, which uses the key to decrypt the container image layer by layer.
 
@@ -4706,7 +4700,7 @@ Containers of the protected images can now be launched as normal using Kubernete
 
 
 
-8  Trusted Virtual Kubernetes Worker Nodes
+Trusted Virtual Kubernetes Worker Nodes
 =======================================
 
 While the existing Platform Integrity Attestation functions support
@@ -4787,7 +4781,7 @@ adds cryptographic enforcement to the workload orchestration and ensures
 instances of the Worker Node images will only be launched on Trusted
 platforms.
 
-8.1  Prerequisites
+Prerequisites
 -------------
 
 -   All physical, bare-metal servers should be virtualization hosts.
@@ -4825,7 +4819,7 @@ platforms.
     enforcement to the orchestration of virtual worker VMs, ensuring
     that the VMs can only be launched on compliant platforms.
 
-8.2  Workflow
+Workflow
 --------
 
 There are no additional steps required to enable this feature; if the
@@ -4857,7 +4851,7 @@ Authorization: Bearer <token>
 
 This will return the latest report for the specified instance ID.
 
-8.3  Sample VM Trust Report
+Sample VM Trust Report
 ----------------------
 
 A sample VM Trust Report from the Workload Service is below. The report
@@ -4927,10 +4921,10 @@ every opportunity for the state to change.
 
 
 
-9  Flavor Management
+Flavor Management
 =================
 
-9.1  Flavor Format Definitions
+Flavor Format Definitions
 -------------------------
 
 A Flavor is a standardized set of expectations that determines what
@@ -4939,7 +4933,7 @@ constructed in a specific format, containing a metadata section
 describing the Flavor, and then various other sections depending on the
 Flavor type or Flavor part.
 
-### 9.1.1  Meta
+### Meta
 
 The first part of a Flavor is the `meta` section:
 
@@ -4963,7 +4957,7 @@ This section defines the Flavor part and any versioning information.
 > well. The attributes in the Meta section are used by the Flavor
 > matching engine when matching Flavors to Hosts.  Note that TPM 1.2 is supported only for VMware ESXi hosts.
 
-### 9.1.2  Hardware
+### Hardware
 
 The `hardware` section is unique to PLATFORM flavor parts:
 
@@ -5034,7 +5028,7 @@ Flavor sections for a full sample.
                 ...
 ```
 
-### 9.1.4  Sample PLATFORM Flavor
+### Sample PLATFORM Flavor
 
 The `PLATFORM` Flavor part encompasses measurements that are unique to a
 specific platform, including the server OEM, BIOS version, etc. A
@@ -5239,7 +5233,7 @@ have the same BIOS version.
                 }
 ```
 
-### 9.1.5  Sample OS Flavor
+### Sample OS Flavor
 
 An OS Flavor encompasses all of the measurements unique to a given OS.
 This includes the OS kernel and other measurements.
@@ -5499,7 +5493,7 @@ This includes the OS kernel and other measurements.
 }
 ```
 
-### 9.1.6  Sample HOST\_UNIQUE Flavor
+### Sample HOST\_UNIQUE Flavor
 
 Host-Unique flavors define measurements for a specific host. This can be
 either a single large flavor that incorporates all of the host
@@ -5619,7 +5613,7 @@ similarly configured hosts.
 }
 ```
 
-### 9.1.7  Sample ASSET\_TAG Flavor
+### Sample ASSET\_TAG Flavor
 
 Asset Tag flavor parts are unique to Asset Tag attestation. These
 flavors verify that the Asset Tag data in the host’s TPM correctly
@@ -5685,7 +5679,7 @@ that has been deployed to that host.
 
 
 
-9.2  Flavor Matching
+Flavor Matching
 ---------------
 
 Flavors are matched to host by objects called `Flavor Groups` A Flavor
@@ -5729,7 +5723,7 @@ if a host received a BIOS upgrade, the host will attest as Untrusted,
 and no attempt will be made to re-match a new flavor. An administrator
 will need to explicitly specify a new flavor to be used for that host.
 
-### 9.2.1  When Does Flavor Matching Happen?
+### When Does Flavor Matching Happen?
 
 Generally speaking, a new Flavor match operation is triggered whenever a
 host is registered, whenever a host is attested and would be untrusted,
@@ -5758,7 +5752,7 @@ host’s Flavor group that would result in a Trusted attestation. If the
 Service still finds no matching Flavors, the host will appear as
 Untrusted.
 
-### 9.2.2  Flavor Matching Performance
+### Flavor Matching Performance
 
 Flavor matching causes affected hosts to be moved into the `QUEUE` state
 while the host and Flavor are evaluated to determine whether the host
@@ -5789,21 +5783,21 @@ for a new deployment, it is suggested that Flavors be created before
 registering hosts. This is not a concern after the initial population of
 Flavors and hosts.
 
-### 9.2.3  Flavor Groups
+### Flavor Groups
 
 Flavor Groups represent a collection of one or more Flavors that are
 possible matches for a collection of one or more hosts. Flavor Groups
 link to both Flavors and hosts – a host in Flavor Group "ABC" will only
 be matched to Flavors in Flavor Group "ABC"
 
-### 9.2.4  Default Flavor Group
+### Default Flavor Group
 
 By default the Verification Service includes a Flavor Group named
 `automatic` and another named `unique` During host registration, the
 `automatic` Flavor Group is used as a default selection if no other
 Flavor Group is specified.
 
-#### 9.2.4.1  automatic
+#### automatic
 
 The automatic Flavor Group is used as the default Flavor Group for all
 hosts and all Flavor parts. If no other Flavor Groups are specified when
@@ -5811,13 +5805,13 @@ creating Flavors or Hosts, all Hosts and Flavors will be added to this
 group. This is useful for datacenters that want to manage a single set
 of acceptable configurations for all hosts.
 
-#### 9.2.4.2  unique
+#### unique
 
 The unique Flavor Group is used to contain `HOST\_UNIQUE` Flavors. This
 Flavorgroup is used by the backend software and should not be managed
 manually.
 
-### 9.2.5  Flavor Match Policies
+### Flavor Match Policies
 
 Flavor Match Policies are used to define how the Flavor Match engine
 will match Flavors to hosts for attestation for a given Flavor Group.
@@ -5856,7 +5850,7 @@ Group, the match will not be required. If more than one `OS` Flavor part
 exists in the Group, all of those `OS` parts will be required to match for
 a host to be Trusted.
 
-#### 9.2.5.1  Default Flavor Match Policy
+#### Default Flavor Match Policy
 
 The `automatic` Flavor Group, and any Flavor Group created without
 explicitly defining a Flavor Match Policy, will be created using the
@@ -5888,13 +5882,13 @@ Matching:
 }
 ```
 
-#### 9.2.5.2  ANY\_OF
+#### ANY\_OF
 
 The `ANY_OF` Policy allows any Flavor of the specified Flavor part to be
 matched. If the Flavor Group contains OS Flavor 1 and OS Flavor 2, a
 host will be Trusted if it matches either OS Flavor 1 or OS Flavor 2.
 
-#### 9.2.5.3  ALL\_OF
+#### ALL\_OF
 
 The `ALL_OF` Policy requires all Flavors of the specified Flavor Part in
 the Flavor Group to be matched. For example, if Flavor Group X contains
@@ -5903,7 +5897,7 @@ Group X will need to match both `PLATFORM` Flavor 1 and `PLATFORM` Flavor 2
 to attest as Trusted. If the host matches only one of the Flavors, or
 neither of them, the host will be attested as Untrusted.
 
-#### 9.2.5.4  LATEST
+#### LATEST
 
 The `LATEST` Policy requires that the most recently created Flavor of the
 specified Flavor part be used when matching to a host. For example:
@@ -5920,7 +5914,7 @@ if Asset Tag Flavors are in the Flavor Group, the most recently created
 Asset Tag Flavor will be used. If no Asset Tag Flavors are present in
 the Flavor Group, then this Flavor part will be ignored.
 
-#### 9.2.5.5  REQUIRED
+#### REQUIRED
 
 The `REQUIRED` Policy requires a Flavor of the specified part to be
 matched. For example:
@@ -5936,7 +5930,7 @@ This policy means that a `PLATFORM` Flavor part must be used; if the
 Flavor Group contains no `PLATFORM` Flavor parts, hosts in this Flavor
 Group will always count as Untrusted.
 
-#### 9.2.5.6  REQUIRED\_IF\_DEFINED
+#### REQUIRED\_IF\_DEFINED
 
 The `REQUIRED_IF_DEFINED` Policy requires that a Flavor part be used if
 a Flavor of that part exists. If no Flavor part of this type exists in
@@ -5954,7 +5948,7 @@ if Asset Tag Flavors are in the Flavor Group, the most recently created
 Asset Tag Flavor will be used. If no Asset Tag Flavors are present in
 the Flavor Group, then this Flavor part will be ignored.
 
-### 9.2.6  Flavor Match Event Triggers
+### Flavor Match Event Triggers
 
 Several events will cause the background queue service to attempt to
 re-match Flavors and hosts:
@@ -5985,9 +5979,9 @@ re-match Flavors and hosts:
     ensures that Reports are always generated using the best possible Flavor
     matches available in the database.
 
-### 9.2.7  Sample Flavorgroup API Calls
+### Sample Flavorgroup API Calls
 
-#### 9.2.7.1  Create a New Flavorgroup
+#### Create a New Flavorgroup
 
 ```
 POST https://<Verification Service IP or Hostname>:8443/hvs/v2/flavorgroups
@@ -6033,10 +6027,10 @@ Response:
 
 
 
-9.3  SOFTWARE Flavor Management
+SOFTWARE Flavor Management
 --------------------------
 
-### 9.3.1  What is a SOFTWARE Flavor?
+### What is a SOFTWARE Flavor?
 
 A `SOFTWARE` Flavor part defines the measurements expected for a specific
 application, or a specific set of files and folders on the physical
@@ -6054,7 +6048,7 @@ measurements.
 Using `SOFTWARE` Flavors consists of two parts – creating the actual
 `SOFTWARE` Flavor, and deploying the `SOFTWARE` Flavor manifest to the host.
 
-### 9.3.2  Creating a SOFTWARE Flavor part
+### Creating a SOFTWARE Flavor part
 
 Creating a new `SOFTWARE` Flavor requires creating a manifest of the files
 and folders that need to be measured.
@@ -6062,7 +6056,7 @@ and folders that need to be measured.
 There are three different types of entries for the manifest:
 `Directories`, `Symlinks`and `Files`.
 
-#### 9.3.2.1  Directories
+#### Directories
 
 A Directory defines measurement rules for measuring a directory.
 Effectively this involves listing the contents of the directory and
@@ -6080,7 +6074,7 @@ extension can be added or removed from the directory.
 <Dir Type="dir" Include=".*" Exclude="" Path="/opt/trustagent/hypertext/WEB-INF">
 ```
 
-#### 9.3.2.2  Symlinks
+#### Symlinks
 
 A Symlink entry defines a symbolic link that will be measured. The
 actual symbolic link is hashed, not the file or folder the symlink
@@ -6092,7 +6086,7 @@ folder pointed to can have its contents change.
 <Symlink Path="/opt/trustagent/bin/tpm_nvinfo">
 ```
 
-#### 9.3.2.3  Files
+#### Files
 
 Individual files can be explicitly specified for measurement as well.
 Each file listed will be hashed and extended separately. This means that
@@ -6104,7 +6098,7 @@ Untrusted.
 <File Path="/opt/trustagent/bin/module_analysis_da.sh">
 ```
 
-### 9.3.3  Sample SOFTWARE Flavor Creation Call
+### Sample SOFTWARE Flavor Creation Call
 
 Creating a new `SOFTWARE` Flavor requires specifying a sample host where
 the application, files or folders that will be measured are currently
@@ -6131,7 +6125,7 @@ Authorization: Bearer <token>
 </ManifestRequest>
 ```
 
-### 9.3.4  Deploying a SOFTWARE Flavor Manifest to a Host
+### Deploying a SOFTWARE Flavor Manifest to a Host
 
 Once the SOFTWARE Flavor has been created, it can be deployed to any
 number of Trust Agent servers. This requires the Flavor ID (returned
@@ -6156,7 +6150,7 @@ Authorization: Bearer <token>
 }
 ```
 
-### 9.3.5  SOFTWARE Flavor Matching
+### SOFTWARE Flavor Matching
 
 The default Flavor Match Policy for SOFTWARE Flavor parts is
 `ALL_OF`,`REQUIRED_IF_DEFINED`. This means that all Software Flavors
@@ -6181,7 +6175,7 @@ Flavorgroup that the host is added to, and will not be matched to
 Flavors in different Flavorgroups. Flavor matching will happen on the
 same events as for other Flavor parts.
 
-### 9.3.6  Kernel Upgrades
+### Kernel Upgrades
 
 Because the Application Integrity functionality involves adding a
 measurement agent (`tbootXM`) to `initrd`, an additional process must be
@@ -6230,19 +6224,21 @@ imported after updating the kernel and regenerating `initrd`.
 
 
 
-10  Scalability and Sizing
+Scalability and Sizing
 ======================
 
-10.1  Configuration Maximums
+Configuration Maximums
 ----------------------
 
-### 10.1.1  Registered Hosts
+### Registered Hosts
 
 The Intel® SecL Verification Service can support a maximum of 2000
 registered hosts with a single Verification Service instance with
-default settings.
+default settings and the specified minimum required hardware.
 
-### 10.1.2  HDD Space
+The Verification Service can support up to 100,000 registered hosts, but will require a minimum of 16 vCPUs and 16GB RAM.  The service is primarily CPU-limited.
+
+### HDD Space
 
 The HDD space recommendations below represent expected log and database
 growth using default settings. Altering the database or log rotation
@@ -6252,7 +6248,7 @@ recommended.
 
 
 
-10.2  Database Rotation Settings
+Database Rotation Settings
 --------------------------
 
 The Intel® SecL Verification Service database will automatically rotate
@@ -6269,7 +6265,7 @@ rows in the audit log table before a rotation will occur.
 
 
 
-10.3  Log Rotation
+Log Rotation
 ------------
 
 The Intel® SecL services (the Verification Service, Trust Agent, and
@@ -6281,13 +6277,13 @@ size, whichever comes first, and 12 total rotations will be retained.
 
 
 
-11  Intel Security Libraries Configuration Settings
+Intel Security Libraries Configuration Settings
 ===============================================
 
-11.1  Verification Service
+Verification Service
 --------------------
 
-### 11.1.1  Installation Answer File Options
+### Installation Answer File Options
 
 ```
 # Authentication URL and service account credentials - mandatory
@@ -6394,7 +6390,7 @@ TAG_CA_VALIDITY_YEARS=5
 
 ```
 
-### 11.1.2  Configuration Options
+### Configuration Options
 
 The Verification Service configuration is stored in the
 file `/etc/hvs/config.yml`:
@@ -6468,7 +6464,7 @@ fvs:
 
 
 
-### 11.1.3  Command-Line Options
+### Command-Line Options
 
 The Verification Service supports several command-line commands that can
 be executed only as the Root user:
@@ -6477,31 +6473,31 @@ Syntax:
 
 `hvs <command>`
 
-#### 11.1.3.1  Help
+#### Help
 
 `hvs help`
 
 Displays the list of available CLI commands.
 
-#### 11.1.3.2  Start
+#### Start
 
 `hvs start`
 
 Starts the services.
 
-#### 11.1.3.3  Stop
+#### Stop
 
 `hvs stop`
 
 Stops the services.
 
-#### 11.1.3.5  Status
+#### Status
 
 `hvs status`
 
 Reports whether the service is currently running.
 
-#### 11.1.3.6  Uninstall
+#### Uninstall
 
 `hvs uninstall`
 
@@ -6509,13 +6505,13 @@ Uninstalls the service, including the deletion of all files and folders.
 Database content is not removed. See section 14.1 for additional
 details.
 
-#### 11.1.3.7  Version
+#### Version
 
 `hvs version`
 
 Reports the version of the service.
 
-#### 11.1.3.10  Erase-data
+#### Erase-data
 
 `hvs erase-data`
 
@@ -6537,7 +6533,7 @@ Deletes all non-user information from the database.  All data in teh following t
  tls_policy
 ```
 
-#### 11.1.3.16  Setup
+#### Setup
 
 Usage of hvs setup:
         hvs setup <task> [--help] [--force] [-f <answer-file>]
@@ -6559,7 +6555,7 @@ Available Tasks for setup:
         create-tag-ca                   Generate self-signed tag certificate
         update-service-config           Sets or Updates the Service configuration
 
-### 11.1.4  Directory Layout
+### Directory Layout
 
 The Host Verification Service installs by default to  the
 following folders:
@@ -6622,10 +6618,10 @@ This directory contains the config.yml configuration file, the database connecti
 
 ​    └── tag-ca.key
 
-11.2  Trust Agent
+Trust Agent
 -----------
 
-### 11.2.1  Installation Answer File Options
+### Installation Answer File Options
 
 | Key                               | Description                                                  | Sample Value                                         |
 | --------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
@@ -6650,7 +6646,7 @@ This directory contains the config.yml configuration file, the database connecti
 | TRUSTAGENT\_LOG\_LEVEL            | The logging level to be saved in config.yml during installation ("trace", "debug", "info"). | TRUSTAGENT\_LOG\_LEVEL=debug                         |
 | TRUSTAGENT\_PORT                  | The port on which the trust-agent service will listen.       | TRUSTAGENT\_PORT=10433                               |
 
-### 11.2.2  Configuration Options
+### Configuration Options
 
 The Trust Agent configuration settings are managed in
 `/opt/trustagent/configuration/config.yml`
@@ -6683,7 +6679,7 @@ The Trust Agent configuration settings are managed in
 | certsan: 10.1.2.3,server.domain.com,localhost | Comma-separated list of hostnames and IP addresses for the Trust Agent. Used in the Agent TLS certificate. |
 | certcn: Trust Agent TLS Certificate           | Common Name for the Trust Agent TLS certificate              |
 
-### 11.2.3  Command-Line Options
+### Command-Line Options
 
 Usage:
 
@@ -6783,25 +6779,23 @@ Available Tasks for 'setup', all commands support env file flag
                                                                                                                 - FLAVOR_UUIDS=<uuid1,uuid2,[...]>                  : CSV list of flavor UUIDs
                                                                                                                                                                         - FLAVOR_LABELS=<flavorlabel1,flavorlabel2,[...]>   : CSV list of flavor labels
 
-### 11.2.4  Directory Layout
+### Directory Layout
 
-#### 11.2.4.1  Windows
-
-#### 11.2.4.2 Linux
+#### Linux
 
 The Linux Trust Agent installs by default to `/opt/trustagent`, with the
 following subfolders:
 
-##### 11.2.4.2.1  Bin
+##### Bin
 
 Contains executables and scripts.
 
-##### 11.2.4.2.2  Configuration
+##### Configuration
 
 Contains the `config.yml` configuration file, as well as certificates and
 keystores. This includes the AIK public key blob after provitioning.
 
-##### 11.2.4.2.3  Var
+##### Var
 
 Contains information gathered from the platform and SOFTWARE Flavor
 manifests. All files with the name `manifest_*.xml` will be parsed to
@@ -6811,10 +6805,10 @@ SOFTWARE Flavors.
 
 
 
-11.3  Integration Hub
+Integration Hub
 ---------------
 
-### 11.3.1  Installation Answer File
+### Installation Answer File
 
 ```
 # Authentication URL and service account credentials
@@ -6869,7 +6863,7 @@ LOG_ENABLE_STDOUT=true
 
 
 
-### 11.3.2  Configuration Options
+### Configuration Options
 
 ```
 config-file: /etc/ihub/config
@@ -6905,35 +6899,35 @@ tls:
   san-list: 127.0.0.1,localhost
 ```
 
-### 11.3.3  Command-Line Options
+### Command-Line Options
 
-#### 11.3.3.1  Available Commands
+#### Available Commands
 
-##### 11.3.3.1.1  Help
+##### Help
 
 `ihub -h | --help`
 
 Displays the list of available CLI commands.
 
-##### 11.3.3.1.2  Start
+##### Start
 
 `ihub start`
 
 Starts the services.
 
-##### 11.3.3.1.3  Stop
+##### Stop
 
 `ihub stop`
 
 Stops the services.
 
-##### 11.3.3.1.5  Status
+##### Status
 
 `ihub status`
 
 Reports whether the service is currently running.
 
-##### 11.3.3.1.5  Uninstall
+##### Uninstall
 
 `ihub uninstall [--purge]`
 
@@ -6941,13 +6935,13 @@ Uninstalls the service, including the deletion of all files and folders.
 Database content is not removed. If the `--purge` option is used, database
 content will be removed during the uninstallation.
 
-##### 11.3.3.1.6  Version
+##### Version
 
 `ihub -v | --version`
 
 Reports the version of the service.
 
-##### 11.3.3.1.10  Setup
+##### Setup
 
 ```
 ihub setup <task> [--help] [--force] [-f <answer-file>]
@@ -6969,7 +6963,7 @@ Available Tasks for setup:
         download-saml-cert                  Download SAML certificate from Attestation service
         update-service-config               Sets or Updates the Service configuration
 
-### 11.3.4  Directory Layout
+### Directory Layout
 
 The ihub installs by default to /etc/ihub.  This directory contains the config.yaml configuration file,  saml certificate, trusted ca, and the webservice TLS certificate.
 
@@ -6999,16 +6993,16 @@ The ihub installs by default to /etc/ihub.  This directory contains the config.y
 
   
 
-#### 1.3.4.1  Logs 
+#### Logs 
 
 /var/logs/ihub
 
 
 
-11.4  Certificate Management Service
+Certificate Management Service
 ------------------------------
 
-### 11.4.1  Installation Answer File Options
+### Installation Answer File Options
 
 | Key                                | Sample Value                                               | Description                                                  |
 | ---------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ |
@@ -7037,7 +7031,7 @@ The ihub installs by default to /etc/ihub.  This directory contains the config.y
 | AAS\_TLS\_CN                       | AAS TLS Certificate                                        | CN of AAS TLS certificate, this gets populated in special JWT token. AAS must send TLS certificate CSR with this CN. |
 | AAS\_TLS\_SAN                      |                                                            | SAN list populated in special JWT token, this token is used by AAS to get TLS certificate signed from CMS. SAN list in this token and CSR generated by AAS must match. |
 
-### 11.4.2  Configuration Options
+### Configuration Options
 
 The CMS configuration can be found in `/etc/cms/config.yml`
 
@@ -7064,49 +7058,49 @@ authdefender:
   lockoutdurationmins: 15
 ```
 
-### 11.4.3  Command-Line Options
+### Command-Line Options
 
-#### 11.4.3.1  Help
+#### Help
 
 `cms help`
 
 Displays the list of available CLI commands.
 
-#### 11.4.3.2  Start
+#### Start
 
 `cms start`
 
 Starts the services.
 
-#### 11.4.3.3  Stop
+#### Stop
 
 `cms stop`
 
 Stops the service.
 
-#### 11.4.3.5  Status
+#### Status
 
 `cms status`
 
 Reports whether the service is currently running.
 
-#### 11.4.3.6  Uninstall
+#### Uninstall
 
 `cms uninstall`
 
 Uninstalls the service, including the deletion of all files and folders.
 
-#### 11.4.3.7  Version
+#### Version
 
 `cms version`
 
 Reports the version of the service.
 
-#### 11.4.3.8  Tlscertsha384
+#### Tlscertsha384
 
 Shows the SHA384 of the TLS certificate.
 
-#### 11.4.3.9  setup \[task\]
+#### setup \[task\]
 
 Usage of cms setup:
         cms setup <task> [--help] [--force] [-f <answer-file>]
@@ -7122,25 +7116,25 @@ Available Tasks for setup:
     cms-auth-token            Create its own self signed JWT key pair in /etc/cms/jwt for quality of life
     update-service-config     Sets or Updates the Service configuration
 
-### 11.4.4  Directory Layout
+### Directory Layout
 
 The Certificate Management Service installs by default to `/opt/cms` with
 the following folders.
 
-#### 11.4.4.1  Bin
+#### Bin
 
 This folder contains executable scripts.
 
-#### 11.44.2 Cacerts
+#### Cacerts
 
 This folder contains the CMS root CA certificate.
 
 
 
-11.5  Authentication and Authorization Service
+Authentication and Authorization Service
 ----------------------------------------
 
-### 11.5.1  Installation Answer File Options
+### Installation Answer File Options
 
 | Key                             | Sample Value                                 | Description                                                  |
 | ------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
@@ -7162,9 +7156,9 @@ This folder contains the CMS root CA certificate.
 | BEARER\_TOKEN                   | \<token\>                                    | Required. Token from the CMS generated during CMS setup that allows the AAS to perform initial setup tasks. |
 | LOG\_LEVEL                      | Critical, error, warning, info, debug, trace | Optional. Defaults to INFO. Changes the log level used.      |
 
-### 11.5.2  Configuration Options
+### Configuration Options
 
-### 11.5.3  Command-Line Options
+### Command-Line Options
 
 Usage:
         authservice <command> [arguments]
@@ -7196,25 +7190,25 @@ Usage of authservice setup:
 
 
 
-### 11.5.4  Directory Layout
+### Directory Layout
 
 The Verification Service installs by default to `/opt/authservice` with
 the following folders.
 
-#### 11.5.4.1 Bin
+#### Bin
 
 Contains executable scripts and binaries.
 
-#### 11.5.4.2  dbscripts
+#### dbscripts
 
 Contains database scripts.
 
 
 
-11.6  Workload Service
+Workload Service
 ----------------
 
-### 11.6.1  Installation Answer File Options
+### Installation Answer File Options
 
 | Key                 | Sample Value                                        | Description                                                  |
 | ------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
@@ -7241,7 +7235,7 @@ Contains database scripts.
 | KEY\_PATH           |                                                     | (Optional) Redefines the path to the keystore folder         |
 | CERT\_PATH          |                                                     | (Optional) Redefines the path to the certificates folder     |
 
-### 11.6.2  Configuration Options
+### Configuration Options
 
 The Workload Service configuration can be found in
 `/etc/workload-service/config.yml`:
@@ -7272,7 +7266,7 @@ loglevel: info
 key_cache_seconds: 300
 ```
 
-### 11.6.3  Command-Line Options
+### Command-Line Options
 
 The Workload Service supports several command-line commands that can be
 executed only as the Root user:
@@ -7281,7 +7275,7 @@ Syntax:
 
 `workload-service <command>`
 
-####  11.6.3.1  Help
+####  Help
 
 Available Commands:
 
@@ -7373,24 +7367,24 @@ logs Setup workload-service log level
 
 \- Environment variable WLS\_LOG\_LEVEL=\<log level\> should be set
 
-####  11.6.3.2  start 
+####  start 
 
 Start workload-service
 
-####  11.6.3.3  stop 
+####  stop 
 
 Stop workload-service
 
-####  11.6.3.4  status 
+####  status 
 
 Determine if workload-service is running
 
-####  11.6.3.5  uninstall 
+####  uninstall 
 
 \[--purge\] Uninstall workload-service. --purge option needs to be
 applied to remove configuration and data files
 
-####  11.6.3.6  setup 
+####  setup 
 
 Setup command usage:     workload-service setup [task] [--force]
 
@@ -7484,21 +7478,21 @@ Available tasks for setup:
                                         - HVS_URL=<url>      : HVS API Endpoint URL
                                         - BEARER_TOKEN=<token> for authenticating with HVS
 
-### 11.6.4 Directory Layout
+### Directory Layout
 
 The Workload Service installs by default to /opt/wls with the following
 folders.
 
 
 
-11.7  Key Broker Service
+Key Broker Service
 ------------------
 
-### 11.7.1  Installation Answer File Options
+### Installation Answer File Options
 
-### 11.7.2  Configuration Options
+### Configuration Options
 
-### 11.7.3 Command-Line Options
+### Command-Line Options
 
 The Key Broker Service supports several command-line commands that can
 be executed only as the Root user:
@@ -7529,7 +7523,7 @@ Available Tasks for setup:
         create-default-key-transfer-policy  Create default key transfer policy for KBS
         update-service-config               Sets or Updates the Service configuration
 
-### 11.7.4  Directory Layout
+### Directory Layout
 
 The Verification Service installs by default with the following folders:
 
@@ -7549,26 +7543,26 @@ Contains KBS logs
 
 
 
-11.8  Workload Agent
+Workload Agent
 --------------
 
-### 11.8.1  Installation Answer File Options
+### Installation Answer File Options
 
-### 11.8.2  Configuration Options
+### Configuration Options
 
-### 11.8.3  Command-Line Options
+### Command-Line Options
 
 Available Commands:
 
-####  11.8.3.1  Help
+####  Help
 
 wlagent help\|-help\|--help Show help message
 
-####  11.8.3.2  setup 
+####  setup 
 
 wlagent setup \[task\] Run setup task
 
-##### 11.8.3.2.1  Available Tasks for setup
+##### Available Tasks for setup
 
 ###### SigningKey 
 
@@ -7592,48 +7586,48 @@ Register a binding key with the host verification service
 -   Environment variable BEARER\_TOKEN=\<token\> for authenticating with
     Verification service
 
-#### 11.8.3.3  start 
+#### start 
 
 Start wlagent
 
-#### 11.8.3.4  stop 
+#### stop 
 
 Stop wlagent
 
-#### 11.8.3.5  status 
+#### status 
 
 Reports the status of wlagent service
 
-#### 11.8.3.6  uninstall 
+#### uninstall 
 
 Uninstall wlagent
 
-#### 11.8.3.7  uninstall --purge 
+#### uninstall --purge 
 
 Uninstalls workload agent and deletes the existing configuration
 directory
 
-#### 11.8.3.8  version 
+#### version 
 
 Reports the version of the workload agent
 
 
 
-### 11.8.4  Directory Layout
+### Directory Layout
 
 The Workload Agent installs by default to /opt/workload-agent with the
 following folders.
 
-#### 11.8.4.1  Bin
+#### Bin
 
 Contains scripts and executable binaries.
 
 
 
-11.9  Workload Policy Manager
+Workload Policy Manager
 -----------------------
 
-### 11.9.1  Installation Answer File Options
+### Installation Answer File Options
 
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
@@ -7647,9 +7641,9 @@ Contains scripts and executable binaries.
 | WPM\_SERVICE_PASSWORD          |                                                         | Defines the credentials for the WPM to use to access the KBS |
 | WPM\_SERVICE_USERNAME          |                                                         | Defines the credentials for the WPM to use to access the KBS |
 
-### 11.9.2  Configuration Options
+### Configuration Options
 
-### 11.9.3  Command-Line Options
+### Command-Line Options
 
 The Workload Policy Manager supports several command-line commands that
 can be executed only as the Root user:
@@ -7658,7 +7652,7 @@ Syntax:
 
 wpm \<command\>
 
-#### 11.9.3.1  create-image-flavor
+#### create-image-flavor
 
 Creates a new image flavor and encrypts a source image. Output is the
 image flavor in JSON format and the encrypted image.
@@ -7682,7 +7676,7 @@ if not specified, encryption is skipped
 
 if not specified, a new key is generated
 
-#### 11.9.3.2  create-container-image-flavor
+#### create-container-image-flavor
 
 Used to encrypt Docker container images and generate a container image
 flavor.
@@ -7720,37 +7714,37 @@ container image should be signed
 
 -o, --out-file (optional) specify output file path
 
-#### 11.9.3.3  get-container-image-id
+#### get-container-image-id
 
-#### 11.9.3.4  create-software-flavor
+#### create-software-flavor
 
 Not currently supported; intended for future functionality.
 
-#### 11.9.3.5  Uninstall
+#### Uninstall
 
 Removes the WPM.
 
-#### 11.9.3.6  --help
+#### --help
 
 Displays help text
 
-#### 11.9.3.7  --version
+#### --version
 
 Displays the WPM version
 
-#### 11.9.3.8  Setup
+#### Setup
 
 usage : wpm setup \[\<tasklist\>\]
 
 \<tasklist\>-space separated list of tasks
 
-##### 11.9.3.8.1  wpm setup
+##### wpm setup
 
-##### 11.9.3.8.2  wpm setup CreateEnvelopeKey
+##### wpm setup CreateEnvelopeKey
 
-##### 11.9.3.8.3  wpm setup RegisterEnvelopeKey
+##### wpm setup RegisterEnvelopeKey
 
-##### 11.9.3.8.4  wpm setup download\_ca\_cert \[--force\]
+##### wpm setup download\_ca\_cert \[--force\]
 
 \- Download CMS root CA certificate
 
@@ -7759,7 +7753,7 @@ downloads new root CA cert
 
 \- Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
 
-##### 11.9.3.8.5 wpm setup download\_cert Flavor-Signing \[--force\]
+##### wpm setup download\_cert Flavor-Signing \[--force\]
 
 \- Generates Key pair and CSR, gets it signed from CMS
 
@@ -7794,16 +7788,16 @@ override default specified in config
 
 
 
-12  Certificate and Key Management
+Certificate and Key Management
 ==============================
 
-12.1  Host Verification Service Certificates and Keys
+Host Verification Service Certificates and Keys
 -----------------------------------------------
 
 The Host Verification Service has several unique certificates not
 present on other services.
 
-### 12.1.1  SAML
+### SAML
 
 The SAML Certificate a is used to sign SAML attestation reports, and is
 itself signed by the Root Certificate. This certificate is unique to the
@@ -7846,7 +7840,7 @@ signing certificate is no longer valid. No service restart is necessary.
 If the Integration Hub is being used, the new SAML certificate will need
 to be imported to the Hub.
 
-### 12.1.2  Asset Tag
+### Asset Tag
 
 The Asset tag Certificate is used to sign all Asset Tag Certificates.
 This certificate is unique to the Verification Service.
@@ -7876,7 +7870,7 @@ considered invalid, and will need to be recreated. It is recommended to
 delete any existing Asset Tag certificates and Flavors, and then
 recreate and deploy new Tags.
 
-### 12.1.3  Privacy CA 
+### Privacy CA 
 
 The Privacy CA certificate is used as part of the certificate chain for
 creating the Attestation Identity Key (AIK) during Trust Agent
@@ -7919,7 +7913,7 @@ need to be re-provisioned with a new AIK:
 
 `tagent restart`
 
-### 12.1.4  Endorsement CA
+### Endorsement CA
 
 The Endorsement CA is a self-signed certificate used during Trust Agent
 provisioning.
@@ -7957,7 +7951,7 @@ will need to be re-provisioned with a new Endorsement Certificate:
 
 
 
-12.2  TLS Certificates
+TLS Certificates
 ----------------
 
 TLS certificates for each service are issued by the Certificate
@@ -7988,8 +7982,46 @@ typically these are the same variables set in the service installation
 
 
 
-13  Uninstallation
-==============
+# Upgrades
+
+***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the HVS, WLS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
+
+```
+Backup to tar file:
+pg_dump -F t <database_name> > <database_backup_file>.tar
+Restore from tar file:
+pg_restore -d <database_name> <database_backup_file>.tar	
+```
+
+Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
+
+## Backward Compatibility
+
+In general Intel SecL services are made to be backward-compatible within a given major release (for example, the 3.6 HVS should be compatible with the 3.5 Trust Agent) in an upgrade priority order (see below).  Major version upgrades may require coordinated upgrades across all services.
+
+## Upgrade Order
+
+Upgrades should be performed in the following order to prevent misconfiguration or any service unavailability:
+
+1) CMS, AAS
+
+2)  HVS
+
+3) WLS, IHUB
+
+4) KBS, Trust Agents
+
+Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
+
+## Upgrade Process
+
+Binary Installations
+
+For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
+
+Container Deployments
+
+# Uninstallation
 
 This section describes steps used for uninstalling Intel SecL-DC
 services.
@@ -7998,7 +8030,7 @@ services.
     uninstall a containerized deployment, simply shut down the container
     and delete the persistence volumes.
 
-13.1 Host Verification Service
+Host Verification Service
 --------------------
 
 To uninstall the Verification Service, run the following command:
@@ -8019,7 +8051,7 @@ the following:
 
 
 
-13.2  Trust Agent
+Trust Agent
 -----------
 
 To uninstall the Trust Agent, run the following command:
@@ -8051,7 +8083,7 @@ reinstallation will require clearing TPM ownership.
 
 
 
-13.3  Integration Hub
+Integration Hub
 ---------------
 
 To uninstall the Integration Hub, run the following command:
@@ -8060,15 +8092,15 @@ To uninstall the Integration Hub, run the following command:
 
 
 
-14Appendix
+Appendix
 ========
 
-14.1  PCR Definitions
+PCR Definitions
 ---------------
 
-### 14.1.1  Red Had Enterprise Linux
+### Red Had Enterprise Linux
 
-#### 14.1.1.1  TPM 2.0
+#### TPM 2.0
 
 <table>
 <thead>
@@ -8147,9 +8179,9 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-### 14.1.2  VMWare ESXi
+### VMWare ESXi
 
-#### 14.1.2.1  TPM 1.2
+#### TPM 1.2
 
 <table>
 <thead>
@@ -8225,7 +8257,7 @@ Digest of LCP</td>
 </tbody>
 </table>
 
-#### 14.1.2.2  TPM 2.0
+#### TPM 2.0
 
 VMWare supports TPM 2.0 with Intel TXT starting in vSphere 6.7 Update 1.
 Earlier versions will support TPM 1.2 only.
@@ -8304,7 +8336,7 @@ Earlier versions will support TPM 1.2 only.
 </table>
 
 
-## A.1  Attestation Rules
+## Attestation Rules
 
 <table>
 <thead>
