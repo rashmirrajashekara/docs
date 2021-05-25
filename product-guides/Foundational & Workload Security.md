@@ -2143,10 +2143,12 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
 - Build
 
   ```
-  #Single node cluster with microk8s
+  cd /root/intel-secl/build/fs
+  
+  #Single-node cluster with microk8s
   make k8s-aio
   
-  #Multi node cluster with kubeadm
+  #Multi-node cluster with kubeadm
   make k8s
   ```
 
@@ -2184,10 +2186,10 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
   make k8s
   ```
 
-- Built Container images,K8s manifests and deployment scripts
+- The container images, Kubernetes manifests and deployment scripts will output to the following folder:
 
   ```
-  /root/intel-secl/build/cc-crio/k8s/
+  /root/intel-secl/build/fs/k8s
   ```
 
 ## Intel® SecL-DC Foundational Security Pod Deployment
