@@ -488,6 +488,13 @@ INSTALL_ADMIN_PASSWORD=superAdminPass
 ```
 
 
+* Create and update `scheduler-policy.json` path
+
+```shell
+mkdir -p /opt/isecl-k8s-extensions
+cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions
+```
+
 
 * Configure kube-scheduler to establish communication with isecl-scheduler.
 
@@ -978,7 +985,7 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 #### Generating keys
 
-* From cluster node, copy `k8s/manifests/kbs/rsa_create.py` to KMIP server and execute it using `python3 rsa_create.py`. It will generate the KMIP KEY ID and server.crt. Copy server.crt to cluster node.
+* From cluster node, copy `k8s/manifests/kbs/rsa_create.py` to KMIP server, update KMIP server IP in rsa_create.py inside single quote and execute it using `python3 rsa_create.py`. It will generate the KMIP KEY ID and server.crt. Copy server.crt to cluster node.
 
 * On cluster node, navigate to `k8s/manifests/kbs/` 
 
