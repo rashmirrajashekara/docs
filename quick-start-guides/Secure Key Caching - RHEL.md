@@ -317,7 +317,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
-    backend_pykmip: <yes/no to install pykmip server along with KMIP KBS>
+    backend_pykmip: "<yes/no to install pykmip server along with KMIP KBS>"
   roles:   
   - ansible-role
   environment:

@@ -338,7 +338,7 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
   vars:
     setup: <setup var from supported usecases>
     binaries_path: <path where built binaries are copied to>
-    backend_pykmip: <yes/no to install pykmip server along with KMIP KBS>
+    backend_pykmip: "<yes/no to install pykmip server along with KMIP KBS>"
   roles:   
   - ansible-role
   environment:
@@ -411,6 +411,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | Secure Key Caching           | `setup: secure-key-caching` in playbook or via `--extra-vars` as `setup=secure-key-caching`in CLI |
 | SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
 | SKC No Orchestration         | `setup: skc-no-orchestration` in playbook or via `--extra-vars` as `setup=skc-no-orchestration`in CLI |
+| SGX Attestation Kubernetes   | `setup: sgx-attestation-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-attestation-kubernetes`in CLI |
 
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
