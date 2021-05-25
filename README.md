@@ -66,6 +66,8 @@ The SGX Attestation infrastructure does not make any assumption on the user SGX 
 
 [SGX Attestation Infrastructure and Secure Key Caching Swagger Documents](https://github.com/intel-secl/docs/tree/v3.6/develop/swagger-docs/secure-key-caching)
 
+As a demonstration of SGX Attestation infrastructure artifacts, [a sample SGX attestation app is available here.](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/sample-sgx-attestation)
+
 ### Secure Key Caching
 
 Secure Key Caching (SKC) leverages the SGX Attestation Infrastructure to support the Secure Key Caching (SKC) use case. 

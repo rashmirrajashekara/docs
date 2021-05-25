@@ -101,9 +101,9 @@
 
 ### OS Requirements
 
-* RHEL 8.3/Ubuntu 18.04 for build
+* `RHEL 8.3`/`Ubuntu 18.04` for build
 
-* RHEL 8.3 or Ubuntu 18.04 for K8s cluster deployments
+* `RHEL 8.3`/`Ubuntu 18.04` for K8s cluster deployments
 
   >  **Note:** Foundational & Workload Security solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
@@ -114,8 +114,13 @@
 
 ### K8s Distributions
 
-* Single Node: `microk8s`
-* Multi Node: `kubeadm`
+* Single Node: 
+
+  A single-node deployment uses `microk8s` to deploy the entire control plane in a pod on a single hardware machine. This is best for POC or demo environments, but can also be used when integrating Intel SecL with another application that runs on a virtual machine
+
+* Multi Node: 
+
+  A multi-node deployment is a more typical Kubernetes architecture, where the Intel SecL management plane is simply deployed as a Pod, with the Intel SecL agents (the WLA and the TA, depending on use case) deployed as a DaemonSet. `kubeadm` is the supported multi node distribution as of today.
 
 ### Storage
 
@@ -145,16 +150,18 @@ Internet access required to access KBS running on Enterprise environment
 
 Ensure that all the FS,WS service ports are accessible with firewall
 
+## Rpms & Debs Requirement
 
+### RHEL
 
-## RHEL RPMs Requirements
+* `rhel-8-for-x86_64-appstream-rpms`
+* `rhel-8-for-x86_64-baseos-rpms`
+* `codeready-builder-for-rhel-8-x86_64-rpms`
+* `epel-release-latest-8.noarch.rpm`
 
-Access required for the following rpms in all systems
+### Ubuntu
 
-* BaseOS
-* Appstream
-* CodeReady
-* EPEL8
+None
 
 
 
@@ -164,25 +171,33 @@ Access required for the following rpms in all systems
 
 The single Node uses `microk8s` as a supported K8s distribution
 
-![k8s-single-node](./images/k8s-single-node.png)
+![k8s-single-node](./images/k8s-single-deploy-fsws.png)
 
 ### Multi Node
 
 The multi node supports `kubeadm` as a supported K8s distribution
 
-![K8s Deployment-fsws](./images/k8s-deployment-ws.jpg)
+![K8s Deployment-fsws](./images/k8s-multi-deploy-fsws.png)
 
 ## Build
 
 ### Pre-requisites
 
-The below steps need to be done on RHEL 8.3 Build machine (VM/Physical Node)
+The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/Physical Node)
 
 #### System Tools and Utilities
 
 ```shell
-dnf install -y git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
+# RedHat Enterprise Linux 8.3
+dnf install -y git wget tar python3 gcc gcc-c++ zip make yum-utils openssl-devel
 dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
+ln -s /usr/bin/python3 /usr/bin/python
+ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Ubuntu-18.04
+apt update
+apt install -y git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
+cp /usr/bin/gcc-8 /usr/bin/gcc
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 ```
@@ -210,10 +225,31 @@ rm -rf go1.14.4.linux-amd64.tar.gz
 #### Docker
 
 ```shell
+# RedHat Enterprise Linux-8.3
 dnf module enable -y container-tools
 dnf install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+
+systemctl enable docker
+systemctl start docker
+
+# Ubuntu-18.04
+apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+    
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt-get update
+apt-get install docker-ce=5:19.03.13~3-0~ubuntu-bionic docker-ce-cli=5:19.03.13~3-0~ubuntu-bionic containerd.io
 
 systemctl enable docker
 systemctl start docker
@@ -255,9 +291,17 @@ systemctl restart docker
   ./fs-prereq.sh -s
   ```
 
+* Install skopeo
+
+  ```shell
+  dnf install -y skopeo
+  ```
+  
 * Build
 
   ```shell
+  cd /root/intel-secl/build/fs/
+  
   #Single node cluster with microk8s
   make k8s-aio
   
@@ -294,6 +338,8 @@ systemctl restart docker
 * Build
 
   ```shell
+  cd /root/intel-secl/build/cc-docker
+  
   #Single node cluster with microk8s
   make k8s-aio
   
@@ -328,6 +374,8 @@ systemctl restart docker
 * Build
 
   ```shell
+  cd /root/intel-secl/build/cc-crio
+  
   #Single node cluster with microk8s
   make k8s-aio
   
@@ -365,49 +413,61 @@ systemctl restart docker
 
   > **Note:**  In case of microk8s deployment, when docker registry is enabled locally, the OCI container images need to be copied to the node where registry is enabled and then the above example command can be run. The same would not be required when registry is remotely installed
 
-* On each worker node with `TXT/SUEFI` enabled and registered to K8s-master, the following pre-req needs to be done on RHEL/Ubuntu systems
+* On each worker node with `TXT/BTG` enabled and registered to K8s-master, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04` systems
 
   * Foundational Security
-    * Copy `platform-dependencies` directory to each of the `TXT/SUEFI` enabled physical servers
+    * Copy `platform-dependencies` directory to each of the `TXT/BTG` enabled physical servers. 
+    
+      > **Note:** The platform-dependencies can be skipped for `SUEFI` enabled servers
     
     * Run the `install-ta-prereqs.sh` script on the physical servers
     
     * Reboot the server
     
-    * Only for Ubuntu, run the following commands
+    * Only for `Ubuntu-18.04`, run the following commands
     
       ```shell
       $ modprobe msr
       ```
   * Workload Security
     * Container Confidentiality with Docker runtime
-      * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
+      * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
+      
+        > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
       
       * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
       
       * Run the `install-prereqs-docker.sh` script on the physical servers from `container-runtime`
       
+        > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
+      
       * Reboot the server
       
-      * Only for Ubuntu, run the following command
+      * Only for `Ubuntu-18.04`, run the following command
       
         ```shell
         $ modprobe msr
         ```
-  * Container Confidentiality with CRIO runtime
-    * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
-  
+      
+    * Container Confidentiality with CRIO runtime
+      
+    * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
+      
+      > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
+      
     * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
-  
+      
     * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-  
-    * Reboot the server
-  
-    * Only for Ubuntu, run the following command
-    
-        ```shell
-        $ modprobe msr
-        ```
+      
+        > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
+      
+      * Reboot the server
+      
+      * Only for `Ubuntu-18.04`, run the following command
+      
+          ```shell
+          $ modprobe msr
+          ```
 
 ### Deploy
 
@@ -557,36 +617,45 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 #isecl-bootstrap-db-services
 #Reference
-#./isecl-bootstrap-db-services.sh: option requires an argument -- h
 #Usage: ./isecl-bootstrap-db-services.sh [-help/up/purge]
 #    -help          print help and exit
-#    up        Bootstrap Database Services for Authservice, Workload Service and Host verification Service
-#    purge     Delete Database Services for Authservice, Workload Service and Host verification Service
+#    up        Bootstrap Database Services for Authservice, Workload Service and Host #verification Service
+#    purge     Delete Database Services for Authservice, Workload Service and Host #verification Service
 
 ./isecl-bootstrap-db-services.sh up
 
 #isecl-bootstrap
 #Reference
-#Usage: Usage: ./isecl-bootstrap.sh [-help/up/down/purge]
+#Usage: ./isecl-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
-#    up   [all/<agent>/<service>/<usecase>]    Bootstrap ISecL K8s environment for specified agent/service/usecase
-#    down [all/<agent>/<service>/<usecase>]    Delete ISecL K8s environment for specified agent/service/usecase [will not delete data, config, logs]
-#    purge                                     Delete ISecL K8s environment with data, config, logs [only supported for single node deployments]
+#    up   [all/<agent>/<service>/<usecase>]    Bootstrap ISecL K8s environment for #specified agent/service/usecase
+#    down [all/<agent>/<service>/<usecase>]    Delete ISecL K8s environment for specified #agent/service/usecase [will not delete data, config, logs]
+#    purge                                     Delete ISecL K8s environment with data, #config, logs [only supported for single node deployments]
 
 #    Available Options for up/down command:
 #        agent      Can be one of tagent, wlagent
-#        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-controller, isecl-scheduler
-#        usecase    Can be one of foundation-security, workload-security, isecl-orchestration-k8s
+#        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-#controller, isecl-scheduler
+#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
 
-* Perform the following steps for isecl-scheduler
+* Update the `IHUB_PUB_KEY_PATH` in `isecl-k8s.env` to `/etc/ihub/ihub_public_key.pem`
+* Bring up isecl-scheduler
 
 ```shell
-#Copy scheduler-policy.json
-cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions/
+./isecl-bootstrap.sh up isecl-scheduler
+```
 
+* Copy `scheduler-policy.json`
+
+```shell
+cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions/
+```
+
+* Edit `kube-scheduler` and restart kubelet
+
+```shell
 #Edit the kube-scheduler
 vi /var/snap/microk8s/current/args/kube-scheduler
 
@@ -791,7 +860,6 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 #isecl-bootstrap-db-services
 #Reference
-#./isecl-bootstrap-db-services.sh: option requires an argument -- h
 #Usage: ./isecl-bootstrap-db-services.sh [-help/up/purge]
 #    -help          print help and exit
 #    up        Bootstrap Database Services for Authservice, Workload Service and Host verification Service
@@ -801,16 +869,16 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 #isecl-bootstrap
 #Reference
-#Usage: Usage: ./isecl-bootstrap.sh [-help/up/down/purge]
+#Usage: ./isecl-bootstrap.sh [-help/up/down/purge]
 #    -help                                     Print help and exit
-#    up   [all/<agent>/<service>/<usecase>]    Bootstrap ISecL K8s environment for specified agent/service/usecase
-#    down [all/<agent>/<service>/<usecase>]    Delete ISecL K8s environment for specified agent/service/usecase [will not delete data, config, logs]
+#    up   [all/<agent>/<service>/<usecase>]    Bootstrap ISecL K8s environment for #specified agent/service/usecase
+#    down [all/<agent>/<service>/<usecase>]    Delete ISecL K8s environment for specified #agent/service/usecase [will not delete data, config, logs]
 #    purge                                     Delete ISecL K8s environment with data, config, logs [only supported for single node deployments]
 
 #    Available Options for up/down command:
 #        agent      Can be one of tagent, wlagent
-#        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-controller, isecl-scheduler
-#        usecase    Can be one of foundation-security, workload-security, isecl-orchestration-k8s
+#        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-#controller, isecl-scheduler
+#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
@@ -832,7 +900,7 @@ mkdir -p /opt/isecl-k8s-extensions
 cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions
 ```
 
-* Configure kube-scheduler to establish communication with isecl-scheduler. Add `scheduler-policy.json` under kube-scheduler section, `mountPath` under container section and `hostPath` under volumes section in` /etc/kubernetes/manifests/kube-scheduler.yaml` as mentioned below
+* Configure kube-scheduler to establish communication with isecl-scheduler. Add `scheduler-policy.json` under kube-scheduler section, `mountPath` under container section and `hostPath` under volumes section in ` /etc/kubernetes/manifests/kube-scheduler.yaml` as mentioned below
 
 ```yaml
 spec:
