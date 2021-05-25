@@ -161,7 +161,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   cd /root/intel-secl/build/fs/
-  make binaries
+  make all
   ```
 
 * Built Binaries
@@ -250,7 +250,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   cd /root/intel-secl/build/cc-docker/
-  make all 
+  make binaries
   ```
   
 * Built binaries
@@ -315,7 +315,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   cd /root/intel-secl/build/cc-crio
-  make all
+  make binaries
   ```
   
   > **Note:** The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
