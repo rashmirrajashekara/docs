@@ -196,6 +196,7 @@ ln -s /usr/bin/pip3 /usr/bin/pip
 
 # Ubuntu-18.04
 apt update
+apt remove -y gcc gcc-7
 apt install -y git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
 cp /usr/bin/gcc-8 /usr/bin/gcc
 ln -s /usr/bin/python3 /usr/bin/python
@@ -641,6 +642,8 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
 
+> **Note:** An error to create asymmetric key would mean the following line, `RANDFILE = $ENV::HOME/.rnd` needs to be commented under `/etc/ssl/openssl.cnf`  
+
 * Update the `IHUB_PUB_KEY_PATH` in `isecl-k8s.env` to `/etc/ihub/ihub_public_key.pem`
 * Bring up isecl-scheduler
 
@@ -886,6 +889,8 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
+
+> **Note:** An error to create asymmetric key would mean the following line, `RANDFILE = $ENV::HOME/.rnd` needs to be commented under `/etc/ssl/openssl.cnf`  
 
 
 * Copy the `ihub_public_key.pem` from NFS path -`<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s Master
