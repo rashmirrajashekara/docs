@@ -3219,10 +3219,16 @@ The Trust Agent can register the host with a Verification Service by
 running the following command:
 
 ```shell
-tagent setup create-host <Verification Service base URL> <username> <password>
+tagent setup create-host 
 ```
 
-> **Note**: Because VMWare ESXi hosts do not use a Trust Agent, this method is
+> **Note**: The following environment variables must be exported for this command:
+>
+> HVS_URL=https://<hvs_IP/hostname>:8443/hvs/v2
+> CURRENT_IP=<trustagent_IP>
+> BEARER_TOKEN=<authentication token>
+>
+> **Note:** Because VMWare ESXi hosts do not use a Trust Agent, this method is
 > not applicable for registration of ESXi hosts.
 
 ### Registration via Verification Service API
