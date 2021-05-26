@@ -7989,9 +7989,9 @@ typically these are the same variables set in the service installation
 
 ```
 Backup to tar file:
-pg_dump -F t <database_name> > <database_backup_file>.tar
+pg_dump --dbname <database_name> --username=<database username> -F -t > <database_backup_file>.tar
 Restore from tar file:
-pg_restore -d <database_name> <database_backup_file>.tar	
+pg_restore --dbname=<database_name> --username=<database username><database_backup_file>.tar	
 ```
 
 Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
