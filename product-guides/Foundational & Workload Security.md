@@ -1213,7 +1213,7 @@ The Trust Agent can register the host with a Verification Service by
 running the following command (the trustagent.env 
 answer file must be present in the current working directory):
 
-`tagent create-host`
+`tagent setup create-host`
 
 Hosts can also be registered using a REST API request to the
 Verification Service:
@@ -1261,7 +1261,7 @@ trustagent.env answer file to be present in the current working
 directory):
 
 ```shell
-tagent create-host-unique-flavor
+tagent setup create-host-unique-flavor
 ```
 
 This can also be performed using a REST API (required for VMWare ESXi
@@ -3219,7 +3219,7 @@ The Trust Agent can register the host with a Verification Service by
 running the following command:
 
 ```shell
-tagent create-host <Verification Service base URL> <username> <password>
+tagent setup create-host <Verification Service base URL> <username> <password>
 ```
 
 > **Note**: Because VMWare ESXi hosts do not use a Trust Agent, this method is
