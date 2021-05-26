@@ -8010,7 +8010,7 @@ Upgrades should be performed in the following order to prevent misconfiguration 
 
 3) WLS, IHUB
 
-4) KBS, Trust Agents
+4) KBS, Trust Agents, Workload Agents, WPM
 
 Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
 
