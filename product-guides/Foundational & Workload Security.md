@@ -1186,7 +1186,7 @@ will automatically run the Provisioning steps.
 
 > **Note:**The `trustagent.env` answer file must contain user credentials for a
 > user with sufficient privileges. The minimum role required for
-> performing provisioning is the "trustagent\_provisioner" role.
+> performing provisioning is the "AttestationRegister" role.
 
 > **Note:**If the Linux Trust Agent is installed without being Provisioned, the
 > Trust Agent process will not actually run until the Provisioning
@@ -1196,7 +1196,7 @@ If the answer file is not present during installation, the Agent can be
 Provisioned later by adding the `trustagent.env` file and running the
 following command:
 
-`tagent provision-attestation <trustagent.env or trustagent.ini file
+`tagent provision-attestation <trustagent.env file
 path>`
 
 
