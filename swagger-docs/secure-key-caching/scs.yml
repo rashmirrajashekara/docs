@@ -1,4 +1,4 @@
-basePath: /scs
+basePath: /scs/sgx/certification/v1/
 definitions:
   PlatformInfoInput:
     properties:
@@ -171,7 +171,7 @@ info:
   title: SGX Caching Service
   version: "1.0"
 paths:
-  /sgx/certification/v1/pckcert:
+  /pckcert:
     get:
       description: |
         Retrieves the Platform Certification Key (PCK) Certificate for the current TCB level of SGX enabled platform
@@ -235,7 +235,7 @@ paths:
         C2kacUlGEjRWcz84BTnqZExC87NZqrlCF/HyAiA0qmvZocv+UQ1VnqtGQFrku/HdZdW171dBr4v2
         UYU+3g==
         -----END CERTIFICATE-----
-  /sgx/certification/v1/pckcrl:
+  /pckcrl:
     get:
       description: |
         Retrieves the base64 encoded latest PCK Certificate Revocation List (CRL) for any SGX enabled platforms.
@@ -260,7 +260,7 @@ paths:
       x-sample-call-endpoint: https://scs.server.com:9000/scs/sgx/certification/v1/pckcrl?ca=processor
       x-sample-call-output: |
         MIIBKTCB0QIBATAKBggqhkjOPQQDAjBxMSMwIQYDVQQDDBpJbnRlbCBTR1ggUENLIFByb2Nlc3NvciBDQTEaMBgGA1UECgwRSW50ZWwgQ29ycG9yYXRpb24xFDASBgNVBAcMC1NhbnRhIENsYXJhMQswCQYDVQQIDAJDQTELMAkGA1UEBhMCVVMXDTIwMTExMzA0Mzc1NVoXDTIwMTIxMzA0Mzc1NVqgLzAtMAoGA1UdFAQDAgEBMB8GA1UdIwQYMBaAFMHp3Hk19b3/LlphIQ0b13g7pUxaMAoGCCqGSM49BAMCA0cAMEQCIGWhZDw8yQ56EfFYNaIX96ZaEEurMTcyGlxsNYBjBUXAAiBNRVW27AQvV04YimDhB+evEHvgbyOjj1+7bemmpQZoOg==
-  /sgx/certification/v1/platforms:
+  /platforms:
     post:
       consumes:
       - application/json
@@ -373,7 +373,7 @@ paths:
             "Status": "Created",
             "Message": "platform data pushed to scs"
         }
-  /sgx/certification/v1/qe/identity:
+  /qe/identity:
     get:
       description: |
         Retrieves the Quote Identity information for Quoting Enclave issued by Intel for a platform.
@@ -421,7 +421,7 @@ paths:
             },
             "signature": "2c50f0f4297781594e4d86c864ef1bd6797ab77566c9ddc417330ca7f37456f2f998a44e8230c57c2c8f51258ce5044cf0ac0af58e5c953e466f51981dc1390c"
         }
-  /sgx/certification/v1/refreshes:
+  /refreshes:
     get:
       description: |
         This API is used to refresh the platform collaterals stored in the SGX Caching Service (SCS) database,
@@ -446,7 +446,7 @@ paths:
             "Status": "Success",
             "Message": "sgx collaterals refreshed successfully"
         }
-  /sgx/certification/v1/tcb:
+  /tcb:
     get:
       description: |
         Retrieves the Trusted Computing Base (TCB) information for all TCB levels of the SGX enabled platform
@@ -552,7 +552,7 @@ paths:
             },
             "signature": "40b3536ee9c7028df7f0a976eaa405bc82768a258512be95fd151731f756f20a35c4a2642b91ba8083dca067932af75f1f92265dbdbd12573b05a959f6e3a677"
         }
-  /sgx/certification/v1/tcbstatus:
+  /tcbstatus:
     get:
       description: |
         This API is used by SGX Agent to determine the TCB up-to-date status of a platform.

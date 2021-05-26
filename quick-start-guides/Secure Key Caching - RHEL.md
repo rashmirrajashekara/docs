@@ -862,6 +862,14 @@ Note: All the configuration files required for SKC Library container are modifie
     Get the container id using "docker ps" command
     docker exec -it <container_id> /bin/sh
 
+    #Follow the steps only if proxy setup is required
+    export http_proxy=http://<proxy-url>:<proxy-port>
+    export https_proxy=http://<proxy-url>:<proxy-port>
+    export no_proxy=0.0.0.0,127.0.0.1,localhost,<CSP IP>,<Enterprise IP>, <SGX Compute Node IP>, <KBS system Hostname>
+    
+    #Install wget
+    dnf install wget
+
     wget https://localhost:2443 --no-check-certificate
 ```
 
