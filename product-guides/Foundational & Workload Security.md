@@ -8016,80 +8016,11 @@ Upgrading in this order will make each service unavailable only for the duration
 
 ## Upgrade Process
 
-Binary Installations
+### Binary Installations
 
 For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
 
-Container Deployments
 
-# Uninstallation
-
-This section describes steps used for uninstalling Intel SecL-DC
-services.
-
-1.  This section does not apply for containerized deployments. To
-    uninstall a containerized deployment, simply shut down the container
-    and delete the persistence volumes.
-
-Host Verification Service
---------------------
-
-To uninstall the Verification Service, run the following command:
-
-`hvs uninstall`
-
-The hvs uninstall command will not delete any database content. To
-completely uninstall and delete all database content and user data, run
-the following:
-
-`hvs erase-data`
-
-`hvs uninstall`
-
-> **Note:**The uninstall command must be issued last, because the uninstall
-> process removes the scripts that execute the other commands, along
-> with all database connectivity info.
-
-
-
-Trust Agent
------------
-
-To uninstall the Trust Agent, run the following command:
-
-`tagent uninstall`
-
-Backs up the configuration directory and removes all Trust Agent files,
-except for configuration files which are saved and restored.
-
-Removes following directories:
-
-1.  `/usr/local/bin/tagent`
-
-1.  TRUSTAGENT\_HOME : `/opt/trustagent
-
-2.  `/opt/tbootxm`
-
-3.  `/var/log/trustagent/measurement.*`
-
-> **Note:**TPM ownership can be preserved by retaining the TPM owner secret. If
-> the Operating System will also be cleared, Linux systems will also
-> require the /usr/local/var/lib/tpm/system.data file to be preserved.
-> This file must be preserved from after ownership is taken, and then
-> replaced after the OS reload before the Trust Agent attempts to
-> reassert ownership.
-
-If the ownership secret and/or` system.data` file are not preserved,
-reinstallation will require clearing TPM ownership.
-
-
-
-Integration Hub
----------------
-
-To uninstall the Integration Hub, run the following command:
-
-`ihub uninstall`
 
 
 
