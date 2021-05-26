@@ -672,7 +672,7 @@ The script will automatically generate the following users:
 
 Verification Service User
 
-Attestation Hub Service User
+Integration Hub Service User
 
 Workload Policy Manager Service User
 
@@ -1437,7 +1437,7 @@ Linux 8.2
 -   RAM: 2 GB
 
 -   1 GB free space to install the Verification Service services.
-    Additional free space is needed for the Attestation Hub database and
+    Additional free space is needed for the Integration Hub database and
     logs (database and log space requirements are dependent on the
     number of managed servers).
 
@@ -3929,7 +3929,7 @@ The Integration Hub acts as the integration point between the Verification Servi
 
 For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Docker environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Docker environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
 
-Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
+Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
 <img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
