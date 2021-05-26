@@ -1479,7 +1479,7 @@ CMS_TLS_CERT_SHA384=<TLS hash>
 TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP addresses and hostnames for the Hub to be used in the Subject Alternative Names list in the TLS Certificate
 
 # Verification Service URL
-ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
+HVS_BASE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 #Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
@@ -6831,7 +6831,7 @@ CMS_TLS_CERT_SHA384=<TLS hash>
 TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP addresses and hostnames for the Hub to be used in the Subject Alternative Names list in the TLS Certificate
 
 # Verification Service URL
-ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
+HVS_BASE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 #Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
