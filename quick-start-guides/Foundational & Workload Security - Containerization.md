@@ -19,7 +19,9 @@
     - [Enterprise Managed Services](#enterprise-managed-services)
     - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
     - [Firewall Settings](#firewall-settings)
-  - [RHEL RPMs Requirements](#rhel-rpms-requirements)
+  - [Rpms & Debs Requirement](#rpms-debs-requirement)
+    - [RHEL](#rhel)
+    - [Ubuntu](#ubuntu)
   - [Deployment Model](#deployment-model)
     - [Single Node](#single-node)
     - [Multi Node](#multi-node)
@@ -29,8 +31,6 @@
       - [Repo tool](#repo-tool)
       - [Golang](#golang)
       - [Docker](#docker)
-      - [Skopeo](#skopeo)
-      - [Libkmip for KBS](#libkmip-for-kbs)
     - [Build OCI Container images and K8s Manifests](#build-oci-container-images-and-k8s-manifests)
       - [Foundational Security](#foundational-security)
       - [Workload Security](#workload-security)
@@ -44,14 +44,14 @@
           - [Setup](#setup)
           - [Manifests](#manifests)
         - [Deploy steps](#deploy-steps)
-          - [Update .env file](#update-env-file)
+          - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file)
           - [Run scripts on K8s master](#run-scripts-on-k8s-master)
       - [Multi-Node](#multi-node-1)
         - [Pre-requisites](#pre-requisites-3)
           - [Setup](#setup-1)
           - [Manifests](#manifests-1)
         - [Deploy steps](#deploy-steps-1)
-          - [Update .env file](#update-env-file-1)
+          - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file-1)
           - [Run scripts on K8s master](#run-scripts-on-k8s-master-1)
   - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
     - [Single Node Deployments](#single-node-deployments)
@@ -504,9 +504,9 @@ systemctl restart docker
 * The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
 ##### Deploy steps
 
-The bootstrap script would facilitate the deployment of all FS,WS components at a usecase level. Sample one given below.
+The bootstrap script would facilitate the deployment of all FS,WS components at a use case level. Sample one given below.
 
-###### Update .env file
+###### Update `isecl-k8s.env` file
 
 
 ```shell
@@ -563,9 +563,8 @@ IHUB_SERVICE_PASSWORD=hubAdminPass
 IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
 # For microk8s
 # K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
-K8S_API_SERVER_CERT=
-# This is valid for multinode deployment, should be populated once ihub is deployed successfully
-IHUB_PUB_KEY_PATH=
+K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
+IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
 HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2
 
 # TrustAgent
@@ -583,16 +582,16 @@ KMIP_SERVER_IP=<kmip-server-ip>
 KMIP_SERVER_PORT=<kmip-server-port>
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
 # This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
-KMIP_CLIENT_CERT_NAME=client_certificate.pem
-KMIP_CLIENT_KEY_NAME=client_key.pem
-KMIP_ROOT_CERT_NAME=root_certificate.pem
+KMIP_CLIENT_CERT_NAME=
+KMIP_CLIENT_KEY_NAME=
+KMIP_ROOT_CERT_NAME=
 
 # ISecl Scheduler
 # For microk8s
 # K8S_CA_KEY=/var/snap/microk8s/current/certs/ca.key
 # K8S_CA_CERT=/var/snap/microk8s/current/certs/ca.crt
-K8S_CA_KEY=
-K8S_CA_CERT=
+K8S_CA_KEY=/var/snap/microk8s/current/certs/ca.key
+K8S_CA_CERT=/var/snap/microk8s/current/certs/ca.crt
 
 # populate users.env
 ISECL_INSTALL_COMPONENTS="AAS,HVS,WLS,IHUB,KBS,WLA,TA,WPM"
@@ -606,6 +605,8 @@ INSTALL_ADMIN_PASSWORD=<install_admin_password>
 WPM_SERVICE_USERNAME=<wpm_service_username>
 WPM_SERVICE_PASSWORD=<wpm_service_password>
 ```
+
+> **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
 
 ###### Run scripts on K8s master
 
@@ -640,7 +641,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
 
-* Update the `IHUB_PUB_KEY_PATH` in `isecl-k8s.env` to `/etc/ihub/ihub_public_key.pem`
+* Update the `IHUB_PUB_KEY_PATH` in `isecl-k8s.env` to `/etc/ihub/ihub_public_key.pem`
 * Bring up isecl-scheduler
 
 ```shell
@@ -650,6 +651,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 * Copy `scheduler-policy.json`
 
 ```shell
+mkdir -p /opt/isecl-k8s-extensions
 cp manifests/k8s-extensions-scheduler/config/scheduler-policy.json /opt/isecl-k8s-extensions/
 ```
 
@@ -722,19 +724,19 @@ systemctl restart snap.microk8s.daemon-kubelet.service
   * Sample manifest for creating config-pvc for cms service
 
     ```yaml
-      ---
-      apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-          name: cms-config-pvc
-          namespace: isecl
-      spec:
-          storageClassName: nfs
-          accessModes:
-          - ReadWriteMany
-          resources:
-          requests:
-              storage: 128Mi
+    ---
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: cms-config-pvc
+      namespace: isecl
+    spec:
+      storageClassName: nfs
+      accessModes:
+      - ReadWriteMany
+      resources:
+      requests:
+          storage: 128Mi
     ```
 
   > **Note:** The user id specified in security context in `deployment.yml` for a given service and owner of the service related directories in NFS must be same
@@ -750,7 +752,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 ##### Deploy steps
 
-###### Update .env file
+###### Update `isecl-k8s.env` file
 
 ```shell
 #Kubernetes Distribution microk8s or kubeadm
@@ -806,7 +808,7 @@ IHUB_SERVICE_PASSWORD=hubAdminPass
 IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
 # For Kubeadm
 # K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
-K8S_API_SERVER_CERT=
+K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
 # This is valid for multinode deployment, should be populated once ihub is deployed successfully
 IHUB_PUB_KEY_PATH=
 HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/mtwilson/v2
@@ -826,16 +828,16 @@ KMIP_SERVER_IP=<kmip-server-ip>
 KMIP_SERVER_PORT=<kmip-server-port>
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
 # This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
-KMIP_CLIENT_CERT_NAME=client_certificate.pem
-KMIP_CLIENT_KEY_NAME=client_key.pem
-KMIP_ROOT_CERT_NAME=root_certificate.pem
+KMIP_CLIENT_CERT_NAME=
+KMIP_CLIENT_KEY_NAME=
+KMIP_ROOT_CERT_NAME=
 
 # ISecl Scheduler
 # For Kubeadm
 # K8S_CA_KEY=/etc/kubernetes/pki/ca.key
 # K8S_CA_CERT=/etc/kubernetes/pki/ca.crt
-K8S_CA_KEY=
-K8S_CA_CERT=
+K8S_CA_KEY=/etc/kubernetes/pki/ca.key
+K8S_CA_CERT=/etc/kubernetes/pki/ca.crt
 
 # populate users.env
 ISECL_INSTALL_COMPONENTS="AAS,HVS,WLS,IHUB,KBS,WLA,TA,WPM"
@@ -849,6 +851,8 @@ INSTALL_ADMIN_PASSWORD=<install_admin_password>
 WPM_SERVICE_USERNAME=<wpm_service_username>
 WPM_SERVICE_PASSWORD=<wpm_service_password>
 ```
+
+> **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
 
 ###### Run scripts on K8s master
 
@@ -1153,7 +1157,7 @@ rm -rf .repo *
 #Rebuild as before
 repo init ...
 repo sync
-make all
+make ...
 ```
 
 ### Setup Task Flow
@@ -1245,7 +1249,7 @@ In order to clean single service and bring up again on single node without data,
 rm -rf /etc/<service-name>
 rm -rf /var/log/<service-name>
 
-# Only in case of KBS, perform one more step along with above 2 steps
+#Only in case of KBS, perform one more step along with above 2 steps
 rm -rf /opt/kbs
 ./isecl-bootstrap.sh up <service-name>
 ```
@@ -1399,11 +1403,10 @@ In order to clean single service and bring up again on multi node without data, 
 log into nfs system 
 
 ```shell script
-
 rm -rf /<nfs-mount-path>/isecl/<service-name>/config
 rm -rf /<nfs-mount-path>/isecl/<service-name>/logs
 
-# Only in case of KBS, perform one more step along with above 2 steps
+#Only in case of KBS, perform one more step along with above 2 steps
 rm -rf /<nfs-mount-path>/isecl/<service-name>/opt
 ```
 log into master
@@ -1413,5 +1416,4 @@ In order to redeploy again on multi node with data, config from previous deploym
 ```shell
 ./isecl-bootstrap.sh down <service-name>
 ./isecl-bootstrap.sh up <service-name>
-
 ```
