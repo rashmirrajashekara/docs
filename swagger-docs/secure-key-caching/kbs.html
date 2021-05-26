@@ -1363,13 +1363,13 @@ The serialized KeyTransferPolicyAttributes Go struct object represents the conte
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-KeyTransferPolicies-createKeyTransferPolicy-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-KeyTransferPolicies-createKeyTransferPolicy-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-KeyTransferPolicies-createKeyTransferPolicy-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-KeyTransferPolicies-createKeyTransferPolicy-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-KeyTransferPolicies-createKeyTransferPolicy-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/key-transfer-policies" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/key-transfer-policies" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
     "sgx_enclave_issuer_anyof": ["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
     "sgx_enclave_issuer_product_id_anyof": [0],
     "sgx_enclave_issuer_extended_product_id_anyof": ["00000000000000000000000000000000"],
@@ -1394,10 +1394,10 @@ The serialized KeyTransferPolicyAttributes Go struct object represents the conte
     "tls_client_certificate_san_allof":["nginx","USA"],
     "attestation_type_anyof":["SGX"],
     "created_at": "2020-06-09T01:05:47-0700"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-KeyTransferPolicies-createKeyTransferPolicy-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-KeyTransferPolicies-createKeyTransferPolicy-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1467,16 +1467,16 @@ The serialized KeyTransferPolicyAttributes Go struct object represents the conte
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/key-transfer-policies/75d34bf4-80fb-4ca5-8602-a8d82e56b30d" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-support">
+			  <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/key-transfer-policies/75d34bf4-80fb-4ca5-8602-a8d82e56b30d" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-KeyTransferPolicies-deleteKeyTransferPolicy-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1608,13 +1608,13 @@ Returns - The serialized KeyTransferPolicyAttributes Go struct object that was r
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/key-transfer-policies/75d34bf4-80fb-4ca5-8602-a8d82e56b30d" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/key-transfer-policies/75d34bf4-80fb-4ca5-8602-a8d82e56b30d" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "id": "75d34bf4-80fb-4ca5-8602-a8d82e56b30d",
     "sgx_enclave_issuer_anyof": ["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
     "sgx_enclave_issuer_product_id_anyof": [0],
@@ -1627,10 +1627,10 @@ Returns - The serialized KeyTransferPolicyAttributes Go struct object that was r
     "tls_client_certificate_san_allof":["nginx","USA"],
     "attestation_type_anyof":["SGX"],
     "created_at": "2020-06-09T01:05:47-0700"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-KeyTransferPolicies-retrieveKeyTransferPolicy-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1745,13 +1745,13 @@ Returns - The collection of serialized KeyTransferPolicyAttributes Go struct obj
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-KeyTransferPolicies-searchKeyTransferPolicies-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-KeyTransferPolicies-searchKeyTransferPolicies-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-KeyTransferPolicies-searchKeyTransferPolicies-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-KeyTransferPolicies-searchKeyTransferPolicies-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-KeyTransferPolicies-searchKeyTransferPolicies-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/key-transfer-policies" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/key-transfer-policies" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "id": "75d34bf4-80fb-4ca5-8602-a8d82e56b30d",
         "sgx_enclave_issuer_anyof": ["cd171c56941c6ce49690b455f691d9c8a04c2e43e0a4d30f752fa5285c7ee57f"],
@@ -1766,10 +1766,10 @@ Returns - The collection of serialized KeyTransferPolicyAttributes Go struct obj
         "attestation_type_anyof":["SGX"],
         "created_at": "2020-06-09T01:05:47-0700"
     }
-]</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-KeyTransferPolicies-searchKeyTransferPolicies-0-support">
+]</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-KeyTransferPolicies-searchKeyTransferPolicies-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1953,13 +1953,13 @@ The serialized KeyInformation Go struct object represents the content of the key
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-createKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-createKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-createKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-createKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-createKey-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/keys" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/keys" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
     "key_information": {
         "algorithm": "AES",
         "key_length": 256
@@ -1974,10 +1974,10 @@ The serialized KeyInformation Go struct object represents the content of the key
     "transfer_policy_id": "3ce27bbd-3c5f-4b15-8c0a-44310f0f83d9",
     "transfer_link": "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/transfer",
     "created_at": "2020-09-23T11:16:26.738467277Z"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-createKey-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-createKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2047,16 +2047,16 @@ The serialized KeyInformation Go struct object represents the content of the key
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-deleteKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-deleteKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-deleteKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-deleteKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-deleteKey-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-deleteKey-0-support">
+			  <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-deleteKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2188,13 +2188,13 @@ Returns - The serialized KeyResponse Go struct object that was retrieved.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-retrieveKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-retrieveKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-retrieveKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-retrieveKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-retrieveKey-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "key_information": {
         "id": "fc0cc779-22b6-4741-b0d9-e2e69635ad1e",
         "algorithm": "AES",
@@ -2203,10 +2203,10 @@ Returns - The serialized KeyResponse Go struct object that was retrieved.
     "transfer_policy_id": "3ce27bbd-3c5f-4b15-8c0a-44310f0f83d9",
     "transfer_link": "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/transfer",
     "created_at": "2020-09-23T11:16:26.738467277Z"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-retrieveKey-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-retrieveKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2355,13 +2355,13 @@ Returns - The serialized KeyTransferResponse Go struct object that was retrieved
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-sKCTransferKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-sKCTransferKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-sKCTransferKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-sKCTransferKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-sKCTransferKey-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/dhsm2-transfer" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/dhsm2-transfer" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "data": {
             "id": "a8db4abf-f404-44d3-91c4-0842b90527f3",
             "payload": "DAAAABAAAADSBAAA/yMWqZhF/VrrVD5fqQLpYh55sqze8U7KkAaC4zwxwOptlC6smFqwr6mq3k18ItpIz8II9KsBmIVRwO5C2X1Ay4XTdLRDNmR8u2ftCnqkOekHAcs/Fa+XlhLbGHl3vzqle/x+AAeJWk1CtTs2J5+293mLhTCqRi4HOfCo4YpBQCL+ga7yJpZGTwk4yvznF9XV+LG9S6Pgi5hdmF44TZ2hLrQ4rY/D147j6szWu0MmeF+dkV7gDNqghfw1yRUGQtE0COT1G8oWmrwfCssD5gPJIVA+LzYh1crQAhzMyySVKDDvevRxFE5sjss3mZF8oM54fPDmv2Jg4He2AdeFMlo3gxeSrWgZNv5b5F0AJy/O8Whjw8SKeVDNMn+1bfx0APKdmbsIHCHsIuZoHHmIDtrjAyYqVNEe55hRvrTJAPyqDrqOnthahksqsE++k9L9/X4SH8pYR8XL3zFZQoSgNMl5w5AuvcItNqTXtQeLBiw5IYl5DbYJyMhI9cZE2CetYwfEBOt23R3cM+gZ/IdS1hEtQUB5AlHkEf+8w48FGylQXdf6yYkpB8BA1Ue/X/CxkcFK3M696B0vQSx6gK6NXnHL/OjaxSRxNqG0RYMJ4iG8DmMvciSW9M7IkJgxxtAKFuvj1PEG66mp0bCndlGmge4/pDXTE/Bm/fMNGIJPfiKL83zRi1887tTUfY73G6fwlicwVzyPA/05x+rMtpAnLZ2oVf6qCshWUFxyvR+5bVVZDzHiurJoSibHAwAYqYdsZBBeTlqbuLejwbs8VwfNLoCJQvauy7R6GKwW5ninBv8VhGFHm+6xMO5ISdgGj3RXNXlZLXYBxqXO4uvGuahyeMrQ+0c1TOALiWiG70qwCsrZWfPd0yb0kJ7oA5PgucL36fdKQvSifDHW6CAqeH0DK5LQKdWi4NOjKv2LfBSYc5vsQcD95sxpfktObtMFZelTJDG4EgVTIXLaulBVQNMwUyOZUFSTjdfZz9nVHOKn5sKHqif5R8pPgEcbm5jEO/jcA2FRoSfE95nyGmLD1+0fljXiZ3K4/0fMENBEo3biRaBxCMaW/5KikbyuU95ORj4nJZx5c7saUddfeOXe5cEnHtiZUcjcR2HNTamYiKKbnzAyNamIhsWCumapkzxEHzH2Zp4g+TL3+vdw5tqpRA/aS9NEvcBSlWmkN0XC+ExIwx+xREklUogZ8m5hN2hHdDdP0dFd2WVMuOjEcffxZ1zF/jIsl0pR0YtbzqS3/D1RZdVWgmaGINRFH/FEYYpzWqtJZp4/xyxaTxELl+iuWrbVKsbGinaz6GXsfv4aBCoAIfLNSq+8++jyenGP2OyLONRgzLLrgFMCv3Y88QDOCuBqhDe3eV7Sxw0Uap/dUQSm0tn0GP1Ix1ABhTpQLkgViGXQkJn3ivhjSpoXI9dkcFABOOu9nMHVICrF4OEcpIPOvqHcWiGnrwzmngT4goHDora7/Kj2lvM5PNTV2TBLxSGUZJJ+gMNbWIfsGt1E8bcM3AzyVmSw2AueHk66PbEUPRLxGC7et5ejYBk5WPHQi30d5HSzTqLYOzPwims1vYd2hl4Kbl8QlUcUbLpmTycy+Gh2ZIo4B1QS/bHg4VtnNDZ27q44ju+oYuu+hERBOX0ROb6u0yjp57xiMHIF6X6g+KEnmQ==",
@@ -2383,10 +2383,10 @@ Returns - The serialized KeyTransferResponse Go struct object that was retrieved
     },
     "operation": "transfer key",
     "status": "success"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-sKCTransferKey-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-sKCTransferKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2542,13 +2542,13 @@ Returns - The collection of serialized KeyResponse Go struct objects.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-searchKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-searchKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-searchKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-searchKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-searchKey-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/keys" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "key_information": {
             "id": "fc0cc779-22b6-4741-b0d9-e2e69635ad1e",
@@ -2559,10 +2559,10 @@ Returns - The collection of serialized KeyResponse Go struct objects.
         "transfer_link": "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/transfer",
         "created_at": "2020-09-23T11:16:26.738467277Z"
     }
-]</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-searchKey-0-support">
+]</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-searchKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2694,13 +2694,13 @@ Returns - The serialized KeyTransferAttributes Go struct object that was retriev
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Keys-transferKey-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Keys-transferKey-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Keys-transferKey-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Keys-transferKey-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Keys-transferKey-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/transfer" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN PUBLIC KEY-----
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/keys/fc0cc779-22b6-4741-b0d9-e2e69635ad1e/transfer" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN PUBLIC KEY-----
 MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAwMKVKgQq1oef5rWfIPBp
 nP5wuwB1FX30h51OJbPhqneSMZYEFmxgX2CYsMgNWyZe3jgsIAkKQcgIKJjPVaQG
 YPVfCcNJgX6FV51ob1ViQJgsPwkDaoZHAARawlKfWt3VvWp71AxOPqBh+Hk6abag
@@ -2714,10 +2714,10 @@ wSN0XysccIs0C2USdLvIqO85HXRfbmKhncCxHIPBzKZgbX5xbW6YawH1OmhgIw+o
 </br>Output: </br>{
     "id": "fc0cc779-22b6-4741-b0d9-e2e69635ad1e",
     "payload": "F+nUVyejh2Cp0wkLFvqNkhBydtnKY8v5eJ5zbl9gHoPbqvjwuSafx4LwnHOT6DJDqa8LO5ufVyLqqXVfyAdf88s1VnKLCE0Udbn8Zjnq4CHnR2KqDPWTauYLnuYJH2lVGf4Ke4mTcvOfBO9YRTop0WzfTBSuEFKrAsE67ERogtCvD7hf5LhJ2sxv0ej48uZ5KLHRVAzbWMttRZXbL10xTC+dZM9SIAWg2s0aq7Mb49h2rcaI307e3GQgsXhbopwSTC7L7Sy1RYUf4XvHl+/XMmVmvKWjOFIfOXTg8cA+COTBjzOQXVJiXF/xv5/idny0sOeyebFfnxfj7ZXJhqT8pYtiyRm0kzU35jtFTpJR8+aMkOjI/4KdbM6zoY+7JiRD2A0VNEAvQzEoKnY2H9/fIRlkYLtjCI/n5CSPg5Ap0wghqZAmmCeaOH48D0NgjpVQPhc/OQHq/k0HRUXvmUgQe/D4T3WIUdJCctSBGsjIn3WrusH+cb5eaof5Aqq7NT4W"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Keys-transferKey-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Keys-transferKey-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2790,16 +2790,16 @@ wSN0XysccIs0C2USdLvIqO85HXRfbmKhncCxHIPBzKZgbX5xbW6YawH1OmhgIw+o
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-SamlCertificates-deleteSamlCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-SamlCertificates-deleteSamlCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-SamlCertificates-deleteSamlCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-SamlCertificates-deleteSamlCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-SamlCertificates-deleteSamlCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/saml-certificates/9ea0c8b5-590f-481d-a5de-46edfbfbf8cc" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-SamlCertificates-deleteSamlCertificate-0-support">
+			  <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/saml-certificates/9ea0c8b5-590f-481d-a5de-46edfbfbf8cc" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-SamlCertificates-deleteSamlCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2919,13 +2919,13 @@ The certificate object model includes an ID, base64 encoded certificate and a re
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-SamlCertificates-importSamlCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-SamlCertificates-importSamlCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-SamlCertificates-importSamlCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-SamlCertificates-importSamlCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-SamlCertificates-importSamlCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/saml-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN CERTIFICATE-----
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/saml-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN CERTIFICATE-----
 MIIDIjCCAgqgAwIBAgIIBrxF7PYTjakwDQYJKoZIhvcNAQELBQAwUTELMAkGA1UEBhMCVVMxHDAa
 BgNVBAoTE1RydXN0ZWQgRGF0YSBDZW50ZXIxEjAQBgNVBAsTCU10IFdpbHNvbjEQMA4GA1UEAxMH
 Q049dGVzdDAeFw0xODEyMjcwMzI3MzZaFw0xODEyMjcwNDI3MzZaMFExCzAJBgNVBAYTAlVTMRww
@@ -2964,10 +2964,10 @@ Yz78/Zo9py8=
     "not_before": "2020-07-20T13:55:00Z",
     "not_after": "2021-07-20T13:55:00Z",
     "revoked": false
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-SamlCertificates-importSamlCertificate-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-SamlCertificates-importSamlCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3099,13 +3099,13 @@ Returns - The serialized Certificate Go struct object that was retrieved.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-SamlCertificates-retrieveSamlCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-SamlCertificates-retrieveSamlCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-SamlCertificates-retrieveSamlCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-SamlCertificates-retrieveSamlCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-SamlCertificates-retrieveSamlCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/saml-certificates/9ea0c8b5-590f-481d-a5de-46edfbfbf8cc" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/saml-certificates/9ea0c8b5-590f-481d-a5de-46edfbfbf8cc" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "id": "9ea0c8b5-590f-481d-a5de-46edfbfbf8cc",
     "certificate": "MIIDIjCCAgqgAwIBAgIIBrxF7PYTjakwDQYJKoZIhvcNAQELBQAwUTELMAkGA1UEBhMCVVMxHDAa
                     BgNVBAoTE1RydXN0ZWQgRGF0YSBDZW50ZXIxEjAQBgNVBAsTCU10IFdpbHNvbjEQMA4GA1UEAxMH
@@ -3127,10 +3127,10 @@ Returns - The serialized Certificate Go struct object that was retrieved.
     "not_before": "2020-07-20T13:55:00Z",
     "not_after": "2021-07-20T13:55:00Z",
     "revoked": false
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-SamlCertificates-retrieveSamlCertificate-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-SamlCertificates-retrieveSamlCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3245,13 +3245,13 @@ Returns - The collection of serialized Certificate Go struct objects.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-SamlCertificates-searchSamlCertificates-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-SamlCertificates-searchSamlCertificates-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-SamlCertificates-searchSamlCertificates-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-SamlCertificates-searchSamlCertificates-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-SamlCertificates-searchSamlCertificates-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/saml-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/saml-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "id": "9ea0c8b5-590f-481d-a5de-46edfbfbf8cc",
         "certificate": "MIIDIjCCAgqgAwIBAgIIBrxF7PYTjakwDQYJKoZIhvcNAQELBQAwUTELMAkGA1UEBhMCVVMxHDAa
@@ -3275,10 +3275,10 @@ Returns - The collection of serialized Certificate Go struct objects.
         "not_after": "2021-07-20T13:55:00Z",
         "revoked": false
     }
-]</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-SamlCertificates-searchSamlCertificates-0-support">
+]</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-SamlCertificates-searchSamlCertificates-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3461,13 +3461,13 @@ The serialized SessionManagementAttributes Go struct object represents the conte
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Session-createSession-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Session-createSession-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Session-createSession-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Session-createSession-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Session-createSession-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/session" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/session" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
     "challenge_type": "SGX",
     "challenge": "MTRjZmNlZDEtMDNlZS00YTY4LThiNTAtNmQ0NTY0MjNiMDc4",
     "quote": "AQAAAAAAAAB7EwAAAQAAAAEAAAADAAAAAAEAANwGAAAtLS0tLUJFR0lOI...."
@@ -3479,10 +3479,10 @@ The serialized SessionManagementAttributes Go struct object represents the conte
     },
     "operation": "establish session key",
     "status": "success"
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Session-createSession-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Session-createSession-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3555,16 +3555,16 @@ The serialized SessionManagementAttributes Go struct object represents the conte
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/tpm-identity-certificates/cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-support">
+			  <pre><code class="language-bsh">curl -X DELETE "https://kbs.com:9443/kbs/v1/tpm-identity-certificates/cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c" -H "Authorization: Bearer &lt;token&gt;"</br></br></code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-TpmIdentityCertificates-deleteTpmIdentityCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3686,13 +3686,13 @@ an ID, base64 encoded certificate and a revoked status.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/tpm-identity-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN CERTIFICATE-----
+			  <pre><code class="language-bsh">curl -X POST "https://kbs.com:9443/kbs/v1/tpm-identity-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br>Input: </br>-----BEGIN CERTIFICATE-----
 MIIDMjCCAhqgAwIBAgIGAWfO03T4MA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMTEG10d2lsc29u
 LXBjYS1haWswHhcNMTgxMjIxMDMzMzQzWhcNMjgxMjIwMDMzMzQzWjAbMRkwFwYDVQQDExBtdHdp
 bHNvbi1wY2EtYWlrMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh1ci0WLpy+8hZeMt
@@ -3731,10 +3731,10 @@ t4WHBaD1mPVF39J7Y6QBlbvGo6JLKVFO
     "not_before": "2020-07-20T18:39:10Z",
     "not_after": "2021-07-20T18:39:10Z",
     "revoked": false
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-TpmIdentityCertificates-importTpmIdentityCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3866,13 +3866,13 @@ Returns - The serialized Certificate Go struct object that was retrieved.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/tpm-identity-certificates/cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/tpm-identity-certificates/cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
     "id": "cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c",
     "certificate": "MIIDMjCCAhqgAwIBAgIGAWfO03T4MA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMTEG10d2lsc29u
                     LXBjYS1haWswHhcNMTgxMjIxMDMzMzQzWhcNMjgxMjIwMDMzMzQzWjAbMRkwFwYDVQQDExBtdHdp
@@ -3894,10 +3894,10 @@ Returns - The serialized Certificate Go struct object that was retrieved.
     "not_before": "2020-07-20T18:39:10Z",
     "not_after": "2021-07-20T18:39:10Z",
     "revoked": false
-}</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-support">
+}</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-TpmIdentityCertificates-retrieveTpmIdentityCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -4012,13 +4012,13 @@ Returns - The collection of serialized Certificate Go struct objects.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/tpm-identity-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:9443/kbs/v1/tpm-identity-certificates" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
     {
         "id": "cd4f4fc4-73d4-42ac-a0d2-0fe896ec694c",
         "certificate": "MIIDMjCCAhqgAwIBAgIGAWfO03T4MA0GCSqGSIb3DQEBCwUAMBsxGTAXBgNVBAMTEG10d2lsc29u
@@ -4042,10 +4042,10 @@ Returns - The collection of serialized Certificate Go struct objects.
         "not_after": "2021-07-20T18:39:10Z",
         "revoked": false
     }
-]</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-support">
+]</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-TpmIdentityCertificates-searchTpmIdentityCertificates-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -4090,18 +4090,18 @@ Returns - The version of the application.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Version-getVersion-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Version-getVersion-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Version-getVersion-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Version-getVersion-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Version-getVersion-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://kbs.com:8443/kbs/v1/version"</br></br>Output: </br>Service Name: Key Broker Service
+			  <pre><code class="language-bsh">curl -X GET "https://kbs.com:8443/kbs/v1/version"</br></br>Output: </br>Service Name: Key Broker Service
 Version: v3.4.0-0f0162ea
-Build Date: 2021-03-08T12:17:18+0000</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
+Build Date: 2021-03-08T12:17:18+0000</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -4110,6 +4110,7 @@ Build Date: 2021-03-08T12:17:18+0000</code></pre>
           </div>
       </div>
     </div>
+  </div>
   </div>
   <script>
   (function webpackUniversalModuleDefinition(root, factory) {
@@ -5212,7 +5213,6 @@ Build Date: 2021-03-08T12:17:18+0000</code></pre>
       this.isPrimitive = !this.isAny && !this.isArray && !this.isObject;
   
       //
-      this.schema.title = '';
       this.schema.description = '';
   
       //

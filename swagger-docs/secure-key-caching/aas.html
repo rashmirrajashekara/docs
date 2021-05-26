@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Auth Service</title>
+  <title>Authentication and Authorization Service (AAS)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
@@ -689,6 +689,29 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs.CustomClaims = {
+  "type" : "object",
+  "properties" : {
+    "claims" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "object",
+        "properties" : { }
+      },
+      "x-go-name" : "Claims"
+    },
+    "subject" : {
+      "type" : "string",
+      "x-go-name" : "Subject"
+    },
+    "validity_seconds" : {
+      "type" : "integer",
+      "format" : "int64",
+      "x-go-name" : "ValiditySecs"
+    }
+  },
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+};
             defs.PasswordChange = {
   "type" : "object",
   "properties" : {
@@ -709,7 +732,7 @@
       "x-go-name" : "UserName"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.PermissionInfo = {
   "type" : "object",
@@ -730,7 +753,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.RoleCreate = {
   "type" : "object",
@@ -757,7 +780,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.RoleCreateResponse = {
   "type" : "object",
@@ -775,7 +798,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.RoleIDs = {
   "type" : "object",
@@ -788,7 +811,7 @@
       "x-go-name" : "RoleUUIDs"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.RolePermission = {
   "type" : "object",
@@ -802,7 +825,7 @@
       "x-go-name" : "Rule"
     }
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.RoleTypeInfo = {
   "type" : "object",
@@ -833,14 +856,14 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.RolesResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/RoleTypeInfo"
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.UserCreate = {
   "type" : "object",
@@ -854,7 +877,7 @@
       "x-go-name" : "Name"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.UserCreateResponse = {
   "type" : "object",
@@ -868,7 +891,7 @@
       "x-go-name" : "Name"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.UserCred = {
   "type" : "object",
@@ -882,14 +905,14 @@
       "x-go-name" : "UserName"
     }
   },
-  "x-go-package" : "intel/isecl/lib/common/v3/types/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
 };
             defs.UserPermissions = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/PermissionInfo"
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.UserRoleResponse = {
   "type" : "object",
@@ -913,21 +936,21 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.UserRolesResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/UserRoleResponse"
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
             defs.UsersResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/UserCreateResponse"
   },
-  "x-go-package" : "intel/isecl/authservice/v3/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
 };
   </script>
 
@@ -963,6 +986,9 @@
                       <a href="#api-Roles-queryRoles">queryRoles</a>
                     </li>
                   <li class="nav-header" data-group="Token"><a href="#api-Token">Token</a></li>
+                    <li data-group="Token" data-name="getCustomClaimsJwtToken" class="">
+                      <a href="#api-Token-getCustomClaimsJwtToken">getCustomClaimsJwtToken</a>
+                    </li>
                     <li data-group="Token" data-name="getJwtToken" class="">
                       <a href="#api-Token-getJwtToken">getJwtToken</a>
                     </li>
@@ -1011,9 +1037,9 @@
       <div id="content">
         <div id="project">
           <div class="pull-left">
-            <h1>Auth Service</h1>
-            <div>Version: 2.2</div>
-            <div>BasePath: https://authservice.com:8444/aas</div>
+            <h1>Authentication and Authorization Service (AAS)</h1>
+            <div>Version: 3</div>
+            <div>BasePath: https://aas.com:8444/aas/v1</div>
             <div>Copyright (C) 2020 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause</div>
           </div>
           <div class="clearfix"></div>
@@ -1021,10 +1047,8 @@
         <hr>
         <div id="header">
           <div id="api-_">
-            <div>Auth service resources are used to manage users, roles and permissions for the role(s) and manages the authentication and
-authorization of all ISecL services.
-Auth service uses a Bearer Token authentication method, which replaces the previous HTTP BASIC authentication.
-A bearer token will be obtained that can be used in the Authorization header for other API requests.</div>
+            <div>The Authentication and Authorization Service (AAS) is a component responsible for generating and maintaining
+user authentication and authorization information and issue the users with a JWT for accessing various ISECL services.</div>
 	    </br>
           </div>
         </div>
@@ -1044,7 +1068,7 @@ A bearer token will be obtained that can be used in the Authorization header for
 </p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/noauth/jwt-certificates</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/jwt-certificates</span></code></pre>
 
     			<h2>Authorization</h2>
   			<ul>
@@ -1071,13 +1095,13 @@ A bearer token will be obtained that can be used in the Authorization header for
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-JwtCertificate-getJwtCertificate-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-JwtCertificate-getJwtCertificate-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-JwtCertificate-getJwtCertificate-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-JwtCertificate-getJwtCertificate-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-JwtCertificate-getJwtCertificate-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/noauth/jwt-certificates" -H "Accept: application/x-pem-file"</br></br>Output: </br>-----BEGIN CERTIFICATE-----
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/jwt-certificates" -H "Accept: application/x-pem-file"</br></br>Output: </br>-----BEGIN CERTIFICATE-----
 MIIENTCCAp2gAwIBAgIBAzANBgkqhkiG9w0BAQwFADBHMQswCQYDVQQGEwJVUzEL
 MAkGA1UECBMCU0YxCzAJBgNVBAcTAlNDMQ4wDAYDVQQKEwVJTlRFTDEOMAwGA1UE
 AxMFQ01TQ0EwHhcNMjAwMTA5MTUzMzUyWhcNMjUwMTA5MTUzMzUyWjBQMQswCQYD
@@ -1102,10 +1126,10 @@ tu1zbsbwj8LlJBJrj/y/vwB1dQEQMdAEhUEgLjmEJtc/kMj53EdbTicutiOItBSY
 jwwgh754cwHsSK+pl6Pq3IEqxpZmBgTGTAM195kB5cs1if2oFzwfL2Ik5q4sDAHp
 3NqNon34qP7XcDrUErM+fovIfecnDDsd/g==
 -----END CERTIFICATE-----
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-JwtCertificate-getJwtCertificate-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-JwtCertificate-getJwtCertificate-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1122,8 +1146,8 @@ jwwgh754cwHsSK+pl6Pq3IEqxpZmBgTGTAM195kB5cs1if2oFzwfL2Ik5q4sDAHp
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Creates a new role in the Authservice database. An appropriate role name and service 
-should be provided to create the role. A valid bearer token should be provided to 
+                        <p class="marked">Creates a new role in the Authservice database. An appropriate role name and service
+should be provided to create the role. A valid bearer token should be provided to
 authorize this REST call.
 </p>
                         <p></p>
@@ -1254,13 +1278,13 @@ authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Roles-createRole-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Roles-createRole-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Roles-createRole-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Roles-createRole-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Roles-createRole-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/roles" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/roles" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
    "name": "CertApprover",
    "service": "CMS"
 }
@@ -1269,10 +1293,10 @@ authorize this REST call.
    "service": "CMS",
    "name": "CertApprover"
 }
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Roles-createRole-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Roles-createRole-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1337,18 +1361,18 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Roles-deleteRole-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Roles-deleteRole-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Roles-deleteRole-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Roles-deleteRole-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Roles-deleteRole-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+			  <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/v1/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
 " -H "Authorization: Bearer &lt;token&gt;"</br></br>Output: </br>204 No content
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Roles-deleteRole-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Roles-deleteRole-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1462,22 +1486,22 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Roles-getRole-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Roles-getRole-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Roles-getRole-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Roles-getRole-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Roles-getRole-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
    "role_id": "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585",
    "service": "CMS",
    "name": "CertApprover"
 }
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Roles-getRole-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Roles-getRole-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1544,7 +1568,7 @@ A valid bearer token should be provided to authorize this REST call.
 				</td>
 				<td style="width:150px;"><span class="type">String</span></td>
 				<td>
-					<div class="inner description">Context string which contains informations such as CN, SAN and certType.</div>
+					<div class="inner description">Context string which contains information such as CN, SAN and certType.</div>
 				</td>
 				</tr>
 				<tr>
@@ -1624,13 +1648,13 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Roles-queryRoles-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Roles-queryRoles-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Roles-queryRoles-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Roles-queryRoles-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Roles-queryRoles-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/roles?service=CMS" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/roles?service=CMS" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
    {
       "role_id": "c18f045d-c40e-417d-b06d-4f1e40c307f3",
       "service": "CMS",
@@ -1638,10 +1662,10 @@ A valid bearer token should be provided to authorize this REST call.
       "context": "CN=WLS TLS Certificate;SAN=wls.server.com,controller;certType=TLS"
    }
 ]
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Roles-queryRoles-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Roles-queryRoles-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1649,6 +1673,149 @@ A valid bearer token should be provided to authorize this REST call.
                   </section>
                 <section id="api-Token">
                   <h1>Token</h1>
+                    <div id="api-Token-getCustomClaimsJwtToken">
+                      <article id="api-Token-getCustomClaimsJwtToken-0" data-group="User" data-name="getCustomClaimsJwtToken" data-version="0">
+                        <div class="pull-left">
+                          <h1>getCustomClaimsJwtToken</h1>
+                          <!-- <p></p> -->
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <!-- <p></p> -->
+                        <p class="marked">Creates a new bearer token that can be used in the Authorization header for other API
+requests. Bearer token Authorization is required when requesting custom claims token
+from Authservice.
+</p>
+                        <p></p>
+                        <!-- <br /> -->
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/custom-claims-token</span></code></pre>
+
+    			<h2>Authorization</h2>
+                        <ul>
+                        
+      			
+      			<li>Bearer Token Authorization.
+      			<ul>
+         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
+         			<li>Name of header: Authorization</li> 
+      			</ul></li>
+    			</ul>
+
+    			  <h2>Consumes</h2>
+    			    <ul>
+      			    <li>application/json</li>
+    			    </ul>
+
+                          <!-- <h2>Parameters</h2> -->
+
+
+                            <h2>Request Body</h2>
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-getCustomClaimsJwtToken--schema">Schema</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-getCustomClaimsJwtToken--schema">
+                                  <div id='body-getCustomClaimsJwtToken--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/CustomClaims"
+      }
+    }
+  },
+  "required" : true
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#body-getCustomClaimsJwtToken--schema-data').val(stringify(schema));
+                                        var result = $('#body-getCustomClaimsJwtToken--schema-');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='body-getCustomClaimsJwtToken--schema-data' type='hidden' value=''></input>
+                                </div>
+				</br>
+
+
+    			  <h2>Produces</h2>
+    			    <ul>
+      			    <li>application/jwt</li>
+    			    </ul>
+
+                          <h2>Response</h2>
+                            <!-- <h3> 200 - Successfully created the bearer token. </h3> -->
+                            <div class="methodsubtabletitle">200 - Successfully created the bearer token.</div>
+
+
+                        <p>
+                          <h2>Sample REST Call</h2>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+			  <li class="active"><a href="#examples-Token-getCustomClaimsJwtToken-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Token-getCustomClaimsJwtToken-0-support"></a></li> 
+			</ul> 
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Token-getCustomClaimsJwtToken-0-curl">
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/custom-claims-token" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/jwt" -H "Content-Type: application/json"</br>Input: </br>{
+    "subject": "00000000-8887-0f15-0106-1024a5a5a5a5",
+    "validity_seconds": 86400,
+    "claims": {
+        "roles": [{
+            "service": "SCS",
+            "name": "HostDataUpdater"
+        },
+        {
+            "service": "SCS",
+            "name": "HostDataReader"
+        },
+        {
+            "service": "SHVS",
+            "name": "HostDataUpdater"
+        }]
+    }
+}
+</br>Output: </br>eyJhbGciOiJSUzM4NCIsImtpZCI6ImZiNzE2YmE0MjkwODg2NGJlZWQ1ZmNmODZi
+MTM1MjNhYjg0Yzc1ZTkiLCJ0eXAiOiJKV1QifQ.eyJyb2xlcyI6W3sibmFtZSI6I
+khvc3REYXRhVXBkYXRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0R
+GF0YVJlYWRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0RGF0YVVwZ
+GF0ZXIiLCJzZXJ2aWNlIjoiU0hWUyJ9XSwiZXhwIjoxNjEzOTkwMzMyLCJpYXQiO
+jE2MTM5ODY3MDIsImlzcyI6IkFBUyBKV1QgSXNzdWVyIiwic3ViIjoiMDAwMDAwM
+DAtODg4Ny0wZjE1LTAxMDYtMTAyNGE1YTVhNWE1In0.uE5DMDGQfrP9VMb8ORhD8
+QioOZezt9W_z09JgZSeQR_tGmVrSguOO6HnDouSnvIA1d-h1yyvoMDyMdzh0XbaS
+zki0fFMRw5aU3ppWZLeDJnyukZlk155XTmF8CeVB16s3KF22OQlsIDSQamr7w0KR
+VWQHmrw4QTdszHhImqVd1Xu71_z1guWTOenFqkxCfs9oeOidAw1saSvGif4TJ1hV
+Waoisj6Bdc6BdzNqDspZ54MTXaq0v50s0mWKnZeEkOrxrjB97zhlRigMasOgZJO1
+Wo3GC1Mg1SlLCHB-DVzgE9Fso627spe16GCW81tG4K1fFHllu-njua4kQLyhSgxS
+gC4MyccuZpnQfGOsmGkR-GiTWpjmaYl0q4pjXoQLqaDksYa0tqZC0IhaauSWcRCS
+PLXFXTIa55e53dYRPt3mf3LllNtiMsMBTOaX075MQ77TCqmgT-0cAlsB-VlqfiYP
+t8F6Qsn2ELaG3Yeb7Y5mN-5Ecq4dxf9WtJFaPQhtslO
+</code></pre> 
+			  </div>
+			  <div class="tab-pane" id="examples-Token-getCustomClaimsJwtToken-0-support">
+			  </div> 
+                          </div>
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Token-getJwtToken">
                       <article id="api-Token-getJwtToken-0" data-group="User" data-name="getJwtToken" data-version="0">
                         <div class="pull-left">
@@ -1658,10 +1825,9 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Creates a new bearer token that can be used in the Authorization header for other API 
-requests. Bearer token Authorization is not required when requesting token for Authservice 
-admin user. Authservice admin user bearer token should be provided in Authorization header 
-when requesting bearer token for other users.
+                        <p class="marked">Creates a new bearer token that can be used in the Authorization header for other API
+requests. Bearer token Authorization is not required when requesting token for Authservice
+registered users.
 </p>
                         <p></p>
                         <!-- <br /> -->
@@ -1728,7 +1894,7 @@ when requesting bearer token for other users.
 
     			  <h2>Produces</h2>
     			    <ul>
-      			    <li>text/plain</li>
+      			    <li>application/jwt</li>
     			    </ul>
 
                           <h2>Response</h2>
@@ -1740,13 +1906,13 @@ when requesting bearer token for other users.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Token-getJwtToken-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Token-getJwtToken-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Token-getJwtToken-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Token-getJwtToken-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Token-getJwtToken-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/token" -H "Accept: text/plain" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/token" -H "Accept: application/jwt" -H "Content-Type: application/json"</br>Input: </br>{
    "username" : "admin@aas",
    "password" : "aasAdminPass"
 }
@@ -1764,10 +1930,10 @@ l_IF248K12Vu7QiFsuTt5NJUqyOCWHS1igv_U67-55o5sR37xciDgPg-z1bGIdTm
 g-GxCZQNbo5I6zr5E-_GgzsBfbIWvN_sxFXq7pN3CN7wvCfnEGXsW4coThT2PS6V
 roDctDvds396GUcr1Ra077t8q_ETPStLcuKyAvH994uzyVIIXKZnyb9mjDdYU168
 4G0f6M2HpZoo9DZxeQlGf4RmZVqODSW2FH78f0x0a3UTsLsV02Si0KU1GaI2
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Token-getJwtToken-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Token-getJwtToken-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1884,21 +2050,21 @@ user. A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-UserRoles-addUserRoles-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-UserRoles-addUserRoles-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-UserRoles-addUserRoles-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-UserRoles-addUserRoles-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-UserRoles-addUserRoles-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles
 " -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json"</br>Input: </br>{
    "role_ids" : [ "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585" ]
 }
 </br>Output: </br>201 Created
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-UserRoles-addUserRoles-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-UserRoles-addUserRoles-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1971,18 +2137,18 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-UserRoles-deleteUserRole-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-UserRoles-deleteUserRole-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-UserRoles-deleteUserRole-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-UserRoles-deleteUserRole-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-UserRoles-deleteUserRole-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+			  <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
 " -H "Authorization: Bearer &lt;token&gt;"</br></br>Output: </br>204 No content
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-UserRoles-deleteUserRole-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-UserRoles-deleteUserRole-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -1996,7 +2162,7 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the specified role associated with a user id from the Authservice database. 
+                        <p class="marked">Retrieves the specified role associated with a user id from the Authservice database.
 A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -2104,22 +2270,22 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-UserRoles-getUserRoleById-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-UserRoles-getUserRoleById-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-UserRoles-getUserRoleById-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-UserRoles-getUserRoleById-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-UserRoles-getUserRoleById-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
    "role_id": "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585",
    "service": "CMS",
    "name": "CertApprover"
 }
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-UserRoles-getUserRoleById-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-UserRoles-getUserRoleById-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2134,7 +2300,7 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
                         <p class="marked">Retrieves the roles associated with the specified user id based on the provided filter criteria
-from the Authservice database. 
+from the Authservice database.
 A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -2283,13 +2449,13 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-UserRoles-queryUserRoles-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-UserRoles-queryUserRoles-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-UserRoles-queryUserRoles-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-UserRoles-queryUserRoles-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-UserRoles-queryUserRoles-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles?service=CMS
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles?service=CMS
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
    {
       "role_id": "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585",
@@ -2297,10 +2463,10 @@ A valid bearer token should be provided to authorize this REST call.
       "name": "CertApprover"
    }
 ]
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-UserRoles-queryUserRoles-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-UserRoles-queryUserRoles-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2392,22 +2558,22 @@ A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-changePassword-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-changePassword-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-changePassword-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-changePassword-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-changePassword-0-curl">
-                            <pre><code class="language-bsh">curl -X PATCH "https://authservice.com:8444/aas/users/changepassword" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X PATCH "https://authservice.com:8444/aas/v1/users/changepassword" -H "Content-Type: application/json"</br>Input: </br>{
     "old_password": "vsServicePass",
     "new_password": "vsUserNewPass",
     "password_confirm": "vsUserNewPass",
     "username": "vsServiceUser"
 }
-</br>Output: </br>200 No content</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-changePassword-0-support">
+</br>Output: </br>200 No content</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-changePassword-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2421,9 +2587,9 @@ A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Creates a new user in the Authservice database. User can be one among the service users, 
-user with install permissions or administrative user. An appropriate username and password 
-should be provided to create the user. A valid bearer token should be provided to 
+                        <p class="marked">Creates a new user in the Authservice database. User can be one among the service users,
+user with install permissions or administrative user. An appropriate username and password
+should be provided to create the user. A valid bearer token should be provided to
 authorize this REST call.
 </p>
                         <p></p>
@@ -2554,13 +2720,13 @@ authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-createUser-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-createUser-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-createUser-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-createUser-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-createUser-0-curl">
-                            <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/users" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/users" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
    "username" : "vsServiceUser",
    "password" : "vsServicePass"
 }
@@ -2568,10 +2734,10 @@ authorize this REST call.
    "user_id": "1fdb39de-7bf4-440e-ad05-286eca933f78",
    "username" : "vsServiceUser"
 }
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-createUser-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-createUser-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2585,7 +2751,7 @@ authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Deletes the user details associated with a specfied user id from the Authservice 
+                        <p class="marked">Deletes the user details associated with a specfied user id from the Authservice
 database. A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -2636,18 +2802,18 @@ database. A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-deleteUser-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-deleteUser-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-deleteUser-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-deleteUser-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-deleteUser-0-curl">
-                            <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+			  <pre><code class="language-bsh">curl -X DELETE "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
 " -H "Authorization: Bearer &lt;token&gt;"</br></br>Output: </br>204 No content
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-deleteUser-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-deleteUser-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2661,7 +2827,7 @@ database. A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the user details associated with a specified user id from the Authservice 
+                        <p class="marked">Retrieves the user details associated with a specified user id from the Authservice
 database. A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -2761,21 +2927,21 @@ database. A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-getUser-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-getUser-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-getUser-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-getUser-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-getUser-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>{
    "user_id": "1fdb39de-7bf4-440e-ad05-286eca933f78",
    "username": "vsServiceUser"
 }
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-getUser-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-getUser-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2789,7 +2955,7 @@ database. A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the user permissions associated with a specified user id from the Authservice 
+                        <p class="marked">Retrieves the user permissions associated with a specified user id from the Authservice
 database. A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -2889,13 +3055,13 @@ database. A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-queryUserPermissions-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-queryUserPermissions-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-queryUserPermissions-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-queryUserPermissions-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-queryUserPermissions-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/permissions
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/permissions
 " -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
    {
       "service": "VS",
@@ -2905,10 +3071,10 @@ database. A valid bearer token should be provided to authorize this REST call.
                ]
    }
 ]
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-queryUserPermissions-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-queryUserPermissions-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -2922,8 +3088,8 @@ database. A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the list of users from the Authservice database. The users can be one among 
-the service users, users with install permissions or administrative users. A valid bearer 
+                        <p class="marked">Retrieves the list of users from the Authservice database. The users can be one among
+the service users, users with install permissions or administrative users. A valid bearer
 token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -3023,22 +3189,22 @@ token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-queryUsers-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-queryUsers-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-queryUsers-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-queryUsers-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-queryUsers-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/users?name=vsServiceUser" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/v1/users?name=vsServiceUser" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json"</br></br>Output: </br>[
    {
       "user_id": "1fdb39de-7bf4-440e-ad05-286eca933f78",
       "username" : "vsServiceUser"
    }
 ]
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-queryUsers-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-queryUsers-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3052,7 +3218,7 @@ token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Updates the username and password associated with a specific user id in the Authservice 
+                        <p class="marked">Updates the username and password associated with a specific user id in the Authservice
 database. A valid bearer token should be provided to authorize this REST call.
 </p>
                         <p></p>
@@ -3153,22 +3319,22 @@ database. A valid bearer token should be provided to authorize this REST call.
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Users-updateUser-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Users-updateUser-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Users-updateUser-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Users-updateUser-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Users-updateUser-0-curl">
-                            <pre><code class="language-bsh">curl -X PATCH "https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+			  <pre><code class="language-bsh">curl -X PATCH "https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
 " -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json"</br>Input: </br>{
    "username" : "vsServiceUser",
    "password" : "vsServicePassNew"
 }
 </br>Output: </br>200 OK
-</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Users-updateUser-0-support">
+</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Users-updateUser-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3185,10 +3351,12 @@ database. A valid bearer token should be provided to authorize this REST call.
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <!-- <p></p> -->
-                        <p class="marked">Retrieves the version of Authservice.</p>
+                        <p class="marked">GetVersion is used to get the version of the application.
+Returns - The version of the application.
+</p>
                         <p></p>
                         <!-- <br /> -->
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/noauth/version</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/version</span></code></pre>
 
     			<h2>Authorization</h2>
   			<ul>
@@ -3201,30 +3369,28 @@ database. A valid bearer token should be provided to authorize this REST call.
 
 
 
-    			  <h2>Produces</h2>
-    			    <ul>
-      			    <li>text/plain</li>
-    			    </ul>
 
                           <h2>Response</h2>
-                            <!-- <h3> 200 - Successfully retrieved the version of Authservice. </h3> -->
-                            <div class="methodsubtabletitle">200 - Successfully retrieved the version of Authservice.</div>
+                            <!-- <h3> 200 - Successfully retrieved the version. </h3> -->
+                            <div class="methodsubtabletitle">200 - Successfully retrieved the version.</div>
 
 
                         <p>
                           <h2>Sample REST Call</h2>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Version-getVersion-0-curl">Curl</a></li>
-			  <li class=""><a href="#examples-Version-getVersion-0-support"></a></li>
-                        </ul>
+			  <li class="active"><a href="#examples-Version-getVersion-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Version-getVersion-0-support"></a></li> 
+			</ul> 
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Version-getVersion-0-curl">
-                            <pre><code class="language-bsh">curl -X GET "https://authservice.com:8444/aas/noauth/version" -H "Accept: text/plain"</br></br>Output: </br>v2.2</code></pre>
-                          </div>
-			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
+			  <pre><code class="language-bsh">curl -X GET "https://authservice.com:8443/aas/v1/version"</br></br>Output: </br>Service Name: Authentication and Authorization Service
+Version: v3.4.0-0f0162ea
+Build Date: 2021-03-08T12:18:54+0000</code></pre> 
 			  </div>
+			  <div class="tab-pane" id="examples-Version-getVersion-0-support">
+			  </div> 
                           </div>
                         </article>
                       </div>
@@ -3233,6 +3399,7 @@ database. A valid bearer token should be provided to authorize this REST call.
           </div>
       </div>
     </div>
+  </div>
   </div>
   <script>
   (function webpackUniversalModuleDefinition(root, factory) {
