@@ -1210,7 +1210,7 @@ will be used by the Verification Service to retrieve TPM attestation
 quotes from the Trust Agent to generate an attestation report.
 
 The Trust Agent can register the host with a Verification Service by
-running the following command (the trustagent.env or trustagent.ini
+running the following command (the trustagent.env 
 answer file must be present in the current working directory):
 
 `tagent create-host`
