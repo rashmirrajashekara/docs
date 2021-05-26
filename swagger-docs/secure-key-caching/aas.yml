@@ -1,5 +1,21 @@
-basePath: /aas
+basePath: /aas/v1
 definitions:
+  CustomClaims:
+    properties:
+      claims:
+        additionalProperties:
+          type: object
+        type: object
+        x-go-name: Claims
+      subject:
+        type: string
+        x-go-name: Subject
+      validity_seconds:
+        format: int64
+        type: integer
+        x-go-name: ValiditySecs
+    type: object
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   PasswordChange:
     properties:
       new_password:
@@ -15,7 +31,7 @@ definitions:
         type: string
         x-go-name: UserName
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   PermissionInfo:
     properties:
       context:
@@ -30,7 +46,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   RoleCreate:
     properties:
       context:
@@ -50,7 +66,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   RoleCreateResponse:
     properties:
       name:
@@ -63,7 +79,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   RoleIDs:
     properties:
       role_ids:
@@ -72,7 +88,7 @@ definitions:
         type: array
         x-go-name: RoleUUIDs
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   RolePermission:
     properties:
       permission_id:
@@ -82,7 +98,7 @@ definitions:
         type: string
         x-go-name: Rule
     type: object
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   RoleTypeInfo:
     properties:
       context:
@@ -105,12 +121,12 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   RolesResponse:
     items:
       $ref: '#/definitions/RoleTypeInfo'
     type: array
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   UserCreate:
     properties:
       password:
@@ -120,7 +136,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   UserCreateResponse:
     properties:
       user_id:
@@ -130,7 +146,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   UserCred:
     properties:
       password:
@@ -140,12 +156,12 @@ definitions:
         type: string
         x-go-name: UserName
     type: object
-    x-go-package: intel/isecl/lib/common/v3/types/aas
+    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
   UserPermissions:
     items:
       $ref: '#/definitions/PermissionInfo'
     type: array
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   UserRoleResponse:
     properties:
       context:
@@ -163,30 +179,106 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   UserRolesResponse:
     items:
       $ref: '#/definitions/UserRoleResponse'
     type: array
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
   UsersResponse:
     items:
       $ref: '#/definitions/UserCreateResponse'
     type: array
-    x-go-package: intel/isecl/authservice/v3/swagger/docs
-host: authservice.com:8444
+    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+host: aas.com:8444
 info:
-  description: "Auth service resources are used to manage users, roles and permissions
-    for the role(s) and manages the authentication and \nauthorization of all ISecL
-    services. \nAuth service uses a Bearer Token authentication method, which replaces
-    the previous HTTP BASIC authentication.\nA bearer token will be obtained that
-    can be used in the Authorization header for other API requests."
+  description: |-
+    The Authentication and Authorization Service (AAS) is a component responsible for generating and maintaining
+    user authentication and authorization information and issue the users with a JWT for accessing various ISECL services.
   license:
     name: 'Copyright (C) 2020 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause'
-  title: Auth Service
-  version: "2.2"
+  title: Authentication and Authorization Service (AAS)
+  version: "3"
 paths:
-  /noauth/jwt-certificates:
+  /custom-claims-token:
+    post:
+      consumes:
+      - application/json
+      description: |
+        Creates a new bearer token that can be used in the Authorization header for other API
+        requests. Bearer token Authorization is required when requesting custom claims token
+        from Authservice.
+      operationId: getCustomClaimsJwtToken
+      parameters:
+      - in: body
+        name: request body
+        required: true
+        schema:
+          $ref: '#/definitions/CustomClaims'
+      produces:
+      - application/jwt
+      responses:
+        "200":
+          description: Successfully created the bearer token.
+          schema:
+            example: |
+              eyJhbGciOiJSUzM4NCIsImtpZCI6ImZiNzE2YmE0MjkwODg2NGJlZWQ1ZmNmODZi
+              MTM1MjNhYjg0Yzc1ZTkiLCJ0eXAiOiJKV1QifQ.eyJyb2xlcyI6W3sibmFtZSI6I
+              khvc3REYXRhVXBkYXRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0R
+              GF0YVJlYWRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0RGF0YVVwZ
+              GF0ZXIiLCJzZXJ2aWNlIjoiU0hWUyJ9XSwiZXhwIjoxNjEzOTkwMzMyLCJpYXQiO
+              jE2MTM5ODY3MDIsImlzcyI6IkFBUyBKV1QgSXNzdWVyIiwic3ViIjoiMDAwMDAwM
+              DAtODg4Ny0wZjE1LTAxMDYtMTAyNGE1YTVhNWE1In0.uE5DMDGQfrP9VMb8ORhD8
+              QioOZezt9W_z09JgZSeQR_tGmVrSguOO6HnDouSnvIA1d-h1yyvoMDyMdzh0XbaS
+              zki0fFMRw5aU3ppWZLeDJnyukZlk155XTmF8CeVB16s3KF22OQlsIDSQamr7w0KR
+              VWQHmrw4QTdszHhImqVd1Xu71_z1guWTOenFqkxCfs9oeOidAw1saSvGif4TJ1hV
+              Waoisj6Bdc6BdzNqDspZ54MTXaq0v50s0mWKnZeEkOrxrjB97zhlRigMasOgZJO1
+              Wo3GC1Mg1SlLCHB-DVzgE9Fso627spe16GCW81tG4K1fFHllu-njua4kQLyhSgxS
+              gC4MyccuZpnQfGOsmGkR-GiTWpjmaYl0q4pjXoQLqaDksYa0tqZC0IhaauSWcRCS
+              PLXFXTIa55e53dYRPt3mf3LllNtiMsMBTOaX075MQ77TCqmgT-0cAlsB-VlqfiYP
+              t8F6Qsn2ELaG3Yeb7Y5mN-5Ecq4dxf9WtJFaPQhtslO
+            type: string
+      security:
+      - bearerAuth: []
+      tags:
+      - Token
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/custom-claims-token
+      x-sample-call-input: |
+        {
+            "subject": "00000000-8887-0f15-0106-1024a5a5a5a5",
+            "validity_seconds": 86400,
+            "claims": {
+                "roles": [{
+                    "service": "SCS",
+                    "name": "HostDataUpdater"
+                },
+                {
+                    "service": "SCS",
+                    "name": "HostDataReader"
+                },
+                {
+                    "service": "SHVS",
+                    "name": "HostDataUpdater"
+                }]
+            }
+        }
+      x-sample-call-output: |
+        eyJhbGciOiJSUzM4NCIsImtpZCI6ImZiNzE2YmE0MjkwODg2NGJlZWQ1ZmNmODZi
+        MTM1MjNhYjg0Yzc1ZTkiLCJ0eXAiOiJKV1QifQ.eyJyb2xlcyI6W3sibmFtZSI6I
+        khvc3REYXRhVXBkYXRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0R
+        GF0YVJlYWRlciIsInNlcnZpY2UiOiJTQ1MifSx7Im5hbWUiOiJIb3N0RGF0YVVwZ
+        GF0ZXIiLCJzZXJ2aWNlIjoiU0hWUyJ9XSwiZXhwIjoxNjEzOTkwMzMyLCJpYXQiO
+        jE2MTM5ODY3MDIsImlzcyI6IkFBUyBKV1QgSXNzdWVyIiwic3ViIjoiMDAwMDAwM
+        DAtODg4Ny0wZjE1LTAxMDYtMTAyNGE1YTVhNWE1In0.uE5DMDGQfrP9VMb8ORhD8
+        QioOZezt9W_z09JgZSeQR_tGmVrSguOO6HnDouSnvIA1d-h1yyvoMDyMdzh0XbaS
+        zki0fFMRw5aU3ppWZLeDJnyukZlk155XTmF8CeVB16s3KF22OQlsIDSQamr7w0KR
+        VWQHmrw4QTdszHhImqVd1Xu71_z1guWTOenFqkxCfs9oeOidAw1saSvGif4TJ1hV
+        Waoisj6Bdc6BdzNqDspZ54MTXaq0v50s0mWKnZeEkOrxrjB97zhlRigMasOgZJO1
+        Wo3GC1Mg1SlLCHB-DVzgE9Fso627spe16GCW81tG4K1fFHllu-njua4kQLyhSgxS
+        gC4MyccuZpnQfGOsmGkR-GiTWpjmaYl0q4pjXoQLqaDksYa0tqZC0IhaauSWcRCS
+        PLXFXTIa55e53dYRPt3mf3LllNtiMsMBTOaX075MQ77TCqmgT-0cAlsB-VlqfiYP
+        t8F6Qsn2ELaG3Yeb7Y5mN-5Ecq4dxf9WtJFaPQhtslO
+  /jwt-certificates:
     get:
       description: |
         Retrieves the list of jwt certificates.
@@ -226,7 +318,7 @@ paths:
             type: string
       tags:
       - JwtCertificate
-      x-sample-call-endpoint: https://authservice.com:8444/aas/noauth/jwt-certificates
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/jwt-certificates
       x-sample-call-output: |
         -----BEGIN CERTIFICATE-----
         MIIENTCCAp2gAwIBAgIBAzANBgkqhkiG9w0BAQwFADBHMQswCQYDVQQGEwJVUzEL
@@ -253,22 +345,6 @@ paths:
         jwwgh754cwHsSK+pl6Pq3IEqxpZmBgTGTAM195kB5cs1if2oFzwfL2Ik5q4sDAHp
         3NqNon34qP7XcDrUErM+fovIfecnDDsd/g==
         -----END CERTIFICATE-----
-  /noauth/version:
-    get:
-      description: Retrieves the version of Authservice.
-      operationId: getVersion
-      produces:
-      - text/plain
-      responses:
-        "200":
-          description: Successfully retrieved the version of Authservice.
-          schema:
-            example: v2.2
-            type: string
-      tags:
-      - Version
-      x-sample-call-endpoint: https://authservice.com:8444/aas/noauth/version
-      x-sample-call-output: v2.2
   /roles:
     get:
       description: |
@@ -285,7 +361,7 @@ paths:
         in: query
         name: name
         type: string
-      - description: Context string which contains informations such as CN, SAN and
+      - description: Context string which contains information such as CN, SAN and
           certType.
         in: query
         name: context
@@ -309,7 +385,7 @@ paths:
       - bearerAuth: []
       tags:
       - Roles
-      x-sample-call-endpoint: https://authservice.com:8444/aas/roles?service=CMS
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/roles?service=CMS
       x-sample-call-output: |
         [
            {
@@ -322,9 +398,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates a new role in the Authservice database. An appropriate
-        role name and service \nshould be provided to create the role. A valid bearer
-        token should be provided to \nauthorize this REST call.\n"
+      description: |
+        Creates a new role in the Authservice database. An appropriate role name and service
+        should be provided to create the role. A valid bearer token should be provided to
+        authorize this REST call.
       operationId: createRole
       parameters:
       - in: body
@@ -343,7 +420,7 @@ paths:
       - bearerAuth: []
       tags:
       - Roles
-      x-sample-call-endpoint: https://authservice.com:8444/aas/roles
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/roles
       x-sample-call-input: |
         {
            "name": "CertApprover",
@@ -377,7 +454,7 @@ paths:
       tags:
       - Roles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+        https://authservice.com:8444/aas/v1/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
       x-sample-call-output: |
         204 No content
     get:
@@ -405,7 +482,7 @@ paths:
       tags:
       - Roles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+        https://authservice.com:8444/aas/v1/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
       x-sample-call-output: |
         {
            "role_id": "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585",
@@ -416,11 +493,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates a new bearer token that can be used in the Authorization
-        header for other API \nrequests. Bearer token Authorization is not required
-        when requesting token for Authservice \nadmin user. Authservice admin user
-        bearer token should be provided in Authorization header \nwhen requesting
-        bearer token for other users.\n"
+      description: |
+        Creates a new bearer token that can be used in the Authorization header for other API
+        requests. Bearer token Authorization is not required when requesting token for Authservice
+        registered users.
       operationId: getJwtToken
       parameters:
       - in: body
@@ -429,7 +505,7 @@ paths:
         schema:
           $ref: '#/definitions/UserCred'
       produces:
-      - text/plain
+      - application/jwt
       responses:
         "200":
           description: Successfully created the bearer token.
@@ -452,7 +528,7 @@ paths:
             type: string
       tags:
       - Token
-      x-sample-call-endpoint: https://authservice.com:8444/aas/token
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/token
       x-sample-call-input: |
         {
            "username" : "admin@aas",
@@ -475,10 +551,10 @@ paths:
         4G0f6M2HpZoo9DZxeQlGf4RmZVqODSW2FH78f0x0a3UTsLsV02Si0KU1GaI2
   /users:
     get:
-      description: "Retrieves the list of users from the Authservice database. The
-        users can be one among \nthe service users, users with install permissions
-        or administrative users. A valid bearer \ntoken should be provided to authorize
-        this REST call.\n"
+      description: |
+        Retrieves the list of users from the Authservice database. The users can be one among
+        the service users, users with install permissions or administrative users. A valid bearer
+        token should be provided to authorize this REST call.
       operationId: queryUsers
       parameters:
       - description: Username of the user.
@@ -496,7 +572,7 @@ paths:
       - bearerAuth: []
       tags:
       - Users
-      x-sample-call-endpoint: https://authservice.com:8444/aas/users?name=vsServiceUser
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/users?name=vsServiceUser
       x-sample-call-output: |
         [
            {
@@ -507,11 +583,11 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates a new user in the Authservice database. User can be one
-        among the service users, \nuser with install permissions or administrative
-        user. An appropriate username and password \nshould be provided to create
-        the user. A valid bearer token should be provided to \nauthorize this REST
-        call.\n"
+      description: |
+        Creates a new user in the Authservice database. User can be one among the service users,
+        user with install permissions or administrative user. An appropriate username and password
+        should be provided to create the user. A valid bearer token should be provided to
+        authorize this REST call.
       operationId: createUser
       parameters:
       - in: body
@@ -530,7 +606,7 @@ paths:
       - bearerAuth: []
       tags:
       - Users
-      x-sample-call-endpoint: https://authservice.com:8444/aas/users
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/users
       x-sample-call-input: |
         {
            "username" : "vsServiceUser",
@@ -543,9 +619,9 @@ paths:
         }
   /users/{user_id}:
     delete:
-      description: "Deletes the user details associated with a specfied user id from
-        the Authservice \ndatabase. A valid bearer token should be provided to authorize
-        this REST call.\n"
+      description: |
+        Deletes the user details associated with a specfied user id from the Authservice
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: deleteUser
       parameters:
       - description: Unique ID of the user.
@@ -562,13 +638,13 @@ paths:
       tags:
       - Users
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
       x-sample-call-output: |
         204 No content
     get:
-      description: "Retrieves the user details associated with a specified user id
-        from the Authservice \ndatabase. A valid bearer token should be provided to
-        authorize this REST call.\n"
+      description: |
+        Retrieves the user details associated with a specified user id from the Authservice
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: getUser
       parameters:
       - description: Unique ID of the user.
@@ -590,7 +666,7 @@ paths:
       tags:
       - Users
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
       x-sample-call-output: |
         {
            "user_id": "1fdb39de-7bf4-440e-ad05-286eca933f78",
@@ -599,9 +675,9 @@ paths:
     patch:
       consumes:
       - application/json
-      description: "Updates the username and password associated with a specific user
-        id in the Authservice \ndatabase. A valid bearer token should be provided
-        to authorize this REST call.\n"
+      description: |
+        Updates the username and password associated with a specific user id in the Authservice
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: updateUser
       parameters:
       - description: Unique ID of the user.
@@ -624,7 +700,7 @@ paths:
       tags:
       - Users
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78
       x-sample-call-input: |
         {
            "username" : "vsServiceUser",
@@ -634,9 +710,9 @@ paths:
         200 OK
   /users/{user_id}/permissions:
     get:
-      description: "Retrieves the user permissions associated with a specified user
-        id from the Authservice \ndatabase. A valid bearer token should be provided
-        to authorize this REST call.\n"
+      description: |
+        Retrieves the user permissions associated with a specified user id from the Authservice
+        database. A valid bearer token should be provided to authorize this REST call.
       operationId: queryUserPermissions
       parameters:
       - description: Unique ID of the user.
@@ -657,7 +733,7 @@ paths:
       tags:
       - Users
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/permissions
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/permissions
       x-sample-call-output: |
         [
            {
@@ -670,9 +746,10 @@ paths:
         ]
   /users/{user_id}/roles:
     get:
-      description: "Retrieves the roles associated with the specified user id based
-        on the provided filter criteria\nfrom the Authservice database. \nA valid
-        bearer token should be provided to authorize this REST call.\n"
+      description: |
+        Retrieves the roles associated with the specified user id based on the provided filter criteria
+        from the Authservice database.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: queryUserRoles
       parameters:
       - description: Unique ID of the user.
@@ -714,7 +791,7 @@ paths:
       tags:
       - UserRoles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles?service=CMS
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles?service=CMS
       x-sample-call-output: |
         [
            {
@@ -753,7 +830,7 @@ paths:
       tags:
       - UserRoles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles
       x-sample-call-input: |
         {
            "role_ids" : [ "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585" ]
@@ -787,13 +864,13 @@ paths:
       tags:
       - UserRoles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
       x-sample-call-output: |
         204 No content
     get:
-      description: "Retrieves the specified role associated with a user id from the
-        Authservice database. \nA valid bearer token should be provided to authorize
-        this REST call.\n"
+      description: |
+        Retrieves the specified role associated with a user id from the Authservice database.
+        A valid bearer token should be provided to authorize this REST call.
       operationId: getUserRoleById
       parameters:
       - description: Unique ID of the user.
@@ -820,7 +897,7 @@ paths:
       tags:
       - UserRoles
       x-sample-call-endpoint: |
-        https://authservice.com:8444/aas/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
+        https://authservice.com:8444/aas/v1/users/1fdb39de-7bf4-440e-ad05-286eca933f78/roles/75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585
       x-sample-call-output: |
         {
            "role_id": "75fa8fe0-f2e0-436b-9cd3-ca3f4d1f9585",
@@ -845,7 +922,7 @@ paths:
           description: Successfully updated the user password.
       tags:
       - Users
-      x-sample-call-endpoint: https://authservice.com:8444/aas/users/changepassword
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/users/changepassword
       x-sample-call-input: |
         {
             "old_password": "vsServicePass",
@@ -854,35 +931,24 @@ paths:
             "username": "vsServiceUser"
         }
       x-sample-call-output: 200 No content
-responses:
-  RoleResponse:
-    description: RoleResponse response payload
-    schema:
-      $ref: '#/definitions/RoleCreateResponse'
-  RolesResponse:
-    description: RolesResponse response payload
-    schema:
-      $ref: '#/definitions/RolesResponse'
-  UserPermissions:
-    description: UserPermissions response payload
-    schema:
-      $ref: '#/definitions/UserPermissions'
-  UserResponse:
-    description: UserResponse response payload
-    schema:
-      $ref: '#/definitions/UserCreateResponse'
-  UserRoleResponse:
-    description: UserRoleResponse response payload
-    schema:
-      $ref: '#/definitions/UserRoleResponse'
-  UserRolesResponse:
-    description: UserRolesResponse response payload
-    schema:
-      $ref: '#/definitions/UserRolesResponse'
-  UsersResponse:
-    description: UsersResponse response payload
-    schema:
-      $ref: '#/definitions/UsersResponse'
+  /version:
+    get:
+      description: |
+        GetVersion is used to get the version of the application.
+        Returns - The version of the application.
+      operationId: GetVersion
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Successfully retrieved the version.
+      tags:
+      - Version
+      x-sample-call-endpoint: https://authservice.com:8443/aas/v1/version
+      x-sample-call-output: |-
+        Service Name: Authentication and Authorization Service
+        Version: v3.4.0-0f0162ea
+        Build Date: 2021-03-08T12:18:54+0000
 schemes:
 - https
 securityDefinitions:
