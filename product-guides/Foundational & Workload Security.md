@@ -1770,12 +1770,6 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
 1.  Copy the KMIP server’s client certificate, client key and root ca
     certificate to the Key Broker system
 
-2.  Change the ownership of these files to `kms:kms`
-
-    ```shell
-    chown kms:kms <path>/*
-    ```
-
 3.  Configure the variables for kmip support as below
 
     ```shell
