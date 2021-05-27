@@ -1941,7 +1941,7 @@ Ubuntu 18.04
 2. Create the `wpm.env` answer file:
 
    ```shell
-   KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
+   KBS_BASE_URL=https://<IP address or hostname of the KBS>:9443/v1/
    WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
@@ -7632,7 +7632,7 @@ Workload Policy Manager
 
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
+| KBS_BASE_URL                   | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
 | AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
