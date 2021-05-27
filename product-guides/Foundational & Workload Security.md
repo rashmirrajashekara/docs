@@ -5989,7 +5989,7 @@ POST https://<Verification Service IP or Hostname>:8443/hvs/v2/flavorgroups
 Authorization: Bearer <token>
 
 {
-    "flavorgroup_name": "firstTest",
+    "name": "firstTest",
     "flavor_match_policy_collection": {
         "flavor_match_policies": [
             {
@@ -6009,7 +6009,7 @@ Response:
 ```json
 {
     "id": "a0950923-596b-41f7-b9ad-09f525929ba1",
-    "flavorgroup_name": "firstTest",
+    "name": "firstTest",
     "flavor_match_policy_collection": {
         "flavor_match_policies": [
             {
