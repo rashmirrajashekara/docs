@@ -672,7 +672,7 @@ The script will automatically generate the following users:
 
 Verification Service User
 
-Attestation Hub Service User
+Integration Hub Service User
 
 Workload Policy Manager Service User
 
@@ -1186,7 +1186,7 @@ will automatically run the Provisioning steps.
 
 > **Note:**The `trustagent.env` answer file must contain user credentials for a
 > user with sufficient privileges. The minimum role required for
-> performing provisioning is the "trustagent\_provisioner" role.
+> performing provisioning is the "AttestationRegister" role.
 
 > **Note:**If the Linux Trust Agent is installed without being Provisioned, the
 > Trust Agent process will not actually run until the Provisioning
@@ -1196,7 +1196,7 @@ If the answer file is not present during installation, the Agent can be
 Provisioned later by adding the `trustagent.env` file and running the
 following command:
 
-`tagent provision-attestation <trustagent.env or trustagent.ini file
+`tagent provision-attestation <trustagent.env file
 path>`
 
 
@@ -1210,10 +1210,10 @@ will be used by the Verification Service to retrieve TPM attestation
 quotes from the Trust Agent to generate an attestation report.
 
 The Trust Agent can register the host with a Verification Service by
-running the following command (the trustagent.env or trustagent.ini
+running the following command (the trustagent.env 
 answer file must be present in the current working directory):
 
-`tagent create-host`
+`tagent setup create-host`
 
 Hosts can also be registered using a REST API request to the
 Verification Service:
@@ -1261,7 +1261,7 @@ trustagent.env answer file to be present in the current working
 directory):
 
 ```shell
-tagent create-host-unique-flavor
+tagent setup create-host-unique-flavor
 ```
 
 This can also be performed using a REST API (required for VMWare ESXi
@@ -1437,7 +1437,7 @@ Linux 8.2
 -   RAM: 2 GB
 
 -   1 GB free space to install the Verification Service services.
-    Additional free space is needed for the Attestation Hub database and
+    Additional free space is needed for the Integration Hub database and
     logs (database and log space requirements are dependent on the
     number of managed servers).
 
@@ -1479,7 +1479,7 @@ CMS_TLS_CERT_SHA384=<TLS hash>
 TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP addresses and hostnames for the Hub to be used in the Subject Alternative Names list in the TLS Certificate
 
 # Verification Service URL
-ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
+HVS_BASE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 #Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
@@ -1770,12 +1770,6 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
 1.  Copy the KMIP server’s client certificate, client key and root ca
     certificate to the Key Broker system
 
-2.  Change the ownership of these files to `kms:kms`
-
-    ```shell
-    chown kms:kms <path>/*
-    ```
-
 3.  Configure the variables for kmip support as below
 
     ```shell
@@ -1947,7 +1941,7 @@ Ubuntu 18.04
 2. Create the `wpm.env` answer file:
 
    ```shell
-   KMS_API_URL=https://<IP address or hostname of the KBS>:9443/v1/
+   KBS_BASE_URL=https://<IP address or hostname of the KBS>:9443/v1/
    WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
@@ -3063,7 +3057,7 @@ CreateUsers script) and exist by default.
 | ------------------------- | :----------------------------------------------------------- | ------------------------------------------------------------ |
 | TA:Administrator          | TA:\*:\*                                                     | Used by the Verification Service to access Trust Agent APIs, including retrieval of TPM quotes, provisioning Asset Tags and SOFTWARE Flavors, etc. |
 | HVS:ReportSearcher        | HVS: \[reports:search:\*"]                                   | Used by the Integration Hub to retrieve attestation reports from the Verification Service |
-| KMS:Keymanager            | KBS: \["keys:create:\*", "keys:transfer:\*"\]                | Used by the WPM to create and retrieve symmetric encryption keys to encrypt workload images |
+| KBS:Keymanager            | KBS: \["keys:create:\*", "keys:transfer:\*"\]                | Used by the WPM to create and retrieve symmetric encryption keys to encrypt workload images |
 | WLS:FlavorsImageRetrieval | WLS: image\_flavors:retrieve:\*                              | Used by the Workload Agent during Workload Confidentiality flows to retrieve the image Flavor |
 | HVS: ReportCreator        | HVS: \["reports:create:\*"\]                                 | Used by the Workload Service to create new attestation reports on the Verification Service as part of Workload Confidentiality key retrievals. |
 | Administrator             | \*:\*:\*                                                     | Global administrator role used for the initial administrator account. This role has all permissions across all services, including permissions to create new roles and users. |
@@ -3219,10 +3213,16 @@ The Trust Agent can register the host with a Verification Service by
 running the following command:
 
 ```shell
-tagent create-host <Verification Service base URL> <username> <password>
+tagent setup create-host 
 ```
 
-> **Note**: Because VMWare ESXi hosts do not use a Trust Agent, this method is
+> **Note**: The following environment variables must be exported for this command:
+>
+> HVS_URL=https://<hvs_IP/hostname>:8443/hvs/v2
+> CURRENT_IP=<trustagent_IP>
+> BEARER_TOKEN=<authentication token>
+>
+> **Note:** Because VMWare ESXi hosts do not use a Trust Agent, this method is
 > not applicable for registration of ESXi hosts.
 
 ### Registration via Verification Service API
@@ -3929,7 +3929,7 @@ The Integration Hub acts as the integration point between the Verification Servi
 
 For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Docker environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Docker environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
 
-Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Attestation Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
+Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
 <img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
@@ -5989,7 +5989,7 @@ POST https://<Verification Service IP or Hostname>:8443/hvs/v2/flavorgroups
 Authorization: Bearer <token>
 
 {
-    "flavorgroup_name": "firstTest",
+    "name": "firstTest",
     "flavor_match_policy_collection": {
         "flavor_match_policies": [
             {
@@ -6009,7 +6009,7 @@ Response:
 ```json
 {
     "id": "a0950923-596b-41f7-b9ad-09f525929ba1",
-    "flavorgroup_name": "firstTest",
+    "name": "firstTest",
     "flavor_match_policy_collection": {
         "flavor_match_policies": [
             {
@@ -6825,7 +6825,7 @@ CMS_TLS_CERT_SHA384=<TLS hash>
 TLS_SAN_LIST=127.0.0.1,192.168.1.1,hub.server.com #comma-separated list of IP addresses and hostnames for the Hub to be used in the Subject Alternative Names list in the TLS Certificate
 
 # Verification Service URL
-ATTESTATION_SERVICE_URL=https://isecl-hvs:8443/hvs/v2
+HVS_BASE_URL=https://isecl-hvs:8443/hvs/v2
 ATTESTATION_TYPE=HVS
 
 #Integration tenant type.  Currently supported values are "KUBENETES" or "OPENSTACK"
@@ -7632,7 +7632,7 @@ Workload Policy Manager
 
 | Key                            | Sample Value                                            | Description                                                  |
 | ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| KMS\_API\_URL                  | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
+| KBS_BASE_URL                   | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
 | CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
 | CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
 | AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
@@ -7989,9 +7989,9 @@ typically these are the same variables set in the service installation
 
 ```
 Backup to tar file:
-pg_dump -F t <database_name> > <database_backup_file>.tar
+pg_dump --dbname <database_name> --username=<database username> -F -t > <database_backup_file>.tar
 Restore from tar file:
-pg_restore -d <database_name> <database_backup_file>.tar	
+pg_restore --dbname=<database_name> --username=<database username><database_backup_file>.tar	
 ```
 
 Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
@@ -8010,86 +8010,17 @@ Upgrades should be performed in the following order to prevent misconfiguration 
 
 3) WLS, IHUB
 
-4) KBS, Trust Agents
+4) KBS, Trust Agents, Workload Agents, WPM
 
 Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
 
 ## Upgrade Process
 
-Binary Installations
+### Binary Installations
 
 For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
 
-Container Deployments
 
-# Uninstallation
-
-This section describes steps used for uninstalling Intel SecL-DC
-services.
-
-1.  This section does not apply for containerized deployments. To
-    uninstall a containerized deployment, simply shut down the container
-    and delete the persistence volumes.
-
-Host Verification Service
---------------------
-
-To uninstall the Verification Service, run the following command:
-
-`hvs uninstall`
-
-The hvs uninstall command will not delete any database content. To
-completely uninstall and delete all database content and user data, run
-the following:
-
-`hvs erase-data`
-
-`hvs uninstall`
-
-> **Note:**The uninstall command must be issued last, because the uninstall
-> process removes the scripts that execute the other commands, along
-> with all database connectivity info.
-
-
-
-Trust Agent
------------
-
-To uninstall the Trust Agent, run the following command:
-
-`tagent uninstall`
-
-Backs up the configuration directory and removes all Trust Agent files,
-except for configuration files which are saved and restored.
-
-Removes following directories:
-
-1.  `/usr/local/bin/tagent`
-
-1.  TRUSTAGENT\_HOME : `/opt/trustagent
-
-2.  `/opt/tbootxm`
-
-3.  `/var/log/trustagent/measurement.*`
-
-> **Note:**TPM ownership can be preserved by retaining the TPM owner secret. If
-> the Operating System will also be cleared, Linux systems will also
-> require the /usr/local/var/lib/tpm/system.data file to be preserved.
-> This file must be preserved from after ownership is taken, and then
-> replaced after the OS reload before the Trust Agent attempts to
-> reassert ownership.
-
-If the ownership secret and/or` system.data` file are not preserved,
-reinstallation will require clearing TPM ownership.
-
-
-
-Integration Hub
----------------
-
-To uninstall the Integration Hub, run the following command:
-
-`ihub uninstall`
 
 
 

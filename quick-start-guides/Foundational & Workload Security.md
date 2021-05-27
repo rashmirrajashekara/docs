@@ -161,7 +161,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   cd /root/intel-secl/build/fs/
-  make all
+  make binaries
   ```
 
 * Built Binaries
