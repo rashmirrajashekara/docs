@@ -570,7 +570,7 @@ HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2
 
 # TrustAgent
 TA_CERT_SAN_LIST=<ta-san-list>
-TPM_OWNER_SECRET=<tpm-owner-secret>(Can be left empty)
+TPM_OWNER_SECRET=625d6d8a18f98bf794760fd392b8c01be0b4e959
 
 # Workload Agent
 WLA_SERVICE_USERNAME=wlauser@wls
@@ -818,7 +818,7 @@ HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/mtwilson/v2
 
 # TrustAgent
 TA_CERT_SAN_LIST=<ta-san-list>
-TPM_OWNER_SECRET=<tpm-owner-secret>(Can be left empty)
+TPM_OWNER_SECRET=625d6d8a18f98bf794760fd392b8c01be0b4e959
 
 # Workload Agent
 WLA_SERVICE_USERNAME=wlauser@wls
