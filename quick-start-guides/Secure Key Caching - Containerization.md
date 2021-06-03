@@ -23,7 +23,7 @@ Table of Contents
          * [Multi Node](#multi-node)
       * [Build](#build)
          * [Pre-requisites](#pre-requisites)
-            * [System Tools and Utilities](#system-tools-and-utilities)
+            * [Development Tools and Utilities](#development-tools-and-utilities)
             * [Repo tool](#repo-tool)
             * [Golang](#golang)
             * [Docker](#docker)
@@ -166,7 +166,7 @@ The multi node supports `kubeadm` as a supported K8s distribution
 
 The below steps need to be done on RHEL 8.2 Build machine (VM/Physical Node)
 
-#### System Tools and Utilities
+#### Development Tools and Utilities
 
 ```shell
 dnf install -y git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
