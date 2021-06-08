@@ -1524,7 +1524,20 @@ NA
        
        KMIP_SERVER_PORT=<Port number of KMIP server>
        
+       ## KMIP_VERSION variable can be used to mention KMIP protocol version.
+       ## This is an OPTIONAL field, default value is set to '2.0'. KBS supports KMIP version '1.4' and '2.0'.
        KMIP_VERSION=<kmip version>
+       
+       ## KMIP_HOSTNAME can be used to configure TLS config with ServerName.
+       ## KMIP server certificate should contain SAN(IP/DNS) or valid COMMON NAME and this value can be provided in KMIP_HOSTNAME. Only FQDN names are allowed.
+       ## This is an OPTIONAL field; if KMIP_HOSTNAME is not provided then KMIP_SERVER_IP will be considered as ServerName in TLS configuration.
+       KMIP_HOSTNAME=<Hostname of KMIP server>
+       
+       ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field. 
+       ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD. 
+       ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager. 
+       KMIP_USERNAME=<Username of KMIP server>
+       KMIP_PASSWORD=<Password of KMIP server>
        
        ### Retrieve the following certificates and keys from the KMIP server
        

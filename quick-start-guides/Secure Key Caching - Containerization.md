@@ -28,7 +28,6 @@ Table of Contents
             * [Golang](#golang)
             * [Docker](#docker)
             * [Skopeo](#skopeo)
-            * [Libkmip for KBS](#libkmip-for-kbs)
          * [Build OCI Container images and K8s Manifests](#build-oci-container-images-and-k8s-manifests)
             * [Single Node](#single-node-1)
             * [Multi Node](#multi-node-1)
@@ -225,14 +224,6 @@ systemctl restart docker
 
 ```shell
 dnf install -y skopeo
-```
-
-#### Libkmip for KBS
-
-```shell
-git clone https://github.com/openkmip/libkmip.git
-cd libkmip
-make install
 ```
 
 ### Build OCI Container images and K8s Manifests

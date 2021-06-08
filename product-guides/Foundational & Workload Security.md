@@ -159,7 +159,7 @@ Workload Confidentiality begins with the Workload Policy Manager (WPM) and a qco
 
 This functionality means that a physical host must pass policy requirements in order to gain access to the image key, and the image will be encrypted at rest both in image storage and on the compute host.
 
-Beginning with the Intel® SecL-DC version 2.1 release, the Key Broker now supports 3rd-party key managers that are KMIP-compliant. The Key Broker has been updated to use the “libkmip” client.
+Beginning with the Intel® SecL-DC version 2.1 release, the Key Broker now supports 3rd-party key managers that are KMIP-compliant. The Key Broker has been updated to use the “gemalto kmip-go” client.
 
 #### Signed Flavors
 
@@ -1864,7 +1864,7 @@ The following must be completed before installing the Key Broker:
 -   The Key Broker will require the KMIP server’s client
         certificate, client key and root ca certificate.
     
--   The Key Broker uses the libkmip client to connect to a KMIP
+-   The Key Broker uses the gemalto kmip-go client to connect to a KMIP
         server
     
 -   The Key Broker has been validated using the pykmip 0.9.1 KMIP
@@ -1903,6 +1903,11 @@ Ubuntu 18.04
    KEY_MANAGER=KMIP
    KMIP_SERVER_IP=<IP address of KMIP server>
    KMIP_SERVER_PORT=<Port number of KMIP server>
+   KMIP_VERSION=<KMIP protocol version>
+   KMIP_USERNAME=<Username of KMIP server>
+   KMIP_PASSWORD=<Password of KMIP server>
+   ### KMIP_HOSTNAME can be used to provide, KMIP server certificate's SAN(IP/DNS) or valid COMMON NAME. Only FQDN names are allowed.
+   KMIP_HOSTNAME=<Hostname of KMIP server>
    ### Retrieve the following certificates and keys from the KMIP server
    KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
    KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
@@ -1917,22 +1922,55 @@ Ubuntu 18.04
 
 #### Configure the Key Broker to use a KMIP-compliant Key Management Server
 
-The Key Broker can be configured to use a 3rd-party KMIP key manager as part of installation using optional kbs.env installation variables.  Without using these variables, the Key Broker will be configured to use a filesystem key management solution. This should be used only for testing and POC purposes; using a secure 3rd-party Key management Server should be used for production deployments. 
+The Key Broker can be configured to use a 3rd-party KMIP key manager as part of installation using optional kbs.env installation variables.
+
 
 To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Management Server:
 
 1.  Copy the KMIP server’s client certificate, client key and root ca
     certificate to the Key Broker system
 
-3.  Configure the variables for kmip support as below
+2.  Configure the variables in kbs.env for kmip support as below during installation
 
     ```shell
-    kbs config key.manager.provider com.intel.kbs.keystore.kmip.KMIPKeyManager
-    kbs config kmip.server.address <IP>
-    kbs config kmip.server.port <PORT>
-    kbs config kmip.ca.certificates.path <path to kmip ca certificate>
-    kbs config kmip.client.certificate.path <path to kmip client certificate>
-    kbs config kmip.client.key.path <path to kmip client key>
+    KEY_MANAGER=KMIP
+    KMIP_SERVER_IP=<IP address of KMIP server>
+    KMIP_SERVER_PORT=<Port number of KMIP server>
+
+    ## KMIP_VERSION variable can be used to mention KMIP protocol version.
+    ## This is an OPTIONAL field, default value is set to '2.0'. KBS supports KMIP version '1.4' and '2.0'.
+    KMIP_VERSION=<KMIP protocol version>
+    
+    ## KMIP_HOSTNAME can be used to configure TLS config with ServerName.
+    ## KMIP server certificate should contain SAN(IP/DNS) or valid COMMON NAME and this value can be provided in KMIP_HOSTNAME. Only FQDN names are allowed.
+    ## This is an OPTIONAL field, if KMIP_HOSTNAME is not provided then KMIP_SERVER_IP will be considered as ServerName in TLS configuration.
+    KMIP_HOSTNAME=<Hostname of KMIP server>
+    
+    ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field. 
+    ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD. 
+    ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager. 
+    KMIP_USERNAME=<Username of KMIP server>
+    KMIP_PASSWORD=<Password of KMIP server>
+    
+    ### Retrieve the following certificates and keys from the KMIP server
+    KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
+    KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
+    KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
+    ```
+  
+3.  The KBS configuration can be found in `/etc/kbs/config.yml`, KMIP configuration can be updated in this configuration
+
+    ```shell
+    kmip:
+      version: "2.0"
+      server-ip: "127.0.0.1"
+      server-port: "5696"
+      hostname: "localhost"
+      kmip-username: "<kmip-username>"
+      kmip-password: "<kmip-password>"
+      client-key-path: "<path>/client-key.pem"
+      client-cert-path: "<path>/client-certificate.pem"
+      root-cert-path: "<path>/root-certificate.pem"
     ```
 
 4.  Restart the Key Broker for the settings to take effect

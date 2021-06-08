@@ -124,11 +124,6 @@ dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 
-Install latest libkmip for KBS
-git clone https://github.com/openkmip/libkmip.git
-cd libkmip
-make install
-
 ```
 
 ***Repo Tool***

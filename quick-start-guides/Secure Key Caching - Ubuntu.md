@@ -133,11 +133,6 @@ apt-get update
 apt-get install skopeo
 apt-get install makeself
 
-Install latest libkmip for KBS
-git clone https://github.com/openkmip/libkmip.git
-cd libkmip
-make install
-
 ```
 
 > Note: After skopeo installation, if /etc/containers/policy.json file not available then follow below steps:
