@@ -6387,9 +6387,30 @@ TAG_CA_COMMON_NAME=HVS Tag Certificate
 TAG_CA_ISSUER=intel-secl
 TAG_CA_VALIDITY_YEARS=5
 
-
+# Certificate Revocation Checks - Optional
+ENABLE_EKCERT_REVOKE_CHECK=false # default=false - if true, revocation checks will be performed on EK certs
+                                 # proxy settings (if applicable) must be provided - see next stion
 
 ```
+
+### Note on Certificate Revocation Checks for TPM EK Certs
+
+The ENABLE_EKCERT_REVOKE_CHECK setting has been added to toggle revocation checks for Endorsement Key Certs by Verification Service. The revocation check will be performed during the course of the AIK provisioning flow on the Trust Agent (`tagent setup provision-aik`).
+
+At this stage, there are 3 possible outcomes:
+
+1. No certs in the chain are found to be revoked: VS responds with a HTTP 200 response code
+2. A certificate is found to be revoked: VS responds with a HTTP 400 response code
+3. The revocation check failed due to a connection error: VS responds with a HTTP 500 response code 
+
+If proxy settings are required to source CRL from external CAs, these can be added to the Verification Service service systemd via a drop-in config at /etc/systemd/system/hvs.service.d/proxy.conf or directly to `/opt/hvs/hvs.service` under the service section like so:
+
+```
+[Service]
+Environment="https_proxy=<proxy server url>"
+```
+
+Run `systemctl daemon-reload` and restart the service after making this change.
 
 ### Configuration Options
 
@@ -6460,9 +6481,9 @@ hrrs:
 fvs:
   number-of-verifiers: 20
   number-of-data-fetchers: 20
-  skip-flavor-signature-verification: true                    
+  skip-flavor-signature-verification: true
+enable-ekcert-revoke-check: false
 ```
-
 
 
 ### Command-Line Options
@@ -6516,7 +6537,7 @@ Reports the version of the service.
 
 `hvs erase-data`
 
-Deletes all non-user information from the database.  All data in teh following tables will be deleted; the database schema will be preserved:
+Deletes all non-user information from the database.  All data in the following tables will be deleted; the database schema will be preserved:
 
 ```
  flavor_host 
@@ -6558,8 +6579,7 @@ Available Tasks for setup:
 
 ### Directory Layout
 
-The Host Verification Service installs by default to  the
-following folders:
+The Host Verification Service installs by default to the following folders:
 
 /etc/hvs/
 
