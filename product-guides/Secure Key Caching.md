@@ -3334,6 +3334,30 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
 
 # Appendix 
 
+### SGX Attestation flow
+```
+Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from binaries directory to a directory in SGX compute node and untar it
+
+./sample_apps_untar.sh
+
+Install Intel® SGX SDK for Linux*OS into /opt/intel/sgxsdk
+
+./install_sgxsdk.sh
+
+Update sample_apps.conf with the following
+  - IP address for SQVS services deployed on Enterprise system
+  - IP address for SCS services deployed on CSP system
+  - ENTERPRISE_CMS_IP should point to the IP of CMS service deployed on Enterprise system
+  - Network Port numbers for SCS services deployed on CSP system
+  - Network Port numbers for SQVS and CMS services deployed on Enterprise system
+  - Set RUN_ATTESTING_APP to yes if user wants to run both apps in same machine
+
+Save and Close
+
+To verify the SGX Attestation Flow
+
+./run_sample_apps.sh
+```
 ### Creating RSA Keys in Key Broker Service
 
 **Steps to run KMIP Server**

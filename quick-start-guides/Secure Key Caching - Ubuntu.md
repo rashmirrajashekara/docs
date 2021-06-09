@@ -36,6 +36,7 @@ Table of Contents
          * [Deploy SKC Library](#deploy-skc-library)
       * [<strong>11. System User Configuration</strong>](#11-system-user-configuration)
       * [<strong>Appendix</strong>](#appendix)
+         * [SGX Attestation flow](#sgx-attestation-flow)
          * [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
          * [Configuration for NGINX testing](#configuration-for-nginx-testing)
          * [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
@@ -409,7 +410,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Additional Examples & Tips
 
-* For `secure-key-caching` , `skc-no-orchestration` & `sgx-orchestration-kubernetes` usecase following options can be provided during runtime in the playbook for providing the PCS server key
+* For `secure-key-caching` , `skc-no-orchestration` , `sgx-orchestration-kubernetes` , `sgx-attestation-kubernetes` & `sgx-attestation-no-orchestration` usecase following options can be provided during runtime in the playbook for providing the PCS server key
 
   ```shell
    ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars backend_pykmip=yes
@@ -434,6 +435,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 | SGX Orchestration Kubernetes | `setup: sgx-orchestration-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-orchestration-kubernetes`in CLI |
 | SKC No Orchestration         | `setup: skc-no-orchestration` in playbook or via `--extra-vars` as `setup=skc-no-orchestration`in CLI |
 | SGX Attestation Kubernetes   | `setup: sgx-attestation-kubernetes` in playbook or via `--extra-vars` as `setup=sgx-attestation-kubernetes`in CLI |
+| SGX Attestation No Orchestration | `setup: sgx-attestation-no-orchestration` in playbook or via `--extra-vars` as `setup=sgx-attestation-no-orchestration`in CLI |
 
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
@@ -826,6 +828,30 @@ GIT Configuration**
 
 ## Appendix
 
+### SGX Attestation flow
+```
+Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from binaries directory to a directory in SGX compute node and untar it
+
+./sample_apps_untar.sh
+
+Install Intel® SGX SDK for Linux*OS into /opt/intel/sgxsdk
+
+./install_sgxsdk.sh
+
+Update sample_apps.conf with the following
+  - IP address for SQVS services deployed on Enterprise system
+  - IP address for SCS services deployed on CSP system
+  - ENTERPRISE_CMS_IP should point to the IP of CMS service deployed on Enterprise system
+  - Network Port numbers for SCS services deployed on CSP system
+  - Network Port numbers for SQVS and CMS services deployed on Enterprise system
+  - Set RUN_ATTESTING_APP to yes if user wants to run both apps in same machine
+
+Save and Close
+
+To verify the SGX Attestation Flow
+
+./run_sample_apps.sh
+```
 ### Creating RSA Keys in Key Broker Service
 
 **Steps to run KMIP Server**
