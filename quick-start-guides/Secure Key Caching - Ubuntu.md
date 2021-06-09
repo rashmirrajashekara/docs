@@ -138,6 +138,28 @@ make install
 
 ```
 
+> Note: After skopeo installation, if /etc/containers/policy.json file not available then follow below steps:
+```
+mkdir /etc/containers
+touch /etc/containers/policy.json 
+
+#Add below contents in policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports":
+        {
+            "docker-daemon":
+                {
+                    "": [{"type":"insecureAcceptAnything"}]
+                }
+        }
+}
+```
+
 ***Repo Tool***
 
 ```
