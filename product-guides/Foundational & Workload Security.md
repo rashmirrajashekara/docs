@@ -4583,7 +4583,7 @@ isecl/cc-crio/binaries/
 
 - The Cri-o wrapper that allows Cri-o to interface with ISecL components must be installed on each Worker Node: https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration/vendor/github.com/lumjjb/seclkeywrap/keywrapper_secl.go.
 
-- GoLang 1.14.4 or later must be installed on each Kubernetes Worker Node
+- GoLang 1.14.4 must be installed on each Kubernetes Worker Node
 
 - Crictl must be installed on each Kubernetes Worker Node
 
