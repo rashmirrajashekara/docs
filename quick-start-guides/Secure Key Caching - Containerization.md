@@ -62,6 +62,7 @@ Table of Contents
          * [Running behind Proxy](#running-behind-proxy)
          * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
          * [Rebuilding Repos](#rebuilding-repos)
+         * [SGX Attestation Flow](#sgx-attestation-flow)
          * [SKC Key Transfer Flow](#skc-key-transfer-flow)
             * [Generating keys](#generating-keys)
             * [Setup configurations](#setup-configurations)
@@ -366,7 +367,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * Update all the K8s manifests with the image names to be pulled from the registry
 
-* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
+* The key field in `tolerations` and `nodeAffinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `microk8s.io/cluster` based on k8s distributions of `kubeadm` and `microk8s` respectively
 ##### Deploy steps
 
 The bootstrap script would facilitate the deployment of all SGX components at a usecase level. Sample one given below.
@@ -583,7 +584,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 * Update all the K8s manifests with the image names to be pulled from the registry
 
-* The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master`
+* The key field in `tolerations` and `nodeAffinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master`
 * All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data`
 
 ##### Deploy steps
@@ -978,7 +979,42 @@ make k8s-aio
 #To rebuild multi node
 make k8s
 ```
+### SGX Attestation Flow
+```
+To build and obtain the sample_apps tar:
 
+   cd into the repo folder (For single node ‘cd /root/intel-secl/build/skc-k8s-single-node’ and for multi node ‘cd /root/intel-secl/build/skc-k8s-multi-node’)
+
+   make sample_apps
+
+   mkdir -p binaries/
+
+   cp utils/build/skc-tools/sample_apps/build_scripts/sample_apps.* binaries/
+
+   cp utils/build/skc-tools/sample_apps/sampleapps_untar.sh binaries/
+
+Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from binaries directory to a directory in SGX compute node and untar it
+
+./sample_apps_untar.sh
+
+Install Intel® SGX SDK for Linux*OS into /opt/intel/sgxsdk
+
+./install_sgxsdk.sh
+
+Update sample_apps.conf with the following
+  - IP address for SQVS services deployed on Enterprise system
+  - IP address for SCS services deployed on CSP system
+  - ENTERPRISE_CMS_IP should point to the IP of CMS service deployed on Enterprise system
+  - Network Port numbers for SCS services deployed on CSP system
+  - Network Port numbers for SQVS and CMS services deployed on Enterprise system
+  - Set RUN_ATTESTING_APP to yes if user wants to run both apps in same machine
+
+Save and Close
+
+To verify the SGX Attestation Flow
+
+./run_sample_apps.sh
+```
 ### SKC Key Transfer Flow
 
 Below steps to be followed post successful deployment with Single-Node/Multi-Node deployment
