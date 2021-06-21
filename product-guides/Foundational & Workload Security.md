@@ -927,13 +927,11 @@ The following must be completed before installing the Trust Agent:
 
 #### Tboot Installation
 
-> **Note**: A solution to a security bug has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
 Tboot is required to build a complete Chain of Trust for Intel® TXT systems that are not using UEFI Secure Boot. Tboot acts to initiate the Intel® TXT SINIT ACM (Authenticated Code Module), which populates several TPM measurements including measurement of the kernel, grub command line, and initrd. Without either tboot or UEFI Secure Boot, the Chain of Trust will be broken because the OS-related components will be neither measured nor signature-verified prior to execution. Because tboot acts to initiate the Intel® TXT SINIT ACM, tboot is only required for platforms using Intel® TXT, and is not required for platforms using another hardware Root of Trust technology like Intel® Boot Guard.
 
-Intel® SecL-DC requires tboot 1.9.7 or greater. For most platforms, the version of tboot available from the RedHat software repository will meet all requirements. Some newer platforms and platform firmware versions may require a later version of tboot, including later versions than are available on the RedHat software repositories. This is due to updates that can be made to the Intel® TXT SINIT ACM behavior, and the SINIT ACM is contained in the BIOS firmware. 
+Intel® SecL-DC requires tboot 1.10.1 or greater. This may be a later version of tboot than is available on public software repositories.  
 
-If a newer version of tboot is required than is available from the repository, the most current version can be found here:
+The most current version of tboot can be found here:
 
 https://sourceforge.net/projects/tboot/files/tboot/
 
@@ -945,18 +943,24 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    yum install tboot
    ```
 
+   If the package manager does not support a late enough version of tboot, it will need to be compiled from source and installed manually.  Instructions can be found here:
+
+   https://sourceforge.net/p/tboot/wiki/Home/
+
+   Note that the step "copy platform SINIT to /boot" should not be required, as datacenter platforms include the SINIT in the system BIOS package.
+
 2. Make a backup of your current `grub.cfg` file
 
-   The below examples assume RedHat has been installed on a platform using Legacy boot mode.The grub path will be slightly different for platforms using Legacy BIOS.
+   The below examples assume a RedHat OS that has been installed on a platform using UEFI boot mode. The grub path will be slightly different for platforms using a non-RedHat OS.
 
    ```shell
-   cp /boot/grub2/grub.cfg /boot/grub2/grub.bak
+   cp /boot/efi/EFI/redhat/grub.cfg /boot/efi/EFI/redhat/grub.cfg.bak
    ```
 
 3. Generate a new `grub.cfg` with the tboot boot option
 
     ```shell
-    grub2-mkconfig -o /boot/grub2/grub.cfg
+    grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
     ```
 
 4. Update the default boot option
@@ -996,7 +1000,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    If the measured launch was successful, proceed to install the Trust Agent.
 
    ```
-Intel(r) TXT Configuration Registers:
+   Intel(r) TXT Configuration Registers:
            STS: 0x0001c091
                senter_done: TRUE
                sexit_done: FALSE
