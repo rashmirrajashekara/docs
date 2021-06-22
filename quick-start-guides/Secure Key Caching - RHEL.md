@@ -262,12 +262,12 @@ cd utils/
 git checkout <release-version of choice>
 cd tools/ansible-role
 
-#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/utils/tools/)
+#Update ansible.cfg roles_path to point to path(/root/intel-secl/deploy/utils/tools/ansible-role/roles/)
 ```
 
 ### Update Ansible Inventory
 
-The following inventory can be used and created under `/etc/ansible/hosts`.
+The following inventory can be used and created under `/etc/ansible/hosts`
 
 ```
 [CSP]
@@ -305,11 +305,19 @@ ansible_password=<password>
 
 The following are playbook and CLI example for deploying Intel® SecL-DC binaries based on the supported deployment models and usecases. The below example playbooks can be created as `site-bin-isecl.yml`
 
-> **Note:** If running behind a proxy, update the proxy variables under `vars/main.yml` and run as below
+> **Note:** If running behind a proxy, update the proxy variables under `<path to ansible role>/ansible-role/vars/main.yml` and run as below
 
 > **Note:** Go through the `Additional Examples and Tips` section for specific workflow samples
 
 **Option 1**
+
+Update the PCS Server key with following vars in `<path to ansible role>/ansible-role/defaults/main.yml`
+
+```yaml
+  intel_provisioning_server_api_key_sandbox: <pcs server key>
+```
+
+Create playbook with following contents
 
 ```yaml
 - hosts: all
@@ -327,19 +335,18 @@ The following are playbook and CLI example for deploying Intel® SecL-DC binarie
     no_proxy: "{{no_proxy}}"
 ```
 
-NOTE: 'backend_pykmip' is optional variable, if it is set to 'yes' then KBS will be installed in KMIP mode and PyKMIP server will be installed. If it is not set or set to 'no' then KBS will be installed in Directory mode. PyKMIP server will not be installed. 
-
 and
 
 ```shell
 ansible-playbook <playbook-name>
 ```
 
-> **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
-
 OR
 
+
 **Option 2:**
+
+Create playbook with following contents
 
 ```yaml
 - hosts: all
@@ -356,29 +363,10 @@ OR
 and
 
 ```shell
-ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars backend_pykmip=yes
+ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars backend_pykmip=yes
 ```
 
-> **Note:** Update the `roles_path` under `ansible.cfg` to point to the cloned repository so that the role can be read by Ansible
-
-
-### Additional Examples & Tips
-
-* For `secure-key-caching`, `sgx-orchestration-kubernetes` , `sgx-attestation-kubernetes`, `sgx-orchestration-openstack`, `sgx-attestation-openstack`, `skc-no-orchestration` & `sgx-attestation-no-orchestration`  usecase following options can be provided during runtime in the playbook for providing the PCS server key
-
-  ```shell
-   ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported usecases> --extra-vars binaries_path=<path where built binaries are copied to> --extra-vars intel_provisioning_server_api_key=<pcs server key> --extra-vars backend_pykmip=yes
-  ```
-
-  or 
-
-  Update the following vars in `defaults/main.yml`
-
-  ```yaml
-  intel_provisioning_server_api_key_sandbox: <pcs server key>
-  ```
-
-* If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
+> **Note:** If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services won't be reinstalled.
 
 
 ### Usecase Setup Options
