@@ -912,15 +912,11 @@ The following must be completed before installing the Trust Agent:
 > **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
 
 * (Provisioning step only) Intel® SecL Verification Service server installed and active.
-
+* (Required for NATS mode only) A NATS server must be configured and available
 * (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy. 
-
 * (Optional, REQUIRED for Virtual Machine Confidentiality only):
-
 * QEMU/KVM must be installed
-
 * Libvirt must be installed
-
 * (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
 
 > **Note**: The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.
@@ -949,7 +945,25 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
    Note that the step "copy platform SINIT to /boot" should not be required, as datacenter platforms include the SINIT in the system BIOS package.
 
-2. Make a backup of your current `grub.cfg` file
+2. Ensure that multiboot2.mod and relocator.mod are available for grub2
+
+   This step may not be necessary for all OS versions.  In order to utilize tboot, grub2 requires these two modules from the grub2-efi-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).
+
+   These files must be present in this directory:
+
+   ```
+   /boot/efi/EFI/redhat/x86_64-efi/multiboot2.mod
+   /boot/efi/EFI/redhat/x86_64-efi/relocator.mod
+   ```
+
+   If the files are not present in this directory, they can be moved from their installation location:
+
+   ```
+   cp /usr/lib/grub/x86_64-efi/multiboot2.mod /boot/efi/EFI/redhat/x86_64-efi/
+   cp /usr/lib/grub/x86_64-efi/relocator.mod /boot/efi/EFI/redhat/x86_64-efi/
+   ```
+
+   Make a backup of your current `grub.cfg` file
 
    The below examples assume a RedHat OS that has been installed on a platform using UEFI boot mode. The grub path will be slightly different for platforms using a non-RedHat OS.
 
@@ -986,8 +1000,6 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    ```
    grub2-mkconfig -o /boot/grub2/grub.cfg
    ```
-
-   
 
 5. Reboot the system
 
@@ -1037,6 +1049,10 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    ***********************************************************
    ```
 
+### NATS Mode vs HTTP Mode
+
+The Trust Agent can operate in either HTTP mode (default) or NATS mode.  This distinction controls how the Agent communicates with the HVS.  In HTTP mode, the TAgent presents a set of API endpoints for the HVS to access via individual TLS requests.  In NATS mode, the Agent and HVS are connected via a persistent session maintained via a NATS server; in this mode, the Trust Agent will not listen on any HTTP ports.
+
 ### Installation
 
 Installation of the Trust Agent is split into two major steps: Installation, which covers the creation of system files and folders, and Provisioning, which involves the creation of keys and secrets and links the Trust Agent to a specific Verification Service. Both operations can be performed at the same time using an installation answer file. Without the answer file, the Trust Agent can be installed and left in an un-provisioned state regardless of whether a Verification Service is up and running, until such time as the datacenter administrator is ready to run the provisioning step and link the Trust Agent to a Verification Service.
@@ -1083,6 +1099,14 @@ To install the Trust Agent for Linux:
   ##For the CRI-O container runtime:
   WA_WITH_CONTAINER_SECURITY_CRIO=yes
    ```
+
+  For NATS mode, add the following (in addition to the basic Platform Attestation sample and any other optional features):
+
+  ```
+  TA_SERVICE_MODE=outbound 
+  NATS_SERVERS=<nats-server-ip>:4222 
+  TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
+  ```
 
 * Execute the Trust Agent installer and wait for the installation to complete.
 
