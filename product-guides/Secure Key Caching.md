@@ -1043,6 +1043,8 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 
 Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
+NOTE: Retrieve appropriate Trusted RootCA certificate files for SGX platform (trusted_rootca.pem for IceLake Sandox PCS, trusted_rootca_icx_prod.pem for IceLake Live PCS and trusted_rootca_clx_prod.pem for CascadeLake Live PCS Server) from dist/linux directory in SQVS repository.
+
 3.  Execute the sqvs installer binary.
 
 ./sqvs-v3.6.0.bin
