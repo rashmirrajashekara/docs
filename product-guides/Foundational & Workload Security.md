@@ -460,6 +460,130 @@ The database client for Intel® SecL services will validate that the Subject Alt
 
 
 
+## Using NATS with Intel SecL
+
+Intel SecL-DC can utilize a NATS server to manage connectivity between the Host Verification Service and any number of deployed Trust Agent hosts.  This acts as an alternative to communication via REST APIs - in NATS mode, a connection is established with the NATS server, and messages are sent and received over that connection.
+
+The NATS server should be deployed on the control plane and will need network connectivity to other control plane services as well as any Trust Agent hosts.
+
+While NATS is not installed by Intel SecL directly, sample instructions for deploying a NATS server for use with Intel SecL can be found below (this is intended to be a sample only; please consult https://nats.io for official NATS documentation) :
+
+```
+##Download and install the NATS-server binary (see https://github.com/nats-io/nats-server/releases/latest) 
+rpm -i https://github.com/nats-io/nats-server/releases/download/v2.3.0/nats-server-v2.3.0-amd64.rpm
+
+##Install tar and unzip
+yum install -y tar unzip 
+
+##Install cfssl and cfssljson (for “Control-Plane Deployment” step #6). 
+wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssljson_1.6.0_linux_amd64 -o /usr/bin/cfssljson && chmod +x /usr/bin/cfssljson 
+
+wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssl_1.6.0_linux_amd64 -o /usr/bin/cfssl && chmod +x /usr/bin/cfssl 
+```
+
+Use the following **additional** options in populate-users.env and run populate-users:
+
+```
+ISECL_INSTALL_COMPONENTS=TA,HVS,AAS,NATS
+NATS_CERT_SAN_LIST=<NATS server ip>,<NATS server FQDN>,localhost 
+NATS_CERT_COMMON_NAME=NATS TLS Certificate
+```
+
+Note that the ISECL_INSTALL_COMPONENTS list should reflect the actual components used in your deployment of Intel SecL, as dictated by the use cases to be enabled.  The important part here is to add the "NATS" element to the list.
+
+To generate a long-lived token for use in environments where the Trust Agent may not be provisioned for an extended period of time beyond the usual lifetime of an authentication token, add the following to populate-users.env:
+
+```
+CUSTOM_CLAIMS_COMPONENTS=<List of services for which the long-lived installation token will be valid.  Typically this is only the Trust Agent, and so the only component in the list is typically "TA">
+CUSTOM_CLAIMS_TOKEN_VALIDITY_SECS=<duration in seconds for the token to last>
+CCC_ADMIN_USERNAME=<username for generating long-lived tokens>
+CCC_ADMIN_PASSWORD=<password for generating long-lived tokens>
+```
+
+When populate-users is run, there will now be an additional "Custom Claims Token For TA:" bearer token.  
+
+When installing the HVS, add the following to hvs.env:
+
+```
+NATS_SERVERS=nats://<server ip>:4222
+```
+
+Alternatively, if the HVS is already installed, add the following in /etc/hvs/config.yml :
+
+```
+nats:
+  servers:
+  - nats://<NATS server IP>:4222
+```
+
+Be sure to restart the HVS after changing the configuration.
+
+Download TLS certificates for the NATS server from the CMS:
+
+```
+export NATS_CERT_COMMON_NAME="NATS TLS Certificate" 
+export CMS_ENDPOINT_URL=https://<CMS server ip or hostname>:8445/cms/v1 
+export NATS_CERT_SAN_LIST=" <NATS server ip>,<NATS server FQDN>,localhost" 
+./download-tls-certs.sh -d ./ -n "$NATS_CERT_COMMON_NAME" -u "$CMS_ENDPOINT_URL" -s "$NATS_CERT_SAN_LIST" -t $BEARER_TOKEN 
+```
+
+The download-tls-certs.sh script will conenct to the CMS and will out put two files:
+
+```
+server.pem
+sslcert-key.pem
+```
+
+Create a “server.conf” configuration file for nats-server (be sure the paths to the .pem files are correct):
+
+ 
+
+```
+listen: 0.0.0.0:4222 
+
+tls: { 
+  cert_file: "./server.pem" 
+  key_file: "./sslcert-key.pem" 
+} 
+```
+
+
+
+1. Append the operator/account credentials from the AAS installation to the server.conf (the following can be run if NATS will run on the same machine as the AAS):  
+
+   ```
+   cat /etc/authservice/nats/server.conf >> server.conf 
+   ```
+
+The final server.conf should look like the following:
+
+```
+listen: 0.0.0.0:4222
+
+tls: {
+  cert_file: "/<path>/server.pem"
+  key_file: "/<path>/sslcert-key.pem"
+}
+
+// Operator ISecL-operator
+operator: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJleHAiOjE3ODE2MzI0NjUsImp0aSI6IkJWQVZUQkc1M01aMkFaSTVYUjRFNVlPS0xHTk5ZTE40SllYV0U3T1I1M0VQSDJOU0pFSEEiLCJpYXQiOjE2MjM5NTI0NjUsImlzcyI6Ik9DTENLS1UzS0lMWjZaRDRESDNWNTdUSkJESUdKSllMWk1RNEhKUU9DNFJFUVEyVkFUVU01SlA1IiwibmFtZSI6IklTZWNMLW9wZXJhdG9yIiwic3ViIjoiT0NMQ0tLVTNLSUxaNlpENERIM1Y1N1RKQkRJR0pKWUxaTVE0SEpRT0M0UkVRUTJWQVRVTTVKUDUiLCJuYXRzIjp7InR5cGUiOiJvcGVyYXRvciIsInZlcnNpb24iOjJ9fQ.PDlhAwk1cLHpbCCAJhKGKvv36J_NXc2PSsn6i3znmjDYHXG3C_HhO9zxsln9Bd9ViolRw_L10N1QwoMjzCBtBQ
+
+resolver: MEMORY
+
+resolver_preload: {
+ // Account ISecL-account
+ ADR7WNJ2EEEIYASP5YHDFDW6P3ICBFPXRRJVWU6CLGXOWVDIM7VIOXCM: eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJleHAiOjE3ODE2MzI0NjUsImp0aSI6IjdVUlg0M0RSTUxEV0JEVTdMU0dDNTQ0UzZCRFFGVDc1TzZVWUE1QUdYNkxGV0FNWUNOTkEiLCJpYXQiOjE2MjM5NTI0NjUsImlzcyI6Ik9DTENLS1UzS0lMWjZaRDRESDNWNTdUSkJESUdKSllMWk1RNEhKUU9DNFJFUVEyVkFUVU01SlA1IiwibmFtZSI6IklTZWNMLWFjY291bnQiLCJzdWIiOiJBRFI3V05KMkVFRUlZQVNQNVlIREZEVzZQM0lDQkZQWFJSSlZXVTZDTEdYT1dWRElNN1ZJT1hDTSIsIm5hdHMiOnsibGltaXRzIjp7InN1YnMiOi0xLCJkYXRhIjotMSwicGF5bG9hZCI6LTEsImltcG9ydHMiOi0xLCJleHBvcnRzIjotMSwid2lsZGNhcmRzIjp0cnVlLCJjb25uIjotMSwibGVhZiI6LTF9LCJkZWZhdWx0X3Blcm1pc3Npb25zIjp7InB1YiI6e30sInN1YiI6e319LCJ0eXBlIjoiYWNjb3VudCIsInZlcnNpb24iOjJ9fQ.AB6eNFVE7KJspvX7DN-x_-L4mMNhPc-sDk01iOL-hEwYKfeoL9RAcdrOTwQX3CuJHMu-a3m5TpWflg1D4S1MCQ
+}
+```
+
+Start NATS server:  
+
+```
+./nats-server -c server.conf 
+```
+
+## 
+
 Installing the Certificate Management Service
 ---------------------------------------------
 
