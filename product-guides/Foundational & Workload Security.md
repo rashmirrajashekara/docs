@@ -1027,9 +1027,9 @@ The following must be completed before installing the Trust Agent:
 
 * Supported server hardware including an Intel® Xeon® processor with Intel Trusted Execution Technology activated in the system BIOS.
 
-* Trusted Platform Module (version 2.0) installed and activated in the system BIOS, with cleared ownership status. 
+* Trusted Platform Module (version 2.0) installed and activated in the system BIOS, with cleared ownership status OR a known TPM ownership secret. 
 
-> **Note:** For Linux systems, TPM 1.2 and TPM resource sharing to applications other than the Trust Agent are not supported at this time. Do not install trousers or another TSS stack application after installing the Trust Agent on Linux systems. 
+> **Note:** Starting in Intel SecL-DV 4.0, the Trust Agent will now default to using a null TPM owner secret, and does not require ownership permissions except during the provisioning step.   If ownership has already been taken when the Trust Agent will be provisioned, it will be necessary to either provide the ownership secret or clear the TPM ownership before provisioning.
 
 * System must be booted to a tboot boot option OR use UEFI SecureBoot.
 
@@ -6806,28 +6806,28 @@ Trust Agent
 
 ### Installation Answer File Options
 
-| Key                               | Description                                                  | Sample Value                                         |
-| --------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
-| AAS\_API\_URL                     | API URL for Authentication Authorization Service (AAS).      | AAS\_API\_URL=https://{host}:{port}/aas/v1           |
-| AUTOMATIC\_PULL\_MANIFEST         | Instructs the installer to automatically pull application-manifests from HVS similar to tagent setup get-configured-manifest | AUTOMATIC\_PULL\_MANIFEST=Y                          |
-| AUTOMATIC\_REGISTRATION           | Instructs the installer to automatically register the host with HVS similar to running tagent setup create-host and tagent setup create-host-unique-flavor. | AUTOMATIC\_REGISTRATION=Y                            |
-| BEARER\_TOKEN                     | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration | BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...     |
-| CMS\_BASE\_URL                    | API URL for Certificate Management Service (CMS).            | CMS\_BASE\_URL=https://{host}:{port}/cms/v1          |
-| CMS\_TLS\_CERT\_SHA384            | SHA384 Hash sum for verifying the CMS TLS certificate.       | CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...   |
-| HVS\_API\_URL                     | The url used during setup to request information from HVS.   | HVS\_API\_URL=https://{host}:{port}/hvs/v2           |
-| PROVISION\_ATTESTATION            | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). | PROVISION\_ATTESTATION=Y                             |
-| SAN\_LIST                         | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com |
-| TA\_TLS\_CERT\_CN                 | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. | TA\_TLS\_CERT\_CN=Acme Trust Agent 007               |
-| TPM\_OWNER\_SECRET                | 20 byte hex value to be used as the secret key when taking ownership of the TPM. *Note: If this field is not specified, GTA will generate a random secret key.* | TPM\_OWNER\_SECRET=625d6...                          |
-| TPM\_QUOTE\_IPV4                  | When enabled (=y), uses the local system's ip address as a salt when processing a quote nonce. This field must align with the configuration of HVS. | TPM\_QUOTE\_IPV4=no                                  |
-| TA\_SERVER\_READ\_TIMEOUT         | Sets tagent server ReadTimeout. Defaults to 30 seconds.      | TA\_SERVER\_READ\_TIMEOUT=30                         |
-| TA\_SERVER\_READ\_HEADER\_TIMEOUT | Sets tagent server ReadHeaderTimeout. Defaults to 30 seconds. | TA\_SERVER\_READ\_HEADER\_TIMEOUT=10                 |
-| TA\_SERVER\_WRITE\_TIMEOUT        | Sets tagent server WriteTimeout. Defaults to 10 seconds.     | TA\_SERVER\_WRITE\_TIMEOUT=10                        |
-| TA\_SERVER\_IDLE\_TIMEOUT         | Sets tagent server IdleTimeout. Defaults to 10 seconds.      | TA\_SERVER\_IDLE\_TIMEOUT=10                         |
-| TA\_SERVER\_MAX\_HEADER\_BYTES    | Sets tagent server MaxHeaderBytes. Defaults to 1MB(1048576)  | TA\_SERVER\_MAX\_HEADER\_BYTES=1048576               |
-| TA\_ENABLE\_CONSOLE\_LOG          | When set true, tagent logs are redirected to stdout. Defaults to false | TA\_ENABLE\_CONSOLE\_LOG=true                        |
-| TRUSTAGENT\_LOG\_LEVEL            | The logging level to be saved in config.yml during installation ("trace", "debug", "info"). | TRUSTAGENT\_LOG\_LEVEL=debug                         |
-| TRUSTAGENT\_PORT                  | The port on which the trust-agent service will listen.       | TRUSTAGENT\_PORT=10433                               |
+| Key                               | Description                                                  | Sample Value                                                 |
+| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| AAS\_API\_URL                     | API URL for Authentication Authorization Service (AAS).      | AAS\_API\_URL=https://{host}:{port}/aas/v1                   |
+| AUTOMATIC\_PULL\_MANIFEST         | Instructs the installer to automatically pull application-manifests from HVS similar to tagent setup get-configured-manifest | AUTOMATIC\_PULL\_MANIFEST=Y                                  |
+| AUTOMATIC\_REGISTRATION           | Instructs the installer to automatically register the host with HVS similar to running tagent setup create-host and tagent setup create-host-unique-flavor. | AUTOMATIC\_REGISTRATION=Y                                    |
+| BEARER\_TOKEN                     | JWT from AAS that contains "install" permissions needed to access ISecL services during provisioning and registration | BEARER\_TOKEN=eyJhbGciOiJSUzM4NCIsjdkMTdiNmUz...             |
+| CMS\_BASE\_URL                    | API URL for Certificate Management Service (CMS).            | CMS\_BASE\_URL=https://{host}:{port}/cms/v1                  |
+| CMS\_TLS\_CERT\_SHA384            | SHA384 Hash sum for verifying the CMS TLS certificate.       | CMS\_TLS\_CERT\_SHA384=bd8ebf5091289958b5765da4...           |
+| HVS\_API\_URL                     | The url used during setup to request information from HVS.   | HVS\_API\_URL=https://{host}:{port}/hvs/v2                   |
+| PROVISION\_ATTESTATION            | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). | PROVISION\_ATTESTATION=Y                                     |
+| SAN\_LIST                         | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com         |
+| TA\_TLS\_CERT\_CN                 | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. | TA\_TLS\_CERT\_CN=Acme Trust Agent 007                       |
+| TPM\_OWNER\_SECRET                | 20 byte hex value to be used as the secret key when taking ownership of the TPM. *Note: If this field is not specified, GTA will generate a random secret key.* | TPM\_OWNER\_SECRET=625d6...<br />Starting in Intel SecL-DC 4.0, this value will now default to null unless a secret is specified.  Using a null TPM ownership secret is recommended. |
+| TPM\_QUOTE\_IPV4                  | When enabled (=y), uses the local system's ip address as a salt when processing a quote nonce. This field must align with the configuration of HVS. | TPM\_QUOTE\_IPV4=no                                          |
+| TA\_SERVER\_READ\_TIMEOUT         | Sets tagent server ReadTimeout. Defaults to 30 seconds.      | TA\_SERVER\_READ\_TIMEOUT=30                                 |
+| TA\_SERVER\_READ\_HEADER\_TIMEOUT | Sets tagent server ReadHeaderTimeout. Defaults to 30 seconds. | TA\_SERVER\_READ\_HEADER\_TIMEOUT=10                         |
+| TA\_SERVER\_WRITE\_TIMEOUT        | Sets tagent server WriteTimeout. Defaults to 10 seconds.     | TA\_SERVER\_WRITE\_TIMEOUT=10                                |
+| TA\_SERVER\_IDLE\_TIMEOUT         | Sets tagent server IdleTimeout. Defaults to 10 seconds.      | TA\_SERVER\_IDLE\_TIMEOUT=10                                 |
+| TA\_SERVER\_MAX\_HEADER\_BYTES    | Sets tagent server MaxHeaderBytes. Defaults to 1MB(1048576)  | TA\_SERVER\_MAX\_HEADER\_BYTES=1048576                       |
+| TA\_ENABLE\_CONSOLE\_LOG          | When set true, tagent logs are redirected to stdout. Defaults to false | TA\_ENABLE\_CONSOLE\_LOG=true                                |
+| TRUSTAGENT\_LOG\_LEVEL            | The logging level to be saved in config.yml during installation ("trace", "debug", "info"). | TRUSTAGENT\_LOG\_LEVEL=debug                                 |
+| TRUSTAGENT\_PORT                  | The port on which the trust-agent service will listen.       | TRUSTAGENT\_PORT=10433                                       |
 
 ### Configuration Options
 
@@ -6851,8 +6851,6 @@ The Trust Agent configuration settings are managed in
 | hvs:                                          |                                                              |
 | url: https://0.0.0.0:8443/hvs/v2              | Defines the baseurl for the Verification Service             |
 | tpm:                                          |                                                              |
-| ownersecretkey: 625d6d8...1be0b4e957          | Defines the TPM ownership secret. This is randomly generated unless manually specified during installation in the trustagent.env file. Note that changing this value may require clearing the TPM ownership in the server BIOS. |
-| aiksecretkey: 59acd1367...edcbede60c          | Defines the AIK secret. Randomly generated. If this is changed, a new AIK will need to be provisioned. |
 | aas:                                          |                                                              |
 | baseurl: https://0.0.0.0:8444/aas/v1/         | Defines the base URL for the AAS                             |
 | cms:                                          |                                                              |
