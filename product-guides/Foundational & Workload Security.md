@@ -1232,6 +1232,8 @@ To install the Trust Agent for Linux:
   TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
   ```
 
+  Note that the TA_HOST_ID unique identifier will also be the ID used as part of the connection string to reach this Trust Agent host in NATS mode.
+
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
@@ -1345,10 +1347,10 @@ will automatically run the Provisioning steps.
 > step has been completed.
 
 If the answer file is not present during installation, the Agent can be
-Provisioned later by adding the `trustagent.env` file and running the
+provisioned later by adding the `trustagent.env` file and running the
 following command:
 
-`tagent provision-attestation <trustagent.env file
+`tagent setup -f <trustagent.env file
 path>`
 
 
@@ -3242,9 +3244,17 @@ has been centralized with the new Authentication and Authorization
 Service, eliminating the need for credentials to be provided for
 connection strings connecting to Trust Agent resources.
 
+By default, the Trust Agent uses "HTTP" mode, which uses the following connection string:
+
 `intel:https://<HostNameOrIp>:1443`
 
+The Trust Agent can also be used in NATS mode, which uses a slightly different connection string:
 
+```
+intel:nats://<unique host identifier, configured at Trust Agent installation>
+```
+
+The unique host identifier is a unique ID used by NATS to differentiate services when passing messages.  Any unique string is acceptable, but good examples can be the host's FQDN or hardware UUID.
 
 VMware ESXi
 -----------
