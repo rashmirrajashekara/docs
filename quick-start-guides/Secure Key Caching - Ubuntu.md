@@ -14,27 +14,28 @@ Table of Contents
       * [<strong>7. Deployment & Usecase Workflow Tools Installation</strong>](#7-deployment-usecase-workflow-tools-installation)
          * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
       * [<strong>8. Deployment</strong>](#8-deployment)
-         * [Download the Ansible Role](#download-the-ansible-role)
-         * [Update the Ansible Role](#update-ansible-inventory)
-         * [Create and Run Playbook](#create-and-run-playbook)
-         * [Additional Examples & Tips](#additional-examples-tips)
-         * [Usecase Setup Options](#usecase-setup-options)
+         * [<strong>8.1. Deployment Using Ansible</strong>](#deployment-using-ansible)
+            * [Download the Ansible Role](#download-the-ansible-role)
+            * [Update the Ansible Role](#update-ansible-inventory)
+            * [Create and Run Playbook](#create-and-run-playbook)
+            * [Additional Examples & Tips](#additional-examples-tips)
+            * [Usecase Setup Options](#usecase-setup-options)
+         * [<strong>8.2. Deployment Using Binaries</strong>](#deployment-using-binaries)
+            * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
+            * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
+            * [Deploy isecl-controller](#deploy-isecl-controller)
+            * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+            * [Configure kube-scheduler to establish communication with isecl-scheduler](#configute-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+            * [Deploying SKC Services on Single System](#deploying-skc-services-on-single-system)
+            * [Deploy CSP SKC Services](#deploy-csp-skc-services)
+            * [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
+            * [Deploy SGX Agent](#deploy-sgx-agent)
+            * [Deploy SKC Library](#deploy-skc-library)
       * [<strong>9. Usecase Workflows with Postman API Collections</strong>](#9-usecase-workflows-with-postman-api-collections)
          * [Use Case Collections](#use-case-collections)
          * [Download Postman API Collections](#download-postman-api-collections)
          * [Running API Collections](#running-api-collections)
-      * [<strong>10. Deployment Using Binaries</strong>](#10-deployment-using-binaries)
-         * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-kbs-extensions)
-         * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
-         * [Deploy isecl-controller](#deploy-isecl-controller)
-         * [Deploy isecl-scheduler](#deploy-isecl-scheduler)
-         * [Configure kube-scheduler to establish communication with isecl-scheduler](#configute-kube-scheduler-to-establish-communication-with-isecl-scheduler)
-         * [Deploying SKC Services on Single System](#deploying-skc-services-on-single-system)
-         * [Deploy CSP SKC Services](#deploy-csp-skc-services)
-         * [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
-         * [Deploy SGX Agent](#deploy-sgx-agent)
-         * [Deploy SKC Library](#deploy-skc-library)
-      * [<strong>11. System User Configuration</strong>](#11-system-user-configuration)
+      * [<strong>10. System User Configuration</strong>](#11-system-user-configuration)
       * [<strong>Appendix</strong>](#appendix)
          * [SGX Attestation flow](#sgx-attestation-flow)
          * [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
@@ -281,6 +282,8 @@ The below installation is required on the Build & Deployment system only and the
 
 ## **8. Deployment**
 
+### Deployment Using Ansible
+
 The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
@@ -427,65 +430,7 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
 
-
-## **9. Usecase Workflows with Postman API Collections**
-
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
-
-### Use Case Collections
-
-| Use case                     | Sub-Usecase | API Collection     |
-| ---------------------------- | ----------- | ------------------ |
-| Secure Key Caching           | -           | ✔️                  |
-| SGX Discovery, Provisioning and Orchestration | -           | ✔️                  |
-| SGX Discovery and Provisioning           | -           | ✔️                  |
-
-
-### Download Postman API Collections
-
-* Postman API Network for latest released collections: https://explore.postman.com/intelsecldc
-
-  or 
-
-* Github repo for allreleases
-
-  ```shell
-  #Clone the github repo for api-collections
-  git clone https://github.com/intel-secl/utils.git
-  
-  #Switch to specific release-version of choice
-  cd utils/
-  git checkout <release-version of choice>
-  
-  #Import Collections from
-  cd tools/api-collections
-  ```
-
->  **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
-
-
-### Running API Collections
-
-* Import the collection into Postman API Client
-
-  > **Note:** This step is required only when not using Postman API Network and downloading from Github
-
-  ![importing-collection](./images/importing_collection.gif)
-
-* Update env as per the deployment details for specific usecase
-
-  ![updating-env](./images/updating_env.gif)
-
-* View Documentation
-
-  ![view-docs](./images/view_documentation.gif)
-
-* Run the workflow
-
-  ![running-collection](./images/running_collection.gif)
-
-
-## **10. Deployment Using Binaries**
+## Deployment Using Binaries
 
 ### Setup K8S Cluster and Deploy Isecl-k8s-extensions
 
@@ -793,7 +738,64 @@ Save and Close
 ./deploy_skc_library.sh
 ```
 
-## **11. System User Configuration**
+## **9. Usecase Workflows with Postman API Collections**
+
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
+
+### Use Case Collections
+
+| Use case                     | Sub-Usecase | API Collection     |
+| ---------------------------- | ----------- | ------------------ |
+| Secure Key Caching           | -           | ✔️                  |
+| SGX Discovery, Provisioning and Orchestration | -           | ✔️                  |
+| SGX Discovery and Provisioning           | -           | ✔️                  |
+
+
+### Download Postman API Collections
+
+* Postman API Network for latest released collections: https://explore.postman.com/intelsecldc
+
+  or 
+
+* Github repo for allreleases
+
+  ```shell
+  #Clone the github repo for api-collections
+  git clone https://github.com/intel-secl/utils.git
+  
+  #Switch to specific release-version of choice
+  cd utils/
+  git checkout <release-version of choice>
+  
+  #Import Collections from
+  cd tools/api-collections
+  ```
+
+>  **Note:**  The postman-collections are also available when cloning the repos via build manifest under `utils/tools/api-collections`
+
+
+### Running API Collections
+
+* Import the collection into Postman API Client
+
+  > **Note:** This step is required only when not using Postman API Network and downloading from Github
+
+  ![importing-collection](./images/importing_collection.gif)
+
+* Update env as per the deployment details for specific usecase
+
+  ![updating-env](./images/updating_env.gif)
+
+* View Documentation
+
+  ![view-docs](./images/view_documentation.gif)
+
+* Run the workflow
+
+  ![running-collection](./images/running_collection.gif)
+
+
+## **10. System User Configuration**
 
 **Build System**
 
