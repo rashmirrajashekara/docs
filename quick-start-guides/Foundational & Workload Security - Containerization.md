@@ -45,14 +45,14 @@
           - [Manifests](#manifests)
         - [Deploy steps](#deploy-steps)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file)
-          - [Run scripts on K8s master](#run-scripts-on-k8s-master)
+          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane)
       - [Multi-Node](#multi-node-1)
         - [Pre-requisites](#pre-requisites-3)
           - [Setup](#setup-1)
           - [Manifests](#manifests-1)
         - [Deploy steps](#deploy-steps-1)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file-1)
-          - [Run scripts on K8s master](#run-scripts-on-k8s-master-1)
+          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane-1)
   - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
     - [Single Node Deployments](#single-node-deployments)
     - [Multi Node Deployments](#multi-node-deployments)
@@ -95,9 +95,9 @@
 
 * Build Machine
 
-* K8S Master Node Setup on CSP (VMs/Physical Nodes + TXT/SUEFI enabled Physical Nodes)
+* K8s control-plane Node Setup on CSP (VMs/Physical Nodes + TXT/SUEFI enabled Physical Nodes)
 
-* K8S Master Node Setup on Enterprise (VMs/Physical Nodes)
+* K8s control-plane Node Setup on Enterprise (VMs/Physical Nodes)
 
 ### OS Requirements
 
@@ -394,7 +394,7 @@ systemctl restart docker
 
 ### Pre-requisites
 
-* Install `openssl` on K8s master
+* Install `openssl` on K8s control-plane
 
 * Ensure a docker registry is running locally or remotely. 
 
@@ -414,7 +414,7 @@ systemctl restart docker
 
   > **Note:**  In case of microk8s deployment, when docker registry is enabled locally, the OCI container images need to be copied to the node where registry is enabled and then the above example command can be run. The same would not be required when registry is remotely installed
 
-* On each worker node with `TXT/BTG` enabled and registered to K8s-master, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04` systems
+* On each worker node with `TXT/BTG` enabled and registered to K8s control-plane, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04` systems
 
   * Foundational Security
     * Copy `platform-dependencies` directory to each of the `TXT/BTG` enabled physical servers. 
@@ -480,7 +480,7 @@ systemctl restart docker
 
 * `microk8s` being the default supported single node K8s distribution, users would need to install microk8s on a Physical server
 
-* Copy all manifests and OCI container images as required to K8s master
+* Copy all manifests and OCI container images as required to KK8s control-plane
 
 * Ensure docker registry is running locally or remotely
 
@@ -522,7 +522,7 @@ CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-p
 
 # authservice
 AAS_API_URL=https://aas-svc.isecl.svc.cluster.local:8444/aas/v1
-AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
+AAS_API_CLUSTER_ENDPOINT_URL=https://<K8s control-plane IP>:30444/aas/v1
 AAS_ADMIN_USERNAME=admin@aas
 AAS_ADMIN_PASSWORD=aasAdminPass
 AAS_DB_USERNAME=aasdbuser
@@ -610,7 +610,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 > **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
 
-###### Run scripts on K8s master
+###### Run scripts on K8s control-plane
 
 * The bootstrap scripts are sample scripts to allow for a quick start of FS,WS services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
 
@@ -678,9 +678,9 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 ###### Setup
 
-* `kubeadm` being the default supported multi-node K8s distribution, users would need to install a kubeadm master node setup
+* `kubeadm` being the default supported multi-node K8s distribution, users would need to install a kubeadm K8s control-plane node setup
 
-* Copy all manifests and OCI container images as required to K8s master
+* Copy all manifests and OCI container images as required to K8s control-plane
 
 * Ensure images are pushed to registry locally or remotely
 
@@ -859,7 +859,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 > **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
 
-###### Run scripts on K8s master
+###### Run scripts on K8s control-plane
 
 * The bootstrap scripts are sample scripts to allow for a quick start of FS,WS services and agents. Users are free to modify the script or directly use the K8s manifests as per their deployment model requirements
 
@@ -895,7 +895,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 > **Note:** An error to create asymmetric key would mean the following line, `RANDFILE = $ENV::HOME/.rnd` needs to be commented under `/etc/ssl/openssl.cnf`  
 
 
-* Copy the `ihub_public_key.pem` from NFS path -`<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s Master
+* Copy the `ihub_public_key.pem` from NFS path -`<mnt>/isecl/ihub/config/ihub_public_key.pem ` to K8s control-plane
 * Update the `isecl-k8s.env` for `IHUB_PUB_KEY_PATH`
 * Bring up the `isecl-k8s-scheduler`
 
@@ -1378,7 +1378,7 @@ systemctl restart kubelet
 ./isecl-bootstrap-db-services.sh up
 ./isecl-bootstrap.sh up <all/usecase of choice>
 
-#Copy ihub_public_key.pem from <NFS-PATH>/ihub/config/ to K8s master and update IHUB_PUB_KEY_PATH in isecl-isecl-k8s.env
+#Copy ihub_public_key.pem from <NFS-PATH>/ihub/config/ to K8s control-plane and update IHUB_PUB_KEY_PATH in isecl-isecl-k8s.env
 
 #Bootstrap isecl-scheduler
 ./isecl-bootstrap.sh up isecl-scheduler
@@ -1416,7 +1416,7 @@ rm -rf /<nfs-mount-path>/isecl/<service-name>/logs
 #Only in case of KBS, perform one more step along with above 2 steps
 rm -rf /<nfs-mount-path>/isecl/<service-name>/opt
 ```
-log into master
+log into K8s control-plane
 ```./isecl-bootstrap.sh up <service-name>```
 
 In order to redeploy again on multi node with data, config from previous deployment
