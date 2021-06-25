@@ -513,12 +513,12 @@ The bootstrap script would facilitate the deployment of all FS,WS components at 
 ```shell
 #Kubernetes Distribution microk8s or kubeadm
 K8S_DISTRIBUTION=microk8s
-K8S_MASTER_IP=<K8s Master IP>
-K8S_MASTER_HOSTNAME=<K8s Master Hostname>
+K8S_CONTROL_PLANE_IP=<K8s control-plane IP>
+K8S_CONTROL_PLANE_IP=<K8s control-plane Hostname>
 
 # cms
 CMS_BASE_URL=https://cms-svc.isecl.svc.cluster.local:8445/cms/v1
-CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 
 # authservice
 AAS_API_URL=https://aas-svc.isecl.svc.cluster.local:8444/aas/v1
@@ -532,7 +532,7 @@ AAS_DB_PORT="5432"
 AAS_DB_NAME=aasdb
 AAS_DB_SSLMODE=verify-full
 AAS_DB_SSLCERT=/etc/postgresql/server.crt
-AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 
 # Workload Service
 WLS_SERVICE_USERNAME=admin@wls
@@ -553,7 +553,7 @@ HVS_DB_USERNAME=hvsdbuser
 HVS_DB_PASSWORD=hvsdbpassword
 HVS_DB_HOSTNAME=hvsdb-svc.isecl.svc.cluster.local
 HVS_DB_NAME=hvsdb
-HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 HVS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 HVS_DB_PORT="5432"
 HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
@@ -561,7 +561,7 @@ HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
 IHUB_SERVICE_PASSWORD=hubAdminPass
-IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 # For microk8s
 # K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
 K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
@@ -578,7 +578,8 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+KMIP_HOSTNAME=<KMIP IP/Hostname>
 KMIP_SERVER_IP=<kmip-server-ip>
 KMIP_SERVER_PORT=<kmip-server-port>
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
@@ -760,16 +761,16 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 ```shell
 #Kubernetes Distribution microk8s or kubeadm
 K8S_DISTRIBUTION=kubeadm
-K8S_MASTER_IP=<K8s Master IP>
-K8S_MASTER_HOSTNAME=<K8s Master Hostname>
+K8S_CONTROL_PLANE_IP=<K8s control-plane IP>
+K8S_CONTROL_PLANE_HOSTNAME=<K8s control-plane Hostname>
 
 # cms
 CMS_BASE_URL=https://cms-svc.isecl.svc.cluster.local:8445/cms/v1
-CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 
 # authservice
 AAS_API_URL=https://aas-svc.isecl.svc.cluster.local:8444/aas/v1
-AAS_API_CLUSTER_ENDPOINT_URL=https://<Master IP>:30444/aas/v1
+AAS_API_CLUSTER_ENDPOINT_URL=https://<K8s control-plane IP>:30444/aas/v1
 AAS_ADMIN_USERNAME=admin@aas
 AAS_ADMIN_PASSWORD=aasAdminPass
 AAS_DB_USERNAME=aasdbuser
@@ -779,7 +780,7 @@ AAS_DB_PORT="5432"
 AAS_DB_NAME=aasdb
 AAS_DB_SSLMODE=verify-full
 AAS_DB_SSLCERT=/etc/postgresql/server.crt
-AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 
 # Workload Service
 WLS_SERVICE_USERNAME=admin@wls
@@ -800,7 +801,7 @@ HVS_DB_USERNAME=hvsdbuser
 HVS_DB_PASSWORD=hvsdbpassword
 HVS_DB_HOSTNAME=hvsdb-svc.isecl.svc.cluster.local
 HVS_DB_NAME=hvsdb
-HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 HVS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 HVS_DB_PORT="5432"
 HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
@@ -808,7 +809,7 @@ HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
 IHUB_SERVICE_PASSWORD=hubAdminPass
-IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s Master IP/K8s Master Hostname>
+IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 # For Kubeadm
 # K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
 K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
@@ -826,9 +827,10 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<Master IP>,<Master Hostname>
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
 KMIP_SERVER_IP=<kmip-server-ip>
 KMIP_SERVER_PORT=<kmip-server-port>
+KMIP_HOSTNAME=<KMIP IP/Hostname>
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
 # This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
 KMIP_CLIENT_CERT_NAME=
