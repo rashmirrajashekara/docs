@@ -280,7 +280,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 ### Pre-requisites
 
-* Install `openssl` on KK8s control-plane
+* Install `openssl` on K8s control-plane
   > **Note:** For Ubuntu OS, comment `RANDFILE = $ENV::HOME/.rnd` line in /etc/ssl/openssl.cnf
 
 * Ensure a docker registry is running locally or remotely. 
