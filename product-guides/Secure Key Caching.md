@@ -1013,7 +1013,9 @@ To install the SQVS Service, follow these steps:
 
 1.  Copy the SQVS installation binary to the ~/root directory
 
-2.  Copy the trusted_rootca.pem from sgx-verification-service/dist/linux/ directory to the /tmp directory 
+2.  Copy the Root CA Certificate of the Intel PCS Service (Refer to below Note) from sgx-verification-service/dist/linux/ directory as trusted_rootca.pem to the /tmp directory
+
+NOTE: Retrieve appropriate Trusted RootCA certificate files for SGX platform (trusted_rootca.pem for pre-production systems using IceLake Sandbox PCS, trusted_rootca_icx_prod.pem for production systems using IceLake Live PCS and trusted_rootca_clx_prod.pem for CascadeLake production systems using Live PCS Server) from dist/linux directory in SQVS repository
 
 3.  Create the sqvs.env installation answer file in /root/ directory as below
 
@@ -1043,7 +1045,7 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
 
 Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh script
 
-NOTE: Retrieve appropriate Trusted RootCA certificate files for SGX platform (trusted_rootca.pem for IceLake Sandox PCS, trusted_rootca_icx_prod.pem for IceLake Live PCS and trusted_rootca_clx_prod.pem for CascadeLake Live PCS Server) from dist/linux directory in SQVS repository.
+
 
 3.  Execute the sqvs installer binary.
 
@@ -3378,7 +3380,7 @@ typically these are the same variables set in the service installation
 
 
 
-# Upgrades
+# Binary Upgrades
 
 ***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the SHVS, SCS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
 
@@ -3470,7 +3472,7 @@ Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip
 
 6. Create certificates
    > cd /etc/pykmip
-   > python3 create_certificates.py
+   > python3 create_certificates.py <KMIP Host IP/KMIP Host FQDN>
 
 7. Kill running KMIP Server processes and wait for 10 seconds until all the KMIP Server processes are killed. 
    > ps -ef | grep run_server.py | grep -v grep | awk '{print $2}' | xargs kill
