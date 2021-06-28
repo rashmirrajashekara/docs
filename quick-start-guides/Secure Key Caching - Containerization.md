@@ -1262,6 +1262,16 @@ Sample Key Transfer Policy:
 
    d.    `client_permissions_allof `- Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictions on who can get access to the key. In the above example, key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
+##### Note on SKC Library Deployment
+
+SKC Library Deployment needs to performed with root privilege
+
+Each container instance of workload gets its own private SKC Client Library config information
+
+The SKC Client Library TLS client certificate private key is stored in the configuration directories and can be read only with elevated root privileges
+keys.txt (set of PKCS11 URIs for the keys to be securely provisioned into an SGX enclave) can only be modified with elevated privileges
+
+
 ##### Extracting SGX Enclave values for Key Transfer Policy
 
 Values that are specific to the enclave such as `sgx_enclave_issuer_anyof`, `sgx_enclave_measurement_anyof` and `sgx_enclave_issuer_product_id_anyof` can be retrieved using `sgx_sign` utility that is available as part of Intel SGX SDK.
