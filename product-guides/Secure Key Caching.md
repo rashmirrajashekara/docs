@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### May 2021
+### July 2021
 
-### Revision 3.6
+### Revision 4.0
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -48,7 +48,7 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 \*Other names and brands may be claimed as the property of others.
 
-Copyright © 2020, Intel Corporation. All Rights Reserved.
+Copyright © 2021, Intel Corporation. All Rights Reserved.
 
 Revision History
 
@@ -260,14 +260,14 @@ After the components have been built, the installation binaries and database scr
 
 Generated component binaries/installers are:
 
-- CMS: cms-v3.6.0.bin
-- AAS: authservice-v3.6.0.bin
-- SCS: scs-v3.6.0.bin
-- SHVS: shvs-v3.6.0.bin
-- IHUB: ihub-v3.6.0.bin
-- SQVS: sqvs-v3.6.0.bin
-- KBS: kbs-v3.6.0.bin
-- K8S-Extensions: isecl-k8s-extensions-v3.6.0.tar.gz
+- CMS: cms-v4.0.0.bin
+- AAS: authservice-v4.0.0.bin
+- SCS: scs-v4.0.0.bin
+- SHVS: shvs-v4.0.0.bin
+- IHUB: ihub-v4.0.0.bin
+- SQVS: sqvs-v4.0.0.bin
+- KBS: kbs-v4.0.0.bin
+- K8S-Extensions: isecl-k8s-extensions-v4.0.0.tar.gz
 - SGX-Agent: agent_untar.sh, sgx_agent.sha2 and sgx_agent.tar
 - SKC-Library: skclib_untar.sh, skc_library.sha2 and skc_library.tar
 
@@ -286,17 +286,17 @@ After the components have been built, the OCI images and pre-req scripts can be 
 
 Generated components `OCI images`  under `<working directory>/k8s/container-images`:
 
-* Authentication Authorization Service: `aas-v3.6.0.tar`
-* Certificate Management Service: `cms-v3.6.0.tar`
-* Integration Hub: `ihub-v3.6.0.tar`
-* Key Broker Service: `kbs-v3.6.0.tar`
-* K8s Extensions Custom Controller: `isecl-k8s-controller-v3.6.0.tar`
-* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v3.6.0.tar`
-* SGX Caching Service: `scs-v3.6.0.tar`
-* SGX Quote Verification Service: `sqvs-v3.6.0.tar`
-* SGX Host Verification Service: `shvs-v3.6.0.tar`
-* SGX Agent: `sgx-agent-v3.6.0.tar`
-* SKC Library: `skc-lib-3.6.0.tar`
+* Authentication Authorization Service: `aas-v4.0.0.tar`
+* Certificate Management Service: `cms-v4.0.0.tar`
+* Integration Hub: `ihub-v4.0.0.tar`
+* Key Broker Service: `kbs-v4.0.0.tar`
+* K8s Extensions Custom Controller: `isecl-k8s-controller-v4.0.0.tar`
+* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v4.0.0.tar`
+* SGX Caching Service: `scs-v4.0.0.tar`
+* SGX Quote Verification Service: `sqvs-v4.0.0.tar`
+* SGX Host Verification Service: `shvs-v4.0.0.tar`
+* SGX Agent: `sgx-agent-v4.0.0.tar`
+* SKC Library: `skc-lib-4.0.0.tar`
 
 Generated Components `K8s Manifests` directories under `<working directory>/k8s/manifests`:
 
@@ -554,7 +554,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.6.0.bin
+./cms-v4.0.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -649,7 +649,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.6.0.bin
+./authservice-v4.0.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -820,7 +820,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the SCS installer binary:
 
-./scs-v3.6.0.bin
+./scs-v4.0.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -921,7 +921,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the installer binary.
 
-./shvs-v3.6.0.bin
+./shvs-v4.0.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -1047,7 +1047,7 @@ NOTE: Retrieve appropriate Trusted RootCA certificate files for SGX platform (tr
 
 3.  Execute the sqvs installer binary.
 
-./sqvs-v3.6.0.bin
+./sqvs-v4.0.0.bin
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1080,11 +1080,11 @@ Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and 
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.6.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0
+     skopeo copy oci-archive:isecl-k8s-controller-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.0.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0). It will automatically pull the images from registry.
   
 
 ##### Deploy isecl-controller
@@ -1321,7 +1321,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the installer binary.
 
-./ihub-v3.6.0.bin
+./ihub-v4.0.0.bin
 
 In case installation fails, its recommended to run the following command to clear failed service instance
 
@@ -1500,15 +1500,15 @@ NA
         
        SQVS_URL=https://<SQVS IP or hostname>:12000/svs/v1
        
-       ### KEY_MANAGER can be set to either Directory or KMIP
+       ### KEY_MANAGER is set to KMIP
         
-       KEY_MANAGER=
+       KEY_MANAGER=KMIP
        
        ENDPOINT_URL=https://<KBS Hostname>:9443/v1
        
        TLS_COMMON_NAME="KBS TLS Certificate"
        
-       SKC_CHALLENGE_TYPE="SGX,SW"
+       SKC_CHALLENGE_TYPE="SGX"
         
        CMS_TLS_CERT_SHA384=<SHA384 hash of CMS TLS certificate>
         
@@ -1516,9 +1516,8 @@ NA
         
        BEARER_TOKEN=<Installation token from AAS>
        
+       ## Session Expiry Time Between KBS and SKC Library in Minutes
        SESSION_EXPIRY_TIME=60
-       
-       ### OPTIONAL - If KEY_MANAGER set to KMIP then need to use following configuration.
        
        KMIP_SERVER_IP=<IP address of KMIP server>
        
@@ -1551,7 +1550,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the KBS installer.
 
-./kbs-3.6.0.bin
+./kbs-4.0.0.bin
 
 NOTE: When a 3rd-party Key Management Server is used, KBS supports only association of RSA key. User needs to create RSA key in backend kmip server and note the Private key Id. User also needs to create the tls certificate for the private key (it will be used during key transfer).
 rsa-create.py available in kbs_scripts can be used to create the private key and generate the certificate by providing the kmip server ip and certificates path in the script.
@@ -2765,7 +2764,7 @@ This folder /opt/authservice/dbscripts Contains database scripts
 | SERVER_PORT          | 9443                                          | KBS Secure Port                                    |
 | SKC_CHALLENGE_TYPE   | SGX                                           | Challenge Type                                     |
 | TLS_SAN_LIST         | < KBS IP/Hostname >                           | IP addresses/hostnames to be included in SAN list. |
-| KEY_MANAGER          | Directory                                     | Key Manager Backend to store keys                  |
+| KEY_MANAGER          | KMIP                                          | Key Manager Backend to store keys                  |
 
 ### Configuration Options 
 
@@ -3335,6 +3334,7 @@ Removes the following directories:
    /opt/skc
 
 
+
 ## isecl-k8s-extensions
 
 Cluster admin can uninstall the isecl-k8s-extensions by running following commands:
@@ -3346,6 +3346,73 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
     rm -rf /opt/isecl-k8s-extensions
     rm -rf /var/log/isecl-k8s-extensions
 ```
+
+TLS Certificates
+----------------
+
+TLS certificates for each service are issued by the Certificate
+Management Service during installation. If the CMS root certificate is
+changed, or to regenerate the TLS certificate for a given service, use
+the following commands (note: environment variables will need to be set;
+typically these are the same variables set in the service installation
+.env file):
+
+-   `<servicename> download_ca_cert`
+-   Download CMS root CA certificate
+    
+-   Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
+    
+-   `<servicename> download_cert TLS` 
+-   Generates Key pair and CSR, gets it signed from CMS
+    
+-   Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
+    
+-   Environment variable BEARER\_TOKEN=\<token\> for authenticating
+        with CMS
+    
+-   Environment variable KEY\_PATH=\<key\_path\> to override default
+        specified in config
+    
+-   Environment variable CERT\_PATH=\<cert\_path\> to override
+        default specified in config
+
+
+
+# Upgrades
+
+***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the SHVS, SCS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
+
+```
+Backup to tar file:
+pg_dump --dbname <database_name> --username=<database username> -F -t > <database_backup_file>.tar
+Restore from tar file:
+pg_restore --dbname=<database_name> --username=<database username><database_backup_file>.tar	
+```
+
+Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
+
+## Backward Compatibility
+
+In general Intel SecL services are made to be backward-compatible within a given major release (for example, the 3.6 SHVS should be compatible with the 3.5 SGX Agent) in an upgrade priority order (see below).  Major version upgrades may require coordinated upgrades across all services.
+
+## Upgrade Order
+
+Upgrades should be performed in the following order to prevent misconfiguration or any service unavailability:
+
+1) CMS, AAS
+
+2) SCS, SHVS
+
+3) SQVS, KBS, SGX Agent
+
+Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
+
+## Upgrade Process
+
+### Binary Installations
+
+For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
+
 
 # Appendix 
 
@@ -3531,9 +3598,6 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	mode=SGX
 	debug=true
 	
-	[SW]
-	module=/usr/lib64/pkcs11/libsofthsm2.so
-	
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
@@ -3605,10 +3669,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
         mode=SGX
         debug=true
     
-        [SW]
-        module=/usr/lib/softhsm/libsofthsm2.so
-    
-        [SGX]
+       [SGX]
         module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
 # KBS key-transfer flow validation
