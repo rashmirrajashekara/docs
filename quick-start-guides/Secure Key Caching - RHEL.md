@@ -933,7 +933,7 @@ Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip
 
 6. Create certificates
    > cd /etc/pykmip
-   > python3 create_certificates.py
+   > python3 create_certificates.py <KMIP Host IP/KMIP Host FQDN>
 
 7. Kill running KMIP Server processes and wait for 10 seconds until all the KMIP Server processes are killed. 
    > ps -ef | grep run_server.py | grep -v grep | awk '{print $2}' | xargs kill
