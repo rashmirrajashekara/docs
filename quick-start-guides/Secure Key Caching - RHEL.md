@@ -1118,8 +1118,17 @@ A typical Key Transfer Policy would look as below
         "client_permissions_allof":["nginx","USA"],
         "sgx_enforce_tcb_up_to_date":false
 ```
+**sgx_enclave_issuer_anyof** establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
 
-# Note on SKC Library Deployment
+**sgx_enclave_measurement_anyof** represents the cryptographic hash of the enclave log (enclave code, data)
+
+**sgx_enforce_tcb_up_to_date** - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
+
+**client_permissions_allof** - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
+    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
+
+
+### Note on SKC Library Deployment
 
 SKC Library Deployment (Binary as well as container) needs to performed with root privilege
 
@@ -1130,15 +1139,6 @@ For container deployment, since configmaps are used, each container instance of 
 The SKC Client Library TLS client certificate private key is stored in the configuration directories and can be read only with elevated root privileges
 keys.txt (set of PKCS11 URIs for the keys to be securely provisioned into an SGX enclave) can only be modified with elevated privileges
 
-
-**sgx_enclave_issuer_anyof** establishes the signing identity provided by an authority who has signed the sgx enclave. in other words the owner of the enclave
-
-**sgx_enclave_measurement_anyof** represents the cryptographic hash of the enclave log (enclave code, data)
-
-**sgx_enforce_tcb_up_to_date** - If set to true, Key Broker service will provision the key only of the platform generating the quote conforms to the latest Trusted Computing Base
-
-**client_permissions_allof** - Special permission embedded into the skc_library client TLS certificate which can enforce additional restrictons on who can get access to the key,
-    In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
 ### Extracting SGX Enclave values for Key Transfer Policy
 
