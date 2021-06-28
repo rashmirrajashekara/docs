@@ -42,6 +42,7 @@ Table of Contents
          * [Configuration for NGINX testing](#configuration-for-nginx-testing)
          * [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
          * [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+         * [Note on SKC Library Deployment](#note-on-skc-library-deployment)
          * [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
 ## **1. Hardware & OS Requirements**
@@ -862,7 +863,7 @@ Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip
 
 6. Create certificates
    > cd /etc/pykmip
-   > python3 create_certificates.py
+   > python3 create_certificates.py <KMIP Host IP/KMIP Host FQDN>
 
 7. Kill running KMIP Server processes and wait for 10 seconds until all the KMIP Server processes are killed. 
    > ps -ef | grep run_server.py | grep -v grep | awk '{print $2}' | xargs kill
