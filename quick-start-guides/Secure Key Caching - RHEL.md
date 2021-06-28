@@ -44,6 +44,7 @@ Table of Contents
          * [Configuration for NGINX testing](#configuration-for-nginx-testing)
          * [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
          * [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+         * [Note on SKC Library Deployment](#note-on-skc-library-deployment)
          * [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
 
