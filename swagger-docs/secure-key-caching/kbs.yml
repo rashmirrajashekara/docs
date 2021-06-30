@@ -32,12 +32,12 @@ definitions:
         type: string
         x-go-name: Subject
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   Certificates:
     items:
       $ref: '#/definitions/Certificate'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/kbs
   Data:
     properties:
       swk:
@@ -50,7 +50,7 @@ definitions:
         type: string
         x-go-name: AlgorithmType
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyInformation:
     properties:
       algorithm:
@@ -76,7 +76,7 @@ definitions:
     title: KeyInformation - Contains required key related attributes for key create
       or register request.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyRequest:
     properties:
       key_information:
@@ -93,7 +93,7 @@ definitions:
         x-go-name: Usage
     title: KeyRequest - All required attributes for key create or register request.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyResponse:
     properties:
       created_at:
@@ -117,12 +117,12 @@ definitions:
         x-go-name: Usage
     title: KeyResponse - key attributes from key create or register response.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyResponses:
     items:
       $ref: '#/definitions/KeyResponse'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/kbs
   KeyTransferAttributes:
     properties:
       algorithm:
@@ -164,12 +164,12 @@ definitions:
         x-go-name: Policy
     title: KeyTransferAttributes - Contains all possible key transfer attributes.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyTransferPolicies:
     items:
       $ref: '#/definitions/KeyTransferPolicyAttributes'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/kbs
   KeyTransferPolicyAttributes:
     properties:
       attestation_type_anyof:
@@ -240,7 +240,7 @@ definitions:
     title: KeyTransferPolicyAttributes - used in key transfer policy create request
       and response.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   KeyTransferResponse:
     properties:
       data:
@@ -252,7 +252,7 @@ definitions:
         type: string
         x-go-name: Status
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   SessionManagementAttributes:
     properties:
       challenge:
@@ -265,7 +265,7 @@ definitions:
         type: string
         x-go-name: Quote
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   SessionResponseAttributes:
     properties:
       data:
@@ -277,7 +277,7 @@ definitions:
         type: string
         x-go-name: Status
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/kbs
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/kbs
   UUID:
     description: |-
       A UUID is a 128 bit (16 byte) Universal Unique IDentifier as defined in RFC
@@ -547,7 +547,6 @@ paths:
         - 3072
         - 4096
         - 7680
-        - 15360
         in: query
         name: keyLength
         type: integer
@@ -624,7 +623,7 @@ paths:
          | Attribute   | Description |
          |-------------|-------------|
          | algorithm   | Encryption algorithm used to create or register key. Supported algorithms are AES, RSA and EC. |
-         | key_length  | Key length used to create key. Supported key lengths are 128,192,256 bits for AES and 2048,3072,4096,7680,15360 bits for RSA. |
+         | key_length  | Key length used to create key. Supported key lengths are 128,192,256 bits for AES and 2048,3072,4096,7680 bits for RSA. |
          | curve_type  | Elliptic curve used to create key. Supported curves are secp256r1, secp384r1 and secp521r1. |
          | key_string  | Base64 encoded private key to be registered. Supported only if key is created locally. |
          | kmip_key_id | Unique KMIP identifier of key to be registered. Supported only if key is created on KMIP server. |

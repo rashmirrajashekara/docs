@@ -1,5 +1,14 @@
 basePath: /aas/v1
 definitions:
+  CreateCredentialsReq:
+    properties:
+      parameters:
+        $ref: '#/definitions/Parameters'
+      type:
+        type: string
+        x-go-name: ComponentType
+    type: object
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   CustomClaims:
     properties:
       claims:
@@ -15,7 +24,14 @@ definitions:
         type: integer
         x-go-name: ValiditySecs
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
+  Parameters:
+    properties:
+      host-id:
+        type: string
+        x-go-name: TaHostId
+    type: object
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   PasswordChange:
     properties:
       new_password:
@@ -31,7 +47,7 @@ definitions:
         type: string
         x-go-name: UserName
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   PermissionInfo:
     properties:
       context:
@@ -46,7 +62,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   RoleCreate:
     properties:
       context:
@@ -66,7 +82,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   RoleCreateResponse:
     properties:
       name:
@@ -79,7 +95,7 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   RoleIDs:
     properties:
       role_ids:
@@ -88,7 +104,7 @@ definitions:
         type: array
         x-go-name: RoleUUIDs
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   RolePermission:
     properties:
       permission_id:
@@ -98,7 +114,7 @@ definitions:
         type: string
         x-go-name: Rule
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   RoleTypeInfo:
     properties:
       context:
@@ -121,12 +137,12 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   RolesResponse:
     items:
       $ref: '#/definitions/RoleTypeInfo'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   UserCreate:
     properties:
       password:
@@ -136,7 +152,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   UserCreateResponse:
     properties:
       user_id:
@@ -146,7 +162,7 @@ definitions:
         type: string
         x-go-name: Name
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   UserCred:
     properties:
       password:
@@ -156,12 +172,12 @@ definitions:
         type: string
         x-go-name: UserName
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/pkg/model/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/aas
   UserPermissions:
     items:
       $ref: '#/definitions/PermissionInfo'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   UserRoleResponse:
     properties:
       context:
@@ -179,17 +195,17 @@ definitions:
         type: string
         x-go-name: Service
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   UserRolesResponse:
     items:
       $ref: '#/definitions/UserRoleResponse'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
   UsersResponse:
     items:
       $ref: '#/definitions/UserCreateResponse'
     type: array
-    x-go-package: github.com/intel-secl/intel-secl/v3/docs/shared/aas
+    x-go-package: github.com/intel-secl/intel-secl/v4/docs/shared/aas
 host: aas.com:8444
 info:
   description: |-
@@ -200,6 +216,53 @@ info:
   title: Authentication and Authorization Service (AAS)
   version: "3"
 paths:
+  /credentials:
+    post:
+      consumes:
+      - application/json
+      description: |
+        Creates a new credential on AAS and sends it out over response to be accessed and used by the client
+        to authenticate and authorize itself to a service.
+      operationId: CreateCredentials
+      parameters:
+      - in: body
+        name: request body
+        required: true
+        schema:
+          $ref: '#/definitions/CreateCredentialsReq'
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Successfully created the credentials.
+        "400":
+          description: Bad request.
+        "401":
+          description: Unauthorized.
+        "500":
+          description: Internal Server Error.
+      security:
+      - bearerAuth: []
+      tags:
+      - Credentials
+      x-permissions: credential:create
+      x-sample-call-endpoint: https://authservice.com:8444/aas/v1/credentials
+      x-sample-call-input: "{\n \t\"type\": \"TA\",\n \t\"parameters\": {\n     \t\"host-id\":
+        \"<TA FQDN>\"\n\t }\n}\n"
+      x-sample-call-output: |
+        -----BEGIN NATS USER JWT-----
+        eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJleHAiOjE2MjIxMDk1NzEsImp0aSI6IlhIVEhDTFdDTE5YV01ER0tLTE5aSU9GQUdGQUlDTVhRNUgyN0ZUSUhHSVBPNVBUQUE2REEiLCJpYXQiOjE2MjE5MzY3NzEsImlzcyI6IkFBQTZPTU1HR0FNSFAzTlZVU0dBQkkyVVRBN1hIS0JHTEpOTk9KWERaQkk2NU5HVUpXNEFHSEZLIiwic3ViIjoiVUNUTVE1TUhBUE5KU1NQSlJFWk1ZV1dON09NRFpESEZPNlI0N1BXTUc2WlJRQlNSNUpKRk5UVjYiLCJuYXRzIjp7InB1YiI6eyJhbGxvdyI6WyJ0cnVzdC1hZ2VudC5cdTAwM2UiXX0sInN1YiI6eyJhbGxvdyI6WyJfSU5CT1guXHUwMDNlIl19LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.eHyGimM4sItxDcfqhEVzhCON8e0qasOT_QX1sxdM0mG9Is_TjK144Pz8U_Ut1jQ7czAi1gzAQZT-fBbyxhw_CA
+        ------END NATS USER JWT------
+
+        ************************* IMPORTANT *************************
+        NKEY Seed printed below can be used to sign and prove identity.
+        NKEYs are sensitive and should be treated as secrets.
+
+        -----BEGIN USER NKEY SEED-----
+        SUAE6WDHNRTCY55TBJUMZLRVLWGZXFE7J2O6IKMQDBX4MQDQE5QVBU4NXU
+        ------END USER NKEY SEED------
+
+        *************************************************************
   /custom-claims-token:
     post:
       consumes:

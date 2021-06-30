@@ -730,14 +730,14 @@
     }
   },
   "description" : "Certificate stores the decoded certificate values",
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.Certificates = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/Certificate"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/kbs"
 };
             defs.Data = {
   "type" : "object",
@@ -755,7 +755,7 @@
       "x-go-name" : "AlgorithmType"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyInformation = {
   "title" : "KeyInformation - Contains required key related attributes for key create or register request.",
@@ -788,7 +788,7 @@
       "x-go-name" : "KmipKeyID"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyRequest = {
   "title" : "KeyRequest - All required attributes for key create or register request.",
@@ -811,7 +811,7 @@
       "x-go-name" : "Usage"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyResponse = {
   "title" : "KeyResponse - key attributes from key create or register response.",
@@ -843,14 +843,14 @@
       "x-go-name" : "Usage"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyResponses = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/KeyResponse"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/kbs"
 };
             defs.KeyTransferAttributes = {
   "title" : "KeyTransferAttributes - Contains all possible key transfer attributes.",
@@ -884,7 +884,7 @@
       "$ref" : "#/components/schemas/KeyTransferAttributes_policy"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyTransferAttributes_policy = {
   "type" : "object",
@@ -920,7 +920,7 @@
   "items" : {
     "$ref" : "#/components/schemas/KeyTransferPolicyAttributes"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/kbs"
 };
             defs.KeyTransferPolicyAttributes = {
   "title" : "KeyTransferPolicyAttributes - used in key transfer policy create request and response.",
@@ -1015,7 +1015,7 @@
       "x-go-name" : "TLSClientCertificateIssuerCNAnyof"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.KeyTransferResponse = {
   "type" : "object",
@@ -1032,7 +1032,7 @@
       "x-go-name" : "Status"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.SessionManagementAttributes = {
   "type" : "object",
@@ -1050,7 +1050,7 @@
       "x-go-name" : "Quote"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.SessionResponseAttributes = {
   "type" : "object",
@@ -1067,7 +1067,7 @@
       "x-go-name" : "Status"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/kbs"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/kbs"
 };
             defs.UUID = {
   "type" : "array",
@@ -1802,7 +1802,7 @@ The serialized KeyInformation Go struct object represents the content of the key
  | Attribute   | Description |
  |-------------|-------------|
  | algorithm   | Encryption algorithm used to create or register key. Supported algorithms are AES, RSA and EC. |
- | key_length  | Key length used to create key. Supported key lengths are 128,192,256 bits for AES and 2048,3072,4096,7680,15360 bits for RSA. |
+ | key_length  | Key length used to create key. Supported key lengths are 128,192,256 bits for AES and 2048,3072,4096,7680 bits for RSA. |
  | curve_type  | Elliptic curve used to create key. Supported curves are secp256r1, secp384r1 and secp521r1. |
  | key_string  | Base64 encoded private key to be registered. Supported only if key is created locally. |
  | kmip_key_id | Unique KMIP identifier of key to be registered. Supported only if key is created on KMIP server. |

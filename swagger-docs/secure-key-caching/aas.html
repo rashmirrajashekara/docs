@@ -689,6 +689,19 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs.CreateCredentialsReq = {
+  "type" : "object",
+  "properties" : {
+    "parameters" : {
+      "$ref" : "#/components/schemas/Parameters"
+    },
+    "type" : {
+      "type" : "string",
+      "x-go-name" : "ComponentType"
+    }
+  },
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
+};
             defs.CustomClaims = {
   "type" : "object",
   "properties" : {
@@ -710,7 +723,17 @@
       "x-go-name" : "ValiditySecs"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
+};
+            defs.Parameters = {
+  "type" : "object",
+  "properties" : {
+    "host-id" : {
+      "type" : "string",
+      "x-go-name" : "TaHostId"
+    }
+  },
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.PasswordChange = {
   "type" : "object",
@@ -732,7 +755,7 @@
       "x-go-name" : "UserName"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.PermissionInfo = {
   "type" : "object",
@@ -753,7 +776,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.RoleCreate = {
   "type" : "object",
@@ -780,7 +803,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.RoleCreateResponse = {
   "type" : "object",
@@ -798,7 +821,7 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.RoleIDs = {
   "type" : "object",
@@ -811,7 +834,7 @@
       "x-go-name" : "RoleUUIDs"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.RolePermission = {
   "type" : "object",
@@ -825,7 +848,7 @@
       "x-go-name" : "Rule"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.RoleTypeInfo = {
   "type" : "object",
@@ -856,14 +879,14 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.RolesResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/RoleTypeInfo"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.UserCreate = {
   "type" : "object",
@@ -877,7 +900,7 @@
       "x-go-name" : "Name"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.UserCreateResponse = {
   "type" : "object",
@@ -891,7 +914,7 @@
       "x-go-name" : "Name"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.UserCred = {
   "type" : "object",
@@ -905,14 +928,14 @@
       "x-go-name" : "UserName"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/pkg/model/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/pkg/model/aas"
 };
             defs.UserPermissions = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/PermissionInfo"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.UserRoleResponse = {
   "type" : "object",
@@ -936,21 +959,21 @@
       "x-go-name" : "Service"
     }
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.UserRolesResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/UserRoleResponse"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
             defs.UsersResponse = {
   "type" : "array",
   "items" : {
     "$ref" : "#/components/schemas/UserCreateResponse"
   },
-  "x-go-package" : "github.com/intel-secl/intel-secl/v3/docs/shared/aas"
+  "x-go-package" : "github.com/intel-secl/intel-secl/v4/docs/shared/aas"
 };
   </script>
 
@@ -968,6 +991,10 @@
             -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">Info</a></li>
 
+                  <li class="nav-header" data-group="Credentials"><a href="#api-Credentials">Credentials</a></li>
+                    <li data-group="Credentials" data-name="createCredentials" class="">
+                      <a href="#api-Credentials-createCredentials">createCredentials</a>
+                    </li>
                   <li class="nav-header" data-group="JwtCertificate"><a href="#api-JwtCertificate">JwtCertificate</a></li>
                     <li data-group="JwtCertificate" data-name="getJwtCertificate" class="">
                       <a href="#api-JwtCertificate-getJwtCertificate">getJwtCertificate</a>
@@ -1053,6 +1080,142 @@ user authentication and authorization information and issue the users with a JWT
           </div>
         </div>
         <div id="sections">
+                <section id="api-Credentials">
+                  <h1>Credentials</h1>
+                    <div id="api-Credentials-createCredentials">
+                      <article id="api-Credentials-createCredentials-0" data-group="User" data-name="createCredentials" data-version="0">
+                        <div class="pull-left">
+                          <h1>createCredentials</h1>
+                          <!-- <p></p> -->
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <!-- <p></p> -->
+                        <p class="marked">Creates a new credential on AAS and sends it out over response to be accessed and used by the client
+to authenticate and authorize itself to a service.
+</p>
+                        <p></p>
+                        <!-- <br /> -->
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/credentials</span></code></pre>
+
+    			<h2>Authorization</h2>
+                        <ul>
+                        
+      			
+      			<li>Bearer Token Authorization.
+      			<ul>
+         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
+         			<li>Name of header: Authorization</li> 
+      			</ul></li>
+    			</ul>
+
+    			  <h2>Consumes</h2>
+    			    <ul>
+      			    <li>application/json</li>
+    			    </ul>
+
+                          <!-- <h2>Parameters</h2> -->
+
+
+                            <h2>Request Body</h2>
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-createCredentials--schema">Schema</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-createCredentials--schema">
+                                  <div id='body-createCredentials--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/CreateCredentialsReq"
+      }
+    }
+  },
+  "required" : true
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#body-createCredentials--schema-data').val(stringify(schema));
+                                        var result = $('#body-createCredentials--schema-');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='body-createCredentials--schema-data' type='hidden' value=''></input>
+                                </div>
+				</br>
+
+
+
+                          <h2>Response</h2>
+                            <!-- <h3> 201 - Successfully created the credentials. </h3> -->
+                            <div class="methodsubtabletitle">201 - Successfully created the credentials.</div>
+
+                            <!-- <h3> 400 - Bad request. </h3> -->
+                            <div class="methodsubtabletitle">400 - Bad request.</div>
+
+                            <!-- <h3> 401 - Unauthorized. </h3> -->
+                            <div class="methodsubtabletitle">401 - Unauthorized.</div>
+
+                            <!-- <h3> 500 - Internal Server Error. </h3> -->
+                            <div class="methodsubtabletitle">500 - Internal Server Error.</div>
+
+
+                        <p>
+                          <h2>Sample REST Call</h2>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+			  <li class="active"><a href="#examples-Credentials-createCredentials-0-curl">Curl</a></li> 
+			  <li class=""><a href="#examples-Credentials-createCredentials-0-support"></a></li> 
+			</ul> 
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Credentials-createCredentials-0-curl">
+			  <pre><code class="language-bsh">curl -X POST "https://authservice.com:8444/aas/v1/credentials" -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json"</br>Input: </br>{
+ 	"type": "TA",
+ 	"parameters": {
+     	"host-id": "<TA FQDN>"
+	 }
+}
+</br>Output: </br>-----BEGIN NATS USER JWT-----
+eyJ0eXAiOiJKV1QiLCJhbGciOiJlZDI1NTE5LW5rZXkifQ.eyJleHAiOjE2MjIxMDk1NzEsImp0aSI6IlhIVEhDTFdDTE5YV01ER0tLTE5aSU9GQUdGQUlDTVhRNUgyN0ZUSUhHSVBPNVBUQUE2REEiLCJpYXQiOjE2MjE5MzY3NzEsImlzcyI6IkFBQTZPTU1HR0FNSFAzTlZVU0dBQkkyVVRBN1hIS0JHTEpOTk9KWERaQkk2NU5HVUpXNEFHSEZLIiwic3ViIjoiVUNUTVE1TUhBUE5KU1NQSlJFWk1ZV1dON09NRFpESEZPNlI0N1BXTUc2WlJRQlNSNUpKRk5UVjYiLCJuYXRzIjp7InB1YiI6eyJhbGxvdyI6WyJ0cnVzdC1hZ2VudC5cdTAwM2UiXX0sInN1YiI6eyJhbGxvdyI6WyJfSU5CT1guXHUwMDNlIl19LCJzdWJzIjotMSwiZGF0YSI6LTEsInBheWxvYWQiOi0xLCJ0eXBlIjoidXNlciIsInZlcnNpb24iOjJ9fQ.eHyGimM4sItxDcfqhEVzhCON8e0qasOT_QX1sxdM0mG9Is_TjK144Pz8U_Ut1jQ7czAi1gzAQZT-fBbyxhw_CA
+------END NATS USER JWT------
+
+************************* IMPORTANT *************************
+NKEY Seed printed below can be used to sign and prove identity.
+NKEYs are sensitive and should be treated as secrets.
+
+-----BEGIN USER NKEY SEED-----
+SUAE6WDHNRTCY55TBJUMZLRVLWGZXFE7J2O6IKMQDBX4MQDQE5QVBU4NXU
+------END USER NKEY SEED------
+
+*************************************************************
+</code></pre> 
+			  </div>
+			  <div class="tab-pane" id="examples-Credentials-createCredentials-0-support">
+			  </div> 
+                          </div>
+                        </article>
+                      </div>
+                      <hr>
+                  </section>
                 <section id="api-JwtCertificate">
                   <h1>JwtCertificate</h1>
                     <div id="api-JwtCertificate-getJwtCertificate">

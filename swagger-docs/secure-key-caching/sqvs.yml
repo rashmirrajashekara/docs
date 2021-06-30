@@ -9,7 +9,7 @@ definitions:
         type: string
         x-go-name: UserData
     type: object
-    x-go-package: intel/isecl/sqvs/v3/resource
+    x-go-package: intel/isecl/sqvs/v4/resource
   QuoteDataWithChallenge:
     properties:
       challenge:
@@ -26,7 +26,7 @@ definitions:
         type: string
         x-go-name: UserData
     type: object
-    x-go-package: intel/isecl/sqvs/v3/resource
+    x-go-package: intel/isecl/sqvs/v4/resource
   SGXResponse:
     properties:
       Challenge:
@@ -58,7 +58,7 @@ definitions:
         type: string
         x-go-name: UserDataHashMatch
     type: object
-    x-go-package: intel/isecl/sqvs/v3/resource
+    x-go-package: intel/isecl/sqvs/v4/resource
   SignedSGXResponse:
     properties:
       certificateChain:
@@ -70,7 +70,7 @@ definitions:
         type: string
         x-go-name: Signature
     type: object
-    x-go-package: intel/isecl/sqvs/v3/resource
+    x-go-package: intel/isecl/sqvs/v4/resource
 host: svs.com:12000
 info:
   description: |-
