@@ -178,6 +178,11 @@ export PATH=$GOROOT/bin:$PATH
 rm -rf go1.14.1.linux-amd64.tar.gz
 ```
 
+***To Generate Swagger Documentation for components, Java Runtime needs to be installed***
+
+```
+apt-get install -y default-jre
+```
 
 ## **6. Build Services, Libraries and Install packages**
 
