@@ -280,7 +280,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
@@ -324,7 +324,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
@@ -360,7 +360,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
@@ -1064,13 +1064,13 @@ WLA: None
 
 ## Usecase Workflows API Collections
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/api-collections)
 
 ### Use Case Collections
 

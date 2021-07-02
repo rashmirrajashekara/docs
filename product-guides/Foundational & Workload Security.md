@@ -274,11 +274,11 @@ install_pgdb: `authservice/out/install_pgdb.sh`
 
 In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
-https://github.com/intel-secl/utils/tree/v3.6/develop/tools/ansible-role
+https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/ansible-role
 
 Also provided are sample API calls organized by workflows for Postman:
 
-https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections
+https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/api-collections
 
 ## Hardware Considerations
 
@@ -2070,7 +2070,7 @@ systemctl restart docker
 
   ```
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
@@ -2118,7 +2118,7 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
 
   ```
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
@@ -2154,7 +2154,7 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
 
   ```
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.1
   repo sync
   ```
 
