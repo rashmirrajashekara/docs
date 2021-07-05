@@ -1878,6 +1878,7 @@ Setup tasks flows have been updated to have K8s native flow to be more agnostic 
 
 - User would create a new `configMap`  object with the environment variables specific to the setup task. The Setup task variables would be documented in the Product Guide
 - Users can provide variables for more than one setup task
+- If variables involve BEARER_TOKEN then user need to delete the corresponding secret using `kubectl delete secret <service_name>-secret -n isecl` , update the new token inside secrets.txt file and re-create the secret using `kubectl create secret generic <service_name>-secret --from-file=secrets.txt --namespace=isecl`, else update the variables in configMap.yml
 - Users need to add `SETUP_TASK: "<setup task name>/<comma separated setup task name>"` in the same `configMap`
 - Provide a unique name to the new `configMap`
 - Provide the same name in the `deployment.yaml` under `configMapRef` section
@@ -1895,8 +1896,6 @@ Configuration Update flows have been updated to have K8s native flow to be more 
 - Deploy the specific service again with  ` kubectl  kustomize . | kubectl  apply -f -`
 
 > **Note:** Incase of agents, setup tasks or configuration updates done through above flows will be applied for all the agents running on different BMs. In order to run setup task or update configuration for individual agents, then user need to perform `kubectl exec -it <pod_name> /bin/bash` into a particular agent pod and run the specific setup task.
-
-> **Note:** To update the BEARER_TOKEN using setup task, user need to delete the corresponding secret using `kubectl delete secret <service_name>-secret -n isecl` , update the new token inside secrets.txt file, re-create the secret using `kubectl create secret generic <service_name>-secret --from-file=secrets.txt --namespace=isecl` and then follow same steps mentioned above to apply new token.
 
 # Intel Security Libraries Configuration Settings 
 
