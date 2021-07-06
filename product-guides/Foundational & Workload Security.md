@@ -5184,6 +5184,30 @@ The `hardware` section is unique to PLATFORM flavor parts:
 This part of the Flavor defines expected hardware attributes of the
 host, and contains processor and TPM-related attributes.
 
+### PCR banks (Algorithms)
+
+TPMs can have one or more PCR banks enabled with different hash algorithms.  Intel SecL will always attempt to use the most secure algorithm available in the enabled PCR banks.
+
+For example, if a given TPM has the following PCR banks enabled:
+
+```
+SHA1
+SHA256
+SHA384
+```
+
+The HVS will prefer the SHA384 PCR bank when creating flavors and performing attestations.  
+
+The TPM vendor and version, platform OEM, and BIOS version and configuration each impact which PCR banks can potentially be enabled.  Some manufacturers will allow users to configure which banks are enabled/disabled in the BIOS.  Other manufacturers will enable only one PCR bank, and others will be permanently disabled.
+
+Flavors will only utilize a single PCR bank, and when importing from a sample host the HVS will always prefer the strongest algorithm supported by the enabled TPM PCR banks.  In teh above example, a flavor imported from that host would use the SHA384 bank for all hash values.  This means that all hosts that will be attested using this flavor must also have SHA284 banks enabled in their TPMs.
+
+Typically, among otherwise-identical servers this will not be an issue.  However, in a mixed environment it can be possible to have an OS flavor, for example, that needs to apply for some hosts that have SHA384 banks enabled, and other servers that only have SHA256 enabled and do not support SHA384.
+
+In this circumstance, multiple flavors for the same OS version would need to be created - one for SHA384, and another for SHA256.
+
+
+
 ### PCRs
 
 The last section of a Flavor is the “PCRs” section, which contains the
