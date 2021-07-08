@@ -1330,7 +1330,11 @@ create the TPM Endorsement Certificate and Endorsement Key. The
 Verification Service PrivacyCA root certificate is used to sign the EC,
 and the EC is used to generate the Attestation Identity Keypair. The AIK
 is used by the Verification Service to verify the integrity of quotes
-from the host’s TPM.
+from the host’s TPM.  
+
+Provisioning is the only time that the Trust Agent requires TPM ownership permissions.  If no TPM ownership secret is provided in the trustagent.env file, the Agent will use a null ownership secret to perform the provisioning steps.  If a TPM ownership secret is provided in the trustagent.env answer file, the Agent will attempt to use the specified secret.  If TPM ownership is in a clear state, the Agent will take ownership if a secret is specified.  If the TPM is already "owned," the Agent will try to use the specified secret; if the specified secret does not match the actual ownership password, the provisioning will fail.
+
+Intel recommends using the default "null" ownership secret, as this makes it easy for other applications to also use the Trust Agent, and can prevent the need to clear ownership in the case of a need to re-provision.
 
 Provisioning can be performed separately from installation (meaning you
 can install the Trust Agent without Provisioning, and then Provision
@@ -6880,7 +6884,7 @@ Trust Agent
 | PROVISION\_ATTESTATION            | When present, enables/disables whether tagent setup is called during installation. If trustagent.env is not present, the value defaults to no ('N'). | PROVISION\_ATTESTATION=Y                                     |
 | SAN\_LIST                         | CSV list that sets the value for SAN list in the TA TLS certificate. Defaults to 127.0.0.1. | SAN\_LIST=10.123.100.1,201.102.10.22,mya.example.com         |
 | TA\_TLS\_CERT\_CN                 | Sets the value for Common Name in the TA TLS certificate. Defaults to CN=trustagent. | TA\_TLS\_CERT\_CN=Acme Trust Agent 007                       |
-| TPM\_OWNER\_SECRET                | 20 byte hex value to be used as the secret key when taking ownership of the TPM. *Note: If this field is not specified, GTA will generate a random secret key.* | TPM\_OWNER\_SECRET=625d6...<br />Starting in Intel SecL-DC 4.0, this value will now default to null unless a secret is specified.  Using a null TPM ownership secret is recommended. |
+| TPM\_OWNER\_SECRET                | Default is null.  Can be any string of characters.  Use the "hex:" prefix to force hex characters rather than a string.<br />hex:0164837f83..." | TPM\_OWNER\_SECRET=625d6...<br />Starting in Intel SecL-DC 4.0, this value will now default to null unless a secret is specified.  Using a null TPM ownership secret is recommended.  The Trust Agent now only requires TPM ownership during Trust Agent provisioning. |
 | TPM\_QUOTE\_IPV4                  | When enabled (=y), uses the local system's ip address as a salt when processing a quote nonce. This field must align with the configuration of HVS. | TPM\_QUOTE\_IPV4=no                                          |
 | TA\_SERVER\_READ\_TIMEOUT         | Sets tagent server ReadTimeout. Defaults to 30 seconds.      | TA\_SERVER\_READ\_TIMEOUT=30                                 |
 | TA\_SERVER\_READ\_HEADER\_TIMEOUT | Sets tagent server ReadHeaderTimeout. Defaults to 30 seconds. | TA\_SERVER\_READ\_HEADER\_TIMEOUT=10                         |
