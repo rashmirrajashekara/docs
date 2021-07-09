@@ -5908,6 +5908,311 @@ that has been deployed to that host.
 
 
 
+Flavor Templates
+---------------
+
+Added in the Intel SecL-DC 4.0 release, Flavor Templates expose the backend logic that determines which PCRs and event log measurements will be used for specific Flavor parts.  Where previously these rules were hardcoded on the backend, this new feature allows new templates to be added, and allows the customization or deletion of existing templates to suit specific business needs.
+
+Flavor Templates are conditional rules that apply to a Flavor part cumulatively based on defined conditions.  For example a PLATFORM Flavor for a Linux host with Intel TXT enabled would normally include PCR0. If tboot is also enabled, elements from PCR 17 and 18 will be added to the PLATFORM flavor.  These are cumulative based on which conditions are true on a given host.
+
+By default, Flavor Templates will come pre-populated in the HVS database to meet the same default behavior for previous releases.  
+
+Flavor Templates can be added, removed, or edited to create customized rules.  For example, if there is a specific event log measurement that a user would like to add to an OS flavor, a new Flavor Template can be added for the OS Flavor part that defines a condition for applying the Template, along with the specific event log measurement that should be used when that condition is satisfied.
+
+Flavor Templates are cumulative.  If a given host matches all of the conditions defined for Flavor Template A and Flavor Template B, both Templates will be applied when importing Flavors from that host.
+
+### Sample Flavor Template
+
+Below is a sample default Flavor Template used for RedHat Enterprise Linux servers with TPM2.0 and tboot enabled:
+
+```json
+{
+   "id":"8798fb0c-2dfa-4464-8281-e650a30da7e6",
+   "label":"default-linux-rhel-tpm20-tboot",
+   "condition":[
+      "//host_info/os_name//*[text()='RedHatEnterprise']",
+      "//host_info/hardware_features/TPM/meta/tpm_version//*[text()='2.0']",
+      "//host_info/tboot_installed//*[text()='true']"
+   ],
+   "flavor_parts":{
+      "OS":{
+         "meta":{
+            "tpm_version":"2.0",
+            "tboot_installed":true
+         },
+         "pcr_rules":[
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":17
+               },
+               "eventlog_includes":[
+                  "vmlinuz"
+               ]
+            }
+         ]
+      },
+      "PLATFORM":{
+         "meta":{
+            "tpm_version":"2.0",
+            "tboot_installed":true
+         },
+         "pcr_rules":[
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":0
+               },
+               "pcr_matches":true
+            },
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":17
+               },
+               "eventlog_equals":{
+                  "excluding_tags":[
+                     "LCP_CONTROL_HASH",
+                     "initrd",
+                     "vmlinuz"
+                  ]
+               }
+            },
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":18
+               },
+               "eventlog_equals":{
+                  "excluding_tags":[
+                     "LCP_CONTROL_HASH",
+                     "initrd",
+                     "vmlinuz"
+                  ]
+               }
+            }
+         ]
+      },
+      "HOST_UNIQUE":{
+         "meta":{
+            "tpm_version":"2.0",
+            "tboot_installed":true
+         },
+         "pcr_rules":[
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":17
+               },
+               "eventlog_includes":[
+                  "LCP_CONTROL_HASH",
+                  "initrd"
+               ]
+            },
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":18
+               },
+               "eventlog_includes":[
+                  "LCP_CONTROL_HASH"
+               ]
+            }
+         ]
+      }
+   }
+}
+```
+
+### Flavor Template Definitions
+
+A Flavor Template consists of several sections:
+
+The "id" and "label" keys are unique identifiers.  The ID is generated automatically by the HVS when the Template is created; the label is user-specified and must be unique.
+
+#### Conditions
+
+The "condition" section contains a map of host-info elements to match when deciding to apply the Template.  For example:
+
+```json
+   "condition":[
+      "//host_info/os_name//*[text()='RedHatEnterprise']",
+      "//host_info/hardware_features/TPM/meta/tpm_version//*[text()='2.0']",
+      "//host_info/tboot_installed//*[text()='true']"
+   ]
+```
+
+This sample contains three conditions, each of which must be true for this Template to apply:
+
+os_name: 'RedHatEnterprise'
+
+tpm_version: 2.0
+
+tboot_installed: true
+
+This will apply for RedHat hosts with TPM2.0 and tboot enabled.  If a Flavor is imported from a VMware ESXi host, this template will not apply.  The condition paths directly refer to host-info elements collected from the host.  The full host-info details for a host can be viewed using the /hvs/v2/host-status API; below is a snippet of the host-info section (note that additional host-info elements may be added as new platform features are incorporated):
+
+```json
+               "host_info": {
+                    "os_name": "RedHatEnterprise",
+                    "os_version": "8.3",
+                    "os_type": "linux",
+                    "bios_version": "SE11111.111.11.11.1111.11111111111",
+                    "vmm_name": "",
+                    "vmm_version": "",
+                    "processor_info": "54 06 05 00 FF FB EB BF",
+                    "host_name": "hostname",
+                    "bios_name": "Intel Corporation",
+                    "hardware_uuid": "<UUID>",
+                    "process_flags": "FPU VME DE PSE TSC MSR PAE MCE CX8 APIC SEP MTRR PGE MCA CMOV PAT PSE-36 CLFSH DS ACPI MMX FXSR SSE SSE2 SS HTT TM PBE",
+                    "no_of_sockets": "72",
+                    "tboot_installed": "false",
+                    "is_docker_env": "false",
+                    "hardware_features": {
+                        "TXT": {
+                            "enabled": "true"
+                        },
+                        "TPM": {
+                            "enabled": "true",
+                            "meta": {
+                                "tpm_version": "2.0"
+                            }
+                        },
+                        "CBNT": {
+                            "enabled": "false",
+                            "meta": {
+                                "profile": "",
+                                "msr": ""
+                            }
+                        },
+                        "UEFI": {
+                            "enabled": "false",
+                            "meta": {
+                                "secure_boot_enabled": true
+                            }
+                        }
+                    },
+                    "installed_components": [
+                        "tagent"
+                    ]
+                }
+```
+
+
+
+#### Flavor Parts
+
+This section of the template will define behaviors for each Flavor part.  Each different Flavor part is optional; if the new Template will only affect the OS Flavor part, only the OS Flavor part needs to be defined here.  Each Flavor part specified will have its own "meta" section where conditional host attributes will be defined.  These must match with host-info attributes; for example, in the sample above the OS part uses the following "meta" section elements:
+
+```json
+{
+ "tpm_version":"2.0",
+ "tboot_installed":true
+}
+```
+
+These directly correspond to host-info elements from the hosts this Template will apply to.
+
+#### PCR Rules
+
+Each Flavor part section of a Flavor Template may contain 0 or more PCR rules that define PCRs to include.  Again using the OS Flavor part example from above, the default Template defines SHA1, SHA256, or SHA384 PCR banks; this tells the HVS to use the "best" available PCR bank algorithm, but that each of these algorithms is acceptable.  Alternatively, if the Template listed only the SHA384 PCR bank, the resulting Flavor would *require* the SHA384 PCR bank and would disregard any SHA256 or SHA1 banks, even if the SHA384 bank is unavailable and the SHA256 bank is enabled on the server.
+
+The PCR Rules will also contain at least one PCR index, indicating which PCR the rule applies to.
+
+##### pcr_matches
+
+PCRs can require a direct PCR value match (when event logs are unnecessary and the final PCR hash is required to match a specific value), and/or can contain event log include/exclude/equals rules.
+
+A direct PCR value match requirement is the easiest definitions, but should only be used when a specific PCR is known to always be the same on all hosts that the resulting Flavor will apply to:
+
+```json
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":0
+               },
+               "pcr_matches":true
+            }
+```
+
+This requires the value of PCR0 to exactly match, and will not examine specific event log details for this PCR index.
+
+##### eventlog_includes
+
+The following example shows how to require a specific event log entry to exist:
+
+```json
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":17
+               },
+               "eventlog_includes":[
+                  "vmlinuz"
+               ]
+            }
+```
+
+This rule will require the "vmlinuz" event log measurement to be present in the PCR17 event log.
+
+##### excluding_tags
+
+Specific event logs can also be excluded; in the below example, all events from PCR17 will be part of the resulting Flavor, but will exclude the LCP_CONTROL_HASH, initrd, and vmlinuz measurement events specifically.  This is often used when a specific PCR contains measurements that should apply to different Flavor parts; different rules need to be defined to ensure that the correct events are included in the right Flavor part, and events that will apply for different Flavor parts must be excluded.
+
+```json
+            {
+               "pcr":{
+                  "bank":[
+                     "SHA384",
+                     "SHA256",
+                     "SHA1"
+                  ],
+                  "index":17
+               },
+               "eventlog_equals":{
+                  "excluding_tags":[
+                     "LCP_CONTROL_HASH",
+                     "initrd",
+                     "vmlinuz"
+                  ]
+               }
+            }
+```
+
+
+
 Flavor Matching
 ---------------
 
