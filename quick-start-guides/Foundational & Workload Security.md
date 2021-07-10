@@ -15,8 +15,7 @@ Table of Contents
          * [Building](#building)
             * [Foundational Security Usecase](#foundational-security-usecase)
             * [Workload Security Usecase](#workload-security-usecase)
-               * [VM Confidentiality](#vm-confidentiality)
-               * [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
+               * [VM Confidentiality](#vm-confidentiality)               
                * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
       * [<strong>4. Deployment</strong>](#4-deployment)
          * [Pre-requisites](#pre-requisites-1)
@@ -202,63 +201,6 @@ The below steps needs to be carried out on the Build and Deployment VM
   /root/intel-secl/build/vmc/binaries/
   ```
 
-##### Container Confidentiality with Docker Runtime
-
-* Sync the repo
-
-  ```shell
-  mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/cc-docker.xml
-  repo sync
-  ```
-  
-* Run the `pre-requisites` script
-
-  ```shell
-  cd utils/build/workload-security
-  chmod +x ws-prereq.sh
-  ./ws-prereq.sh -d
-  ```
-
-* Enable and start the Docker daemon
-
-  ```shell
-  systemctl enable docker
-  systemctl start docker
-  ```
-
-* Ignore the below steps if not running behind a proxy
-
-  ```shell
-  mkdir -p /etc/systemd/system/docker.service.d
-  touch /etc/systemd/system/docker.service.d/proxy.conf
-  
-  #Add the below lines in proxy.conf
-  [Service]
-  Environment="HTTP_PROXY=<http_proxy>"
-  Environment="HTTPS_PROXY=<https_proxy>"
-  Environment="NO_PROXY=<no_proxy>"
-  ```
-
-  ```shell
-  #Reload docker
-  systemctl daemon-reload
-  systemctl restart docker
-  ```
-  
-* Build repos
-
-  ```shell
-  cd /root/intel-secl/build/cc-docker/
-  make binaries
-  ```
-  
-* Built binaries
-
-  ```shell
-  /root/intel-secl/build/cc-docker/binaries/
-  ```
-
 ##### Container Confidentiality with CRIO Runtime
 
 * Sync the repo
@@ -390,7 +332,6 @@ cd tools/ansible-role
 | Trusted Workload Placement - VM            | `setup: trusted-workload-placement-vm` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-vm` in CLI |
 | Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
 | Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
-| Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
 | Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-containers-crio`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
@@ -607,7 +548,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 |                        | Trusted Workload Placement (VM & Containers)  | ✔️ |
 |                        | Application Integrity                         | ✔️                  |
 | Launch Time Protection | VM Confidentiality                            | ✔️                  |
-|                        | Container Confidentiality with Docker Runtime | ✔️                  |
 |                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
 
 > **Note: ** `Foundational Security - Host Attestation` is a pre-requisite for all usecases beyond Host Attestation. E.g: For working with `Launch Time Protection - VM Confidentiality` , Host Attestation flow must be run as a pre-req before trying VM Confidentiality
