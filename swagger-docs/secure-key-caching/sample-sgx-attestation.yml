@@ -6,7 +6,7 @@ definitions:
         type: string
         x-go-name: Nonce
     type: object
-    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs
+    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger
   IdentityResponse:
     properties:
       quote:
@@ -15,31 +15,41 @@ definitions:
       user-data:
         $ref: '#/definitions/UserData'
     type: object
-    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs
+    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger
   UserData:
     properties:
       public-key:
         type: string
         x-go-name: Publickey
     type: object
-    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs
+    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger
   WrappedMessage:
     properties:
       Message:
         type: string
     type: object
-    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs
+    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger
   WrappedSWK:
     properties:
       SWK:
         type: string
     type: object
-    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs
+    x-go-package: github.com/intel-secl/sample-sgx-attestation/v4/swagger
 host: attestedapp.com:9000
 info:
+  description: |-
+    The project demonstrates several fundamental usages of Intel® Software Guard Extensions (Intel® SGX) SDK such as
+    Initializing and destroying a SGX enclave hosted in an attestedApp
+    Generate a signed SGX Report and public/private key pair inside the enclave
+    Generate a quote using SCS with Intel® DCAP APIs
+    Verify the SGX quote using SGX Quote Verification Service (SQVS) by a separate attestingApp
+    Verify that the quote complies with a user-defined quote policy by the attestingApp
+    Generate a Symmetric Wrapping Key (SWK) in the attestingApp, wrap it with enclave's public key and share it with the enclave
+    Exchange encrypted secrets between the attestingApp and the enclave using the SWK.
   license:
     name: 'Copyright (C) 2021 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause'
-  version: "1.0"
+  title: SGX Sample Attestation
+  version: "1"
 paths:
   /id:
     get:

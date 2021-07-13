@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Swagger Sample</title>
+  <title>SGX Sample Attestation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
@@ -672,7 +672,7 @@
    * https://github.com/mohsen1/json-schema-view-js#readme
    * Version: 0.4.1 - 2015-11-12T17:19:27.615Z
    * License: MIT
-   */.json-schema-view .toggle-handle:after,.json-schema-view.json-schema-view-dark .toggle-handle:after,json-schema-view .toggle-handle:after,json-schema-view[json-schema-view-dark] .toggle-handle:after{content:"\25BC"}.json-schema-view .title,.json-schema-view.json-schema-view-dark .title,json-schema-view .title,json-schema-view[json-schema-view-dark] .title{font-weight:700;cursor:pointer}.json-schema-view,json-schema-view{font-family:monospace;font-size:0;display:table-cell}.json-schema-view>*,json-schema-view>*{font-size:14px}.json-schema-view .toggle-handle,json-schema-view .toggle-handle{cursor:pointer;margin:auto .3em;font-size:10px;display:inline-block;transform-origin:50% 40%;transition:transform 150ms ease-in}.json-schema-view .toggle-handle,.json-schema-view .toggle-handle:hover,json-schema-view .toggle-handle,json-schema-view .toggle-handle:hover{text-decoration:none;color:#333}.json-schema-view .description,json-schema-view .description{color:gray;font-style:normal}
+   */.json-schema-view .toggle-handle:after,.json-schema-view.json-schema-view-dark .toggle-handle:after,json-schema-view .toggle-handle:after,json-schema-view[json-schema-view-dark] .toggle-handle:after{content:"\25BC"}.json-schema-view .title,.json-schema-view.json-schema-view-dark .title,json-schema-view .title,json-schema-view[json-schema-view-dark] .title{font-weight:700;cursor:pointer}.json-schema-view,json-schema-view{font-family:monospace;font-size:0;display:table-cell}.json-schema-view>*,json-schema-view>*{font-size:14px}.json-schema-view .toggle-handle,json-schema-view .toggle-handle{cursor:pointer;margin:auto .3em;font-size:10px;display:inline-block;transform-origin:50% 40%;transition:transform 150ms ease-in}.json-schema-view .toggle-handle,.json-schema-view .toggle-handle:hover,json-schema-view .toggle-handle,json-schema-view .toggle-handle:hover{text-decoration:none;color:#333}.json-schema-view .description,json-schema-view .description{color:gray;font-style:italic}
      .pattern {
       color: blue;
     }
@@ -689,7 +689,7 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-            defs.IdentityRequest = {
+            defs["IdentityRequest"] = {
   "type" : "object",
   "properties" : {
     "nonce" : {
@@ -697,9 +697,9 @@
       "x-go-name" : "Nonce"
     }
   },
-  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger"
 };
-            defs.IdentityResponse = {
+            defs["IdentityResponse"] = {
   "type" : "object",
   "properties" : {
     "quote" : {
@@ -710,9 +710,9 @@
       "$ref" : "#/components/schemas/UserData"
     }
   },
-  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger"
 };
-            defs.UserData = {
+            defs["UserData"] = {
   "type" : "object",
   "properties" : {
     "public-key" : {
@@ -720,25 +720,25 @@
       "x-go-name" : "Publickey"
     }
   },
-  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger"
 };
-            defs.WrappedMessage = {
+            defs["WrappedMessage"] = {
   "type" : "object",
   "properties" : {
     "Message" : {
       "type" : "string"
     }
   },
-  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger"
 };
-            defs.WrappedSWK = {
+            defs["WrappedSWK"] = {
   "type" : "object",
   "properties" : {
     "SWK" : {
       "type" : "string"
     }
   },
-  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger/docs"
+  "x-go-package" : "github.com/intel-secl/sample-sgx-attestation/v4/swagger"
 };
   </script>
 
@@ -754,17 +754,17 @@
 
               </div>
             -->
-            <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">Info</a></li>
+            <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
-                  <li class="nav-header" data-group="Identity"><a href="#api-Identity">Identity</a></li>
+                  <li class="nav-header" data-group="Identity"><a href="#api-Identity">API Methods - Identity</a></li>
                     <li data-group="Identity" data-name="httpGetQuotePubkey" class="">
                       <a href="#api-Identity-httpGetQuotePubkey">httpGetQuotePubkey</a>
                     </li>
-                  <li class="nav-header" data-group="Message"><a href="#api-Message">Message</a></li>
+                  <li class="nav-header" data-group="Message"><a href="#api-Message">API Methods - Message</a></li>
                     <li data-group="Message" data-name="httpReceiveWrappedMessage" class="">
                       <a href="#api-Message-httpReceiveWrappedMessage">httpReceiveWrappedMessage</a>
                     </li>
-                  <li class="nav-header" data-group="SWK"><a href="#api-SWK">SWK</a></li>
+                  <li class="nav-header" data-group="SWK"><a href="#api-SWK">API Methods - SWK</a></li>
                     <li data-group="SWK" data-name="httpReceiveWrappedSWK" class="">
                       <a href="#api-SWK-httpReceiveWrappedSWK">httpReceiveWrappedSWK</a>
                     </li>
@@ -774,18 +774,23 @@
       <div id="content">
         <div id="project">
           <div class="pull-left">
-            <h1>Swagger Sample</h1>
-            <div>Version: 1.0</div>
-            <div>BasePath: https://attestedapp.com:9000/</div>
-            <div>Copyright (C) 2021 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause</div>
+            <h1>SGX Sample Attestation</h1>
           </div>
           <div class="clearfix"></div>
         </div>
-        <hr>
         <div id="header">
           <div id="api-_">
-            <div>No description provided (generated by Swagger Codegen https://github.com/swagger-api/swagger-codegen)</div>
-	    </br>
+            <h2 id="welcome-to-apidoc">API and SDK Documentation</h2>
+              <div class="app-desc">Version: 1</div>
+            <hr>
+            <div>The project demonstrates several fundamental usages of Intel® Software Guard Extensions (Intel® SGX) SDK such as
+Initializing and destroying a SGX enclave hosted in an attestedApp
+Generate a signed SGX Report and public/private key pair inside the enclave
+Generate a quote using SCS with Intel® DCAP APIs
+Verify the SGX quote using SGX Quote Verification Service (SQVS) by a separate attestingApp
+Verify that the quote complies with a user-defined quote policy by the attestingApp
+Generate a Symmetric Wrapping Key (SWK) in the attestingApp, wrap it with enclave's public key and share it with the enclave
+Exchange encrypted secrets between the attestingApp and the enclave using the SWK.</div>
           </div>
         </div>
         <div id="sections">
@@ -795,49 +800,266 @@
                       <article id="api-Identity-httpGetQuotePubkey-0" data-group="User" data-name="httpGetQuotePubkey" data-version="0">
                         <div class="pull-left">
                           <h1>httpGetQuotePubkey</h1>
-                          <!-- <p></p> -->
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
-                        <!-- <p></p> -->
+                        <p></p>
                         <p class="marked">The Attesting App uses this API to get the Quote and Public Key from Attested App.
 </p>
                         <p></p>
-                        <!-- <br /> -->
+                        <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/id</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Identity-httpGetQuotePubkey-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-python">Python</a></li>
+                        </ul>
 
-    			<h2>Authorization</h2>
-                        <ul>
-                        
-      			
-      			<li>Bearer Token Authorization.
-      			<ul>
-         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
-         			<li>Name of header: Authorization</li> 
-      			</ul></li>
-    			</ul>
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Identity-httpGetQuotePubkey-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+-H "Authorization: [[apiKey]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"https://attestedapp.com:9000//id"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.IdentityApi;
 
-    			  <h2>Consumes</h2>
-    			    <ul>
-      			    <li>application/json</li>
-    			    </ul>
+import java.io.File;
+import java.util.*;
 
-                          <!-- <h2>Parameters</h2> -->
+public class IdentityApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+        // Configure API key authorization: bearerAuth
+        ApiKeyAuth bearerAuth = (ApiKeyAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //bearerAuth.setApiKeyPrefix("Token");
+
+        IdentityApi apiInstance = new IdentityApi();
+        IdentityRequest body = ; // IdentityRequest | 
+        try {
+            IdentityResponse result = apiInstance.httpGetQuotePubkey(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling IdentityApi#httpGetQuotePubkey");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.IdentityApi;
+
+public class IdentityApiExample {
+
+    public static void main(String[] args) {
+        IdentityApi apiInstance = new IdentityApi();
+        IdentityRequest body = ; // IdentityRequest | 
+        try {
+            IdentityResponse result = apiInstance.httpGetQuotePubkey(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling IdentityApi#httpGetQuotePubkey");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure API key authorization: (authentication scheme: bearerAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"Authorization"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"Authorization"];
+IdentityRequest *body = ; // 
+
+IdentityApi *apiInstance = [[IdentityApi alloc] init];
+
+[apiInstance httpGetQuotePubkeyWith:body
+              completionHandler: ^(IdentityResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SgxSampleAttestation = require('sgx_sample_attestation');
+var defaultClient = SgxSampleAttestation.ApiClient.instance;
+
+// Configure API key authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.apiKey = "YOUR API KEY"
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//bearerAuth.apiKeyPrefix['Authorization'] = "Token"
+
+var api = new SgxSampleAttestation.IdentityApi()
+var body = ; // {{IdentityRequest}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.httpGetQuotePubkey(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class httpGetQuotePubkeyExample
+    {
+        public void main()
+        {
+
+            // Configure API key authorization: bearerAuth
+            Configuration.Default.ApiKey.Add("Authorization", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("Authorization", "Bearer");
+
+            var apiInstance = new IdentityApi();
+            var body = new IdentityRequest(); // IdentityRequest | 
+
+            try
+            {
+                IdentityResponse result = apiInstance.httpGetQuotePubkey(body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling IdentityApi.httpGetQuotePubkey: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: bearerAuth
+Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+
+$api_instance = new Swagger\Client\ApiIdentityApi();
+$body = ; // IdentityRequest | 
+
+try {
+    $result = $api_instance->httpGetQuotePubkey($body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling IdentityApi->httpGetQuotePubkey: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::IdentityApi;
+
+# Configure API key authorization: bearerAuth
+$WWW::SwaggerClient::Configuration::api_key->{'Authorization'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::SwaggerClient::Configuration::api_key_prefix->{'Authorization'} = "Bearer";
+
+my $api_instance = WWW::SwaggerClient::IdentityApi->new();
+my $body = WWW::SwaggerClient::Object::IdentityRequest->new(); # IdentityRequest | 
+
+eval { 
+    my $result = $api_instance->httpGetQuotePubkey(body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling IdentityApi->httpGetQuotePubkey: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: bearerAuth
+swagger_client.configuration.api_key['Authorization'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# swagger_client.configuration.api_key_prefix['Authorization'] = 'Bearer'
+
+# create an instance of the API class
+api_instance = swagger_client.IdentityApi()
+body =  # IdentityRequest | 
+
+try: 
+    api_response = api_instance.http_get_quote_pubkey(body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling IdentityApi->httpGetQuotePubkey: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
 
 
-                            <h2>Request Body</h2>
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-httpGetQuotePubkey--schema">Schema</a>
-                                </li>
-                            </ul>
 
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-httpGetQuotePubkey--schema">
-                                  <div id='body-httpGetQuotePubkey--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
   "content" : {
     "application/json" : {
       "schema" : {
@@ -847,44 +1069,38 @@
   },
   "required" : true
 };
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_httpGetQuotePubkey_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_httpGetQuotePubkey_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#body-httpGetQuotePubkey--schema-data').val(stringify(schema));
-                                        var result = $('#body-httpGetQuotePubkey--schema-');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='body-httpGetQuotePubkey--schema-data' type='hidden' value=''></input>
-                                </div>
-				</br>
 
 
-    			  <h2>Produces</h2>
-    			    <ul>
-      			    <li>application/json</li>
-    			    </ul>
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Successfully generated and shared the Quote and Public </h3>
 
-                          <h2>Response</h2>
-                            <!-- <h3> 200 - Successfully generated and shared the Quote and Public </h3> -->
-                            <div class="methodsubtabletitle">200 - Successfully generated and shared the Quote and Public</div>
-
-			    </br>
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
                                   <a data-toggle="tab" href="#responses-httpGetQuotePubkey-200-schema">Schema</a>
                                 </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
@@ -926,98 +1142,6 @@
                                 </div>
                             </div>
 
-                        <p>
-                          <h2>Sample REST Call</h2>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-			  <li class="active"><a href="#examples-Identity-httpGetQuotePubkey-0-curl">Curl</a></li> 
-			  <li class=""><a href="#examples-Identity-httpGetQuotePubkey-0-support"></a></li> 
-			</ul> 
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Identity-httpGetQuotePubkey-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://attestingapp.com:9000/id" -H "Authorization: Bearer &lt;token&gt;" -H "Accept: application/json" -H "Content-Type: application/json"</br>Input: </br>{
-   "nonce": "123456789123443254356452"
-}
-</br>Output: </br>{
-   "quote": "AwACAAAAAAAFAAoAk5pyM/ecTKmUCg2zlX8GB/y/7wwGmaw8r/y3PiGFP7IAAAAAAgIAAAAAAAAAAAAAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAADnAAAAAAAAAL1pu8OVCjNA7g6+ufBtcLLQYAp4eZGjG+FEuzSxGHe
-    bAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACD1xnnferKFHD2uvYqTXdDA8iZ22kCD5xw7h38CMfOngAAAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC
-    tmD7bIT8VbgD04oun685pRwpEZm7iyLk2K5lDFbs8fwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1BAAAOTsF9FD/C7
-    Z+8zndDiX3wizl7mgpmx/4HORGXrH7AmTbtvNPzyV7/KWfB5g2ExuNyHQDeTtHroiUSRYTlkmHXvyln2bkmggbxFu600NlbxLy4Q
-    n2qBgkh9ErAglqdbiymIG9NF0bQRnlHexm42iiwkpsLnljRj4mzWSUCB8tJEWAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAFQAAAAAAAADnAAAAAAAAAGDYWvKL6NHECgjZiwCdX4rME4Sjhc9GCADkeHkdGpecAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMT1d115ZQPpYTf3fGioKaAFasje1wFAsIGwlEkMV7/wAAAAAAAAAAAAAAAAAAAAAAAAA
-    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    AAAEABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACbFTL1Vk4Cqt8
-    S85uugAR3m6AGbPjzgGI2DokelZM3iwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASc5VrFu5PzGWT5lOZPVzirNw78/
-    fKS8YPqhhvJCfnHGG1d6WbiS5dOn308t8hKBseJn90oEB+bnnLkoLbo9xBSAAAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxw
-    dHh8FAGwOAAAtLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUlJRTlEQ0NCSnFnQXdJQkFnSVVSR3NrUFl1ME16SUNZV3RqWTV
-    VL0R0R1Q5SW93Q2dZSUtvWkl6ajBFQXdJd2NERWlNQ0FHQTFVRQpBd3daU1c1MFpXd2dVMGRZSUZCRFN5QlFiR0YwWm05eWJTQkR
-    RVEVhTUJnR0ExVUVDZ3dSU1c1MFpXd2dRMjl5Y0c5eVlYUnBiMjR4CkZEQVNCZ05WQkFjTUMxTmhiblJoSUVOc1lYSmhNUXN3Q1F
-    ZRFZRUUlEQUpEUVRFTE1Ba0dBMVVFQmhNQ1ZWTXdIaGNOTWpFd05qSTAKTURZeE5UVXpXaGNOTWpnd05qSTBNRFl4TlRVeldqQnd
-    NU0l3SUFZRFZRUUREQmxKYm5SbGJDQlRSMWdnVUVOTElFTmxjblJwWm1sagpZWFJsTVJvd0dBWURWUVFLREJGSmJuUmxiQ0JEYjN
-    Kd2IzSmhkR2x2YmpFVU1CSUdBMVVFQnd3TFUyRnVkR0VnUTJ4aGNtRXhDekFKCkJnTlZCQWdNQWtOQk1Rc3dDUVlEVlFRR0V3SlZ
-    VekJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCQnU1YlQwc2tSdHoKT3dzdnB0MTA5QUU4UzZtUHRjKzRzNStmeWR
-    QLzdjTWlvTm9Rb3YzZEJPYVhQSm5wdmQ5azUvVHFrWjlEcHBkTkcxL3Qvait1U1F5agpnZ01RTUlJREREQWZCZ05WSFNNRUdEQVd
-    nQlJaSTlPblNxaGpWQzQ1Y0szZ0R3Y3JWeVFxdHpCdkJnTlZIUjhFYURCbU1HU2dZcUJnCmhsNW9kSFJ3Y3pvdkwzTmllQzVoY0d
-    rdWRISjFjM1JsWkhObGNuWnBZMlZ6TG1sdWRHVnNMbU52YlM5elozZ3ZZMlZ5ZEdsbWFXTmgKZEdsdmJpOTJNeTl3WTJ0amNtdy9
-    ZMkU5Y0d4aGRHWnZjbTBtWlc1amIyUnBibWM5WkdWeU1CMEdBMVVkRGdRV0JCUmp0QlFNeGJYaQpZdmMxYmdiQkkyQ0t5eTU5Smp
-    BT0JnTlZIUThCQWY4RUJBTUNCc0F3REFZRFZSMFRBUUgvQkFJd0FEQ0NBamtHQ1NxR1NJYjRUUUVOCkFRU0NBaW93Z2dJbU1CNEd
-    DaXFHU0liNFRRRU5BUUVFRUlsMW5LUTd0ZGJxbUNkMUo5bXoyUzh3Z2dGakJnb3Foa2lHK0UwQkRRRUMKTUlJQlV6QVFCZ3NxaGt
-    pRytFMEJEUUVDQVFJQkFqQVFCZ3NxaGtpRytFMEJEUUVDQWdJQkFqQVFCZ3NxaGtpRytFMEJEUUVDQXdJQgpBREFRQmdzcWhraUc
-    rRTBCRFFFQ0JBSUJBREFRQmdzcWhraUcrRTBCRFFFQ0JRSUJBREFRQmdzcWhraUcrRTBCRFFFQ0JnSUJBREFRCkJnc3Foa2lHK0U
-    wQkRRRUNCd0lCQURBUUJnc3Foa2lHK0UwQkRRRUNDQUlCQURBUUJnc3Foa2lHK0UwQkRRRUNDUUlCQURBUUJnc3EKaGtpRytFMEJ
-    EUUVDQ2dJQkFEQVFCZ3NxaGtpRytFMEJEUUVDQ3dJQkFEQVFCZ3NxaGtpRytFMEJEUUVDREFJQkFEQVFCZ3NxaGtpRworRTBCRFF
-    FQ0RRSUJBREFRQmdzcWhraUcrRTBCRFFFQ0RnSUJBREFRQmdzcWhraUcrRTBCRFFFQ0R3SUJBREFRQmdzcWhraUcrRTBCCkRRRUN
-    FQUlCQURBUUJnc3Foa2lHK0UwQkRRRUNFUUlCQ2pBZkJnc3Foa2lHK0UwQkRRRUNFZ1FRQWdJQUFBQUFBQUFBQUFBQUFBQUEKQUR
-    BUUJnb3Foa2lHK0UwQkRRRURCQUlBQURBVUJnb3Foa2lHK0UwQkRRRUVCQVlRWUdvQUFBQXdEd1lLS29aSWh2aE5BUTBCQlFvQgp
-    BVEFlQmdvcWhraUcrRTBCRFFFR0JCQkNSejFLcnc3bXMzbU1vVUxUaVZTbU1FUUdDaXFHU0liNFRRRU5BUWN3TmpBUUJnc3Foa2l
-    HCitFMEJEUUVIQVFFQi96QVFCZ3NxaGtpRytFMEJEUUVIQWdFQkFEQVFCZ3NxaGtpRytFMEJEUUVIQXdFQi96QUtCZ2dxaGtqT1B
-    RUUQKQWdOSUFEQkZBaUVBbWVEb3ZZanNoK002V3B6U1kwWDhpaWs0K0xQdUlCeU8yeDRseUZRdHVKQUNJRjFxSUlZbEY3MHhrY1p
-    uZDBWaQpDZ01aTEFuQnByNzVuSVZsTGdkampuMkIKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLS0tLS0tQkVHSU4gQ0VSVElGSUN
-    BVEUtLS0tLQpNSUlDbWpDQ0FrQ2dBd0lCQWdJVVdTUFRwMHFvWTFRdU9YQ3Q0QThISzFja0tyY3dDZ1lJS29aSXpqMEVBd0l3CmF
-    ERWFNQmdHQTFVRUF3d1JTVzUwWld3Z1UwZFlJRkp2YjNRZ1EwRXhHakFZQmdOVkJBb01FVWx1ZEdWc0lFTnYKY25CdmNtRjBhVzl
-    1TVJRd0VnWURWUVFIREF0VFlXNTBZU0JEYkdGeVlURUxNQWtHQTFVRUNBd0NRMEV4Q3pBSgpCZ05WQkFZVEFsVlRNQjRYRFRFNU1
-    UQXpNVEV5TXpNME4xb1hEVE0wTVRBek1URXlNek0wTjFvd2NERWlNQ0FHCkExVUVBd3daU1c1MFpXd2dVMGRZSUZCRFN5QlFiR0Y
-    wWm05eWJTQkRRVEVhTUJnR0ExVUVDZ3dSU1c1MFpXd2cKUTI5eWNHOXlZWFJwYjI0eEZEQVNCZ05WQkFjTUMxTmhiblJoSUVOc1l
-    YSmhNUXN3Q1FZRFZRUUlEQUpEUVRFTApNQWtHQTFVRUJoTUNWVk13V1RBVEJnY3Foa2pPUFFJQkJnZ3Foa2pPUFFNQkJ3TkNBQVF
-    3cCtMYytUVUJ0ZzFICitVOEpJc01zYmpIakNrVHRYYjhqUE02cjJkaHU5eklibGhEWjdJTmZxdDNJeDhYY0ZLRDhrME5FWHJrWjY
-    2cUoKWGExS3pMSUtvNEcvTUlHOE1COEdBMVVkSXdRWU1CYUFGT25vUkZKVE5seExHSm9SL0VNWUxLWGNJSUJJTUZZRwpBMVVkSHd
-    SUE1FMHdTNkJKb0VlR1JXaDBkSEJ6T2k4dmMySjRMV05sY25ScFptbGpZWFJsY3k1MGNuVnpkR1ZrCmMyVnlkbWxqWlhNdWFXNTB
-    aV3d1WTI5dEwwbHVkR1ZzVTBkWVVtOXZkRU5CTG1SbGNqQWRCZ05WSFE0RUZnUVUKV1NQVHAwcW9ZMVF1T1hDdDRBOEhLMWNrS3J
-    jd0RnWURWUjBQQVFIL0JBUURBZ0VHTUJJR0ExVWRFd0VCL3dRSQpNQVlCQWY4Q0FRQXdDZ1lJS29aSXpqMEVBd0lEU0FBd1JRSWh
-    BSjFxK0ZUeitnVXVWZkJRdUNnSnNGckwyVFRTCmUxYUJaNTNPNTJUakZpZTZBaUFyaVBhUmFoVVg5T2E5a0dMbEFjaFdYS1Q2ajR
-    SV1NSNTBCcWhyTjNVVDRBPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQotLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUl
-    JQ2xEQ0NBam1nQXdJQkFnSVZBT25vUkZKVE5seExHSm9SL0VNWUxLWGNJSUJJTUFvR0NDcUdTTTQ5QkFNQwpNR2d4R2pBWUJnTlZ
-    CQU1NRVVsdWRHVnNJRk5IV0NCU2IyOTBJRU5CTVJvd0dBWURWUVFLREJGSmJuUmxiQ0JECmIzSndiM0poZEdsdmJqRVVNQklHQTF
-    VRUJ3d0xVMkZ1ZEdFZ1EyeGhjbUV4Q3pBSkJnTlZCQWdNQWtOQk1Rc3cKQ1FZRFZRUUdFd0pWVXpBZUZ3MHhPVEV3TXpFd09UUTV
-    NakZhRncwME9URXlNekV5TXpVNU5UbGFNR2d4R2pBWQpCZ05WQkFNTUVVbHVkR1ZzSUZOSFdDQlNiMjkwSUVOQk1Sb3dHQVlEVlF
-    RS0RCRkpiblJsYkNCRGIzSndiM0poCmRHbHZiakVVTUJJR0ExVUVCd3dMVTJGdWRHRWdRMnhoY21FeEN6QUpCZ05WQkFnTUFrTkJ
-    NUXN3Q1FZRFZRUUcKRXdKVlV6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJFLzZELzFXSE5yV3dQbU5NSXlCS01
-    XNQpKNkp6TXNqbzZ4UDJ2a0sxY2RaR2IxUEdSUC9DLzhFQ2dpRGtta2xtendMekxpKzAwMG03TExydEtKQTNvQzJqCmdiOHdnYnd
-    3SHdZRFZSMGpCQmd3Rm9BVTZlaEVVbE0yWEVzWW1oSDhReGdzcGR3Z2dFZ3dWZ1lEVlIwZkJFOHcKVFRCTG9FbWdSNFpGYUhSMGN
-    ITTZMeTl6WW5ndFkyVnlkR2xtYVdOaGRHVnpMblJ5ZFhOMFpXUnpaWEoyYVdObApjeTVwYm5SbGJDNWpiMjB2U1c1MFpXeFRSMWh
-    TYjI5MFEwRXVaR1Z5TUIwR0ExVWREZ1FXQkJUcDZFUlNVelpjClN4aWFFZnhER0N5bDNDQ0FTREFPQmdOVkhROEJBZjhFQkFNQ0F
-    RWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUIKQVRBS0JnZ3Foa2pPUFFRREFnTkpBREJHQWlFQXp3OXpkVWlVSFBNVWQwQzRteDQ
-    xamxGWmtyTTN5NWYxbGduVgpPN0Ziak9vQ0lRQ29HdFVtVDRjWHQ3Vit5U0hiSjhIb2I5QWFucHZYTkgxRVIrL2daRitvcFE9PQo
-    tLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==",
-   "user-data": {
-       "public-key": "AQABAEEoj+Rpeo5pnKPLCZ+YaTA/vJEWwwv7dQrnljKnNqXhe2or/E/G57pTPHvWWi1JNh0khl
-                               yn+XyxYYynGD76owy5tQt3/bVBSIX0a73yDnlTz7nAd4i5XCdRFCus1itg+iUng7p17D8QYHOJAemBturjeruLdfNWHX0boEB8EC
-                               kE6wfXZtg+wYhRxzHTPVoEyGfRvOOTNdLDKZOCTWR52ActN+uKiCKEQqhgs5X03WcZ53zTpBX8mCyCk7Ip3dRGLumzDBahFc4WoV
-                               XlRHOG/t6apCDRT6AIlGa2+XkK2GQW/91yW1sLK5HSR7aI0lai8MMnVEcEvfKdZgNcZjhUeL2yzKe0z/TOKn5rBeCq3JH5sF0/Wx
-                               f1UX50oKCHZSRbW9kGvL3C38l6f/yMxos8tAptYCX8z5sbR08s6hBNK9DrtSu5fFAkBrbaPdvd0SDvPN38Hf02712BMsq8KmKzX8
-                               B4UxYyhjgiPwRp4vxHK2men7uWwrwjIkDnAo4PG113hA=="
-   }
-}
-</code></pre> 
-			  </div>
-			  <div class="tab-pane" id="examples-Identity-httpGetQuotePubkey-0-support">
-			  </div> 
-                          </div>
                         </article>
                       </div>
                       <hr>
@@ -1028,49 +1152,256 @@
                       <article id="api-Message-httpReceiveWrappedMessage-0" data-group="User" data-name="httpReceiveWrappedMessage" data-version="0">
                         <div class="pull-left">
                           <h1>httpReceiveWrappedMessage</h1>
-                          <!-- <p></p> -->
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
-                        <!-- <p></p> -->
+                        <p></p>
                         <p class="marked">The Attesting App uses this API to share the encrypted message with the Attested App
 </p>
                         <p></p>
-                        <!-- <br /> -->
+                        <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/wrapped_message</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Message-httpReceiveWrappedMessage-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-python">Python</a></li>
+                        </ul>
 
-    			<h2>Authorization</h2>
-                        <ul>
-                        
-      			
-      			<li>Bearer Token Authorization.
-      			<ul>
-         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
-         			<li>Name of header: Authorization</li> 
-      			</ul></li>
-    			</ul>
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Message-httpReceiveWrappedMessage-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Authorization: [[apiKey]]"\
+-H "Content-Type: application/json"\
+"https://attestedapp.com:9000//wrapped_message"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.MessageApi;
 
-    			  <h2>Consumes</h2>
-    			    <ul>
-      			    <li>application/json</li>
-    			    </ul>
+import java.io.File;
+import java.util.*;
 
-                          <!-- <h2>Parameters</h2> -->
+public class MessageApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+        // Configure API key authorization: bearerAuth
+        ApiKeyAuth bearerAuth = (ApiKeyAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //bearerAuth.setApiKeyPrefix("Token");
+
+        MessageApi apiInstance = new MessageApi();
+        WrappedMessage body = ; // WrappedMessage | 
+        try {
+            apiInstance.httpReceiveWrappedMessage(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MessageApi#httpReceiveWrappedMessage");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.MessageApi;
+
+public class MessageApiExample {
+
+    public static void main(String[] args) {
+        MessageApi apiInstance = new MessageApi();
+        WrappedMessage body = ; // WrappedMessage | 
+        try {
+            apiInstance.httpReceiveWrappedMessage(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling MessageApi#httpReceiveWrappedMessage");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure API key authorization: (authentication scheme: bearerAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"Authorization"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"Authorization"];
+WrappedMessage *body = ; // 
+
+MessageApi *apiInstance = [[MessageApi alloc] init];
+
+[apiInstance httpReceiveWrappedMessageWith:body
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SgxSampleAttestation = require('sgx_sample_attestation');
+var defaultClient = SgxSampleAttestation.ApiClient.instance;
+
+// Configure API key authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.apiKey = "YOUR API KEY"
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//bearerAuth.apiKeyPrefix['Authorization'] = "Token"
+
+var api = new SgxSampleAttestation.MessageApi()
+var body = ; // {{WrappedMessage}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.httpReceiveWrappedMessage(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class httpReceiveWrappedMessageExample
+    {
+        public void main()
+        {
+
+            // Configure API key authorization: bearerAuth
+            Configuration.Default.ApiKey.Add("Authorization", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("Authorization", "Bearer");
+
+            var apiInstance = new MessageApi();
+            var body = new WrappedMessage(); // WrappedMessage | 
+
+            try
+            {
+                apiInstance.httpReceiveWrappedMessage(body);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling MessageApi.httpReceiveWrappedMessage: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: bearerAuth
+Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+
+$api_instance = new Swagger\Client\ApiMessageApi();
+$body = ; // WrappedMessage | 
+
+try {
+    $api_instance->httpReceiveWrappedMessage($body);
+} catch (Exception $e) {
+    echo 'Exception when calling MessageApi->httpReceiveWrappedMessage: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::MessageApi;
+
+# Configure API key authorization: bearerAuth
+$WWW::SwaggerClient::Configuration::api_key->{'Authorization'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::SwaggerClient::Configuration::api_key_prefix->{'Authorization'} = "Bearer";
+
+my $api_instance = WWW::SwaggerClient::MessageApi->new();
+my $body = WWW::SwaggerClient::Object::WrappedMessage->new(); # WrappedMessage | 
+
+eval { 
+    $api_instance->httpReceiveWrappedMessage(body => $body);
+};
+if ($@) {
+    warn "Exception when calling MessageApi->httpReceiveWrappedMessage: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: bearerAuth
+swagger_client.configuration.api_key['Authorization'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# swagger_client.configuration.api_key_prefix['Authorization'] = 'Bearer'
+
+# create an instance of the API class
+api_instance = swagger_client.MessageApi()
+body =  # WrappedMessage | 
+
+try: 
+    api_instance.http_receive_wrapped_message(body)
+except ApiException as e:
+    print("Exception when calling MessageApi->httpReceiveWrappedMessage: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
 
 
-                            <h2>Request Body</h2>
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-httpReceiveWrappedMessage--schema">Schema</a>
-                                </li>
-                            </ul>
 
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-httpReceiveWrappedMessage--schema">
-                                  <div id='body-httpReceiveWrappedMessage--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
   "content" : {
     "application/json" : {
       "schema" : {
@@ -1080,55 +1411,39 @@
   },
   "required" : true
 };
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#body-httpReceiveWrappedMessage--schema-data').val(stringify(schema));
-                                        var result = $('#body-httpReceiveWrappedMessage--schema-');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='body-httpReceiveWrappedMessage--schema-data' type='hidden' value=''></input>
-                                </div>
-				</br>
-
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_httpReceiveWrappedMessage_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_httpReceiveWrappedMessage_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
-                          <h2>Response</h2>
-                            <!-- <h3> 200 - Encrypted message is successfully received. </h3> -->
-                            <div class="methodsubtabletitle">200 - Encrypted message is successfully received.</div>
 
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Encrypted message is successfully received. </h3>
 
-                        <p>
-                          <h2>Sample REST Call</h2>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-			  <li class="active"><a href="#examples-Message-httpReceiveWrappedMessage-0-curl">Curl</a></li> 
-			  <li class=""><a href="#examples-Message-httpReceiveWrappedMessage-0-support"></a></li> 
-			</ul> 
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
 
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Message-httpReceiveWrappedMessage-0-curl">
-			  <pre><code class="language-bsh">curl -X POST "https://attestingapp.com:9000/wrapped_message" -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json"</br>Input: </br>{
-   "message": "pgj4F3G6Zdb7tB1fUBjM36XmRuGfGperaBCjQj6IOAGdoaE4xmpgnorG"
-}
-</br>Output: </br>"Unable to decrypt message."
-</code></pre> 
-			  </div>
-			  <div class="tab-pane" id="examples-Message-httpReceiveWrappedMessage-0-support">
-			  </div> 
-                          </div>
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
                         </article>
                       </div>
                       <hr>
@@ -1139,49 +1454,256 @@
                       <article id="api-SWK-httpReceiveWrappedSWK-0" data-group="User" data-name="httpReceiveWrappedSWK" data-version="0">
                         <div class="pull-left">
                           <h1>httpReceiveWrappedSWK</h1>
-                          <!-- <p></p> -->
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
-                        <!-- <p></p> -->
+                        <p></p>
                         <p class="marked">The Attesting App uses this API to share the wrapped SWK with the Attested App.
 </p>
                         <p></p>
-                        <!-- <br /> -->
+                        <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/wrapped_swk</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-SWK-httpReceiveWrappedSWK-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-java">Java</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-python">Python</a></li>
+                        </ul>
 
-    			<h2>Authorization</h2>
-                        <ul>
-                        
-      			
-      			<li>Bearer Token Authorization.
-      			<ul>
-         			<li>Enter your bearer token in the format: Bearer &lt;token&gt;</li>
-         			<li>Name of header: Authorization</li> 
-      			</ul></li>
-    			</ul>
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-SWK-httpReceiveWrappedSWK-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+-H "Authorization: [[apiKey]]"\
+-H "Content-Type: application/json"\
+"https://attestedapp.com:9000//wrapped_swk"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.SWKApi;
 
-    			  <h2>Consumes</h2>
-    			    <ul>
-      			    <li>application/json</li>
-    			    </ul>
+import java.io.File;
+import java.util.*;
 
-                          <!-- <h2>Parameters</h2> -->
+public class SWKApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+        // Configure API key authorization: bearerAuth
+        ApiKeyAuth bearerAuth = (ApiKeyAuth) defaultClient.getAuthentication("bearerAuth");
+        bearerAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //bearerAuth.setApiKeyPrefix("Token");
+
+        SWKApi apiInstance = new SWKApi();
+        WrappedSWK body = ; // WrappedSWK | 
+        try {
+            apiInstance.httpReceiveWrappedSWK(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SWKApi#httpReceiveWrappedSWK");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.SWKApi;
+
+public class SWKApiExample {
+
+    public static void main(String[] args) {
+        SWKApi apiInstance = new SWKApi();
+        WrappedSWK body = ; // WrappedSWK | 
+        try {
+            apiInstance.httpReceiveWrappedSWK(body);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling SWKApi#httpReceiveWrappedSWK");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+// Configure API key authorization: (authentication scheme: bearerAuth)
+[apiConfig setApiKey:@"YOUR_API_KEY" forApiKeyIdentifier:@"Authorization"];
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+//[apiConfig setApiKeyPrefix:@"Bearer" forApiKeyIdentifier:@"Authorization"];
+WrappedSWK *body = ; // 
+
+SWKApi *apiInstance = [[SWKApi alloc] init];
+
+[apiInstance httpReceiveWrappedSWKWith:body
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var SgxSampleAttestation = require('sgx_sample_attestation');
+var defaultClient = SgxSampleAttestation.ApiClient.instance;
+
+// Configure API key authorization: bearerAuth
+var bearerAuth = defaultClient.authentications['bearerAuth'];
+bearerAuth.apiKey = "YOUR API KEY"
+// Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+//bearerAuth.apiKeyPrefix['Authorization'] = "Token"
+
+var api = new SgxSampleAttestation.SWKApi()
+var body = ; // {{WrappedSWK}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.httpReceiveWrappedSWK(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class httpReceiveWrappedSWKExample
+    {
+        public void main()
+        {
+
+            // Configure API key authorization: bearerAuth
+            Configuration.Default.ApiKey.Add("Authorization", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // Configuration.Default.ApiKeyPrefix.Add("Authorization", "Bearer");
+
+            var apiInstance = new SWKApi();
+            var body = new WrappedSWK(); // WrappedSWK | 
+
+            try
+            {
+                apiInstance.httpReceiveWrappedSWK(body);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling SWKApi.httpReceiveWrappedSWK: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure API key authorization: bearerAuth
+Swagger\Client\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// Swagger\Client\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+
+$api_instance = new Swagger\Client\ApiSWKApi();
+$body = ; // WrappedSWK | 
+
+try {
+    $api_instance->httpReceiveWrappedSWK($body);
+} catch (Exception $e) {
+    echo 'Exception when calling SWKApi->httpReceiveWrappedSWK: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::SWKApi;
+
+# Configure API key authorization: bearerAuth
+$WWW::SwaggerClient::Configuration::api_key->{'Authorization'} = 'YOUR_API_KEY';
+# uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+#$WWW::SwaggerClient::Configuration::api_key_prefix->{'Authorization'} = "Bearer";
+
+my $api_instance = WWW::SwaggerClient::SWKApi->new();
+my $body = WWW::SwaggerClient::Object::WrappedSWK->new(); # WrappedSWK | 
+
+eval { 
+    $api_instance->httpReceiveWrappedSWK(body => $body);
+};
+if ($@) {
+    warn "Exception when calling SWKApi->httpReceiveWrappedSWK: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure API key authorization: bearerAuth
+swagger_client.configuration.api_key['Authorization'] = 'YOUR_API_KEY'
+# Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+# swagger_client.configuration.api_key_prefix['Authorization'] = 'Bearer'
+
+# create an instance of the API class
+api_instance = swagger_client.SWKApi()
+body =  # WrappedSWK | 
+
+try: 
+    api_instance.http_receive_wrapped_swk(body)
+except ApiException as e:
+    print("Exception when calling SWKApi->httpReceiveWrappedSWK: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
 
 
-                            <h2>Request Body</h2>
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-httpReceiveWrappedSWK--schema">Schema</a>
-                                </li>
-                            </ul>
 
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-httpReceiveWrappedSWK--schema">
-                                  <div id='body-httpReceiveWrappedSWK--schema-' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
   "content" : {
     "application/json" : {
       "schema" : {
@@ -1191,63 +1713,56 @@
   },
   "required" : true
 };
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#body-httpReceiveWrappedSWK--schema-data').val(stringify(schema));
-                                        var result = $('#body-httpReceiveWrappedSWK--schema-');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='body-httpReceiveWrappedSWK--schema-data' type='hidden' value=''></input>
-                                </div>
-				</br>
-
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_httpReceiveWrappedSWK_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_httpReceiveWrappedSWK_body"></div>
+                                </td>
+                                </tr>
+                            </table>
 
 
-                          <h2>Response</h2>
-                            <!-- <h3> 200 - Wrapped SWK is successfully shared </h3> -->
-                            <div class="methodsubtabletitle">200 - Wrapped SWK is successfully shared</div>
 
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Wrapped SWK is successfully shared </h3>
 
-                        <p>
-                          <h2>Sample REST Call</h2>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-			  <li class="active"><a href="#examples-SWK-httpReceiveWrappedSWK-0-curl">Curl</a></li> 
-			  <li class=""><a href="#examples-SWK-httpReceiveWrappedSWK-0-support"></a></li> 
-			</ul> 
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
 
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-SWK-httpReceiveWrappedSWK-0-curl">
-			  <pre><code class="language-bsh">curl -X POST "https://attestingapp.com:9000/wrapped_swk" -H "Authorization: Bearer &lt;token&gt;" -H "Content-Type: application/json"</br>Input: </br>{
-   "swk": "pgj4F3G6Zdb7tB1fUBjM36XmRuGfGperaBCjQj6IOAGdoaE4xmpgnorG"
-}
-</br>Output: </br>"Unwrapping of SWK failed.."
-</code></pre> 
-			  </div>
-			  <div class="tab-pane" id="examples-SWK-httpReceiveWrappedSWK-0-support">
-			  </div> 
-                          </div>
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
                         </article>
                       </div>
                       <hr>
                   </section>
           </div>
+          <div id="footer">
+            <div id="api-_footer">
+              <p>Suggestions, contact, support and error reporting;
+                  <div class="app-desc">Information URL: <a href="https://helloreverb.com">https://helloreverb.com</a></div>
+                  <div class="app-desc">Contact Info: <a href="hello@helloreverb.com">hello@helloreverb.com</a></div>
+              </p>
+                <div class="license-info">Copyright (C) 2021 Intel Corporation. SPDX-License-Identifier: BSD-3-Clause</div>
+                <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+            </div>
+          </div>
       </div>
     </div>
-  </div>
   </div>
   <script>
   (function webpackUniversalModuleDefinition(root, factory) {
@@ -2331,7 +2846,7 @@
   
       _classCallCheck(this, JSONSchemaView);
   
-      this.schema = schema; //console.log(schema);
+      this.schema = schema;
       this.open = open;
       this.options = options;
       this.isCollapsed = open <= 0;
@@ -2344,13 +2859,10 @@
       // Determine if a schema is an array
       this.isArray = !this.isAny && this.schema && this.schema.type === 'array';
   
-      this.isObject = this.schema && (this.schema.type === 'object' || this.schema.properties || this.schema.anyOf || this.schema.oneof || this.schema.allOf);
+      this.isObject = this.schema && (this.schema.type === 'object' || this.schema.properties || this.schema.allOf);
   
       // Determine if a schema is a primitive
       this.isPrimitive = !this.isAny && !this.isArray && !this.isObject;
-  
-      //
-      this.schema.description = '';
   
       //
       this.showToggle = this.schema.description || this.schema.title || this.isPrimitive && (this.schema.minimum || this.schema.maximum || this.schema.exclusiveMinimum || this.schema.exclusiveMaximum);
@@ -2438,7 +2950,12 @@
   
         this.element.innerHTML = this.template();
   
-        
+        if (this.schema && this.schema.example) {
+          var exampleDiv = document.createElement('div');
+          exampleDiv.innerHTML = '<div style="display: block" class="example">\n          <span style="color: #808080" class="name">example: ' + this.schema.example + '</span>\n        </div>';
+          this.element.appendChild(exampleDiv.querySelector('.example'));
+        }
+  
         if (!this.schema) {
           return this.element;
         }
