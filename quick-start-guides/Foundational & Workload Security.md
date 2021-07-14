@@ -28,8 +28,7 @@ Table of Contents
             * [TPM is already owned](#tpm-is-already-owned)
             * [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
             * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
-            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
-            * [Using Docker Notary](#using-docker-notary)
+            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)           
             * [In case of Misconfigurations](#in-case-of-misconfigurations)
       * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-2)
@@ -493,37 +492,6 @@ uefi_secureboot: 'yes'
 # The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
 grub_file_path: <uefi mode grub file path>
 ```
-
-#### Using Docker Notary
-
-If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
-
-```shell
-ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
---extra-vars binaries_path=<path where built binaries are copied to> \
---extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> \
---extra-vars registry_ipaddr=<registry ipaddr> \
---extra-vars registry_scheme=<registry scheme[http/https]>
-```
-or
-
-Update the following vars in `vars/main.yml`
-
-```yaml
-# [TRUE/FALSE based on registry configured with http/https respectively]
-# Required for Workload Integrity with containers
-insecure_skip_verify: <insecure_skip_verify>
-
-# The registry IP for the Docker registry from where container images are pulled
-# Required for Workload Integrity with containers
-registry_ip: <registry_ipaddr>
-
-# The registry protocol for talking to the remote registry [http/https]
-# Required for Workload Integrity with containers
-registry_scheme_type: <registry_scheme>
-```
-
 #### In case of Misconfigurations 
 
 If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
