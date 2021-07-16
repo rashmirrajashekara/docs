@@ -217,7 +217,7 @@ The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Ent
 
 ## Workload Agent
 
-The Workload Agent is the component responsible for handling all of the functions needed for Workload Confidentiality for virtual machines and Docker containers on a physical server. The Workload Agent uses libvirt hooks to identify VM lifecycle events (VM start, stop, hibernate, etc), and intercepts those events to perform needed functions like requesting decryption keys, creation and deletion of encrypted LUKS volumes, using the TPM to unseal decryption keys, etc. The WLA also includes the Docker SecureOverlay Driver that performs analogous functionality for Docker containers.
+The Workload Agent is the component responsible for handling all of the functions needed for Workload Confidentiality for virtual machines and containers on a physical server. The Workload Agent uses libvirt hooks to identify VM lifecycle events (VM start, stop, hibernate, etc), and intercepts those events to perform needed functions like requesting decryption keys, creation and deletion of encrypted LUKS volumes, using the TPM to unseal decryption keys, etc. The WLA also performs analogous functionality for containers.
 
 
 
@@ -233,7 +233,7 @@ The Integration Hub features a plugin design for adding new scheduler endpoint t
 
 ## Workload Policy Manager
 
-The Workload Policy Manager is a Linux command line utility used by an image owner to encrypt VM (qcow2) or container (Docker) images, and to create an Image Flavor used to provide the encryption key transfer URL during launch requests. The WPM utility will use an existing or request a new key from the Key Broker Service, use that key to encrypt the image, and output the Image Flavor in JSON format. The encrypted image can then be uploaded to the image store of choice (like OpenStack Glance), and the Image Flavor can be uploaded to the Workload Service. The ID of the image on the image storage system is then mapped to the Image Flavor in the WLS; when the image is used to launch a new instance, the WLS will find the Image Flavor associated with that image ID, and use the Image Flavor to determine the key transfer URL.
+The Workload Policy Manager is a Linux command line utility used by an image owner to encrypt VM (qcow2) or container images, and to create an Image Flavor used to provide the encryption key transfer URL during launch requests. The WPM utility will use an existing or request a new key from the Key Broker Service, use that key to encrypt the image, and output the Image Flavor in JSON format. The encrypted image can then be uploaded to the image store of choice (like OpenStack Glance), and the Image Flavor can be uploaded to the Workload Service. The ID of the image on the image storage system is then mapped to the Image Flavor in the WLS; when the image is used to launch a new instance, the WLS will find the Image Flavor associated with that image ID, and use the Image Flavor to determine the key transfer URL.
 
 
 
@@ -595,7 +595,7 @@ The CMS is REQUIRED for all use cases.
 
 - Application Integrity
 
-- Workload Confidentiality (both VMs and Docker Containers)
+- Workload Confidentiality (both VMs and Containers)
 
 ### Supported Operating Systems
 
@@ -672,7 +672,7 @@ The AAS is REQUIRED for all use cases.
 
 * Application Integrity
 
-*  Workload Confidentiality (both VMs and Docker Containers)
+*  Workload Confidentiality (both VMs and Containers)
 
 ### Prerequisites
 
@@ -829,7 +829,7 @@ The Host Verification Service is REQUIRED for all use cases.
 
 * Application Integrity
 
-* Workload Confidentiality (both VMs and Docker Containers)
+* Workload Confidentiality (both VMs and Containers)
 
 ### Prerequisites
 
@@ -929,7 +929,7 @@ Installing the Workload Service
 
 The WLS is REQUIRED for the following use cases.
 
-* Workload Confidentiality (both VMs and Docker Containers)
+* Workload Confidentiality (both VMs and Containers)
 
 ### Prerequisites
 
@@ -995,7 +995,7 @@ The Trust Agent for Linux is REQUIRED for all use cases.
 
 * Application Integrity
 
-* Workload Confidentiality (both VMs and Docker Containers)
+* Workload Confidentiality (both VMs and Containers)
 
 ### Package Dependencies
 
@@ -1039,11 +1039,10 @@ The following must be completed before installing the Trust Agent:
 * (Required for NATS mode only) A NATS server must be configured and available
 * (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy. 
 * (Optional, REQUIRED for Virtual Machine Confidentiality only):
-* QEMU/KVM must be installed
-* Libvirt must be installed
-* (Optional, REQUIRED for Docker Container Confidentiality only): Docker CE 19.03.13 must be installed
+  * QEMU/KVM must be installed
+  * Libvirt must be installed
 
-> **Note**: The specific Docker-CE version 19.03.13 is required for Docker Container Confidentiality. Only this version is supported for this use case.
+  
 
 #### Tboot Installation
 
@@ -1856,21 +1855,17 @@ The KBS is REQUIRED for the following use cases:
 The following must be completed before installing the Key Broker:
 
 -   The Verification Service must be installed and available
-
 -   The Authentication and Authorization Service must be installed and
     available
-
 -   The Certificate Management Service must be installed and available
-
 -   (Recommended; Required if a 3rd-party Key Management Server will
     be used) A KMIP 2.0-compliant 3rd-party Key management Server must
     be available.
 -   The Key Broker will require the KMIP server’s client
         certificate, client key and root ca certificate.
-    
+-   The KMIP server's client certificate must contain a Subject Alternative Name that includes the KMIP server's hostname.
 -   The Key Broker uses the gemalto kmip-go client to connect to a KMIP
         server
-    
 -   The Key Broker has been validated using the pykmip 0.9.1 KMIP
         server as a 3rd-party Key Management Server. While any general
         KMIP 2.0-compliant Key Management Server should work,
@@ -1910,7 +1905,7 @@ Ubuntu 18.04
    KMIP_VERSION=<KMIP protocol version>
    KMIP_USERNAME=<Username of KMIP server>
    KMIP_PASSWORD=<Password of KMIP server>
-   ### KMIP_HOSTNAME can be used to provide, KMIP server certificate's SAN(IP/DNS) or valid COMMON NAME. Only FQDN names are allowed.
+   ### KMIP_HOSTNAME must be used to provide, KMIP server certificate's SAN(IP/DNS) or valid COMMON NAME. Only FQDN names are allowed.
    KMIP_HOSTNAME=<Hostname of KMIP server>
    ### Retrieve the following certificates and keys from the KMIP server
    KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
@@ -1926,7 +1921,7 @@ Ubuntu 18.04
 
 #### Configure the Key Broker to use a KMIP-compliant Key Management Server
 
-The Key Broker can be configured to use a 3rd-party KMIP key manager as part of installation using optional kbs.env installation variables.
+The Key Broker must be configured to use a 3rd-party KMIP key manager as part of installation using kbs.env installation variables.
 
 
 To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Management Server:
@@ -1940,7 +1935,8 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
     KEY_MANAGER=KMIP
     KMIP_SERVER_IP=<IP address of KMIP server>
     KMIP_SERVER_PORT=<Port number of KMIP server>
-
+KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the Subject Alternative Name fort eh KMIP server client certificate.>
+    
     ## KMIP_VERSION variable can be used to mention KMIP protocol version.
     ## This is an OPTIONAL field, default value is set to '2.0'. KBS supports KMIP version '1.4' and '2.0'.
     KMIP_VERSION=<KMIP protocol version>
@@ -1960,7 +1956,7 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
     KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
     KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
     KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
-    ```
+  ```
   
 3.  The KBS configuration can be found in `/etc/kbs/config.yml`, KMIP configuration can be updated in this configuration
 
@@ -8569,7 +8565,7 @@ Upgrading in this order will make each service unavailable only for the duration
 
 ### Binary Installations
 
-For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
+For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required unless configuration settings will change.
 
 
 
