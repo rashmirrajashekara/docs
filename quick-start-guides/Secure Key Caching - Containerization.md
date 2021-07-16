@@ -418,6 +418,7 @@ KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s co
 KMIP_SERVER_IP=<KMIP Server IP>
 KMIP_SERVER_PORT=<KMIP Server Port>
 KMIP_HOSTNAME=<KMIP IP/Hostname>
+#Provide either FQDN or KMIP SERVER IP for kmip hostname
 #Default port for kmip server is 5696
 
 # ISecl Scheduler
@@ -637,6 +638,7 @@ KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s co
 KMIP_SERVER_IP=<KMIP Server IP>
 KMIP_SERVER_PORT=<KMIP Server Port>
 KMIP_HOSTNAME=<KMIP IP/Hostname>
+#Provide either FQDN or KMIP SERVER IP for kmip hostname
 #Default port for kmip server is 5696
 
 

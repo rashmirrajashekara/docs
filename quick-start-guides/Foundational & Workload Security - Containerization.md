@@ -420,9 +420,7 @@ systemctl restart docker
     * Copy `platform-dependencies` directory to each of the `TXT/BTG` enabled physical servers. 
     
       > **Note:** The platform-dependencies can be skipped for `SUEFI` enabled servers
-    
-    * Run the `install-ta-prereqs.sh` script on the physical servers
-    
+        
     * Reboot the server
     
     * Only for `Ubuntu-18.04`, run the following commands
@@ -435,9 +433,7 @@ systemctl restart docker
       * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
       
         > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
-      
-      * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
-      
+            
       * Run the `install-prereqs-docker.sh` script on the physical servers from `container-runtime`
       
         > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
@@ -455,9 +451,7 @@ systemctl restart docker
     * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
       
       > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
-      
-    * Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
-      
+            
     * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
       
         > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
@@ -484,7 +478,16 @@ systemctl restart docker
 
 * Ensure docker registry is running locally or remotely
 
-* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: TXT-ENABLED` or `node.type: SUEFI-ENABLED` respectively for `TXT/SUEFI` enabled servers can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/ta/daemonset.yml` , `k8s/manifests/wla/daemonset.yml`
+* The K8s cluster admin should configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. 
+  For example, a label like `node.type: TXT-ENABLED` or `node.type: SUEFI-ENABLED` respectively for `TXT/SUEFI` enabled servers 
+  can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration 
+  to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. 
+  This can be edited in `k8s/manifests/ta/daemonset.yml` , `k8s/manifests/wla/daemonset.yml` 
+  
+  Refer Section in [appendix for Feature Detection](#hardware-feature-detection)
+  - `node.type: TXT-ENABLED` should be labeled for nodes installed with tboot, where event logs will be collected from tboot measurements.
+  - `node.type: SUEFI-ENABLED` should be labeled for nodes with SUEFI enabled, where event logs will be efi logs.
+  
   ```shell
   #Label node for TXT
   kubectl label node <node-name> node.type=TXT-ENABLED
@@ -684,8 +687,15 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 * Ensure images are pushed to registry locally or remotely
 
-* The K8s cluster admin configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: TXT-ENABLED` or `node.type: SUEFI-ENABLED` respectively for `TXT/SUEFI` enabled servers can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. This can be edited in `k8s/manifests/ta/daemonset.yml` , `k8s/manifests/wla/daemonset.yml`
+* The K8s cluster admin should configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. 
+  For example, a label like `node.type: TXT-ENABLED` or `node.type: SUEFI-ENABLED` respectively for `TXT/SUEFI` enabled servers 
+  can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration 
+  to schedule on all worker nodes marked with the label. The same label is being used as default in the K8s manifests. 
+  This can be edited in `k8s/manifests/ta/daemonset.yml` , `k8s/manifests/wla/daemonset.yml` 
 
+  Refer Section in [appendix for Feature Detection](#hardware-feature-detection)
+  - `node.type: TXT-ENABLED` should be used for nodes with tboot installed, where event logs will be collected from tboot measurements.
+  - `node.type: SUEFI-ENABLED` should be used for nodes with SUEFI enabled, where event logs will be EFI logs.
     ```shell
     #Label node for TXT
     kubectl label node <node-name> node.type=TXT-ENABLED
@@ -1128,6 +1138,13 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 
 
 ## Appendix
+
+### Hardware feature detection
+For checking whether a system is SUEFI enabled
+```bootctl | grep "Secure Boot: enabled"```
+
+For checking system installed with tboot
+```txt-stat | grep "TXT measured launch: TRUE" ```
 
 ### Running behind Proxy
 

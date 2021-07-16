@@ -15,8 +15,7 @@ Table of Contents
          * [Building](#building)
             * [Foundational Security Usecase](#foundational-security-usecase)
             * [Workload Security Usecase](#workload-security-usecase)
-               * [VM Confidentiality](#vm-confidentiality)
-               * [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
+               * [VM Confidentiality](#vm-confidentiality)               
                * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
       * [<strong>4. Deployment</strong>](#4-deployment)
          * [Pre-requisites](#pre-requisites-1)
@@ -29,8 +28,7 @@ Table of Contents
             * [TPM is already owned](#tpm-is-already-owned)
             * [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
             * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
-            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)
-            * [Using Docker Notary](#using-docker-notary)
+            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)           
             * [In case of Misconfigurations](#in-case-of-misconfigurations)
       * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
          * [Pre-requisites](#pre-requisites-2)
@@ -202,63 +200,6 @@ The below steps needs to be carried out on the Build and Deployment VM
   /root/intel-secl/build/vmc/binaries/
   ```
 
-##### Container Confidentiality with Docker Runtime
-
-* Sync the repo
-
-  ```shell
-  mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/cc-docker.xml
-  repo sync
-  ```
-  
-* Run the `pre-requisites` script
-
-  ```shell
-  cd utils/build/workload-security
-  chmod +x ws-prereq.sh
-  ./ws-prereq.sh -d
-  ```
-
-* Enable and start the Docker daemon
-
-  ```shell
-  systemctl enable docker
-  systemctl start docker
-  ```
-
-* Ignore the below steps if not running behind a proxy
-
-  ```shell
-  mkdir -p /etc/systemd/system/docker.service.d
-  touch /etc/systemd/system/docker.service.d/proxy.conf
-  
-  #Add the below lines in proxy.conf
-  [Service]
-  Environment="HTTP_PROXY=<http_proxy>"
-  Environment="HTTPS_PROXY=<https_proxy>"
-  Environment="NO_PROXY=<no_proxy>"
-  ```
-
-  ```shell
-  #Reload docker
-  systemctl daemon-reload
-  systemctl restart docker
-  ```
-  
-* Build repos
-
-  ```shell
-  cd /root/intel-secl/build/cc-docker/
-  make binaries
-  ```
-  
-* Built binaries
-
-  ```shell
-  /root/intel-secl/build/cc-docker/binaries/
-  ```
-
 ##### Container Confidentiality with CRIO Runtime
 
 * Sync the repo
@@ -390,7 +331,6 @@ cd tools/ansible-role
 | Trusted Workload Placement - VM            | `setup: trusted-workload-placement-vm` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-vm` in CLI |
 | Trusted Workload Placement - Containers                      | `setup: trusted-workload-placement-containers` in playbook or via `--extra-vars` as `setup=trusted-workload-placement-containers` in CLI |
 | Launch Time Protection - VM Confidentiality                  | `setup: workload-conf-vm` in playbook or via `--extra-vars` as `setup=workload-conf-vm` in CLI |
-| Launch Time Protection - Container Confidentiality with Docker Runtime | `setup: workload-conf-containers-docker` in playbook or via `--extra-vars` as `setup=workload-conf-containers-docker`in CLI |
 | Launch Time Protection - Container Confidentiality with CRIO Runtime | `setup: workload-conf-containers-crio` in playbook or via `--extra-vars` as `setup=workload-conf-containers-crio`in CLI |
 
 > **Note:**  Orchestrator installation is not bundled with the role and need to be done independently. Also, components dependent on the orchestrator like `isecl-k8s-extensions` and `integration-hub` are installed either partially or not installed
@@ -552,37 +492,6 @@ uefi_secureboot: 'yes'
 # The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
 grub_file_path: <uefi mode grub file path>
 ```
-
-#### Using Docker Notary
-
-If using Docker notary when working with `Launch Time Protection - Workload Confidentiality with Docker Runtime`, following options can be provided during runtime in the playbook
-
-```shell
-ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
---extra-vars binaries_path=<path where built binaries are copied to> \
---extra-vars insecure_verify=<insecure_verify[TRUE/FALSE]> \
---extra-vars registry_ipaddr=<registry ipaddr> \
---extra-vars registry_scheme=<registry scheme[http/https]>
-```
-or
-
-Update the following vars in `vars/main.yml`
-
-```yaml
-# [TRUE/FALSE based on registry configured with http/https respectively]
-# Required for Workload Integrity with containers
-insecure_skip_verify: <insecure_skip_verify>
-
-# The registry IP for the Docker registry from where container images are pulled
-# Required for Workload Integrity with containers
-registry_ip: <registry_ipaddr>
-
-# The registry protocol for talking to the remote registry [http/https]
-# Required for Workload Integrity with containers
-registry_scheme_type: <registry_scheme>
-```
-
 #### In case of Misconfigurations 
 
 If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
@@ -607,7 +516,6 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 |                        | Trusted Workload Placement (VM & Containers)  | ✔️ |
 |                        | Application Integrity                         | ✔️                  |
 | Launch Time Protection | VM Confidentiality                            | ✔️                  |
-|                        | Container Confidentiality with Docker Runtime | ✔️                  |
 |                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
 
 > **Note: ** `Foundational Security - Host Attestation` is a pre-requisite for all usecases beyond Host Attestation. E.g: For working with `Launch Time Protection - VM Confidentiality` , Host Attestation flow must be run as a pre-req before trying VM Confidentiality
