@@ -85,12 +85,6 @@
 
   ![hardware-options](./images/trusted-boot-options.PNG)
 
-> **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommended to use tboot version 1.9.10 for the time being.
->
-> 
-
 ### Machines
 
 * Build Machine
@@ -183,7 +177,12 @@ The multi node supports `kubeadm` as a supported K8s distribution
 
 ### Pre-requisites
 
-The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/Physical Node)
+* The repos can be built only as `root` user
+* Enable the following `RHEL 8.3` repos if building on `RHEL 8.3`
+
+  * `rhel-8-for-x86_64-appstream-rpms`
+  * `rhel-8-for-x86_64-baseos-rpms`
+* The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/Physical Node)
 
 #### Development Tools and Utilities
 
@@ -191,16 +190,16 @@ The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/P
 # RedHat Enterprise Linux 8.3
 dnf install -y git wget tar python3 gcc gcc-c++ zip make yum-utils openssl-devel
 dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
-ln -s /usr/bin/python3 /usr/bin/python
-ln -s /usr/bin/pip3 /usr/bin/pip
+ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
 
 # Ubuntu-18.04
 apt update
 apt remove -y gcc gcc-7
 apt install -y git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
 cp /usr/bin/gcc-8 /usr/bin/gcc
-ln -s /usr/bin/python3 /usr/bin/python
-ln -s /usr/bin/pip3 /usr/bin/pip
+ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
 ```
 
 #### Repo tool
@@ -280,7 +279,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -324,7 +323,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -360,7 +359,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.0
   repo sync
   ```
 

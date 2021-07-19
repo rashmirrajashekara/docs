@@ -57,10 +57,6 @@ Table of Contents
 
   ![hardware-options](./images/trusted-boot-options.PNG)
 
-> **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
-
 ### OS Requirements
 
 * `RHEL 8.3` OS
@@ -97,44 +93,41 @@ The below steps needs to be carried out on the Build and Deployment VM
 ### Pre-requisites
 
 * The repos can be built only as `root` user
-
-* RHEL 8.3 Machine for building repos
-
-* Enable the following RHEL repos:
+* Enable the following repos for `RHEL 8.3`:
 
   * `rhel-8-for-x86_64-appstream-rpms`
   * `rhel-8-for-x86_64-baseos-rpms`
+* The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/Physical Node)
+#### Development Tools and Utilities
 
-* Install basic utilities for getting started
+```shell
+# RedHat Enterprise Linux 8.3
+dnf install -y git wget tar python3 gcc gcc-c++ zip make yum-utils openssl-devel
+dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
+ln -sf /usr/bin/python3 /usr/bin/python
+ln -sf /usr/bin/pip3 /usr/bin/pip
+```
 
-  ```shell
-  dnf install git wget tar python3 yum-utils
-  ```
+#### Repo Tool
 
-* Create symlink for python3
+```shell
+tmpdir=$(mktemp -d)
+git clone https://gerrit.googlesource.com/git-repo $tmpdir
+install -m 755 $tmpdir/repo /usr/local/bin
+rm -rf $tmpdir
+```
 
-  ```shell
-  ln -s /usr/bin/python3 /usr/bin/python
-  ln -s /usr/bin/pip3 /usr/bin/pip
-  ```
+#### Golang
 
-* Install repo tool
+```shell
+wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
+tar -xzf go1.14.4.linux-amd64.tar.gz
+sudo mv go /usr/local
+export GOROOT=/usr/local/go
+export PATH=$GOROOT/bin:$PATH
+rm -rf go1.14.4.linux-amd64.tar.gz
+```
 
-  ```shell
-  tmpdir=$(mktemp -d)
-  git clone https://gerrit.googlesource.com/git-repo $tmpdir
-  install -m 755 $tmpdir/repo /usr/local/bin
-  rm -rf $tmpdir
-  ```
-
-* Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` 
-  and set `GOROOT` & `PATH`
-
-  ```shell
-  export GOROOT=<path_to_go>
-  export PATH=$GOROOT/bin:$PATH
-  ```
-  
 ### Building
 
 #### Foundational Security Usecase
@@ -143,7 +136,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/fs.xml
   repo sync
   ```
 
@@ -176,7 +169,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -206,7 +199,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.0 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/cc-crio.xml
   repo sync
   ```
 
@@ -429,6 +422,29 @@ ansible-playbook <playbook-name> \
 
 ### Additional Examples & Tips
 
+
+#### TBoot Installation
+
+Tboot needs to be built by the user from tboot source and the `tboot.gz` & `tboot-syms` files needs to be copied under the `binaries` folder. The supported version of Tboot as of 4.0 release is `tboot-1.10.1`.The options must then be provided during runtime in the playbook:
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars tboot_gz_file=<path where built binaries are copied to>/tboot.gz
+--extra-vars tboot_syms_file=<path where built binaries are copied to>/tboot-syms
+```
+
+or 
+
+Update the following in `vars/main.yml`
+
+```yaml
+# The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
+tboot_gz_file: "<binaries_path>/tboot.gz"
+tboot_syms_file: "<binaries_path>/tboot-syms"
+```
+
 #### TPM is already owned
 
 If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
@@ -446,26 +462,6 @@ Update the following vars in `vars/main.yml`
 ```yaml
 # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
 tpm_owner_secret: <tpm_secret>
-```
-
-#### GRUB Default option for Booting into MLE
-
-The grub2_default option would vary from OEM to OEM for booting after installing tboot. The grub option to be selected for booting into TBOOT/MLE mode, use `grubby --info <option:0/1...>` to determine which one has no boot menu assigned to it during runtime in the playbook as below. Default is 3.
-
-> **NOTE:** This is not required in case of UEFI Secure boot mode
-
-```shell
-ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
---extra-vars binaries_path=<path where built binaries are copied to> \
---extra-vars grub_default_option=<grub_default_option>
-```
-or
-
-Update the following vars in `vars/main.yml`
-
-```yaml
-grub_default_option: "3"
 ```
 
 #### UEFI SecureBoot enabled
