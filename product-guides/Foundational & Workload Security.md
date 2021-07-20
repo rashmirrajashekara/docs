@@ -124,9 +124,6 @@ on the features available on the platform.
 
 
 
-> **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on
-> RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
 #### Remote Attestation
 
 Trusted computing consists primarily of two activities – measurement, and attestation. Measurement is the act of obtaining cryptographic representations for the system state. Attestation is the act of comparing those cryptographic measurements against expected values to determine whether the system booted into an acceptable state. 
@@ -296,9 +293,7 @@ Use the chart below for a guide to acceptable configuration options. .
 
 <img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
 
-> ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
 
-* 
 
 Recommended Service Layout
 --------------------------
@@ -1033,8 +1028,6 @@ The following must be completed before installing the Trust Agent:
 
 * System must be booted to a tboot boot option OR use UEFI SecureBoot.
 
-> **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
-
 * (Provisioning step only) Intel® SecL Verification Service server installed and active.
 * (Required for NATS mode only) A NATS server must be configured and available
 * (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy. 
@@ -1070,7 +1063,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
 2. Ensure that multiboot2.mod and relocator.mod are available for grub2
 
-   This step may not be necessary for all OS versions.  In order to utilize tboot, grub2 requires these two modules from the grub2-efi-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).
+   This step may not be necessary for all OS versions.  In order to utilize tboot, grub2 requires these two modules from the grub2-efi-x64-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).
 
    These files must be present in this directory:
 
@@ -1956,6 +1949,7 @@ KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the
     KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
     KMIP_ROOT_CERT_PATH=<path>/root_certificate.pem
     KMIP_CLIENT_CERT_PATH=<path>/client_certificate.pem
+    ```
   ```
   
 3.  The KBS configuration can be found in `/etc/kbs/config.yml`, KMIP configuration can be updated in this configuration
@@ -1971,7 +1965,7 @@ KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the
       client-key-path: "<path>/client-key.pem"
       client-cert-path: "<path>/client-certificate.pem"
       root-cert-path: "<path>/root-certificate.pem"
-    ```
+  ```
 
 4.  Restart the Key Broker for the settings to take effect
 
