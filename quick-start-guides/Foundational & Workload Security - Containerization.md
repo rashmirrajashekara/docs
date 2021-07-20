@@ -33,7 +33,6 @@
     - [Build OCI Container images and K8s Manifests](#build-oci-container-images-and-k8s-manifests)
       - [Foundational Security](#foundational-security)
       - [Workload Security](#workload-security)
-        - [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
         - [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
   - [Deployment](#deployment)
     - [Pre-requisites](#pre-requisites-1)
@@ -196,7 +195,7 @@ ln -sf /usr/bin/pip3 /usr/bin/pip
 # Ubuntu-18.04
 apt update
 apt remove -y gcc gcc-7
-apt install -y git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
+apt install -y python3-problem-report git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
 cp /usr/bin/gcc-8 /usr/bin/gcc
 ln -sf /usr/bin/python3 /usr/bin/python
 ln -sf /usr/bin/pip3 /usr/bin/pip
@@ -294,7 +293,13 @@ systemctl restart docker
 * Install skopeo
 
   ```shell
+  # RHEL 8.x
   dnf install -y skopeo
+
+  # Ubuntu 18.04
+  add-apt-repository ppa:projectatomic/ppa
+  apt-get update
+  apt-get install skopeo
   ```
   
 * Build
@@ -316,43 +321,6 @@ systemctl restart docker
   ```
 
 #### Workload Security
-
-##### Container Confidentiality with Docker Runtime
-
-* Sync the repos
-
-  ```shell
-  mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v4.0.0
-  repo sync
-  ```
-
-* Run the `pre-requisites` script
-
-  ```shell
-  cd utils/build/workload-security
-  chmod +x ws-prereq.sh
-  ./ws-prereq.sh -d
-  ```
-  
-* Build
-
-  ```shell
-  cd /root/intel-secl/build/cc-docker
-  
-  #Single node cluster with microk8s
-  make k8s-aio
-  
-  #Multi node cluster with kubeadm
-  make k8s
-  ```
-
-* Built Container images,K8s manifests and deployment scripts
-
-  ```shell
-  /root/intel-secl/build/cc-docker/k8s/
-  ```
-
 ##### Container Confidentiality with CRIO Runtime
 
 * Sync the repos
@@ -416,11 +384,6 @@ systemctl restart docker
 * On each worker node with `TXT/BTG` enabled and registered to K8s control-plane, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04` systems
 
   * Foundational Security
-    * Copy `platform-dependencies` directory to each of the `TXT/BTG` enabled physical servers. 
-    
-      > **Note:** The platform-dependencies can be skipped for `SUEFI` enabled servers
-        
-    * Reboot the server
     
     * Only for `Ubuntu-18.04`, run the following commands
     
@@ -429,9 +392,7 @@ systemctl restart docker
       ```
   * Workload Security
     * Container Confidentiality with Docker runtime
-      * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
-      
-        > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
+      * Copy `container-runtime` directory to each of the `TXT/BTG` enabled physical servers       
             
       * Run the `install-prereqs-docker.sh` script on the physical servers from `container-runtime`
       
@@ -447,9 +408,7 @@ systemctl restart docker
       
     * Container Confidentiality with CRIO runtime
       
-    * Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/BTG` enabled physical servers
-      
-      > **Note:** The `platform-dependencies` can be skipped for `SUEFI` enabled servers
+    * Copy `container-runtime` directory to each of the `TXT/BTG` enabled physical servers  
             
     * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
       

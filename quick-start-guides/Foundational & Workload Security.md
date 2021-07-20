@@ -478,16 +478,16 @@ ansible-playbook <playbook-name> \
 
 or
 
-Update the following vars in `vars/main.yml`
-
 ```yaml
-# Enable/disable for UEFI SecureBoot Mode
-# [yes - UEFI SecureBoot mode, no - Legacy mode]
+# UEFI mode or UEFI SecureBoot mode
+# ['no' - UEFI mode, 'yes' - UEFI SecureBoot mode]
 uefi_secureboot: 'yes'
 
-# The grub file path for Legacy mode & UEFI Mode. Default is Legacy mode path. Update the below path for UEFI mode with UEFI SecureBoot
-grub_file_path: <uefi mode grub file path>
+# The grub file path for UEFI Mode systems
+# [/boot/efi/EFI/redhat/grub.cfg - UEFI Mode]
+grub_file_path: /boot/efi/EFI/redhat/grub.cfg
 ```
+
 #### In case of Misconfigurations 
 
 If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services wont be reinstalled.
