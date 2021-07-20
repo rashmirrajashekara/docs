@@ -2,9 +2,9 @@
 
 **Product Guide**
 
-**May 2021**
+**July 2021**
 
-**Revision 3.6**
+**Revision 4.0**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -50,7 +50,7 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 Copyright © 2020, Intel Corporation. All Rights Reserved.
 
-# Revision History
+## Revision History
 
 | Revision  Number | Description                     | Date          |
 | ---------------- | ------------------------------- | ------------- |
@@ -69,17 +69,17 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.4 | Updated for version 3.4 release | February 2021 |
 | 3.5 | Updated for version 3.5 release | March 2021 |
 | 3.6 | Updated for version 3.6 release | May 2021 |
+| 4.0 | Updated for version 4.0 release | July 2021 |
 
 
-
-# Table of Contents
+## Table of Contents
 
 [TOC]
 
 Introduction
 ============
 
-## Overview
+### Overview
 
 Intel Security Libraries for Datacenter is a collection of software applications and development libraries intended to help turn Intel platform security  features into real-world security use cases.
 
@@ -96,7 +96,7 @@ another step earlier in the process. Any break in this chain leads to an opportu
 
 #### Hardware Root of Trust
 
-The *Root of Trust,* the first link in the chain, can be one of several different options. Anything that happens in the boot process before the Root of Trust must be considered to be within the “trust boundary,” signifying components whose trustworthiness cannot be assessed. For this reason, it’s best to use a Root of Trust that starts as early in the system boot process as possible, so that the Chain of Trust during the boot process can cover as much as possible. 
+The *Root of Trust,* the first link in the chain, can be one of several different options. Anything that happens in the boot process before the Root of Trust must be considered to be within the “trust boundary,” signifying components whose trustworthiness cannot be assessed. For this reason, it’s best to use a Root of Trust that starts as early in the system boot process as possible, so that the Chain of Trust during the boot process can cover as much as possible.
 
 Multiple Root of Trust options exist, ranging from firmware to hardware. In general, a hardware Root of Trust will have a smaller “trust
 boundary” than a firmware Root of Trust. A hardware Root of Trust will also have the benefit of immutability – where firmware can easily be
@@ -129,9 +129,9 @@ on the features available on the platform.
 
 #### Remote Attestation
 
-Trusted computing consists primarily of two activities – measurement, and attestation. Measurement is the act of obtaining cryptographic representations for the system state. Attestation is the act of comparing those cryptographic measurements against expected values to determine whether the system booted into an acceptable state. 
+Trusted computing consists primarily of two activities – measurement, and attestation. Measurement is the act of obtaining cryptographic representations for the system state. Attestation is the act of comparing those cryptographic measurements against expected values to determine whether the system booted into an acceptable state.
 
-Attestation can be performed either locally, on the same host that is to be attested, or remotely, by an external authority. The trusted boot process can optionally include a local attestation involving the evaluation of a TPM-stored Launch Control Policy (LCP). In this case, the host’s TPM will compare the measurements that have been taken so far to a set of expected PCR values stored in the LCP; if there is a mismatch, the boot process is halted entirely. 
+Attestation can be performed either locally, on the same host that is to be attested, or remotely, by an external authority. The trusted boot process can optionally include a local attestation involving the evaluation of a TPM-stored Launch Control Policy (LCP). In this case, the host’s TPM will compare the measurements that have been taken so far to a set of expected PCR values stored in the LCP; if there is a mismatch, the boot process is halted entirely.
 
 Intel® SecL utilizes remote attestation, providing a remote Verification Service that maintains a database of expected measurements (or “flavors”), and compares the actual boot-time measurements from any number of hosts against its database to provide an assertion that the host booted into a “trusted” or “untrusted” state. Remote attestation is typically easier to centrally manage (as opposed to creating an LCP for each host and entering the policy into the host’s TPM), does not halt the boot process allowing for easier remediation, and separates the attack surface into separate components that must both be compromised to bypass security controls.
 
@@ -155,7 +155,7 @@ Added in the Intel® SecL-DC 1.5 release, Application Integrity allows any files
 
 Added in the Intel® SecL-DC 1.6 release, Workload Confidentiality allows virtual machine and Docker container images to be encrypted at rest, with key access tied to platform integrity attestation. Because security attributes contained in the platform integrity attestation report are used to control access to the decryption keys, this feature provides both protection for at-rest data, IP, code, etc in Docker container or virtual machine images, and also enforcement of image-owner-controlled placement policies. When decryption keys are released, they are sealed to the physical TPM of the host that was attested, meaning that only a server that has successfully met the policy requirements for the image can actually gain access.
 
-Workload Confidentiality begins with the Workload Policy Manager (WPM) and a qcow2 or Docker image that needs to be protected. The WPM is a lightweight application that will request a new key from the Key Broker, use that key to encrypt the image, and generate an Image Flavor. The image owner will then upload the encrypted image to their desired image storage service (for example, OpenStack Glance or a local Docker Registry), and the image ID from the image storage will be uploaded along with the Image Flavor to the Intel® SecL Workload Service. When that image is used to launch a new VM or container, the Workload Agent will intercept the VM or container start and request the decryption key for that image from the Workload Service. The Workload Service will use the image ID and the Image Flavor to find the key transfer URL for the appropriate Key Broker, and will query the Verification Service for the latest Platform Integrity trust attestation report for the host. The Key Broker will use the attestation report to determine whether the host meets the policy requirements for the key transfer, and to verify that the report is signed by a Verification Service known to the Broker. If the report is genuine and meets the policy requirements, the image decryption key is sealed using an asymmetric key from that host’s TPM, and sent back to the Workload Service. The Workload Service then caches the key for 5 minutes (to avoid performance issues for multiple rapid launch requests; note that these keys are still wrapped using a sealing key unique to the hosts TPM, so multiple hosts would require multiple keys even for an identical image) and return the wrapped key to the Workload Agent on the host, which then uses the host TPM to unseal the image decryption key. The key is then used to create a new LUKS volume, and the image is decrypted into this volume. 
+Workload Confidentiality begins with the Workload Policy Manager (WPM) and a qcow2 or Docker image that needs to be protected. The WPM is a lightweight application that will request a new key from the Key Broker, use that key to encrypt the image, and generate an Image Flavor. The image owner will then upload the encrypted image to their desired image storage service (for example, OpenStack Glance or a local Docker Registry), and the image ID from the image storage will be uploaded along with the Image Flavor to the Intel® SecL Workload Service. When that image is used to launch a new VM or container, the Workload Agent will intercept the VM or container start and request the decryption key for that image from the Workload Service. The Workload Service will use the image ID and the Image Flavor to find the key transfer URL for the appropriate Key Broker, and will query the Verification Service for the latest Platform Integrity trust attestation report for the host. The Key Broker will use the attestation report to determine whether the host meets the policy requirements for the key transfer, and to verify that the report is signed by a Verification Service known to the Broker. If the report is genuine and meets the policy requirements, the image decryption key is sealed using an asymmetric key from that host’s TPM, and sent back to the Workload Service. The Workload Service then caches the key for 5 minutes (to avoid performance issues for multiple rapid launch requests; note that these keys are still wrapped using a sealing key unique to the hosts TPM, so multiple hosts would require multiple keys even for an identical image) and return the wrapped key to the Workload Agent on the host, which then uses the host TPM to unseal the image decryption key. The key is then used to create a new LUKS volume, and the image is decrypted into this volume.
 
 This functionality means that a physical host must pass policy requirements in order to gain access to the image key, and the image will be encrypted at rest both in image storage and on the compute host.
 
@@ -169,13 +169,11 @@ Flavor signing is seamlessly added to the existing Flavor creation process (both
 
 #### Trusted Virtual Kubernetes Worker Nodes
 
-Added in the Intel® SecL-DC version 2.1 release, this feature provides a Chain of Trust solution extending to Kubernetes Worker Nodes deployed as Virtual Machines. This feature addresses Kubernetes deployments that use Virtual Machines as Worker Nodes, rather than using bare-metal servers. 
+Added in the Intel® SecL-DC version 2.1 release, this feature provides a Chain of Trust solution extending to Kubernetes Worker Nodes deployed as Virtual Machines. This feature addresses Kubernetes deployments that use Virtual Machines as Worker Nodes, rather than using bare-metal servers.
 
 When libvirt initiates a VM Start, the Intel® SecL-DC Workload Agent will create a report for the VM that associates the VM’s trust status with the trust status of the host launching the VM. This VM report will be retrievable via the Workload Service, and contains the hardware UUID of the physical server hosting the VM. This UUID can be correlated to the Trust Report of that server at the time of VM launch, creating an audit trail validating that the VM launched on a trusted platform. A new report is created for every VM Start, which includes actions like VM migrations, so that each time a VM is launched or moved a new report is generated ensuring an accurate trust status.
 
 By using Platform Integrity and Data Sovereignty-based orchestration (or Workload Confidentiality with encrypted worker VMs) for the Virtual Machines to ensure that the virtual Kubernetes Worker nodes only launch on trusted hardware, these VM trust reports provide an auditing capability to extend the Chain of Trust to the virtual Worker Nodes.
-
-
 
 Intel® Security Libraries Components
 ====================================
@@ -183,9 +181,7 @@ Intel® Security Libraries Components
 Certificate Management Service
 ------------------------------
 
-Starting with Intel® SecL-DC 1.6, most non-TPM-related certificates used by Intel® SecL-DC applications will be issued by the new Certificate Management Service. This includes acting as a root CA and issuing TLS certificates for all of the various web services. 
-
-
+Starting with Intel® SecL-DC 1.6, most non-TPM-related certificates used by Intel® SecL-DC applications will be issued by the new Certificate Management Service. This includes acting as a root CA and issuing TLS certificates for all of the various web services.
 
 ## Authentication and Authorization Service
 
@@ -203,15 +199,13 @@ Platform security technologies like Intel® TXT, Intel® BootGuard, and UEFI Sec
 
 ## Workload Service
 
-The Workload Service acts as a management service for handling Workload Flavors (Flavors used for Virtual Machines and Containers). In the Intel® SecL-DC 1.6 release, the Workload Service uses Flavors to map decryption key IDs to image IDs. When a launch request for an encrypted workload image is intercepted by the Workload Agent, the Workload Service will handle mapping the image ID to the appropriate key ID and key request URL, and will initiate the key transfer request to the Key Broker. 
-
-
+The Workload Service acts as a management service for handling Workload Flavors (Flavors used for Virtual Machines and Containers). In the Intel® SecL-DC 1.6 release, the Workload Service uses Flavors to map decryption key IDs to image IDs. When a launch request for an encrypted workload image is intercepted by the Workload Agent, the Workload Service will handle mapping the image ID to the appropriate key ID and key request URL, and will initiate the key transfer request to the Key Broker.
 
 ## Trust Agent
 
-The Trust Agent resides on physical servers and enables both remote attestation and the extended chain of trust capabilities. The Agent maintains ownership of the server's Trusted Platform Module, allowing secure attestation quotes to be sent to the Verification Service. Incorporating the Intel® SecL HostInfo and TpmProvider libraries, the Trust Agent serves to report on platform security capabilities and platform integrity measurements. 
+The Trust Agent resides on physical servers and enables both remote attestation and the extended chain of trust capabilities. The Agent maintains ownership of the server's Trusted Platform Module, allowing secure attestation quotes to be sent to the Verification Service. Incorporating the Intel® SecL HostInfo and TpmProvider libraries, the Trust Agent serves to report on platform security capabilities and platform integrity measurements.
 
-The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Enterprise Linux* (RHEL) 8.1 and later. 
+The Trust Agent is supported for Windows* Server 2016 Datacenter and Red Hat Enterprise Linux* (RHEL) 8.1 and later.
 
 
 
@@ -223,7 +217,7 @@ The Workload Agent is the component responsible for handling all of the function
 
 ## Integration Hub
 
-The Integration Hub acts as a middle-man between the Verification Service and one or more scheduler services (such as OpenStack* Nova), and "pushes" attestation information retrieved from the Verification Service to one or more scheduler services according to an assignment of hosts to specific tenants. In this way, Tenant A can receive attestation information for hosts that belong to Tenant A, but receive no information about hosts belonging to Tenant B. 
+The Integration Hub acts as a middle-man between the Verification Service and one or more scheduler services (such as OpenStack* Nova), and "pushes" attestation information retrieved from the Verification Service to one or more scheduler services according to an assignment of hosts to specific tenants. In this way, Tenant A can receive attestation information for hosts that belong to Tenant A, but receive no information about hosts belonging to Tenant B.
 
 The Integration Hub serves to disassociate the process of retrieving attestations from actual scheduler queries, so that scheduler services can adhere to best practices and retain better performance at scale. The Integration Hub will regularly query the Intel® SecL Verification Service for SAML attestations for each host. The Integration Hub maintains only the most recent currently valid attestation for each host, and will refresh attestations when they would expire. The Integration Hub will verify the signature of the SAML attestation for each host assigned to a tenant, then parse the attestation status and asset tag information, and then will securely push the parsed key/value pairs to the plugin endpoints enabled.
 
@@ -260,7 +254,7 @@ Instructions and sample scripts for building the Intel® SecL-DC components can 
 
 https://github.com/intel-secl/build-manifest
 
-After the components have been built, the installation binaries can be found in the directories created by the build scripts. 
+After the components have been built, the installation binaries can be found in the directories created by the build scripts.
 
 ```shell
 <servicename>/out/<servicename>.bin
@@ -274,15 +268,15 @@ install_pgdb: `authservice/out/install_pgdb.sh`
 
 In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
-https://github.com/intel-secl/utils/tree/v3.6/develop/tools/ansible-role
+https://github.com/intel-secl/utils/tree/v4.0/develop/tools/ansible-role
 
 Also provided are sample API calls organized by workflows for Postman:
 
-https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections
+https://github.com/intel-secl/utils/tree/v4.0/develop/tools/api-collections
 
 ## Hardware Considerations
 
-Intel® SecL-DC supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL. 
+Intel® SecL-DC supports and uses a variety of Intel security features, but there are some key requirements to consider before beginning an installation. Most important among these is the Root of Trust configuration. This involves deciding what combination of TXT, Boot Guard, tboot, and UEFI Secure Boot to enable on platforms that will be attested using Intel® SecL.
 
 Key points: 
 
@@ -296,14 +290,14 @@ Use the chart below for a guide to acceptable configuration options. .
 
 <img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
 
-> ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
+> ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
 * 
 
 Recommended Service Layout
 --------------------------
 
-The Intel® SecL-DC services can be installed in a variety of layouts, partially depending on the use cases desired and the OS of the server(s) to be protected. In general, the Intel® SecL-DC applications can be divided into management services that are deployed on the network on the management plane, and host or node components that must be installed on each protected server. 
+The Intel® SecL-DC services can be installed in a variety of layouts, partially depending on the use cases desired and the OS of the server(s) to be protected. In general, the Intel® SecL-DC applications can be divided into management services that are deployed on the network on the management plane, and host or node components that must be installed on each protected server.
 
 Management services can typically be deployed anywhere with network access to all of the protected servers. This could be a set of individual VMs per service; containers; or all installed on a single physical or virtual machine.
 
@@ -347,7 +341,7 @@ Workload Agent (WLA)
 
 ## Recommended Service Layout & Architecture - Containerized Deployment with K8s
 
-The containerized deployment makes use of Kubernetes orchestrator for single node and multi node deployments. 
+The containerized deployment makes use of Kubernetes orchestrator for single node and multi node deployments.
 
 A single-node deployment uses Microk8s to deploy the entire control plane in a pod on a single device.  This is best for POC or demo environments, but can also be used when integrating Intel SecL with another application that runs on a virtual machine - the single node deployment can run in the same VM as the integrated application to keep all functions local.
 
@@ -428,7 +422,7 @@ Execute the installation script:
 
 ### Provisioning the Database
 
-Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the Verification Service, the Integration Hub, the Workload Service) requires its own schema and access. After installation, the database must be created initialized and tables created. Execute the create_db.sh script to configure the database. 
+Each Intel® SecL service that uses a database (the Authentication and Authorization Service, the Verification Service, the Integration Hub, the Workload Service) requires its own schema and access. After installation, the database must be created initialized and tables created. Execute the create_db.sh script to configure the database.
 
 If a single shared database server will be used for each Intel® SecL service (for example, if all management plane services will be installed on a single VM), run the script multiple times, once for each service that requires a database.
 
@@ -446,15 +440,15 @@ If separate database servers will be used (for example, if the management plane 
 ./create_db.sh isecl_wls_db wls_db_username wls_db_password
 ```
 
-Note that the database name, username, and password details for each service must be used in the corresponding installation answer file for that service. 
+Note that the database name, username, and password details for each service must be used in the corresponding installation answer file for that service.
 
 ### Database Server TLS Certificate
 
-The database client for Intel® SecL services requires the database TLS certificate to authenticate communication with the database server. 
+The database client for Intel® SecL services requires the database TLS certificate to authenticate communication with the database server.
 
  If the database server for a service is located on the same server that the service will run on, only the path to this certificate is needed. If the provided Postgres scripts are used, the certificate will be located in `/usr/local/pgsql/data/server.crt`
 
- If the database server will be run separately from the Intel® SecL service(s), the certificate will need to be copied from the database server to the service machine before installing the Intel® SecL services. 
+ If the database server will be run separately from the Intel® SecL service(s), the certificate will need to be copied from the database server to the service machine before installing the Intel® SecL services.
 
 The database client for Intel® SecL services will validate that the Subject Alternative Names in the database server’s TLS certificate contain the hostname(s)/IP address(es) that the clients will use to access the database server. If configuring a database without using the provided scripts, ensure that these attributes are present in the database TLS certificate.
 
@@ -475,7 +469,7 @@ rpm -i https://github.com/nats-io/nats-server/releases/download/v2.3.0/nats-serv
 ##Install tar and unzip
 yum install -y tar unzip 
 
-##Install cfssl and cfssljson (for “Control-Plane Deployment” step #6). 
+##Install cfssl and cfssljson (for “Control-Plane Deployment” step #6).
 wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssljson_1.6.0_linux_amd64 -o /usr/bin/cfssljson && chmod +x /usr/bin/cfssljson 
 
 wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssl_1.6.0_linux_amd64 -o /usr/bin/cfssl && chmod +x /usr/bin/cfssl 
@@ -638,7 +632,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v3.6.0.bin
+   ./cms-v4.0.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -732,10 +726,10 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v3.6.0.bin
+./authservice-v4.0.0.bin
 ```
 
-> **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users. 
+> **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
 ### Creating Users
 
@@ -790,7 +784,7 @@ Execute the populate-users script:
 ./populate-users
 ```
 
-> **Note:** The script can be executed with the `–output_json` argument to create the `populate-user.json`.This json output file will contain all of the users created by the script, along with usernames, passwords, and role assignments. This file can be used both as a record of the service and administrator accounts, and can be used as alternative inputs to recreate the same users with the same credentials in the future if needed. Be sure to protect this file if the `–output_json` argument is used. 
+> **Note:** The script can be executed with the `–output_json` argument to create the `populate-user.json`.This json output file will contain all of the users created by the script, along with usernames, passwords, and role assignments. This file can be used both as a record of the service and administrator accounts, and can be used as alternative inputs to recreate the same users with the same credentials in the future if needed. Be sure to protect this file if the `–output_json` argument is used.
 
 The script will automatically generate the following users:
 
@@ -812,7 +806,7 @@ These user accounts will be used during installation of several of the Intel® S
 
 The Global Admin user account has all roles for all services. This is a default administrator account that can be used to perform any task, including creating any other users. In general this account is useful for POC installations, but in production it should be used only to create user accounts with more restrictive roles. The administrator credentials should be protected and not shared.
 
-The populate-users script will also output an installation token. This token has all privileges needed for installation of the Intel® SecL services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and password. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and password can be used to generate an authentication token. 
+The populate-users script will also output an installation token. This token has all privileges needed for installation of the Intel® SecL services, and uses the credentials provided with the `INSTALLATION_ADMIN_USERNAME` and password. The remaining Intel ® SecL-DC services require this token (set as the `BEARER_TOKEN` variable in the installation env files) to grant the appropriate privileges for installation. By default this token will be valid for two hours; the populate-users script can be rerun with the same `populate-users.env` file to regenerate the token if more time is required, or the `INSTALLATION_ADMIN_USERNAME` and password can be used to generate an authentication token.
 
  
 
@@ -911,7 +905,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.6.0.bin
+./hvs-v4.0.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -979,7 +973,7 @@ Ubuntu 18.04
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v3.6.0.bin
+  ./wls-v4.0.0.bin
   ```
   
   
@@ -1027,17 +1021,17 @@ The following must be completed before installing the Trust Agent:
 
 * Supported server hardware including an Intel® Xeon® processor with Intel Trusted Execution Technology activated in the system BIOS.
 
-* Trusted Platform Module (version 2.0) installed and activated in the system BIOS, with cleared ownership status OR a known TPM ownership secret. 
+* Trusted Platform Module (version 2.0) installed and activated in the system BIOS, with cleared ownership status OR a known TPM ownership secret.
 
 > **Note:** Starting in Intel SecL-DV 4.0, the Trust Agent will now default to using a null TPM owner secret, and does not require ownership permissions except during the provisioning step.   If ownership has already been taken when the Trust Agent will be provisioned, it will be necessary to either provide the ownership secret or clear the TPM ownership before provisioning.
 
 * System must be booted to a tboot boot option OR use UEFI SecureBoot.
 
-> **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
+> **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
 
 * (Provisioning step only) Intel® SecL Verification Service server installed and active.
 * (Required for NATS mode only) A NATS server must be configured and available
-* (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy. 
+* (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy.
 * (Optional, REQUIRED for Virtual Machine Confidentiality only):
   * QEMU/KVM must be installed
   * Libvirt must be installed
@@ -1102,7 +1096,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
 4. Update the default boot option
 
-   Ensure that the `GRUB_DEFAULT` value is set to the tboot option. 
+   Ensure that the `GRUB_DEFAULT` value is set to the tboot option.
 
    a. Update /etc/default/grub and set the GRUB_DEFAULT value to "saved"
 
@@ -1236,7 +1230,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v3.6.0.bin
+  ./trustagent-v4.0.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1304,7 +1298,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v3.6.0.bin
+  ./workload-agent-v4.0.0.bin
   ```
 
 * (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
@@ -1664,7 +1658,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
     directory & execute the installer binary.
 
    ```shell
-   ./ihub-v3.6.0.bin
+   ./ihub-v4.0.0.bin
    ```
 
 5. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Controller machine to `/<path>/secrets/` directory
@@ -1946,9 +1940,9 @@ KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the
     ## This is an OPTIONAL field, if KMIP_HOSTNAME is not provided then KMIP_SERVER_IP will be considered as ServerName in TLS configuration.
     KMIP_HOSTNAME=<Hostname of KMIP server>
     
-    ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field. 
-    ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD. 
-    ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager. 
+    ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field.
+    ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD.
+    ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager.
     KMIP_USERNAME=<Username of KMIP server>
     KMIP_PASSWORD=<Password of KMIP server>
     
@@ -2155,7 +2149,7 @@ Ubuntu 18.04
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v3.6.0.bin
+    ./wpm-v4.0.0.bin
     ```
 
 
@@ -2262,7 +2256,7 @@ systemctl restart docker
 
   ```
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -2310,7 +2304,7 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
 
   ```
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -2346,7 +2340,7 @@ Workload Confidentiality can be used with either the Docker or CRIO container ru
 
   ```
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -2388,7 +2382,7 @@ This section details deployment of Intel SecL services as a Kubernetes Pod, usin
   >
   > **Note:** For multi-node `kubeadm` deployment, a docker registry is required.
 
-- Push all container images to docker registry. 
+- Push all container images to docker registry.
 
   ```
   # Without TLS enabled
@@ -2591,7 +2585,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 ######  Run scripts on Kubernetes Controller Node
 
-- These bootstrap scripts are sample scripts to allow for a quick start of Intel SecL services and agents. 
+- These bootstrap scripts are sample scripts to allow for a quick start of Intel SecL services and agents.
 
 ```
 #Pre-reqs.sh
@@ -2826,7 +2820,7 @@ WPM_SERVICE_PASSWORD=<wpm_service_password>
 
 ######  Run scripts on Kubernetes Controller Node
 
-- The following bootstrap scripts are sample scripts to allow for a quick start of Intel SecL services and agents. 
+- The following bootstrap scripts are sample scripts to allow for a quick start of Intel SecL services and agents.
 
 ```
 #Pre-reqs.sh
@@ -2905,7 +2899,7 @@ systemctl restart kubelet
 
 ###  Single Node Deployments
 
-Single node Deployments use `hostPath` mounting pod(container) files directly on the host. 
+Single node Deployments use `hostPath` mounting pod(container) files directly on the host.
 
 ```
 #Certificate-Management-Service
@@ -3307,7 +3301,7 @@ Before connecting to vCenter to register hosts or clusters, the vCenter TLS cert
 wget --no-proxy "*" https://<vCenter IP or hostname>/certs/download.zip --no-check-certificate
    ```
 
-   This downloads all the root CA certificates for you into `download.zip` file. 
+   This downloads all the root CA certificates for you into `download.zip` file.
 
    ```shell
    unzip download.zip
@@ -4746,7 +4740,7 @@ isecl/cc-crio/binaries/
 
 [Skopeo](https://github.com/lumjjb/skopeo/tree/sample_integration)
 
-- The patched version of Skopeo 0.1.41-dev must be installed on each Worker Node: https://github.com/lumjjb/skopeo/tree/sample_integration. 
+- The patched version of Skopeo 0.1.41-dev must be installed on each Worker Node: https://github.com/lumjjb/skopeo/tree/sample_integration.
 
 - The Skopeo wrapper that allows Skopeo to interface with the ISecL components must be installed on each Worker Node: https://github.com/lumjjb/skopeo/blob/sample_integration/vendor/github.com/lumjjb/seclkeywrap/keywrapper_secl.go.
 
@@ -4771,7 +4765,7 @@ isecl/cc-crio/binaries/
 
 [Cri-o 1.17](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cri-o)
 
-- The patched version of Cri-o 1.17 must be installed on each Worker Node:   https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration. 
+- The patched version of Cri-o 1.17 must be installed on each Worker Node:   https://github.com/lumjjb/cri-o/blob/1.16_encryption_sample_integration.
 
 - Copy the CRI-O binary from IsecL build script to /usr/bin/:
 
@@ -5733,7 +5727,7 @@ OS flavor for the other measurements that would be identical for other
 similarly configured hosts.
 
 > **Note**:The HOST\_UNIQUE Flavors are unique to a specific host, and should
-> always be imported directly from the specific host. 
+> always be imported directly from the specific host.
 
 ```json
 {

@@ -131,7 +131,7 @@ All Build steps and pre-requisites are given in the table below
   cd isecl-k8s-extensions/
   ```
 
-- Add the image names in `isecl-controller.yml` and `isecl-scheduler.yml` in `/opt/isecl-k8s-extensions/yamls` with full image name including registry IP/hostname (e.g :/isecl-k8s-scheduler:v3.6.0). 
+- Add the image names in `isecl-controller.yml` and `isecl-scheduler.yml` in `/opt/isecl-k8s-extensions/yamls` with full image name including registry IP/hostname (e.g :/isecl-k8s-scheduler:v4.0.0). 
 
 
 

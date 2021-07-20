@@ -73,11 +73,11 @@ The below diagram depicts the high level architecture of the Intel®SecL-DC,
 
 Foundational and Workload Security refers to a collection of software security solutions provided by Intel SecL-DC that leverage Intel silicon to provide boot-time integrity attestation of platform components. Starting with a Hardware Root of Trust, a chain of measurements of system components that includes the system BIOS/UEFI and OS kernel is extended to a Trusted Platform Module for remote attestation against expected measurements. Use cases include auditing the integrity of Cloud platforms, Asset or Geolocation Tagging, Platform Integrity-aware Cloud orchestration, and VM and container encryption. This acts as a firm, hardware-rooted foundation upon which to build a Cloud platform with auditable integrity verification.
 
-[Foundational and Workload Security Product Guide](https://github.com/intel-secl/docs/blob/v3.6/develop/product-guides/Foundational%20%26%20Workload%20Security.md)
+[Foundational and Workload Security Product Guide](https://github.com/intel-secl/docs/blob/v4.0/develop/product-guides/Foundational%20%26%20Workload%20Security.md)
 
-[Foundational & Workload Security Quick Start Guide](https://github.com/intel-secl/docs/blob/v3.6/develop/quick-start-guides/Foundational%20%26%20Workload%20Security.md)
+[Foundational & Workload Security Quick Start Guide](https://github.com/intel-secl/docs/blob/v4.0/develop/quick-start-guides/Foundational%20%26%20Workload%20Security.md)
 
-[Foundational & Workload Security Swagger Documents](https://github.com/intel-secl/docs/tree/v3.6/develop/swagger-docs/foundational-and-workload-security)
+[Foundational & Workload Security Swagger Documents](https://github.com/intel-secl/docs/tree/v4.0/develop/swagger-docs/foundational-and-workload-security)
 
 ### SGX Attestation Infrastructure
 

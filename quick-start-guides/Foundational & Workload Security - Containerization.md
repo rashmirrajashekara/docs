@@ -1,12 +1,11 @@
 # Quick start Guide - Foundation & Workload Security - Containerization
 
-
 <!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
 <!-- code_chunk_output -->
 
-- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide-foundation-workload-security-containerization)
-  - [Hardware & OS Requirements](#hardware-os-requirements)
+- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide---foundation--workload-security---containerization)
+  - [Hardware & OS Requirements](#hardware--os-requirements)
     - [Physical Server requirements](#physical-server-requirements)
     - [Machines](#machines)
     - [OS Requirements](#os-requirements)
@@ -19,7 +18,7 @@
     - [Enterprise Managed Services](#enterprise-managed-services)
     - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
     - [Firewall Settings](#firewall-settings)
-  - [Rpms & Debs Requirement](#rpms-debs-requirement)
+  - [Rpms & Debs Requirement](#rpms--debs-requirement)
     - [RHEL](#rhel)
     - [Ubuntu](#ubuntu)
   - [Deployment Model](#deployment-model)
@@ -45,14 +44,14 @@
           - [Manifests](#manifests)
         - [Deploy steps](#deploy-steps)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file)
-          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane)
+          - [Run scripts on K8s control-plane](#run-scripts-on-k8s-control-plane)
       - [Multi-Node](#multi-node-1)
         - [Pre-requisites](#pre-requisites-3)
           - [Setup](#setup-1)
           - [Manifests](#manifests-1)
         - [Deploy steps](#deploy-steps-1)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file-1)
-          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane-1)
+          - [Run scripts on K8s control-plane](#run-scripts-on-k8s-control-plane-1)
   - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
     - [Single Node Deployments](#single-node-deployments)
     - [Multi Node Deployments](#multi-node-deployments)
@@ -63,8 +62,9 @@
     - [Downloading API Collections](#downloading-api-collections)
     - [Running API Collections](#running-api-collections)
   - [Appendix](#appendix)
+    - [Hardware feature detection](#hardware-feature-detection)
     - [Running behind Proxy](#running-behind-proxy)
-    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
     - [Rebuilding Repos](#rebuilding-repos)
     - [Setup Task Flow](#setup-task-flow)
     - [Configuration Update Flow](#configuration-update-flow)
@@ -1075,13 +1075,13 @@ WLA: None
 
 ## Usecase Workflows API Collections
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v4.0/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v4.0/develop/tools/api-collections)
 
 ### Use Case Collections
 
