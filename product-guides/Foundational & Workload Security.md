@@ -1283,12 +1283,6 @@ The following must be completed before installing the Workload Agent:
   ./workload-agent-v4.0.0.bin
   ```
 
-* (Legacy BIOS systems using tboot ONLY) Update the grub boot loader:
-
-  ```shell
-  grub2-mkconfig -o /boot/grub2/grub.cfg
-  ```
-
 * Reboot the server. The Workload Agent populates files that are
   needed for the default `SOFTWARE` Flavor, and a reboot is required for
   those measurements to happen.
