@@ -150,9 +150,9 @@ Added in the Intel® SecL-DC 1.5 release, Application Integrity allows any files
 
 #### Workload Confidentiality for Virtual Machines and Containers
 
-Added in the Intel® SecL-DC 1.6 release, Workload Confidentiality allows virtual machine and Docker container images to be encrypted at rest, with key access tied to platform integrity attestation. Because security attributes contained in the platform integrity attestation report are used to control access to the decryption keys, this feature provides both protection for at-rest data, IP, code, etc in Docker container or virtual machine images, and also enforcement of image-owner-controlled placement policies. When decryption keys are released, they are sealed to the physical TPM of the host that was attested, meaning that only a server that has successfully met the policy requirements for the image can actually gain access.
+Added in the Intel® SecL-DC 1.6 release, Workload Confidentiality allows virtual machine and container images to be encrypted at rest, with key access tied to platform integrity attestation. Because security attributes contained in the platform integrity attestation report are used to control access to the decryption keys, this feature provides both protection for at-rest data, IP, code, etc in container or virtual machine images, and also enforcement of image-owner-controlled placement policies. When decryption keys are released, they are sealed to the physical TPM of the host that was attested, meaning that only a server that has successfully met the policy requirements for the image can actually gain access.
 
-Workload Confidentiality begins with the Workload Policy Manager (WPM) and a qcow2 or Docker image that needs to be protected. The WPM is a lightweight application that will request a new key from the Key Broker, use that key to encrypt the image, and generate an Image Flavor. The image owner will then upload the encrypted image to their desired image storage service (for example, OpenStack Glance or a local Docker Registry), and the image ID from the image storage will be uploaded along with the Image Flavor to the Intel® SecL Workload Service. When that image is used to launch a new VM or container, the Workload Agent will intercept the VM or container start and request the decryption key for that image from the Workload Service. The Workload Service will use the image ID and the Image Flavor to find the key transfer URL for the appropriate Key Broker, and will query the Verification Service for the latest Platform Integrity trust attestation report for the host. The Key Broker will use the attestation report to determine whether the host meets the policy requirements for the key transfer, and to verify that the report is signed by a Verification Service known to the Broker. If the report is genuine and meets the policy requirements, the image decryption key is sealed using an asymmetric key from that host’s TPM, and sent back to the Workload Service. The Workload Service then caches the key for 5 minutes (to avoid performance issues for multiple rapid launch requests; note that these keys are still wrapped using a sealing key unique to the hosts TPM, so multiple hosts would require multiple keys even for an identical image) and return the wrapped key to the Workload Agent on the host, which then uses the host TPM to unseal the image decryption key. The key is then used to create a new LUKS volume, and the image is decrypted into this volume.
+Workload Confidentiality begins with the Workload Policy Manager (WPM) and a qcow2 or container image that needs to be protected. The WPM is a lightweight application that will request a new key from the Key Broker, use that key to encrypt the image, and generate an Image Flavor. The image owner will then upload the encrypted image to their desired image storage service (for example, OpenStack Glance or a local container registry), and the image ID from the image storage will be uploaded along with the Image Flavor to the Intel® SecL Workload Service. When that image is used to launch a new VM or container, the Workload Agent will intercept the VM or container start and request the decryption key for that image from the Workload Service. The Workload Service will use the image ID and the Image Flavor to find the key transfer URL for the appropriate Key Broker, and will query the Verification Service for the latest Platform Integrity trust attestation report for the host. The Key Broker will use the attestation report to determine whether the host meets the policy requirements for the key transfer, and to verify that the report is signed by a Verification Service known to the Broker. If the report is genuine and meets the policy requirements, the image decryption key is sealed using an asymmetric key from that host’s TPM, and sent back to the Workload Service. The Workload Service then caches the key for 5 minutes (to avoid performance issues for multiple rapid launch requests; note that these keys are still wrapped using a sealing key unique to the hosts TPM, so multiple hosts would require multiple keys even for an identical image) and return the wrapped key to the Workload Agent on the host, which then uses the host TPM to unseal the image decryption key. The key is then used to create a new LUKS volume, and the image is decrypted into this volume.
 
 This functionality means that a physical host must pass policy requirements in order to gain access to the image key, and the image will be encrypted at rest both in image storage and on the compute host.
 
@@ -286,11 +286,6 @@ Key points:
 Use the chart below for a guide to acceptable configuration options. .
 
 <img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
-
-<<<<<<< HEAD
-=======
-> ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
->>>>>>> f262fd1973049bd53337fd70dd8c4f8e02cb80cf
 
 
 Recommended Service Layout
@@ -1026,11 +1021,6 @@ The following must be completed before installing the Trust Agent:
 
 * System must be booted to a tboot boot option OR use UEFI SecureBoot.
 
-<<<<<<< HEAD
-=======
-> **Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
->>>>>>> f262fd1973049bd53337fd70dd8c4f8e02cb80cf
 * (Provisioning step only) Intel® SecL Verification Service server installed and active.
 * (Required for NATS mode only) A NATS server must be configured and available
 * (REQUIRED for servers configured with TXT and tboot only) If the server is installed using an LVM, the LVM name must be identical for all Trust Agent systems. The Grub bootloader line that calls the Linux kernel will contain the LVM name of the root volume, and this line with all arguments is part of what is measured in the TXT/Tboot boot process. This will cause the OS Flavor measurements to differ between two otherwise identical hosts if their LVM names are different. Simply using a uniform name for the LVM during OS installation will resolve this possible discrepancy.
@@ -1210,25 +1200,21 @@ To install the Trust Agent for Linux:
   WLA_SERVICE_USERNAME=<Username for the WLA service user>
   WLA_SERVICE_PASSWORD=<Username for the WLA service user>
   WLS_API_URL=https://<WLS IP address or hostname>:5000/wls/
-  NO_PROXY=<Registry_ip>
-  HTTPS_PROXY=<proxy_url>
   REGISTRY_SCHEME_TYPE=https
-  ##For the Docker container runtime:
-  WA_WITH_CONTAINER_SECURITY_DOCKER=yes
   ##For the CRI-O container runtime:
   WA_WITH_CONTAINER_SECURITY_CRIO=yes
    ```
-
+  
   For NATS mode, add the following (in addition to the basic Platform Attestation sample and any other optional features):
-
+  
   ```
-  TA_SERVICE_MODE=outbound 
+TA_SERVICE_MODE=outbound 
   NATS_SERVERS=<nats-server-ip>:4222 
-  TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
+TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
   ```
-
+  
   Note that the TA_HOST_ID unique identifier will also be the ID used as part of the connection string to reach this Trust Agent host in NATS mode.
-
+  
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
@@ -1258,7 +1244,7 @@ Installing the Workload Agent
 
 ### Required For
 
--   Workload Confidentiality (both VMs and Docker Containers)
+-   Workload Confidentiality (both VMs and Containers)
 
 ### Supported Operating Systems
 
@@ -1279,12 +1265,6 @@ The following must be completed before installing the Workload Agent:
 
 -   libvirt must be installed
 
--   (REQUIRED for Docker Container Confidentiality only): Docker CE
-    19.03.13 must be installed
-
-    > **Note**: The specific Docker-CE version 19.03.13 is required for
-    > Docker Container Confidentiality. Only this version is supported for
-    > this use case.
 
 ### Installation
 
@@ -1293,7 +1273,7 @@ The following must be completed before installing the Workload Agent:
 * Verify that the `trustagent.env` answer file is present. This file was
   necessary for installing/provisioning the Trust Agent. Note that the
   additional content required for Workload Confidentiality with either
-  VM Encryption or Docker Container Encryption must be included in the
+  VM Encryption or Container Encryption must be included in the
   `trustagent.env` file (samples provided in the previous section) for
   use by the Workload Agent.
 
@@ -1447,7 +1427,7 @@ deployment in the `isecl` namespace.
 ### Deploy Intel® SecL Custom Controller
 ------------------------------------------
 
-    #Install skopeo to load docker image for controller and scheduler from archive
+    #Install skopeo to load container image for controller and scheduler from archive
     dnf install -y skopeo
 
 1.  Copy `isecl-k8s-extensions-*.tar.gz` to Kubernetes Control plane machine and extract the contents
@@ -1477,7 +1457,7 @@ deployment in the `isecl` namespace.
    kubectl get crds
    ```
 
-4. Load the `isecl-controller` docker image
+4. Load the `isecl-controller` container image
 
    ```shell
    cd /<path>/isecl-k8s-extensions/
@@ -1717,14 +1697,14 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
    cp /<path>/isecl-k8s-extensions/server.crt /<path>/secrets/
    ```
 
-4. Load the `isecl-scheduler` docker image
+4. Load the `isecl-scheduler` container image
 
    ```shell
    cd /<path>/isecl-k8s-extensions/
    skopeo copy oci-archive:<isecl-k8s-scheduler-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
    
-5. Udate image name as above in scheduler yaml "/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml"
+5. Update image name as above in scheduler yaml "/opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml"
    ``` shell
       containers:
         - name: isecl-scheduler
@@ -1844,7 +1824,7 @@ Installing the Key Broker Service
 
 The KBS is REQUIRED for the following use cases:
 
--   Workload Confidentiality (both VMs and Docker Containers)
+-   Workload Confidentiality (both VMs and Containers)
 
 ### Prerequisites
 
@@ -2092,14 +2072,11 @@ Installing the Workload Policy Manager
 
 The WPM is REQUIRED for the following use cases.
 
--   Workload Confidentiality (both VMs and Docker Containers)
+-   Workload Confidentiality (both VMs and Containers)
 
 ### Package Dependencies
 
--   (Required only if Docker Container encryption is needed) `Docker-ce
-    19.03.13` must be installed. This is needed only if the option
-    `WPM_WITH_CONTAINER_SECURITY=yes` is set in the `wpm.env` answer
-    file.
+
 
 ### Supported Operating Systems
 
@@ -2143,12 +2120,10 @@ Ubuntu 18.04
    wpm.env installation answer file:
 
    ```shell
-   ##For the Docker container runtime:
-   WPM_WITH_CONTAINER_SECURITY_DOCKER=yes
    ##For the CRI-O container runtime: 
    WPM_WITH_CONTAINER_SECURITY_CRIO=yes
    ```
-
+   
 3.  Execute the WPM installer:
 
     ```shell
@@ -2178,8 +2153,8 @@ The included Intel SecL container deployment scripts can deploy using the follow
 
 ### Container Runtime
 
-- Docker-19.03.13 or CRIO-1.17.5 on RHEL 8.3
-- Docker 19.03.13 or CRIO-1.17.5 on Ubuntu 18.04
+- CRIO-1.17.5 on RHEL 8.3
+- CRIO-1.17.5 on Ubuntu 18.04
 
 ### Storage
 
@@ -2221,34 +2196,6 @@ sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
 rm -rf go1.14.4.linux-amd64.tar.gz
-```
-
-####  Docker
-
-```
-dnf module enable -y container-tools
-dnf install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
-
-systemctl enable docker
-systemctl start docker
-```
-
-Apply the following steps **only if** running behind a proxy:
-
-```
-mkdir -p /etc/systemd/system/docker.service.d
-touch /etc/systemd/system/docker.service.d/proxy.conf
-
-#Add the below lines in proxy.conf
-[Service]
-Environment="HTTP_PROXY=<http_proxy>"
-Environment="HTTPS_PROXY=<https_proxy>"
-Environment="NO_PROXY=<no_proxy>"
-
-systemctl daemon-reload
-systemctl restart docker
 ```
 
 ###  Building OCI Container images and K8s Manifests
@@ -2299,43 +2246,7 @@ systemctl restart docker
 
 ####  Workload Confidentiality
 
-Workload Confidentiality can be used with either the Docker or CRIO container runtimes.
-
-#####  Container Confidentiality with Docker Runtime
-
-- Sync the repos
-
-  ```
-  mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v4.0.0
-  repo sync
-  ```
-
-- Run the `pre-requisites` script
-
-  ```
-  cd utils/build/workload-security
-  chmod +x ws-prereq.sh
-  ./ws-prereq.sh -d
-  ```
-
-- Build
-
-  ```
-  cd /root/intel-secl/build/fs
-  
-  #Single-node cluster with microk8s
-  make k8s-aio
-  
-  #Multi-node cluster with kubeadm
-  make k8s
-  ```
-
-- Built Container images,K8s manifests and deployment scripts
-
-  ```
-  /root/intel-secl/build/cc-docker/k8s/
-  ```
+Workload Confidentiality can be used with either the CRIO container runtime.
 
 #####  Container Confidentiality with CRIO Runtime
 
@@ -2379,13 +2290,13 @@ This section details deployment of Intel SecL services as a Kubernetes Pod, usin
 
 - Install `openssl` on the Kubernetes control node
 
-- Ensure a docker registry is running locally or remotely.
+- Ensure a container registry is running locally or remotely.
 
   > **Note:** For the single-node `microk8s` deployment, a registry can be brought up by using microk8s addons. More details can be found in the Microk8s documentation. This is not mandatory; if a remote registry already exists, it can be used.
   >
-  > **Note:** For multi-node `kubeadm` deployment, a docker registry is required.
+  > **Note:** For multi-node `kubeadm` deployment, a container registry is required.
 
-- Push all container images to docker registry.
+- Push all container images to container registry.
 
   ```
   # Without TLS enabled
@@ -2395,7 +2306,7 @@ This section details deployment of Intel SecL services as a Kubernetes Pod, usin
   skopeo copy oci-archive:<oci-image-tar-name> docker://<registry-ip/hostname>:<registry-port>/image-name>:<image-tag>
   ```
 
-  > **Note:**  For microk8s deployments, when the docker registry is enabled locally, the OCI container images need to be copied to the node where registry is enabled and then the above command can be run. This is not required if a remote registry is available.
+  > **Note:**  For microk8s deployments, when the container registry is enabled locally, the OCI container images need to be copied to the node where registry is enabled and then the above command can be run. This is not required if a remote registry is available.
 
 - On each worker node registered to the Kubernetes control plane, perform the following prerequisite steps:
 
@@ -2414,22 +2325,6 @@ This section details deployment of Intel SecL services as a Kubernetes Pod, usin
     ```
 
   #### Workload Security 
-
-  ##### Container Confidentiality with Docker runtime 
-
-  - Copy `platform-dependencies` and `container-runtime` directory to each of the `TXT/SUEFI` enabled physical servers
-
-  - Run the `install-ta-prereqs.sh` script on the physical servers from `platform-dependencies`
-
-  - Run the `install-prereqs-docker.sh` script on the physical servers from `container-runtime`
-
-  - Reboot the server
-
-  - For Ubuntu worker nodes only, run the following command
-
-    ```
-    $ modprobe msr
-    ```
 
   ##### Container Confidentiality with CRIO runtime 
 
@@ -2461,7 +2356,7 @@ A single-node deployment utilizes Microk8s to deploy all services onto a single 
 
 - Copy all manifests and OCI container images as required to the Kubernetes control node
 
-- Ensure a docker registry is available
+- Ensure a container registry is available
 
 - The Kubernetes cluster admin can configure the existing bare metal worker nodes or register fresh bare metal worker nodes with labels. For example, a label like `node.type: TXT-ENABLED` or `node.type: SUEFI-ENABLED` respectively for `TXT/SUEFI` enabled servers can be used by the cluster admin to distinguish the baremetal worker node and the same label can be used in ISECL Agent pod configuration to schedule on all worker nodes marked with the label. The same label is being used as default in the Kubernetes manifests. This can be edited in `k8s/manifests/ta/daemonset.yml` , `k8s/manifests/wla/daemonset.yml`
 
@@ -4124,7 +4019,7 @@ attributes into VM scheduling.
 
 The Integration Hub acts as the integration point between the Verification Service and a third party service. The primary purpose of the Hub is to collect and maintain up-to-date attestation information, and to “push” that information to the external service. The secondary purpose is to allow for multitenancy, the Verification Service does not allow for permissions to be applied for specific hosts, so a user with the “attestation” role can access all attestations for all hosts. By using separate Integration Hub instances for each Cloud environment (or "tenant"), the Hub will push attestations only for the associated hosts to a given tenant’s integration endpoints.
 
-For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Docker environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Docker environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
+For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B is using hosts 11-15 for a Kubernetes environment. Two Hub instances must be configured, one managing tenant A's OpenStack cluster and a second instance managing Tenant B's Kubernetes environment.  Each integration Hub will automatically retrieve the list of hosts used by its configured orchestration endpoint, retrieve the attestation reports only for those hosts, and push the attestation attribute information to each configured endpoint. Neither tenant will have access to the Verification Service, and will not be able to see attestation or other host details regarding infrastructure used by other tenants.
 
 Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
@@ -4396,9 +4291,7 @@ Workload Encryption relies on Platform Attestation to define the
 security attributes of hosts. When a protected image is launched, the
 Workload Agent on the host launching the VM or container image will
 detect the attempt (using either Libvirt hooks for VMs, or as a function
-of the Docker Secure Overlay Driver in the case of containers) and use
-the Image ID to find the Image Flavor on the Workload Service. The
-Workload Service will retrieve the current trust report for the host
+of CRI-O in the case of containers) and use the Image ID to find the Image Flavor on the Workload Service. The Workload Service will retrieve the current trust report for the host
 launching the image, and use that report to make a key retrieval request
 to the key transfer URL retrieved from the image flavor. The key
 transfer URL refers to the URL to the image owner’s Key Broker Service,
@@ -4572,166 +4465,7 @@ fail, as the decryption key will not be provided.
 Container Confidentiality
 --------------------------------
 
-### Container Integrity and Confidentiality with Docker
-
-#### Docker Container Integrity
-
-Intel® recommends using Docker Notary to verify the integrity of Docker
-container images at launch.
-
-<https://docs.docker.com/notary/getting_started/>
-
-#### Prerequisites
-
-To enable Docker Container Confidentiality, the following Intel® SecL-DC
-components must be installed and available:
-
--   Authentication and Authorization Service
-
--   Certificate Management Service
-
--   Key Broker Service
-
--   Host Verification Service
-
--   Workload Service
-
--   Trust Agent + Workload Agent (on each Docker host)
-
--   Workload Policy Manager
-
-See the Installation subsection on Recommended Service Layout for
-recommendations on how/where to install each service.
-
-It is strongly recommended to use a container orchestration solution
-(for example, Kubernetes) with the Intel® SecL-DC Integration Hub to
-schedule encrypted Docker containers on compute hosts that have
-already been pre-checked for their Platform Integrity status. See the
-Platform Integrity Attestation subsection on Integration with
-Kubernetes for an example.
-
-You will need at least one Docker container image. For quick testing
-purposes, any small public image can be used.  Some examples can be found here:
-
-<https://github.com/jessfraz/dockerfiles/>  
-Image names:
-
-1.  Openvpn
-
-2.  k8scan
-
-3.  postfix
-
-One or more Docker container worker nodes running Docker 19.03 is
-required. Each of these nodes must have the Intel® SecL-DC Trust Agent
-and Workload Agent installed, and they must be registered with the
-Verification Service. Each of these servers should show as “trusted;”
-see the Platform Integrity Attestation section for details. You should
-have Flavors that match the system configuration for these hosts, and
-attestation reports should show all Flavor parts as “trusted=true.”
-Hosts that are not trusted (including servers where there is no trust
-status, like hosts with no Trust Agent) will fail to launch any
-encrypted workloads.
-
-> **Important Note:** Docker version 19.03.13 is specifically required,
-> and other versions are not supported. Installation of the Workload
-> Agent for Docker Container Confidentiality will **replace** the
-> existing Docker binaries (the client and daemon, in /usr/bin/dockerd
-> and /usr/bin/docker) with a recompiled Docker engine that includes the
-> Secure Overlay Driver. This is what allows the launch of encrypted
-> containers to be intercepted and decrypted. The Docker runtime must
-> not be upgraded or downgraded to any other version; doing so will
-> cause encrypted Docker Containers to fail to launch.
-> 
->In the future, the Container Encryption feature will be modified to
-> use OCI-standard container encryption without the need for
-> recompilation or file replacement.
-
-#### Workflow
-
-##### Encrypting Docker Container Images
-
-The first step is encryption of a Docker Container image. The WPM is a
-command line utility that will perform the actual image encryption and
-allow the resulting encrypted image to be uploaded to a Docker Registry.
-
-The commands needed are slightly different depending on whether Notary
-is being used to validate container integrity.
-
-If Notary is not being used:
-
-`wpm create-container-image-flavor -i <container image name> -t <tag-name> -e -f <Dockerfile Path> -d <dirPath> -o <output
-path for JSON image flavor>`
-
-If Notary is being used:
-
-`wpm create-container-image-flavor -i <imageName> -t <TagName> -e
--s -n https://<notaryIP>:<notaryPort>/ -f <Dockerfile Path> -d <dirPath>`
-
-Also, if Notary is being used, set the following environment variable
-before uploading the image to the Registry:
-
-`export DOCKER_CONTENT_TRUST=1`
-`export DOCKER_CONTENT_TRUST_SERVER=https://<notary-system-IP:4443>`
-
-After generating the encrypted image with the WPM, the encrypted image
-can be uploaded to a local Docker Registry.
-
-##### Uploading the Image Flavor
-
-```
-POST https://<Workload Service IP or Hostname>:5000/wls/flavors
-Authorization: Bearer <token>
-
-{<Image Flavor content from WPM output>}
-```
-
-Use the above API request to upload the Image Flavor to the WLS. The
-Image Flavor will tell other Intel® SecL-DC components the Key Transfer
-URL for this image.
-
-##### Creating the Image Flavor to Image ID Association
-
-For Docker images stored in a Docker Registry, the ID is typically an
-MD5 hash. This format must be converted for use with the Workload
-Service. To get the non-truncated ID of the image, use the Docker
-command:
-
-`docker images --no-trunc`
-
-Next, convert this to a UUID that can be used by Intel® SecL:
-
-`wpm get-container-image-id <image-full-md5id>`
-
-The output will be a UUID, which will be considered the ID of the image
-for the WLS.
-
-Use the below API request to create an association between the Image
-Flavor created in the previous step and the image ID.
-
-```
-POST https://<Workload Service IP or Hostname>:5000/wls/images
-Authorization: Bearer <token>
-
-{
-    "id": "<image ID on image storage>",
-    "flavor_ids": ["<Image Flavor ID>"]
-}
-```
-
-##### Launching Encrypted Docker Containers
-
-Containers of the protected images can now be launched as normal using
-Kubernetes pods and deployments. Encrypted images will only be
-accessible on hosts with a Platform Integrity Attestation report showing
-the host is trusted.
-
-If the Docker Container is launched on a host that is not trusted, the
-launch will fail, as the decryption key will not be provided.
-
 ### Container Confidentiality with Cri-o and Skopeo
-
-
 
 #### Prerequisites
 
@@ -4883,7 +4617,7 @@ $ skopeo copy --encryption-key secl:any oci:custom-image:latest docker://registr
 
 ##### Pulling and Encrypting a Container Image
 
-Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in teh examples below). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
+Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in the examples below). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
 
 The modified Cri-o and wrapper will modify the Cri-o commands to allow Intel SecL policies to be utilized.
 
@@ -8174,17 +7908,16 @@ Workload Policy Manager
 
 ### Installation Answer File Options
 
-| Key                            | Sample Value                                            | Description                                                  |
-| ------------------------------ | ------------------------------------------------------- | ------------------------------------------------------------ |
-| KBS_BASE_URL                   | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
-| CMS\_TLS\_CERT\_SHA384         |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
-| CMS\_BASE\_URL                 | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
-| AAS\_API\_URL                  | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
-| BEARER\_TOKEN                  | \<token\>                                               | Required; token from CMS with permissions used for installation. |
-| WPM\_WITH\_CONTAINER\_SECURITY | “yes” or “no”                                           | Optional, defaults to “no.” Defines whether the WPM will support Docker Container encryption. If this is set to Yes, the appropriate prerequisites for Docker Container encryption will be installed. If this is set to “no,” the WPM will not be able to encrypt Docker Container images, and will only be usable to encrypt Virtual Machine images. |
-| WPM\_LOG\_LEVEL                | INFO (default), DEBUG                                   | Optional; defines the log level for the WPM. Defaults to INFO. |
-| WPM\_SERVICE_PASSWORD          |                                                         | Defines the credentials for the WPM to use to access the KBS |
-| WPM\_SERVICE_USERNAME          |                                                         | Defines the credentials for the WPM to use to access the KBS |
+| Key                    | Sample Value                                            | Description                                                  |
+| ---------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+| KBS_BASE_URL           | https://\<IP address or hostname of the KBS\>:9443/v1/  | Required. Defines the baseurl for the Key Broker Service. The WPM uses this URL to request new encryption keys when encrypting images. |
+| CMS\_TLS\_CERT\_SHA384 |                                                         | Required. SHA384 hash of the CMS TLS certificate             |
+| CMS\_BASE\_URL         | https://\<IP address or hostname for CMS\>:8445/cms/v1/ | Required. Defines the base URL for the CMS owned by the image owner. Note that this CMS may be different from the CMS used for other components. |
+| AAS\_API\_URL          | https://\<IP address or hostname for AAS\>:8444/aas/v1  | Required. Defines the baseurl for the AAS owned by the image owner. Note that this AAS may be different from the AAS used for other components. |
+| BEARER\_TOKEN          | \<token\>                                               | Required; token from CMS with permissions used for installation. |
+| WPM\_LOG\_LEVEL        | INFO (default), DEBUG                                   | Optional; defines the log level for the WPM. Defaults to INFO. |
+| WPM\_SERVICE_PASSWORD  |                                                         | Defines the credentials for the WPM to use to access the KBS |
+| WPM\_SERVICE_USERNAME  |                                                         | Defines the credentials for the WPM to use to access the KBS |
 
 ### Configuration Options
 
@@ -8220,46 +7953,6 @@ if not specified, encryption is skipped
 -k, --key (optional) existing key ID
 
 if not specified, a new key is generated
-
-#### create-container-image-flavor
-
-Used to encrypt Docker container images and generate a container image
-flavor.
-
-usage: wpm create-container-image-flavor \[-i img-name\] \[-t tag\] \[-f
-dockerFile\] \[-d build-dir\] \[-k keyId\]
-
-\[-e\] \[-s\] \[-n notaryServer\] \[-o out-file\]
-
--i, --img-name container image name
-
--t, --tag (optional)container image tag name
-
--f, --docker-file (optional) container file path
-
-to build the container image
-
--d, --build-dir (optional) build directory to
-
-build the container image
-
--k, --key-id (optional) existing key ID
-
-if not specified, a new key is generated
-
--e, --encryption-required (optional) boolean parameter specifies if
-
-container image needs to be encrypted
-
--s, --integrity-enforced (optional) boolean parameter specifies if
-
-container image should be signed
-
--n, --notary-server (optional) specify notary server url
-
--o, --out-file (optional) specify output file path
-
-#### get-container-image-id
 
 #### create-software-flavor
 
