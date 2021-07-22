@@ -5,8 +5,8 @@
 
 <!-- code_chunk_output -->
 
-- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide-foundation-workload-security-containerization)
-  - [Hardware & OS Requirements](#hardware-os-requirements)
+- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide---foundation--workload-security---containerization)
+  - [Hardware & OS Requirements](#hardware--os-requirements)
     - [Physical Server requirements](#physical-server-requirements)
     - [Machines](#machines)
     - [OS Requirements](#os-requirements)
@@ -19,7 +19,7 @@
     - [Enterprise Managed Services](#enterprise-managed-services)
     - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
     - [Firewall Settings](#firewall-settings)
-  - [Rpms & Debs Requirement](#rpms-debs-requirement)
+  - [Rpms & Debs Requirement](#rpms--debs-requirement)
     - [RHEL](#rhel)
     - [Ubuntu](#ubuntu)
   - [Deployment Model](#deployment-model)
@@ -45,14 +45,14 @@
           - [Manifests](#manifests)
         - [Deploy steps](#deploy-steps)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file)
-          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane)
+          - [Run scripts on K8s control-plane](#run-scripts-on-k8s-control-plane)
       - [Multi-Node](#multi-node-1)
         - [Pre-requisites](#pre-requisites-3)
           - [Setup](#setup-1)
           - [Manifests](#manifests-1)
         - [Deploy steps](#deploy-steps-1)
           - [Update `isecl-k8s.env` file](#update-isecl-k8senv-file-1)
-          - [Run scripts on K8s control-plane](#run-scripts-on-K8s-control-plane-1)
+          - [Run scripts on K8s control-plane](#run-scripts-on-k8s-control-plane-1)
   - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
     - [Single Node Deployments](#single-node-deployments)
     - [Multi Node Deployments](#multi-node-deployments)
@@ -63,8 +63,9 @@
     - [Downloading API Collections](#downloading-api-collections)
     - [Running API Collections](#running-api-collections)
   - [Appendix](#appendix)
+    - [Hardware feature detection](#hardware-feature-detection)
     - [Running behind Proxy](#running-behind-proxy)
-    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
     - [Rebuilding Repos](#rebuilding-repos)
     - [Setup Task Flow](#setup-task-flow)
     - [Configuration Update Flow](#configuration-update-flow)
@@ -280,7 +281,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -324,7 +325,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-docker && cd /root/intel-secl/build/cc-docker
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-docker.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -360,7 +361,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v3.6.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
