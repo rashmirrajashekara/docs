@@ -29,7 +29,6 @@ Table of Contents
     - [Create and Run Playbook](#create-and-run-playbook)
     - [Additional Examples & Tips](#additional-examples-tips)
       - [TPM is already owned](#tpm-is-already-owned)
-      - [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
       - [UEFI SecureBoot enabled](#uefi-secureboot-enabled)
       - [In case of Misconfigurations](#in-case-of-misconfigurations)
   - [**5. Usecase Workflows API Collections**](#5-usecase-workflows-api-collections)
