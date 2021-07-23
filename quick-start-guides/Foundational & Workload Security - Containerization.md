@@ -85,12 +85,6 @@
 
   ![hardware-options](./images/trusted-boot-options.PNG)
 
-> **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommended to use tboot version 1.9.10 for the time being.
->
-> 
-
 ### Machines
 
 * Build Machine
@@ -395,7 +389,7 @@ systemctl restart docker
   * Workload Security
     * Container Confidentiality with Docker runtime
       * Copy `container-runtime` directory to each of the `TXT/BTG` enabled physical servers       
-            
+        
       * Run the `install-prereqs-docker.sh` script on the physical servers from `container-runtime`
       
         > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
@@ -411,7 +405,7 @@ systemctl restart docker
     * Container Confidentiality with CRIO runtime
       
     * Copy `container-runtime` directory to each of the `TXT/BTG` enabled physical servers  
-            
+      
     * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
       
         > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
@@ -474,14 +468,15 @@ The bootstrap script would facilitate the deployment of all FS,WS components at 
 
 
 ```shell
-#Kubernetes Distribution microk8s or kubeadm
+#Kubernetes Distribution - microk8s
 K8S_DISTRIBUTION=microk8s
-K8S_CONTROL_PLANE_IP=<K8s control-plane IP>
-K8S_CONTROL_PLANE_IP=<K8s control-plane Hostname>
+K8S_CONTROL_PLANE_IP=
+K8S_CONTROL_PLANE_HOSTNAME=
 
 # cms
 CMS_BASE_URL=https://cms-svc.isecl.svc.cluster.local:8445/cms/v1
 CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+CMS_K8S_ENDPOINT_URL=https://<k8s control-plane IP>:30445/cms/v1
 
 # authservice
 AAS_API_URL=https://aas-svc.isecl.svc.cluster.local:8444/aas/v1
@@ -494,8 +489,8 @@ AAS_DB_HOSTNAME=aasdb-svc.isecl.svc.cluster.local
 AAS_DB_PORT="5432"
 AAS_DB_NAME=aasdb
 AAS_DB_SSLMODE=verify-full
-AAS_DB_SSLCERT=/etc/postgresql/server.crt
 AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+#NATS_ACCOUNT_NAME=ISecL-account
 
 # Workload Service
 WLS_SERVICE_USERNAME=admin@wls
@@ -504,7 +499,6 @@ WLS_DB_USERNAME=wlsdbuser
 WLS_DB_PASSWORD=wlsdbpassword
 WLS_DB_HOSTNAME=wlsdb-svc.isecl.svc.cluster.local
 WLS_DB_NAME=wlsdb
-WLS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 WLS_DB_PORT="5432"
 WLS_API_URL=https://wls-svc.isecl.svc.cluster.local:5000/wls/v1
 WLS_CERT_SAN_LIST=wls-svc.isecl.svc.cluster.local
@@ -517,9 +511,11 @@ HVS_DB_PASSWORD=hvsdbpassword
 HVS_DB_HOSTNAME=hvsdb-svc.isecl.svc.cluster.local
 HVS_DB_NAME=hvsdb
 HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
-HVS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 HVS_DB_PORT="5432"
 HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
+
+#Nats Servers configuration for TA and HVS
+#NATS_SERVERS=nats://<K8s control-plane IP/Hostname>:30222
 
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
@@ -528,12 +524,14 @@ IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s cont
 # For microk8s
 # K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
 K8S_API_SERVER_CERT=/var/snap/microk8s/current/certs/server.crt
-IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
+# This is valid for multinode deployment, should be populated once ihub is deployed successfully
+IHUB_PUB_KEY_PATH=
 HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2
 
 # TrustAgent
-TA_CERT_SAN_LIST=<ta-san-list>
-TPM_OWNER_SECRET=625d6d8a18f98bf794760fd392b8c01be0b4e959
+# e.g TA_CERT_SAN_LIST=*.example.com,192.168.1.*
+TA_CERT_SAN_LIST=
+TPM_OWNER_SECRET=
 
 # Workload Agent
 WLA_SERVICE_USERNAME=wlauser@wls
@@ -541,15 +539,15 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 KMIP_HOSTNAME=<KMIP IP/Hostname>
-KMIP_SERVER_IP=<kmip-server-ip>
-KMIP_SERVER_PORT=<kmip-server-port>
+KMIP_SERVER_IP=
+KMIP_SERVER_PORT=
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
 # This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
-KMIP_CLIENT_CERT_NAME=
-KMIP_CLIENT_KEY_NAME=
-KMIP_ROOT_CERT_NAME=
+KMIP_CLIENT_CERT_NAME=client_certificate.pem
+KMIP_CLIENT_KEY_NAME=client_key.pem
+KMIP_ROOT_CERT_NAME=root_certificate.pem
 
 # ISecl Scheduler
 # For microk8s
@@ -561,14 +559,21 @@ K8S_CA_CERT=/var/snap/microk8s/current/certs/ca.crt
 # populate users.env
 ISECL_INSTALL_COMPONENTS="AAS,HVS,WLS,IHUB,KBS,WLA,TA,WPM"
 
-GLOBAL_ADMIN_USERNAME=<global_admin_username>
-GLOBAL_ADMIN_PASSWORD=<global_admin_password>
+#NATS_CERT_SAN_LIST=
+#NATS_TLS_COMMON_NAME=
 
-INSTALL_ADMIN_USERNAME=<install_admin_username>
-INSTALL_ADMIN_PASSWORD=<install_admin_password>
+GLOBAL_ADMIN_USERNAME=
+GLOBAL_ADMIN_PASSWORD=
 
-WPM_SERVICE_USERNAME=<wpm_service_username>
-WPM_SERVICE_PASSWORD=<wpm_service_password>
+INSTALL_ADMIN_USERNAME=
+INSTALL_ADMIN_PASSWORD=
+
+WPM_SERVICE_USERNAME=
+WPM_SERVICE_PASSWORD=
+
+CUSTOM_CLAIMS_COMPONENTS=
+CCC_ADMIN_USERNAME=
+CCC_ADMIN_PASSWORD=
 ```
 
 > **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
@@ -729,14 +734,15 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 ###### Update `isecl-k8s.env` file
 
 ```shell
-#Kubernetes Distribution microk8s or kubeadm
+#Kubernetes Distribution - kubeadm
 K8S_DISTRIBUTION=kubeadm
-K8S_CONTROL_PLANE_IP=<K8s control-plane IP>
-K8S_CONTROL_PLANE_HOSTNAME=<K8s control-plane Hostname>
+K8S_CONTROL_PLANE_IP=
+K8S_CONTROL_PLANE_HOSTNAME=
 
 # cms
 CMS_BASE_URL=https://cms-svc.isecl.svc.cluster.local:8445/cms/v1
 CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+CMS_K8S_ENDPOINT_URL=https://<k8s control-plane IP>:30445/cms/v1
 
 # authservice
 AAS_API_URL=https://aas-svc.isecl.svc.cluster.local:8444/aas/v1
@@ -749,8 +755,8 @@ AAS_DB_HOSTNAME=aasdb-svc.isecl.svc.cluster.local
 AAS_DB_PORT="5432"
 AAS_DB_NAME=aasdb
 AAS_DB_SSLMODE=verify-full
-AAS_DB_SSLCERT=/etc/postgresql/server.crt
 AAS_SAN_LIST=aas-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
+#NATS_ACCOUNT_NAME=ISecL-account
 
 # Workload Service
 WLS_SERVICE_USERNAME=admin@wls
@@ -759,7 +765,6 @@ WLS_DB_USERNAME=wlsdbuser
 WLS_DB_PASSWORD=wlsdbpassword
 WLS_DB_HOSTNAME=wlsdb-svc.isecl.svc.cluster.local
 WLS_DB_NAME=wlsdb
-WLS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 WLS_DB_PORT="5432"
 WLS_API_URL=https://wls-svc.isecl.svc.cluster.local:5000/wls/v1
 WLS_CERT_SAN_LIST=wls-svc.isecl.svc.cluster.local
@@ -772,9 +777,11 @@ HVS_DB_PASSWORD=hvsdbpassword
 HVS_DB_HOSTNAME=hvsdb-svc.isecl.svc.cluster.local
 HVS_DB_NAME=hvsdb
 HVS_CERT_SAN_LIST=hvs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
-HVS_DB_SSLCERTSRC=/etc/postgresql/server.crt
 HVS_DB_PORT="5432"
 HVS_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2/
+
+#Nats Servers configuration for TA and HVS
+#NATS_SERVERS=nats://<K8s control-plane IP/Hostname>:30222
 
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
@@ -785,11 +792,12 @@ IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s cont
 K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
 # This is valid for multinode deployment, should be populated once ihub is deployed successfully
 IHUB_PUB_KEY_PATH=
-HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/mtwilson/v2
+HVS_BASE_URL=https://hvs-svc.isecl.svc.cluster.local:8443/hvs/v2
 
 # TrustAgent
-TA_CERT_SAN_LIST=<ta-san-list>
-TPM_OWNER_SECRET=625d6d8a18f98bf794760fd392b8c01be0b4e959
+# e.g TA_CERT_SAN_LIST=*.example.com,192.168.1.*
+TA_CERT_SAN_LIST=
+TPM_OWNER_SECRET=
 
 # Workload Agent
 WLA_SERVICE_USERNAME=wlauser@wls
@@ -797,15 +805,15 @@ WLA_SERVICE_PASSWORD=wlaAdminPass
 
 # KBS
 ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
-KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP/K8s control-plane Hostname>
-KMIP_SERVER_IP=<kmip-server-ip>
-KMIP_SERVER_PORT=<kmip-server-port>
+KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 KMIP_HOSTNAME=<KMIP IP/Hostname>
+KMIP_SERVER_IP=
+KMIP_SERVER_PORT=
 # Retrieve the following KMIP server’s client certificate, client key and root ca certificate from the KMIP server.
 # This key and certificates will be available in KMIP server, /etc/pykmip is the default path copy them to this system manifests/kbs/kmip-secrets path
-KMIP_CLIENT_CERT_NAME=
-KMIP_CLIENT_KEY_NAME=
-KMIP_ROOT_CERT_NAME=
+KMIP_CLIENT_CERT_NAME=client_certificate.pem
+KMIP_CLIENT_KEY_NAME=client_key.pem
+KMIP_ROOT_CERT_NAME=root_certificate.pem
 
 # ISecl Scheduler
 # For Kubeadm
@@ -817,14 +825,21 @@ K8S_CA_CERT=/etc/kubernetes/pki/ca.crt
 # populate users.env
 ISECL_INSTALL_COMPONENTS="AAS,HVS,WLS,IHUB,KBS,WLA,TA,WPM"
 
-GLOBAL_ADMIN_USERNAME=<global_admin_username>
-GLOBAL_ADMIN_PASSWORD=<global_admin_password>
+#NATS_CERT_SAN_LIST=
+#NATS_TLS_COMMON_NAME=
 
-INSTALL_ADMIN_USERNAME=<install_admin_username>
-INSTALL_ADMIN_PASSWORD=<install_admin_password>
+GLOBAL_ADMIN_USERNAME=
+GLOBAL_ADMIN_PASSWORD=
 
-WPM_SERVICE_USERNAME=<wpm_service_username>
-WPM_SERVICE_PASSWORD=<wpm_service_password>
+INSTALL_ADMIN_USERNAME=
+INSTALL_ADMIN_PASSWORD=
+
+WPM_SERVICE_USERNAME=
+WPM_SERVICE_PASSWORD=
+
+CUSTOM_CLAIMS_COMPONENTS=
+CCC_ADMIN_USERNAME=
+CCC_ADMIN_PASSWORD=
 ```
 
 > **Note:** Ensure to update `KMIP_CLIENT_CERT_NAME`, `KMIP_CLIENT_KEY_NAME`, `KMIP_ROOT_CERT_NAME` in the env from `/etc/pykmip` of pykmip by copying the key and certs to this system under `manifests/kbs/kmip-secrets` path
