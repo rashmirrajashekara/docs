@@ -1,49 +1,53 @@
-# **Foundational & Workload Security Quick Start Guide**
+# Quick Start Guide - Foundational & Workload Security
 
 Table of Contents
 -----------------
+   
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
 
-   * [<strong>Foundational &amp; Workload Security Quick Start Guide</strong>](#foundational--workload-security-quick-start-guide)
-      * [Table of Contents](#table-of-contents)
-      * [<strong>1. Hardware &amp; OS Requirements</strong>](#1-hardware--os-requirements)
-         * [Physical Server requirements](#physical-server-requirements)
-         * [OS Requirements](#os-requirements)
-         * [User Access](#user-access)
-      * [<strong>2. Deployment Model</strong>](#2-deployment-model)
-      * [<strong>3. Build Services and packages</strong>](#3-build-services-and-packages)
-         * [Pre-requisites](#pre-requisites)
-         * [Building](#building)
-            * [Foundational Security Usecase](#foundational-security-usecase)
-            * [Workload Security Usecase](#workload-security-usecase)
-               * [VM Confidentiality](#vm-confidentiality)               
-               * [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
-      * [<strong>4. Deployment</strong>](#4-deployment)
-         * [Pre-requisites](#pre-requisites-1)
-            * [Installing Ansible](#installing-ansible)
-         * [Download the Ansible Role](#download-the-ansible-role)
-         * [Usecase Setup Options](#usecase-setup-options)
-         * [Update Ansible Inventory](#update-ansible-inventory)
-         * [Create and Run Playbook](#create-and-run-playbook)
-         * [Additional Examples &amp; Tips](#additional-examples--tips)
-            * [TPM is already owned](#tpm-is-already-owned)
-            * [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
-            * [UEFI SecureBoot Enabled](#uefi-secureBoot-enabled)
-            * [Deploying for Workload Confidentiality with CRIO Runtime](#deploying-for-workload-confidentiality-with-crio-runtime)           
-            * [In case of Misconfigurations](#in-case-of-misconfigurations)
-      * [<strong>5. Usecase Workflows API Collections</strong>](#5-usecase-workflows-api-collections)
-         * [Pre-requisites](#pre-requisites-2)
-         * [Use Case Collections](#use-case-collections)
-         * [Downloading API Collections](#downloading-api-collections)
-         * [Running API Collections](#running-api-collections)
-      * [<strong>Appendix</strong>](#appendix)
-         * [Running behind Proxy](#running-behind-proxy)
-         * [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
-         * [Rebuilding Repos](#rebuilding-repos)
-         * [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
-            * [Deploy Intel® SecL Custom Controller](#deploy-intel-secl-custom-controller)
-            * [Installing the Intel® SecL Integration Hub](#installing-the-intel-secl-integration-hub)
-            * [Deploy Intel® SecL Extended Scheduler](#deploy-intel-secl-extended-scheduler)
-            * [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+<!-- code_chunk_output -->
+
+- [Quick Start Guide - Foundational & Workload Security](#quick-start-guide-foundational-workload-security)
+  - [**1. Hardware & OS Requirements**](#1-hardware-os-requirements)
+    - [Physical Server requirements](#physical-server-requirements)
+    - [OS Requirements](#os-requirements)
+    - [User Access](#user-access)
+  - [**2. Deployment Model**](#2-deployment-model)
+  - [**3. Build Services and packages**](#3-build-services-and-packages)
+    - [Pre-requisites](#pre-requisites)
+    - [Building](#building)
+      - [Foundational Security Usecase](#foundational-security-usecase)
+      - [Workload Security Usecase](#workload-security-usecase)
+        - [VM Confidentiality](#vm-confidentiality)
+        - [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
+  - [**4. Deployment**](#4-deployment)
+    - [Pre-requisites](#pre-requisites-1)
+      - [Installing Ansible](#installing-ansible)
+    - [Download the Ansible Role](#download-the-ansible-role)
+    - [Usecase Setup Options](#usecase-setup-options)
+    - [Update Ansible Inventory](#update-ansible-inventory)
+    - [Create and Run Playbook](#create-and-run-playbook)
+    - [Additional Examples & Tips](#additional-examples-tips)
+      - [TPM is already owned](#tpm-is-already-owned)
+      - [GRUB Default option for Booting into MLE](#grub-default-option-for-booting-into-mle)
+      - [UEFI SecureBoot enabled](#uefi-secureboot-enabled)
+      - [In case of Misconfigurations](#in-case-of-misconfigurations)
+  - [**5. Usecase Workflows API Collections**](#5-usecase-workflows-api-collections)
+    - [Pre-requisites](#pre-requisites-2)
+    - [Use Case Collections](#use-case-collections)
+    - [Downloading API Collections](#downloading-api-collections)
+    - [Running API Collections](#running-api-collections)
+  - [**Appendix**](#appendix)
+    - [Running behind Proxy](#running-behind-proxy)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Rebuilding Repos](#rebuilding-repos)
+    - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
+      - [Deploy Intel® SecL Custom Controller](#deploy-intel-secl-custom-controller)
+      - [Installing the Intel® SecL Integration Hub](#installing-the-intel-secl-integration-hub)
+      - [Deploy Intel® SecL Extended Scheduler](#deploy-intel-secl-extended-scheduler)
+      - [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+
+<!-- /code_chunk_output -->
 
 
 
@@ -56,10 +60,6 @@ Table of Contents
   > **Note:** At least one "Static Root of Trust" mechanism must be used (TXT and/or BtG). For Legacy BIOS systems, tboot must be used. For UEFI mode systems, UEFI SecureBoot must be used* Use the chart below for a guide to acceptable configuration options. Only dTPM is supported on Intel® SecL-DC platform hardware. 
 
   ![hardware-options](./images/trusted-boot-options.PNG)
-
-> **Note:** A security bug related to UEFI mode and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode.
-
-> **Note:** An issue in the latest version of tboot(version 1.9.12) has caused it to be unusable on RHEL 8.3 legacy mode machines. This will be fixed in an upcoming version of tboot. Its is recommeded to use tboot version 1.9.10 for the time being.
 
 ### OS Requirements
 
