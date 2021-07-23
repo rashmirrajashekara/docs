@@ -127,12 +127,15 @@ The below steps needs to be carried out on the Build and Deployment VM
   rm -rf $tmpdir
   ```
 
-* Extract Install `go` version > `go1.13` & <= `go1.14.4` from `https://golang.org/dl/` 
-  and set `GOROOT` & `PATH`
-
-  ```shell
-  export GOROOT=<path_to_go>
+* Golang installation
+  
+```shell
+  wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
+  tar -xzf go1.14.4.linux-amd64.tar.gz
+  sudo mv go /usr/local
+  export GOROOT=/usr/local/go
   export PATH=$GOROOT/bin:$PATH
+  rm -rf go1.14.4.linux-amd64.tar.gz
   ```
   
 ### Building
@@ -429,6 +432,28 @@ ansible-playbook <playbook-name> \
 
 ### Additional Examples & Tips
 
+#### TBoot Installation
+
+Tboot needs to be built by the user from tboot source and the `tboot.gz` & `tboot-syms` files needs to be copied under the `binaries` folder. The supported version of Tboot as of 4.0 release is `tboot-1.10.1`.The options must then be provided during runtime in the playbook:
+
+```shell
+ansible-playbook <playbook-name> \
+--extra-vars setup=<setup var from supported usecases> \
+--extra-vars binaries_path=<path where built binaries are copied to> \
+--extra-vars tboot_gz_file=<path where built binaries are copied to>/tboot.gz
+--extra-vars tboot_syms_file=<path where built binaries are copied to>/tboot-syms
+```
+
+or 
+
+Update the following in `vars/main.yml`
+
+```yaml
+# The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
+tboot_gz_file: "<binaries_path>/tboot.gz"
+tboot_syms_file: "<binaries_path>/tboot-syms"
+```
+
 #### TPM is already owned
 
 If the Trusted Platform Module(TPM) is already owned, the owner secret(SRK) can be provided directly during runtime in the playbook:
@@ -439,6 +464,7 @@ ansible-playbook <playbook-name> \
 --extra-vars binaries_path=<path where built binaries are copied to> \
 --extra-vars tpm_secret=<tpm owner secret>
 ```
+
 or
 
 Update the following vars in `vars/main.yml`
@@ -446,26 +472,6 @@ Update the following vars in `vars/main.yml`
 ```yaml
 # The TPM Storage Root Key(SRK) Password to be used if TPM is already owned
 tpm_owner_secret: <tpm_secret>
-```
-
-#### GRUB Default option for Booting into MLE
-
-The grub2_default option would vary from OEM to OEM for booting after installing tboot. The grub option to be selected for booting into TBOOT/MLE mode, use `grubby --info <option:0/1...>` to determine which one has no boot menu assigned to it during runtime in the playbook as below. Default is 3.
-
-> **NOTE:** This is not required in case of UEFI Secure boot mode
-
-```shell
-ansible-playbook <playbook-name> \
---extra-vars setup=<setup var from supported usecases> \
---extra-vars binaries_path=<path where built binaries are copied to> \
---extra-vars grub_default_option=<grub_default_option>
-```
-or
-
-Update the following vars in `vars/main.yml`
-
-```yaml
-grub_default_option: "3"
 ```
 
 #### UEFI SecureBoot enabled
@@ -477,10 +483,12 @@ ansible-playbook <playbook-name> \
 --extra-vars setup=<setup var from supported usecases> \
 --extra-vars binaries_path=<path where built binaries are copied to> \
 --extra-vars uefi_secureboot=yes \
--- extra-vars grub_file_path=<uefi mode grub file path>
+--extra-vars grub_file_path=<uefi mode grub file path>
 ```
 
 or
+
+Update the following vars in `vars/main.yml`
 
 ```yaml
 # UEFI mode or UEFI SecureBoot mode
