@@ -7,8 +7,9 @@ Table of Contents
 
 <!-- code_chunk_output -->
 
-- [Quick Start Guide - Foundational & Workload Security](#quick-start-guide-foundational-workload-security)
-  - [**1. Hardware & OS Requirements**](#1-hardware-os-requirements)
+- [Quick Start Guide - Foundational & Workload Security](#quick-start-guide---foundational--workload-security)
+  - [Table of Contents](#table-of-contents)
+  - [**1. Hardware & OS Requirements**](#1-hardware--os-requirements)
     - [Physical Server requirements](#physical-server-requirements)
     - [OS Requirements](#os-requirements)
     - [User Access](#user-access)
@@ -27,7 +28,8 @@ Table of Contents
     - [Usecase Setup Options](#usecase-setup-options)
     - [Update Ansible Inventory](#update-ansible-inventory)
     - [Create and Run Playbook](#create-and-run-playbook)
-    - [Additional Examples & Tips](#additional-examples-tips)
+    - [Additional Examples & Tips](#additional-examples--tips)
+      - [TBoot Installation](#tboot-installation)
       - [TPM is already owned](#tpm-is-already-owned)
       - [UEFI SecureBoot enabled](#uefi-secureboot-enabled)
       - [In case of Misconfigurations](#in-case-of-misconfigurations)
@@ -38,7 +40,7 @@ Table of Contents
     - [Running API Collections](#running-api-collections)
   - [**Appendix**](#appendix)
     - [Running behind Proxy](#running-behind-proxy)
-    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
     - [Rebuilding Repos](#rebuilding-repos)
     - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
       - [Deploy Intel® SecL Custom Controller](#deploy-intel-secl-custom-controller)
@@ -145,7 +147,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/fs.xml
   repo sync
   ```
 
@@ -178,7 +180,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/vmc.xml
   repo sync
   ```
 
@@ -208,7 +210,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.0 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/cc-crio.xml
   repo sync
   ```
 

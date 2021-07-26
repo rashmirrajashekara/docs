@@ -9,8 +9,9 @@ Table of Contents
 
 <!-- code_chunk_output -->
 
-- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide-foundation-workload-security-containerization)
-  - [Hardware & OS Requirements](#hardware-os-requirements)
+- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide---foundation--workload-security---containerization)
+  - [Table of Contents](#table-of-contents)
+  - [Hardware & OS Requirements](#hardware--os-requirements)
     - [Physical Server requirements](#physical-server-requirements)
     - [Machines](#machines)
     - [OS Requirements](#os-requirements)
@@ -23,7 +24,7 @@ Table of Contents
     - [Enterprise Managed Services](#enterprise-managed-services)
     - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
     - [Firewall Settings](#firewall-settings)
-  - [Rpms & Debs Requirement](#rpms-debs-requirement)
+  - [Rpms & Debs Requirement](#rpms--debs-requirement)
     - [RHEL](#rhel)
     - [Ubuntu](#ubuntu)
   - [Deployment Model](#deployment-model)
@@ -68,14 +69,13 @@ Table of Contents
   - [Appendix](#appendix)
     - [Hardware feature detection](#hardware-feature-detection)
     - [Running behind Proxy](#running-behind-proxy)
-    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
     - [Rebuilding Repos](#rebuilding-repos)
     - [Setup Task Flow](#setup-task-flow)
     - [Configuration Update Flow](#configuration-update-flow)
     - [Cleanup workflows](#cleanup-workflows)
       - [Single-node](#single-node-2)
       - [Multi-node](#multi-node-2)
-- [Only in case of KBS, perform one more step along with above 2 steps](#only-in-case-of-kbs-perform-one-more-step-along-with-above-2-steps)
 
 <!-- /code_chunk_output -->
 
@@ -279,7 +279,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.1.0
   repo sync
   ```
 
@@ -328,7 +328,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.0
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.1.0
   repo sync
   ```
 
