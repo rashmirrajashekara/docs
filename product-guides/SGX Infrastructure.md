@@ -29,7 +29,7 @@ processor; (ii) cause the processor and other system components to fail; (iii) c
 Check with memory manufacturer for warranty and additional details.
 
 Tests document performance of components on a particular test, in specific systems. Differences in hardware, software, or configuration
-will affect actual performance. Consult other sources of information to evaluate performance as you consider your purchase. For more complete information about performance and benchmark results, visit http://www.intel.com/performance.
+will affect actual performance. Consult other sources of information to evaluate performance as you consider your purchase. For more complete information about performance and benchmark results, visit <https://www.intel.com/performance>.
 
 Cost reduction scenarios described are intended as examples of how a given Intel- based product, in the specified circumstances and
 configurations, may affect future costs and provide cost savings. Circumstances will vary. Intel does not guarantee any costs or cost
@@ -42,7 +42,7 @@ Intel does not control or audit third-party benchmark data or the web sites refe
 
 Intel is a sponsor and member of the Benchmark XPRT Development Community, and was the major developer of the XPRT family of benchmarks. Principled Technologies is the publisher of the XPRT family of benchmarks. You should consult other information and performance tests to assist you in fully evaluating your contemplated purchases.
 
-Copies of documents which have an order number and are referenced in this document may be obtained by calling 1-800-548-4725 or by visiting w[ww.intel.com/design/literature.htm.](http://www.intel.com/design/literature.htm)
+Copies of documents which have an order number and are referenced in this document may be obtained by calling 1-800-548-4725 or by visiting [www.intel.com/design/literature.htm.](https://www.intel.com/design/literature.htm)
 
 Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation in the U.S. and/or other countries.
 
@@ -50,11 +50,349 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 Copyright © 2021, Intel Corporation. All Rights Reserved.
 
-Revision History
+## Revision History
 
-[[_TOC_]]
+| Revision  Number | Description                     | Date          |
+| ---------------- | ------------------------------- | ------------- |
+| 3.0              | Initial release | August 2020   |
+| 3.1              | Updated for version 3.1 release | October 2020  |
+| 3.2              | Updated for version 3.2 release | November 2020 |
+| 3.3              | Updated for version 3.3 release | December 2020 |
+| 3.3.1            | Updated for version 3.3.1 release | January 2021 |
+| 3.4 | Updated for version 3.4 release | February 2021 |
+| 3.5 | Updated for version 3.5 release | March 2021 |
+| 3.6 | Updated for version 3.6 release | May 2021 |
+| 4.0 | Updated for version 4.0 release | July 2021 |
 
-# 1 Introduction 
+- [Intel® Security Libraries - Datacenter SGX Attestation Infrastructure and Secure Key Caching](#intel-security-libraries---datacenter-sgx-attestation-infrastructure-and-secure-key-caching)
+  - [Product Guide](#product-guide)
+    - [July 2021](#july-2021)
+    - [Revision 4.0](#revision-40)
+  - [Revision History](#revision-history)
+  - [1 Introduction](#1-introduction)
+  - [1.1 Overview](#11-overview)
+  - [Trusted Execution Environment](#trusted-execution-environment)
+    - [Intel Software Guard Extensions](#intel-software-guard-extensions)
+      - [SGX ECDSA Attestation](#sgx-ecdsa-attestation)
+      - [PCK Certificates Provisioning](#pck-certificates-provisioning)
+  - [Key Protection](#key-protection)
+    - [HSM](#hsm)
+    - [PKCS\#11](#pkcs11)
+  - [Features](#features)
+    - [SGX Attestation Infrastructure](#sgx-attestation-infrastructure)
+    - [SGX Support in Orchestrators](#sgx-support-in-orchestrators)
+    - [Key Protection](#key-protection-1)
+  - [SGX Attestation Infrastructure and SKC Components](#sgx-attestation-infrastructure-and-skc-components)
+  - [Certificate Management Service](#certificate-management-service)
+  - [Authentication and Authorization Service](#authentication-and-authorization-service)
+  - [SGX Caching Service](#sgx-caching-service)
+  - [SGX Host Verification Service](#sgx-host-verification-service)
+  - [SGX Agent](#sgx-agent)
+  - [Integration Hub](#integration-hub)
+  - [Key Broker Service (SKC Only)](#key-broker-service-skc-only)
+  - [SGX Quote Verification Service](#sgx-quote-verification-service)
+  - [The Workload SGX Dependencies](#the-workload-sgx-dependencies)
+  - [The SKC Client (Secure Key Caching Use case Only)](#the-skc-client-secure-key-caching-use-case-only)
+  - [Definitions, Acronyms, and Abbreviation](#definitions-acronyms-and-abbreviation)
+  - [Architecture Overview](#architecture-overview)
+  - [SGX Attestation Support and SGX Support in Orchestrators](#sgx-attestation-support-and-sgx-support-in-orchestrators)
+  - [Key Protection](#key-protection-2)
+  - [SKC Virtualization (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)](#skc-virtualization-supported-only-on-rhel-82-not-supported-on-ubuntu-1804)
+  - [Intel® Security Libraries Installation](#intel-security-libraries-installation)
+  - [Building from Source](#building-from-source)
+  - [Building from Source - OCI images & K8s Manifests](#building-from-source---oci-images--k8s-manifests)
+  - [Hardware Considerations](#hardware-considerations)
+    - [Supported **Hardware**](#supported-hardware)
+    - [BIOS Requirements](#bios-requirements)
+    - [OS Requirements (Intel® SGX does not supported on 32-bit OS):](#os-requirements-intel-sgx-does-not-supported-on-32-bit-os)
+    - [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
+      - [Operating System:](#operating-system)
+      - [Kubernetes](#kubernetes)
+      - [Container Runtime](#container-runtime)
+      - [Storage:](#storage)
+  - [Recommended Service Layout](#recommended-service-layout)
+  - [Recommended Service Layout & Architecture - Containerized Deployment with K8s](#recommended-service-layout--architecture---containerized-deployment-with-k8s)
+    - [Using the provided Database Installation Script](#using-the-provided-database-installation-script)
+    - [Provisioning the Database](#provisioning-the-database)
+    - [Database Server TLS Certificate](#database-server-tls-certificate)
+  - [Installation of Containerized Services and Agent in K8s Cluster](#installation-of-containerized-services-and-agent-in-k8s-cluster)
+    - [Pre-requisites](#pre-requisites)
+    - [Deploy Steps](#deploy-steps)
+    - [Additional Details](#additional-details)
+  - [Installing the Certificate Management Service](#installing-the-certificate-management-service)
+    - [Required For](#required-for)
+    - [Supported Operating System](#supported-operating-system)
+    - [Recommended Hardware](#recommended-hardware)
+    - [Installation](#installation)
+  - [Installing the Authentication and Authorization Service](#installing-the-authentication-and-authorization-service)
+    - [Required For](#required-for-1)
+    - [Prerequisites](#prerequisites)
+    - [Package Dependencies](#package-dependencies)
+    - [Supported Operating Systems](#supported-operating-systems)
+    - [Recommended Hardware](#recommended-hardware-1)
+    - [Installation](#installation-1)
+    - [Creating Users](#creating-users)
+    - [Creating Users and Roles](#creating-users-and-roles)
+  - [Installing the Caching Service](#installing-the-caching-service)
+    - [Required For](#required-for-2)
+    - [Prerequisites (CSP & Enterprise)](#prerequisites-csp--enterprise)
+    - [Package Dependencies](#package-dependencies-1)
+    - [Supported Operating System](#supported-operating-system-1)
+    - [Recommended Hardware](#recommended-hardware-2)
+    - [Installation](#installation-2)
+  - [Installing the SGX Host Verification Service](#installing-the-sgx-host-verification-service)
+    - [Required For](#required-for-3)
+    - [Prerequisites](#prerequisites-1)
+    - [Package Dependencies](#package-dependencies-2)
+    - [Supported Operating Systems](#supported-operating-systems-1)
+    - [Recommended Hardware](#recommended-hardware-3)
+    - [Installation](#installation-3)
+  - [Installing the SGX Agent](#installing-the-sgx-agent)
+    - [Required for](#required-for-4)
+    - [Prerequisites](#prerequisites-2)
+    - [Package Dependencies](#package-dependencies-3)
+    - [Supported Operating Systems](#supported-operating-systems-2)
+    - [Installation](#installation-4)
+  - [Installing the SQVS](#installing-the-sqvs)
+    - [Required for](#required-for-5)
+    - [Prerequisites](#prerequisites-3)
+    - [Package Dependencies](#package-dependencies-4)
+    - [Supported Operating Systems](#supported-operating-systems-3)
+    - [Recommended Hardware](#recommended-hardware-4)
+    - [Installation](#installation-5)
+  - [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
+    - [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
+        - [Deploy isecl-controller](#deploy-isecl-controller)
+        - [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+        - [Configure kube-scheduler to establish communication with isecl-scheduler](#configure-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+  - [Installing the Integration Hub](#installing-the-integration-hub)
+    - [Required For](#required-for-6)
+    - [Prerequisites](#prerequisites-4)
+    - [Package Dependencies](#package-dependencies-5)
+    - [Supported Operating Systems](#supported-operating-systems-4)
+    - [Recommended Hardware](#recommended-hardware-5)
+      - [Installing the Integration Hub](#installing-the-integration-hub-1)
+  - [Integration with OpenStack (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)](#integration-with-openstack-supported-only-on-rhel-82-not-supported-on-ubuntu-1804)
+  - [Installing the Key Broker Service](#installing-the-key-broker-service)
+    - [Required for](#required-for-7)
+    - [Prerequisites](#prerequisites-5)
+    - [Package Dependencies](#package-dependencies-6)
+    - [Supported Operating Systems](#supported-operating-systems-5)
+    - [Recommended Hardware](#recommended-hardware-6)
+    - [Installation](#installation-6)
+  - [Installing the SKC Library](#installing-the-skc-library)
+    - [Required For](#required-for-8)
+    - [Package Dependencies](#package-dependencies-7)
+    - [Supported Operation System](#supported-operation-system)
+    - [Recommended Hardware](#recommended-hardware-7)
+    - [Installation](#installation-7)
+      - [Deploying SKC Library as a Container (Supported only on RHEL 8.2, not supported on Ubuntu 18.04)](#deploying-skc-library-as-a-container-supported-only-on-rhel-82-not-supported-on-ubuntu-1804)
+  - [Authentication](#authentication)
+  - [Create Token](#create-token)
+  - [User Management](#user-management)
+    - [Username and Password Requirement](#username-and-password-requirement)
+    - [Create User](#create-user)
+    - [Search Users by Username](#search-users-by-username)
+    - [Change User Password](#change-user-password)
+    - [Delete User](#delete-user)
+  - [Roles and Permission](#roles-and-permission)
+    - [Create Roles](#create-roles)
+    - [Search Roles](#search-roles)
+    - [Delete Role](#delete-role)
+    - [Assign Role to User](#assign-role-to-user)
+    - [List Roles Assigned to User](#list-roles-assigned-to-user)
+    - [Remove Role from User](#remove-role-from-user)
+    - [Role Definitions](#role-definitions)
+  - [SGX Agent](#sgx-agent-1)
+- [SGX Features Provisioning](#sgx-features-provisioning)
+  - [Host Registration](#host-registration)
+- [Setup Task Flows for K8s Deployments](#setup-task-flows-for-k8s-deployments)
+- [Configuration Update Flows for K8s Deployments](#configuration-update-flows-for-k8s-deployments)
+- [Intel Security Libraries Configuration Settings](#intel-security-libraries-configuration-settings)
+  - [SGX Host Verification Service](#sgx-host-verification-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options)
+    - [Configuration Options](#configuration-options)
+    - [Command-Line Options](#command-line-options)
+      - [Available Commands](#available-commands)
+      - [Help](#help)
+      - [Start](#start)
+      - [Stop](#stop)
+      - [Status](#status)
+      - [Uninstall](#uninstall)
+      - [Version](#version)
+      - [Setup \[task\]](#setup-task)
+    - [Setup tasks and its Configuration Options for SGX Host Verification Service](#setup-tasks-and-its-configuration-options-for-sgx-host-verification-service)
+    - [Directory Layout](#directory-layout)
+      - [Bin](#bin)
+      - [Configuration](#configuration)
+      - [Logs](#logs)
+  - [SGX Agent](#sgx-agent-2)
+    - [Installation Answer File Options](#installation-answer-file-options-1)
+    - [Configuration Options](#configuration-options-1)
+    - [Command-Line Options](#command-line-options-1)
+      - [Available Commands](#available-commands-1)
+      - [Help](#help-1)
+      - [Start](#start-1)
+      - [Stop](#stop-1)
+      - [Status](#status-1)
+      - [Uninstall](#uninstall-1)
+      - [Version](#version-1)
+    - [Setup Tasks and its Configuration Options for SGX Agent](#setup-tasks-and-its-configuration-options-for-sgx-agent)
+    - [Directory Layout](#directory-layout-1)
+      - [Linux](#linux)
+      - [Bin](#bin-1)
+      - [Configuration](#configuration-1)
+      - [Logs](#logs-1)
+  - [Integration Hub](#integration-hub-1)
+    - [Installation Answer File Options](#installation-answer-file-options-2)
+    - [Configuration Options](#configuration-options-2)
+    - [Command-Line Options](#command-line-options-2)
+      - [Available Commands](#available-commands-2)
+      - [Help](#help-2)
+      - [Start](#start-2)
+      - [Stop](#stop-2)
+      - [Status](#status-2)
+      - [Uninstall](#uninstall-2)
+      - [Version](#version-2)
+      - [Setup \[task\]](#setup-task-1)
+    - [Setup Tasks and its Configuration Options for Integration Hub](#setup-tasks-and-its-configuration-options-for-integration-hub)
+    - [Directory Layout](#directory-layout-2)
+      - [Bin](#bin-2)
+      - [Configuration](#configuration-2)
+      - [Logs](#logs-2)
+  - [Certificate Management Service](#certificate-management-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-3)
+    - [Configuration Options](#configuration-options-3)
+    - [Command-Line Options](#command-line-options-3)
+      - [Available Commands](#available-commands-3)
+      - [Help](#help-3)
+      - [Start](#start-3)
+      - [Stop](#stop-3)
+      - [Status](#status-3)
+      - [Uninstall](#uninstall-3)
+      - [Version](#version-3)
+      - [Tlscertsha384](#tlscertsha384)
+      - [Setup \[task\]](#setup-task-2)
+        - [cms setup server \[\--port=\<port\>\]](#cms-setup-server---portport)
+        - [cms setup root_ca \[\--force\]](#cms-setup-root_ca---force)
+        - [cms setup tls \[\--force\] \[\--host_names=\<host_names\>\]](#cms-setup-tls---force---host_nameshost_names)
+        - [cms setup cms-auth-token \[\--force\]](#cms-setup-cms-auth-token---force)
+    - [Setup Tasks and its Configuration Options for Certificate Management Service](#setup-tasks-and-its-configuration-options-for-certificate-management-service)
+    - [Directory Layout](#directory-layout-3)
+      - [Bin](#bin-3)
+      - [Configuration](#configuration-3)
+      - [Logs](#logs-3)
+      - [Cacerts](#cacerts)
+  - [Authentication and Authorization Service](#authentication-and-authorization-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-4)
+    - [Configuration Options](#configuration-options-4)
+    - [Command-Line Options](#command-line-options-4)
+      - [Available Commands](#available-commands-4)
+      - [Help](#help-4)
+      - [Start](#start-4)
+      - [Stop](#stop-4)
+      - [Status](#status-4)
+      - [Uninstall](#uninstall-4)
+      - [Version](#version-4)
+      - [Setup \[task\]](#setup-task-3)
+        - [authservice setup all](#authservice-setup-all)
+        - [authservice setup database \[-force\] \[-arguments=\<argument_value\>\]](#authservice-setup-database--force--argumentsargument_value)
+        - [authservice setup server \[\--port=\<port\>\]](#authservice-setup-server---portport)
+        - [authservice setup admin \[\--user=\<username\>\] \[-pass=\<password\>\]](#authservice-setup-admin---userusername--passpassword)
+        - [authservice setup jwt](#authservice-setup-jwt)
+    - [Setup Tasks and its Configuration Options for Authentication and Authorization Service](#setup-tasks-and-its-configuration-options-for-authentication-and-authorization-service)
+    - [Directory Layout](#directory-layout-4)
+      - [Bin](#bin-4)
+      - [Configuration](#configuration-4)
+      - [Logs](#logs-4)
+      - [Dbscripts](#dbscripts)
+  - [Key Broker Service](#key-broker-service)
+    - [Installation Answer File Options](#installation-answer-file-options-5)
+    - [Configuration Options](#configuration-options-5)
+    - [Command-Line Options](#command-line-options-5)
+      - [Available Commands](#available-commands-5)
+      - [Help](#help-5)
+      - [Start](#start-5)
+      - [Stop](#stop-5)
+      - [Status](#status-5)
+      - [Uninstall](#uninstall-5)
+      - [Version](#version-5)
+      - [Setup \[task\]](#setup-task-4)
+    - [Setup Tasks and its Configuration Options for Key Broker Service](#setup-tasks-and-its-configuration-options-for-key-broker-service)
+    - [Directory Layout](#directory-layout-5)
+      - [Bin](#bin-5)
+      - [Configuration](#configuration-5)
+      - [Logs](#logs-5)
+  - [SGX Caching Service](#sgx-caching-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-6)
+    - [Configuration Options](#configuration-options-6)
+    - [Command-Line Options](#command-line-options-6)
+      - [Available Commands](#available-commands-6)
+      - [Help](#help-6)
+      - [Start](#start-6)
+      - [Stop](#stop-6)
+      - [Status](#status-6)
+      - [Uninstall](#uninstall-6)
+      - [Version](#version-6)
+      - [Setup \[task\]](#setup-task-5)
+    - [Setup Tasks and its Configuration Options for SGX Caching Service](#setup-tasks-and-its-configuration-options-for-sgx-caching-service)
+    - [Directory Layout](#directory-layout-6)
+      - [Bin](#bin-6)
+      - [Configuration](#configuration-6)
+      - [Logs](#logs-6)
+  - [SGX Quote Verification Service](#sgx-quote-verification-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-7)
+    - [Configuration Options](#configuration-options-7)
+    - [Command-Line Options](#command-line-options-7)
+      - [Available Commands](#available-commands-7)
+      - [Help](#help-7)
+      - [Start](#start-7)
+      - [Stop](#stop-7)
+      - [Status](#status-7)
+      - [Uninstall](#uninstall-7)
+      - [Version](#version-7)
+      - [Setup \[task\]](#setup-task-6)
+    - [Setup Tasks and its Configuration Options for SGX Quote Verification Service](#setup-tasks-and-its-configuration-options-for-sgx-quote-verification-service)
+    - [Directory Layout](#directory-layout-7)
+      - [Bin](#bin-7)
+      - [Configuration](#configuration-7)
+      - [Logs](#logs-7)
+- [Uninstallation](#uninstallation)
+  - [Certificate Management Service](#certificate-management-service-2)
+  - [Authentication and Authorization Service](#authentication-and-authorization-service-2)
+  - [SGX Host Verification Service](#sgx-host-verification-service-2)
+  - [SGX_Agent](#sgx_agent)
+  - [Integration Hub](#integration-hub-2)
+  - [SGX Caching Service](#sgx-caching-service-2)
+  - [SGX Quote Verification Service](#sgx-quote-verification-service-2)
+  - [Key Broker Service](#key-broker-service-1)
+  - [SKC Library](#skc-library)
+  - [isecl-k8s-extensions](#isecl-k8s-extensions)
+  - [TLS Certificates](#tls-certificates)
+- [Binary Upgrades](#binary-upgrades)
+  - [Backward Compatibility](#backward-compatibility)
+  - [Upgrade Order](#upgrade-order)
+  - [Upgrade Process](#upgrade-process)
+    - [Binary Installations](#binary-installations)
+- [Container Upgrades](#container-upgrades)
+  - [Backup and roll back applicable to all services](#backup-and-roll-back-applicable-to-all-services)
+  - [Backward Compatibility](#backward-compatibility-1)
+  - [Upgrade Order](#upgrade-order-1)
+  - [Upgrade Process](#upgrade-process-1)
+    - [Container Installations](#container-installations)
+      - [Individual services upgrade except KBS](#individual-services-upgrade-except-kbs)
+      - [KBS Upgrade](#kbs-upgrade)
+- [Appendix](#appendix)
+    - [SGX Attestation flow](#sgx-attestation-flow)
+    - [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
+  - [Configuration for NGINX testing on RHEL 8.2](#configuration-for-nginx-testing-on-rhel-82)
+  - [Configuration for NGINX testing for Ubuntu 18.04](#configuration-for-nginx-testing-for-ubuntu-1804)
+- [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
+- [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+- [Note on SKC Library Deployment](#note-on-skc-library-deployment)
+  - [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
+
+## 1 Introduction 
 
 ## 1.1 Overview
 
@@ -116,7 +454,7 @@ The SGX Attestation Infrastructure can optionally push the SGX information on co
 
 SKC leverages the SGX Attestation Infrastructure to protect keys in an SGX enclave at rest and in use. Applications use the SKC Client -- a set of libraries -- to retrieves keys at runtime from KBS. KBS performs an SGX enclave attestation. If the attestation is successful, KBS generates a Symmetric Wrapping Key (SWK), wraps it with the enclave public key and provisions it into the enclave, which can unwrap it since it has the corresponding private key. Application can then be provisioned into the SGX enclave after being wrapped with the SWK. Application keys are therefore never exposed to any software outside of the enclave.
 
-# SGX Attestation Infrastructure and SKC Components
+## SGX Attestation Infrastructure and SKC Components
 
 The components documented in this section are used by the SGX Attestation Infrastructure and therefore by SKC, which leverages the SGX Attestation Infrastructure. Components that are exclusively used by SKC have (SKC Only) in the corresponding sub-section title.
 
@@ -176,7 +514,7 @@ The SKC Client refers to a suite of libraries that applications that require key
 
 The SKC Client is typically deployed inside a tenant VM or container. It can also be used on bare metal. In all these deployments, the underlying platform is typically owned by a Cloud Service Provider (CSP) and is considered untrusted.
 
-# Definitions, Acronyms, and Abbreviation
+## Definitions, Acronyms, and Abbreviation
 
 SKC -- Secure Key Caching
 
@@ -200,7 +538,7 @@ SWK -- Symmetric Wrapping Key
 
 CRDs -- Custom Resource Definitions 
 
-# Architecture Overview 
+## Architecture Overview 
 
 As indicated in the Features section, SKC provides 3 features essentially:
 
@@ -246,7 +584,7 @@ Step 6 is optional (keys can be stored in KBS). Keys policies in step 2 are call
 Virtualization enabled on SGX Host machines, uses SGX key features. With Virtualization being enabled on SGX host, SKC Library which uses Intel crypto tool kit to protect keys in SGX Enclave can be configured on Virtual Machines which are created on SGX Hosts. This enhancement further provides the privilege for a workload on a VM  allowing successful Secure Key transfer flow which meets the policy requirements. Hence virtualization on SGX Hosts supports key transfer flow for Workload on bare metal, Workload inside a VM, Workload in a container and Workload in a container inside a VM enabled on SGX Host.
 
 
-# Intel® Security Libraries Installation
+## Intel® Security Libraries Installation
 
 ## Building from Source
 
@@ -429,15 +767,13 @@ For stateful services which requires database like shvs, aas, scs, A separate da
 
 ![Networking within cluster](./Images/within-cluster-communication-sgx.jpg)
 
-
-
 **Networking Outside the Cluster:**
 
 ![Networking outside cluster](./Images/inter-cluster-communication-sgx.jpg)
 
 **SKC Virtualization:**
 
-![](.\Images\sgx-virtualization-model.jpg)
+![SGX Virtualization Model](./Images/sgx-virtualization-model.jpg)
 
 Follow the [Installation of Containerized Services and Agent in K8s Cluster](#Installation of Containerized Services and Agent in K8s Cluster) for installation instructions once deployment model is chosen
 
@@ -1656,7 +1992,7 @@ Note: All the configuration files required for SKC Library container are modifie
     wget https://localhost:2443 --no-check-certificate
 ```
 
-# Authentication
+## Authentication
 
 Authentication is centrally managed by the Authentication and Authorization Service (AAS). This service uses a Bearer Token authentication method. This service also centralizes the creation of roles and users, allowing much easier management of users, passwords, and permissions across all Intel® SecL-DC services.
 
