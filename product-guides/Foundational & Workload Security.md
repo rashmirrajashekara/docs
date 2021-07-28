@@ -91,7 +91,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
       - [Signed Flavors](#signed-flavors)
       - [Trusted Virtual Kubernetes Worker Nodes](#trusted-virtual-kubernetes-worker-nodes)
   - [Intel® Security Libraries Components](#intel-security-libraries-components)
-  - [###Certificate Management Service](#certificate-management-service)
+  - [Certificate Management Service](#certificate-management-service)
     - [Authentication and Authorization Service](#authentication-and-authorization-service)
     - [Verification Service](#verification-service)
     - [Workload Service](#workload-service)
@@ -117,7 +117,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems)
     - [Recommended Hardware](#recommended-hardware)
     - [Installation](#installation)
-  - [## Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
+  - [Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
     - [Required For](#required-for-1)
     - [Prerequisites](#prerequisites)
     - [Package Dependencies](#package-dependencies)
@@ -155,8 +155,8 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
   - [Trust Agent Registration](#trust-agent-registration)
   - [Importing the HOST\_UNIQUE Flavor](#importing-the-host_unique-flavor)
   - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
-  - [### Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
-  - [### Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
+  - [ Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
+  - [Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
     - [Required For](#required-for-6)
     - [Deployment Architecture Considerations for the Hub](#deployment-architecture-considerations-for-the-hub)
     - [Prerequisites](#prerequisites-5)
@@ -164,7 +164,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems-6)
     - [Recommended Hardware](#recommended-hardware-4)
     - [Installing the Integration Hub](#installing-the-integration-hub)
-  - [### Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
+  - [Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
       - [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
   - [Installing the Key Broker Service](#installing-the-key-broker-service)
     - [Required For](#required-for-7)
@@ -203,7 +203,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
       - [Signed Flavors](#signed-flavors)
       - [Trusted Virtual Kubernetes Worker Nodes](#trusted-virtual-kubernetes-worker-nodes)
   - [Intel® Security Libraries Components](#intel-security-libraries-components)
-  - [###Certificate Management Service](#certificate-management-service)
+  - [Certificate Management Service](#certificate-management-service)
     - [Authentication and Authorization Service](#authentication-and-authorization-service)
     - [Verification Service](#verification-service)
     - [Workload Service](#workload-service)
@@ -229,7 +229,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems)
     - [Recommended Hardware](#recommended-hardware)
     - [Installation](#installation)
-  - [## Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
+  - [Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
     - [Required For](#required-for-1)
     - [Prerequisites](#prerequisites)
     - [Package Dependencies](#package-dependencies)
@@ -267,8 +267,8 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
   - [Trust Agent Registration](#trust-agent-registration)
   - [Importing the HOST\_UNIQUE Flavor](#importing-the-host_unique-flavor)
   - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
-  - [### Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
-  - [### Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
+  - [Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
+  - [Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
     - [Required For](#required-for-6)
     - [Deployment Architecture Considerations for the Hub](#deployment-architecture-considerations-for-the-hub)
     - [Prerequisites](#prerequisites-5)
@@ -276,7 +276,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems-6)
     - [Recommended Hardware](#recommended-hardware-4)
     - [Installing the Integration Hub](#installing-the-integration-hub)
-  - [### Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
+  - [Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
       - [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
   - [Installing the Key Broker Service](#installing-the-key-broker-service)
     - [Required For](#required-for-7)
@@ -703,7 +703,7 @@ By using Platform Integrity and Data Sovereignty-based orchestration (or Workloa
 
 ## Intel® Security Libraries Components
 
-###Certificate Management Service
+Certificate Management Service
 ------------------------------
 
 Starting with Intel® SecL-DC 1.6, most non-TPM-related certificates used by Intel® SecL-DC applications will be issued by the new Certificate Management Service. This includes acting as a root CA and issuing TLS certificates for all of the various web services.
@@ -1134,7 +1134,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 
    ```shell
     cms status
-    ```
+   ```
 
 After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, use the following command:
 
@@ -1396,7 +1396,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v4.0.0.bin
+   ./hvs-v4.0.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -1705,9 +1705,9 @@ To install the Trust Agent for Linux:
   For NATS mode, add the following (in addition to the basic Platform Attestation sample and any other optional features):
   
   ```
-TA_SERVICE_MODE=outbound 
+  TA_SERVICE_MODE=outbound 
   NATS_SERVERS=<nats-server-ip>:4222 
-TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
+  TA_HOST_ID=<Any unique identifier for the host; this could be the server FQDN, a UUID, or any other unique identifier>
   ```
   
   Note that the TA_HOST_ID unique identifier will also be the ID used as part of the connection string to reach this Trust Agent host in NATS mode.
@@ -1937,7 +1937,7 @@ deployment in the `isecl` namespace.
     ```shell
     #1.14<=k8s_version<=1.16
     kubectl apply -f yamls/crd-1.14.yaml
-
+    
     #1.16<=k8s_version<=1.18
     kubectl apply -f yamls/crd-1.17.yaml
     ```
@@ -2404,7 +2404,7 @@ To configure the Key Broker to point to a 3rd-party KMIP-compliant Key Managemen
     KEY_MANAGER=KMIP
     KMIP_SERVER_IP=<IP address of KMIP server>
     KMIP_SERVER_PORT=<Port number of KMIP server>
-KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the Subject Alternative Name fort eh KMIP server client certificate.>
+    KMIP_HOSTNAME=<hostname of the KMIP server.  Must match the hostname used in the Subject Alternative Name fort eh KMIP server client certificate.>
     
     ## KMIP_VERSION variable can be used to mention KMIP protocol version.
     ## This is an OPTIONAL field, default value is set to '2.0'. KBS supports KMIP version '1.4' and '2.0'.
