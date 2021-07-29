@@ -977,15 +977,8 @@ make k8s
 ```
 ### SGX Attestation Flow
 ```
-To Build and obtain the sample_apps tar:
-  cd into the repo folder (For single node 'cd /root/intel-secl/build/skc-k8s-single-node' and for multi node 'cd /root/intel-secl/build/skc-k8s-multi-node')
-  make sample_apps
-  mkdir -p binaries/
-  cp utils/build/skc-tools/sample_apps/build_scripts/sample_apps.* binaries/
-  cp utils/build/skc-tools/sample_apps/sampleapps_untar.sh binaries/
-
 To Deploy SampleApp:
-  Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from binaries directory to a directory in SGX compute node and untar it using './sample_apps_untar.sh'
+  Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from k8s/sample_apps directory to a directory in SGX compute node and untar it using './sample_apps_untar.sh'
   Install Intel® SGX SDK for Linux*OS into /opt/intel/sgxsdk using './install_sgxsdk.sh'
   Install SGX dependencies using './deploy_sgx_dependencies.sh'
 Note: Make sure to deploy SQVS with includetoken configuration as false. 
