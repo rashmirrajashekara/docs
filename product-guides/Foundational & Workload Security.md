@@ -475,7 +475,6 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 - [Intel Security Libraries Configuration Settings](#intel-security-libraries-configuration-settings)
   - [Verification Service](#verification-service-1)
     - [Installation Answer File Options](#installation-answer-file-options)
-    - [Note on Certificate Revocation Checks for TPM EK Certs](#note-on-certificate-revocation-checks-for-tpm-ek-certs)
     - [Configuration Options](#configuration-options)
     - [Command-Line Options](#command-line-options)
       - [Help](#help)
@@ -7176,77 +7175,7 @@ HVS_DB_SSLCERTSRC=/tmp/dbcert.pem          # This doesn't need to be specified i
 # Database - optional
 HVS_DB_HOSTNAME=localhost                  # default=localhost
 HVS_DB_NAME=hvs-pg-db                      # default=hvs-pg-db
-HVS_DB_PORT=5432                           # default=5432
-HVS_DB_SSLMODE=verify-full                 # default=verify-full ;other options are like allow, prefer, require, verify-ca
-HVS_DB_SSLCERT=/etc/hvs/hvsdbcert.pem      # default=/etc/hvs/hvsdbcert.pem
-
-# Webservice configuration - Optional
-HVS_PORT=8443
-HVS_SERVER_READ_TIMEOUT=30s
-HVS_SERVER_READ_HEADER_TIMEOUT=10s
-HVS_SERVER_WRITE_TIMEOUT=10s
-HVS_SERVER_IDLE_TIMEOUT=10s
-HVS_SERVER_MAX_HEADER_BYTES=1048576
-
-# Logging - Optional
-HVS_LOG_MAX_LENGTH=300
-HVS_ENABLE_CONSOLE_LOG=false
-
-# Flavor Signing Configuration - Optional
-FLAVOR_SIGNING_KEY_FILE=/etc/hvs/trusted-keys/flavor-signing.key
-FLAVOR_SIGNING_CERT_FILE=/etc/hvs/certs/trustedca/flavor-signing.pem
-FLAVOR_SIGNING_COMMON_NAME=HVS Flavor Signing Certificate
-
-# SAML Configuration - Optional
-SAML_KEY_FILE=/etc/hvs/trusted-keys/saml.key
-SAML_CERT_FILE=/etc/hvs/certs/trustedca/saml-cert.pem
-SAML_COMMON_NAME=HVS SAML Certificate
-
-# Endorsement CA Configuration - Optional
-ENDORSEMENT_CA_KEY_FILE=/etc/hvs/trusted-keys/endorsement-ca.key
-ENDORSEMENT_CA_CERT_FILE=/etc/hvs/certs/trustedca/EndorsementCA.pem
-ENDORSEMENT_CA_COMMON_NAME=HVS Endorsement Certificate
-ENDORSEMENT_CA_ISSUER=intel-secl
-ENDORSEMENT_CA_VALIDITY_YEARS=5
-
-# Privacy CA Configuration - Optional
-PRIVACY_CA_KEY_FILE=/etc/hvs/trusted-keys/privacy-ca.key
-PRIVACY_CA_CERT_FILE=/etc/hvs/certs/trustedca/privacy-ca-cert.pem
-PRIVACY_CA_COMMON_NAME=HVS Privacy Certificate
-PRIVACY_CA_ISSUER=intel-secl
-PRIVACY_CA_VALIDITY_YEARS=5
-
-# Asset Tag Configuration - Optional
-TAG_CA_KEY_FILE=/etc/hvs/trusted-keys/tag-ca.key
-TAG_CA_CERT_FILE=/etc/hvs/certs/trustedca/tag-ca-cert.pem
-TAG_CA_COMMON_NAME=HVS Tag Certificate
-TAG_CA_ISSUER=intel-secl
-TAG_CA_VALIDITY_YEARS=5
-
-# Certificate Revocation Checks - Optional
-ENABLE_EKCERT_REVOKE_CHECK=false # default=false - if true, revocation checks will be performed on EK certs
-                                 # proxy settings (if applicable) must be provided - see next stion
-
-```
-
-### Note on Certificate Revocation Checks for TPM EK Certs
-
-The ENABLE_EKCERT_REVOKE_CHECK setting has been added to toggle revocation checks for Endorsement Key Certs by Verification Service. The revocation check will be performed during the course of the AIK provisioning flow on the Trust Agent (`tagent setup provision-aik`).
-
-At this stage, there are 3 possible outcomes:
-
-1. No certs in the chain are found to be revoked: VS responds with a HTTP 200 response code
-2. A certificate is found to be revoked: VS responds with a HTTP 400 response code
-3. The revocation check failed due to a connection error: VS responds with a HTTP 500 response code 
-
-If proxy settings are required to source CRL from external CAs, these can be added to the Verification Service service systemd via a drop-in config at /etc/systemd/system/hvs.service.d/proxy.conf or directly to `/opt/hvs/hvs.service` under the service section like so:
-
-```
-[Service]
-Environment="https_proxy=<proxy server url>"
-```
-
-Run `systemctl daemon-reload` and restart the service after making this change.
+HVS_DB_PEK```
 
 ### Configuration Options
 
@@ -7318,7 +7247,6 @@ fvs:
   number-of-verifiers: 20
   number-of-data-fetchers: 20
   skip-flavor-signature-verification: true
-enable-ekcert-revoke-check: false
 ```
 
 
