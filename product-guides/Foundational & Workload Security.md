@@ -520,13 +520,13 @@ To install the Intel® SecL-DC Certificate Management Service:
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
    ```shell
-cms status
+   cms status
    ```
 
    After installation is complete, the CMS will output a bearer token to the console. This token will be used with the AAS during installation to authenticate certificate requests to the CMS. If this token expires or otherwise needs to be recreated, use the following command:
 
    ```shell
-cms setup cms_auth_token --force
+   cms setup cms_auth_token --force
    ```
 
    In addition, the SHA384 digest of the CMS TLS certificate will be needed for installation of the remaining Intel® SecL services. The digest can be obtained using the following command:
@@ -787,7 +787,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v3.6.0.bin
+   ./hvs-v3.6.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -933,6 +933,32 @@ Tboot is required to build a complete Chain of Trust for Intel® TXT systems tha
 
 Intel® SecL-DC requires tboot 1.9.7 or greater. For most platforms, the version of tboot available from the RedHat software repository will meet all requirements. Some newer platforms and platform firmware versions may require a later version of tboot, including later versions than are available on the RedHat software repositories. This is due to updates that can be made to the Intel® TXT SINIT ACM behavior, and the SINIT ACM is contained in the BIOS firmware. 
 
+**Important Note:** SGX Attestation fails when SGX is enabled on a host booted using tboot
+
+**Root Cause:** tboot requires the "noefi" kernel parameter to be passed during boot, in order to not use an unmeasured EFI runtime services. As a result, the kernel does not expose EFI variables to user-space. SGX Attestation requires these EFI variables to fetch Platform Manifest data. 
+
+**Workaround:**
+
+The EFI variables required by SGX are only needed during the SGX provisioning/registration phase. Once this step is completed successfully, access to the EFI variables is no longer required. This means this issue can be worked around by installing the SGX agent without booting to tboot, then rebooting the system to tboot. SGX attestation will then work as expected while booted to tboot.
+
+1. Enable SGX and TXT in the platform BIOS
+
+2. Perform SGX Factory Reset and boot into the “plain” distribution kernel (without tboot or TCB)
+
+3. Install tboot and ISecL components (SGX Agent, Trust Agent and Workload Agent)
+
+4. The SGX Agent installation fetches the SGX Platform Manifest data and caches it
+
+5. Reboot the system into the tboot kernel mode.
+
+6. Verify that TXT measured launch was successful:
+
+​    txt-stat |grep "TXT measured launch"
+
+7. The SGX and Platform Integrity Attestation use cases should now work as normal.
+
+   
+
 If a newer version of tboot is required than is available from the repository, the most current version can be found here:
 
 https://sourceforge.net/projects/tboot/files/tboot/
@@ -996,7 +1022,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    If the measured launch was successful, proceed to install the Trust Agent.
 
    ```
-Intel(r) TXT Configuration Registers:
+   Intel(r) TXT Configuration Registers:
            STS: 0x0001c091
                senter_done: TRUE
                sexit_done: FALSE
@@ -1313,7 +1339,7 @@ deployment in the `isecl` namespace.
     ```shell
     #1.14<=k8s_version<=1.16
     kubectl apply -f yamls/crd-1.14.yaml
-
+    
     #1.16<=k8s_version<=1.18
     kubectl apply -f yamls/crd-1.17.yaml
     ```
