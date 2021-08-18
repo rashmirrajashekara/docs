@@ -412,7 +412,7 @@ IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
 KBS_SERVICE_USERNAME=admin@kbs
 KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s control-plane IP>>:30448/v1
-ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/kbs/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>
@@ -632,7 +632,7 @@ IHUB_PUB_KEY_PATH=<skip this during initial deploy of K8s multi-node>
 KBS_SERVICE_USERNAME=admin@kbs
 KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s control-plane IP>:30448/v1
-ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/kbs/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>
