@@ -399,6 +399,17 @@ SHVS_DB_USERNAME=shvsdbuser
 SHVS_DB_PASSWORD=shvsdbpassword
 SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
+# SGX Quote Verification Service bootstrap
+SQVS_INCLUDE_TOKEN="true"
+SQVS_NOSETUP="false"
+#SGX_TRUSTED_ROOT_CA_FILE 
+#For production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_icx_prod.pem
+#For production CascadeLake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_clx_prod.pem
+#For pre production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca.pem
+SGX_TRUSTED_ROOT_CA_FILE=
+SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s Master IP>,<K8s Master Hostname>
+
+
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
 IHUB_SERVICE_PASSWORD=hubAdminPass
@@ -617,6 +628,16 @@ SHVS_ADMIN_PASSWORD=shvspassword
 SHVS_DB_USERNAME=shvsdbuser
 SHVS_DB_PASSWORD=shvsdbpassword
 SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
+
+# SGX Quote Verification Service bootstrap
+SQVS_INCLUDE_TOKEN="true"
+SQVS_NOSETUP="false"
+#SGX_TRUSTED_ROOT_CA_FILE 
+#For production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_icx_prod.pem
+#For production CascadeLake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_clx_prod.pem
+#For pre production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca.pem
+SGX_TRUSTED_ROOT_CA_FILE=
+SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s Master IP>,<K8s Master Hostname>
 
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
