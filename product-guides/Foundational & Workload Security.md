@@ -8669,41 +8669,31 @@ need to be re-provisioned with a new AIK:
 
 ### Endorsement CA
 
-The Endorsement CA is a self-signed certificate used during Trust Agent
-provisioning.
-
-`/opt/hvs/configuration/EndorsementCA.p12`
-
-`/opt/hvs/configuration/EndorsementCA.pem`
+The Endorsement CA is a self-signed certificate used during Trust Agent provisioning.
 
 The Endorsement CA Certificate can be replaced with a user-specified
-keypair and certificate chain using the following command:
+keypair and certificate chain at following location:
 
-`hvs replace-eca-key-pair --private-key=new.key.pem
---cert-chain=new.cert-chain.pem`
+`/etc/hvs/certs/endorsement/EndorsementCA.pem`
 
-This will:
+`/etc/hvs/trusted-keys/endorsement-ca.key`
 
--   Replace key pair in `/opt/hvs/configuration/EndorsementCA.p12`,
-    alias 1
-
--   Update `/opt/hvs/configuration/EndorsementCA.pem` with accepted
-    ECs
-
--   Update configuration properties:
-
-```{=html}
-hvs.privacyca.ek.issuer
-hvs.privacyca.ek.validity.days
-```
-After the Endorsement CA certificate is replaced, all Trust Agent hosts
+After the Endorsement CA certificate is replaced, HVS needs a restart and all Trust Agent hosts
 will need to be re-provisioned with a new Endorsement Certificate:
 
-`tagent setup request-endorsement-certificate --force`
+`tagent setup provision-attestation -f trustagent.env`
 
 `tagent restart`
 
+**Third party endorsement CAs**
 
+User can add new Endorsement CA certificate chain to HVS using one of the following ways,
+
+1. Copy new Endorsement CA in pem format to `/etc/hvs/certs/endorsement/` with read 
+      permissions to hvs user
+2. Use `https://{{vs}}:8443/hvs/v2/ca-certificates` API to upload ECA
+
+HVS needs to be restarted post this change.
 
 TLS Certificates
 ----------------
