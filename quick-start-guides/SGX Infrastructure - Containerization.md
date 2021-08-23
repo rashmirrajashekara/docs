@@ -407,7 +407,7 @@ SQVS_NOSETUP="false"
 #For production CascadeLake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_clx_prod.pem
 #For pre production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca.pem
 SGX_TRUSTED_ROOT_CA_FILE=
-SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s Master IP>,<K8s Master Hostname>
+SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 
 # ihub bootstrap
@@ -637,7 +637,7 @@ SQVS_NOSETUP="false"
 #For production CascadeLake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_clx_prod.pem
 #For pre production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca.pem
 SGX_TRUSTED_ROOT_CA_FILE=
-SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s Master IP>,<K8s Master Hostname>
+SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
