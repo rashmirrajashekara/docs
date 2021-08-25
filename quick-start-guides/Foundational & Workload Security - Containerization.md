@@ -395,15 +395,9 @@ systemctl restart docker
       ```
 
   * Workload Security
-    * Container Confidentiality with CRIO runtime
+    * Container Confidentiality with CRIO(>=v1.21) runtime 
       
-      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
-        
-      * Copy `container-runtime` directory to each of the  physical servers  
-      
-      * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-      
-        > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
+      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)   
       
       * Reboot the server
       
@@ -1061,8 +1055,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
 |                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
 |                        | Trusted Workload Placement (Containers)  | ✔️ |
-| Workload Security | Container Confidentiality with Docker Runtime | ✔️                  |
-|                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
+| Workload Security | Container Confidentiality with CRIO Runtime | ✔️                  |
 
 ### Downloading API Collections
 
