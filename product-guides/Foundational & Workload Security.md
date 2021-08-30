@@ -3824,22 +3824,22 @@ vmware:https://<vCenterHostNameOrIp>:443/sdk;h=<hostname of ESXi host>;u=<userna
 Platform Integrity Attestation
 ==============================
 
-Platform attestation is the cornerstone use case for ISecL. Platform
+Platform attestation is the cornerstone use case for Intel SecL. Platform
 attestation involves taking measurements of system components during
 system boot, and then cryptographically verifying that the actual
 measurements taken matched a set of expected or approved values,
 ensuring that the measured components were in an acceptable or "**trusted**"
 state at the time of the last system boot.
 
-ISecL leverages the Trusted Compute Group specification for a trusted
+Intel SecL leverages the Trusted Compute Group specification for a trusted
 boot process, extending measurements of platform components to registers
 in a Trusted Platform Module, and securely generating quotes of those
 measurements from the TPM for remote comparison to expected values
 (attestation).
 
 This section includes basic REST API examples for these workflows. See
-the Javadoc for more detailed documentation on REST APIs supported by
-ISecL.
+the Swagger docs for more detailed documentation on all REST APIs supported by
+Intel SecL.
 
 Typical workflows in the datacenter might include:
 
@@ -4526,6 +4526,13 @@ performance reasons. Generating a new Attestation Report requires the
 generation of a new TPM quote from the TPM of the host being attested;
 TPM performance differs greatly between vendors, and a quote can take
 anywhere between 2-7 seconds to generate.
+
+Starting in version 4.1, new attestation reports are automatically generated whenever the Trust Agent starts, including when a host reboots.  This affects only Trust Agent hosts (and so does not apply to VMware servers).  This means that a GET request to find the most recently generated report should reflect any possible changes to the host state from flavor changes, a reboot, etc.  Forcing a new report using a POST request will ensure the state is absolutely current, but should not be required for most circumstances.  New reports are generated automatically when:
+
+- The Trust Agent starts (via service stop/start operations, including pod starts on Kubernetes)
+- The Trust Agent host is rebooted
+- The HVS detects that the existing report is nearing its expiration
+- If the Workload Confidentiality feature is used, new reports are generated with every key request
 
 ### Sample Call – Generating a New Attestation Report
 
