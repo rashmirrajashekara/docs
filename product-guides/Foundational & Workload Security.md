@@ -2,9 +2,9 @@
 
 **Product Guide**
 
-**July 2021**
+**August 2021**
 
-**Revision 4.0**
+**Revision 4.1**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -70,6 +70,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.5 | Updated for version 3.5 release | March 2021 |
 | 3.6 | Updated for version 3.6 release | May 2021 |
 | 4.0 | Updated for version 4.0 release | July 2021 |
+| 4.1 | Updated for version 4.1 release | August 2021 |
 
 
 ## Table of Contents
@@ -1395,7 +1396,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-./hvs-v4.1.0.bin
+   ./hvs-v4.1.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
