@@ -4839,21 +4839,65 @@ launched on that worker.
 This setting is disabled by default. To enable this setting:
 
 1.  Edit the `isecl-controller.yaml` file under
-    `/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml` and set
-    `TAINT_UNTRUSTED_NODES=true`
-
-2.  Run
+    `/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml` 
     
-    ```shell
-    kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
-    ```
+2. set the following options:
 
-Worker nodes that attest as untrusted will be `tainted` with the
-NoExecute flag and unable to launch pods.
+   ```
+   # To taint nodes when a report indicates the host is Untrusted:
+   TAINT_UNTRUSTED_NODES=true
+   # To taint nodes when they are joined to the Kubernetes cluster until they are Trusted:
+   TAINT_REGISTERED_NODES=true
+   # To taint nodes when they are rebooted until they are Trusted:
+   TAINT_REBOOTED_NODES=true
+   ```
 
-If a worker was previously considered tainted and the untrusted state is
-resolved, the Intel® SecL CRDs will remove the tainted flag and the
-worker will be able to launch pods again.
+3. Run
+
+   ```shell
+   kubectl apply -f /opt/isecl-k8s-extensions/yamls/isecl-controller.yaml
+   ```
+
+If the TAINT_UNTRUSTED option is used, worker nodes that attest as untrusted will be `tainted` with the
+NoExecute flag and unable to launch pods.  There may be a delay of up to 2 minutes before the taint is applied as the Integration Hub only retrieves new reports every 2 minutes.
+
+If the TAINT_REGISTERED option is used, worker nodes will be tainted by default by the Intel SecL extension controller.  The taint will be removed when the Integration Hub sees a Trusted report and updates the controller.
+
+Similarly, if the TAINT_REBOOTED option is used, worker nodes will be tainted by default when rebooted by the Intel SecL extension controller.  The taint will be removed when the Integration Hub sees a Trusted report and updates the controller.
+
+If a worker was previously considered tainted and the untrusted state is resolved, the Intel® SecL CRDs will remove the tainted flag and the worker will be able to launch pods again.
+
+The following taints are used by the Intel SecL extension controller:
+
+```json
+"taints": [
+    {
+      "effect": "NoSchedule",
+      "key": "untrusted",
+      "value": "true"
+    },
+    {
+      "effect": "NoExecute",
+      "key": "untrusted",
+      "value": "true"
+    }
+```
+
+Pods can be configured to ignore these taints using "tolerations:"
+
+```yaml
+tolerations:
+- key: "untrusted"
+operator: "Equal"
+value: "true"
+effect: "NoSchedule"
+- key: "untrusted"
+operator: "Equal"
+value: "true"
+effect: "NoExecute"
+```
+
+Note that some pods, including the Trust Agent, should use these tolerations even on untrusted workers.  The Trust Agent is particularly important because, without the Trust Agent running on the worker to generate a new trust report, the taints will not be cleared.
 
 
 
