@@ -89,7 +89,7 @@ Table of Contents
 
 * RHEL 8.2 for build
 
-* RHEL 8.2 or Ubuntu 18.04 for K8s cluster deployments
+* RHEL 8.2 or Ubuntu 18.04/20.04 for K8s cluster deployments
 
   >  **Note:** SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
@@ -228,7 +228,7 @@ dnf install -y skopeo
 
 ### Build OCI Container images and K8s Manifests
 
-The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubuntu 18.04 deployments must be done on RHEL 8.2 machine only
+The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubuntu 18.04/20.04 deployments must be done on RHEL 8.2 machine only
 
 #### Single Node
 
@@ -303,19 +303,12 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * On each worker node with SGX enabled and registered to K8s control-plane, the following pre-req needs to be done
 
-  * `RHEL 8.2` enabled K8s worker node with SGX:
+  * `RHEL 8.2 or Ubuntu 18.04/20.04` enabled K8s worker node with SGX:
     * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
     * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
     
-  * `Ubuntu 18.04` enabled K8s worker node with SGX:
-    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
-    * Copy the platform-dependencies script to SGX enabled worker nodes
-    * Execute  `./agent_untar.sh`  
-    * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
-
-
 * Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
     * Retrieve KMIP server's key and certificates i.e. client_certificate.pem, client_key.pem and root_certificate.pem files from /etc/pykmip (default path) to K8s control-plane node under `k8s/manifests/kbs/kmip-secrets/` path.
     > **Note:** Under `k8s/manifests/kbs/` , if kmip-secrets folder not available then please create it before copying above key and certs 

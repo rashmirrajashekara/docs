@@ -65,7 +65,9 @@ Table of Contents
 
 ### OS Requirements
 
-   UBUNTU 18.04. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
+   UBUNTU 18.04/20.04.
+ 
+   Note: Similar to SKC Container QSG. Please ensure that all the following instructions are executed with root privileges
 
 ## **2. Network Requirements**
 
@@ -129,13 +131,23 @@ apt-get update
 
 **Ubuntu System Tools and utils**
 
-```
+```shell
 apt-get install -y software-properties-common git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
+
+# Ubuntu-18.04
 add-apt-repository ppa:projectatomic/ppa
 apt-get update
 apt-get install skopeo
+
+# Ubuntu-20.04
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key | sudo apt-key add -
+apt-get update
+apt-get -y upgrade
+apt-get -y install skopeo
+
 apt-get install makeself
 export PATH=/usr/local/bin:$PATH
 ```
