@@ -125,7 +125,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Recommended Hardware](#recommended-hardware-1)
     - [Installation](#installation-1)
     - [Creating Users](#creating-users)
-    - [Installing the Host Verification Service](#installing-the-host-verification-service)
+  - [Installing the Host Verification Service](#installing-the-host-verification-service)
     - [Required For](#required-for-2)
     - [Prerequisites](#prerequisites-1)
     - [Package Dependencies](#package-dependencies-1)
@@ -973,6 +973,13 @@ wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssljson_1.6.
 wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssl_1.6.0_linux_amd64 -o /usr/bin/cfssl && chmod +x /usr/bin/cfssl 
 ```
 
+User has two methods to generate custom claims token for TA.
+
+1. Run populate-user.sh whenever it is required.
+2. Alternatively use AAS API directly to generate custom claims token.
+
+#### Generating Custom Claims Token using populate-users script
+</br>
 Use the following **additional** options in populate-users.env and run populate-users:
 
 ```ini
@@ -992,8 +999,69 @@ CCC_ADMIN_USERNAME=<username for generating long-lived tokens>
 CCC_ADMIN_PASSWORD=<password for generating long-lived tokens>
 ```
 
-When populate-users is run, there will now be an additional "Custom Claims Token For TA:" bearer token.  
+When populate-users script is run, there will now be an additional "Custom Claims Token For TA:" bearer token.
 
+#### Generating Custom Claims Token using AAS API
+</br>
+To generate custom claims using AAS API, following are the steps to be followed:
+
+1. Create CCC_ADMIN_USERNAME and CCC_ADMIN_PASSWORD entry in the database along with the roles using the populate-users script.
+```
+CCC_ADMIN_USERNAME=<username for generating long-lived tokens>
+CCC_ADMIN_PASSWORD=<password for generating long-lived tokens>
+```
+2. Get the JWT from AAS to get access to the `/custom-claims-token`. Sample call to get the JWT from `/token` using the CCC_ADMIN_USERNAME/PASSWORD has been provided below:
+
+```
+curl -s -X POST "${AAS_BASE_URL}/token" --header 'Content-Type: application/json' --data-raw '{"username" : "'"$CCC_ADMIN_USERNAME"'", "password" : "'"$CCC_ADMIN_PASSWORD"'"}' -k
+```
+3. Once the JWT has been received, admin can get the custom claims token using the JWT ($bearer_token) received in step 2. A sample curl command to get the custom claims token has been provided below:
+```
+curl -s -X POST "${AAS_BASE_URL}/custom-claims-token" \
+--header 'Content-Type: application/json' \
+--header "Authorization: Bearer $bearer_token" \
+--data-raw '{
+    "subject": "AAS-JWT-Issuer",
+    "validity_seconds": '"$((TOKEN_VALIDITY_SECONDS))"',
+    "claims": {
+        "roles": [
+            {
+                "service": "HVS",
+                "name": "AttestationRegister"
+            },
+            {
+                "service": "AAS",
+                "name": "CredentialCreator",
+                "context": "type=TA"
+            },
+            {
+                "service": "CMS",
+                "name": "CertApprover",
+                "context": "CN=Trust Agent TLS Certificate;SAN=*;certType=TLS"
+            }
+        ],
+         "permissions": [
+            {
+                "service": "HVS",
+                "rules": ["hosts:store:*", "hosts:search:*", "host_unique_flavors:create:*", "flavors:search:*",
+                                        "host_aiks:certify:*", "tpm_endorsements:create:*", "tpm_endorsements:search:*"]
+            },
+            {
+                "service": "AAS",
+                "rules": ["credential:create:*"]
+            }
+         ]
+    }
+}' -k
+```
+
+Note:
+
+-  - The "rules" under "permissions" describe which permissions are embedded in the token and describe what actions will be allowed by HVS.  The list in this example are the permissions required for the Trust-Agent.  For example, Trust-Agent command line tools like "tagent setup", "tagent setup create-host", "tagent setup create-host-unique-flavor" use HVS' REST API and therefore need a token with sufficient permissions. The CCC admin is responsible for creating tokens with the appropriate permissions.  For example, providing "hosts:store:*" allows the token permissions to add hosts to HVS (which may not be desirable in all circumstances).  For more information about permissions please refer to AAS swagger doc.
+-  TOKEN_VALIDITY_SECONDS should be provided as per requirement 
+-  "-k" from curl request can be removed by adding AAS TLS certificate to the trusted ca directory of the respective OS
+
+#### Installing HVS
 When installing the HVS, add the following to hvs.env:
 
 ```ini
