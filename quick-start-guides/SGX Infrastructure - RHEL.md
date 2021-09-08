@@ -1080,6 +1080,15 @@ Remove any existing pkcs11 token
     rm -rf /opt/intel/cryptoapitoolkit/tokens/*
 ```
 
+Install Nginx and add Group
+
+```
+    yum install -y nginx
+    groupadd intel
+    usermod -G intel
+
+```
+
 Initiate Key transfer from KBS
 
 ```
