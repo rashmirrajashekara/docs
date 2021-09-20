@@ -31,6 +31,7 @@ Table of Contents
          * [Build OCI Container images and K8s Manifests](#build-oci-container-images-and-k8s-manifests)
             * [Single Node](#single-node-1)
             * [Multi Node](#multi-node-1)
+      * [Deploy Linux Stacks for Intel SGX](#deploy-linux-stacks-for-intel-sgx)
       * [Deployment](#deployment)
          * [Pre-requisites](#pre-requisites-1)
          * [Deploy](#deploy)
@@ -82,6 +83,8 @@ Table of Contents
 
 * RHEL 8.2 Build Machine
 
+* RHEL 8.4 Build Machine for stack based deployment
+
 * K8s control-plane Node Setup on CSP (VMs/Physical Nodes + SGX enabled Physical Nodes)
 
 * K8s control-plane Setup on Enterprise (VMs/Physical Nodes)
@@ -90,7 +93,11 @@ Table of Contents
 
 * RHEL 8.2 for build
 
+* RHEL 8.4 for build for stack based deployment
+
 * RHEL 8.2 or Ubuntu 18.04/20.04 for K8s cluster deployments
+
+* RHEL 8.4 for stack based K8s cluster deployments 
 
   >  **Note:** SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
@@ -165,7 +172,7 @@ The multi node supports `kubeadm` as a supported K8s distribution
 
 ### Pre-requisites
 
-The below steps need to be done on RHEL 8.2 Build machine (VM/Physical Node)
+The below steps need to be done on RHEL 8.2 or RHEL 8.4(stack based deployment) Build Machine (VM/Physical Node)
 
 #### Development Tools and Utilities
 
@@ -223,13 +230,22 @@ systemctl restart docker
 
 #### Skopeo
 
+For RHEL 8.2 OS
+
 ```shell
 dnf install -y skopeo
+```
+For RHEL 8.4 OS	
+
+```shell
+dnf install -y skopeo --nobest
 ```
 
 ### Build OCI Container images and K8s Manifests
 
 The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubuntu 18.04/20.04 deployments must be done on RHEL 8.2 machine only
+
+The build process for OCI containers images and K8s manifests for RHEL 8.4 must be done on RHEL 8.4 machine only
 
 #### Single Node
 
@@ -241,10 +257,16 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   repo sync
   ```
 
-* Build
+* Build - Distribution Based Deployment
 
   ```shell
   make k8s-aio
+  ```
+
+* Build - Stack Based Deployment
+
+  ```shell
+  make k8s-aio-stacks
   ```
 
 * Built Container images,K8s manifests and deployment scripts
@@ -263,10 +285,15 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   repo sync
   ```
 
-* Build
+* Build - Distribution Based Deployment
 
   ```shell
   make k8s
+  ```
+* Build - Stack Based Deployment
+
+  ```shell
+  make k8s-stacks
   ```
 
 * Built Container images,K8s manifests and deployment scripts
@@ -274,8 +301,9 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
   ```shell
   /root/intel-secl/build/skc-k8s-multi-node/k8s/
   ```
-
-
+## Deploy Linux Stacks for Intel SGX
+	
+* To setup and deployment of the Linux* Stacks for Intel® SGX, follow https://download.01.org/intelsgxstack/2021-07-28/Getting_Started.pdf
 
 ## Deployment
 
@@ -304,7 +332,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.2 & Ubu
 
 * On each worker node with SGX enabled and registered to K8s control-plane, the following pre-req needs to be done
 
-  * `RHEL 8.2 or Ubuntu 18.04/20.04` enabled K8s worker node with SGX:
+  * `RHEL 8.2 or Ubuntu 18.04/20.04 or RHEL 8.4 stack based` enabled K8s worker node with SGX:
     * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
     * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
     * Execute  `./agent_untar.sh`  

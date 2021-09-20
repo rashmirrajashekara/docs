@@ -14,13 +14,14 @@ Table of Contents
       * [<strong>7. Deployment & Usecase Workflow Tools Installation</strong>](#7-deployment-usecase-workflow-tools-installation)
          * [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
       * [<strong>8. Deployment</strong>](#8-deployment)
-         * [<strong>8.1. Deployment Using Ansible</strong>](#deployment-using-ansible)
+         * [<strong>8.1. Deploy Linux Stacks for Intel SGX</strong>](#deploy-linux-stacks-for-intel-sgx)
+         * [<strong>8.2. Deployment Using Ansible</strong>](#deployment-using-ansible)
             * [Download the Ansible Role](#download-the-ansible-role)
             * [Update the Ansible Role](#update-ansible-inventory)
             * [Create and Run Playbook](#create-and-run-playbook)
             * [Additional Examples & Tips](#additional-examples-tips)
             * [Usecase Setup Options](#usecase-setup-options)
-         * [<strong>8.2. Deployment Using Binaries</strong>](#deployment-using-binaries)
+         * [<strong>8.3. Deployment Using Binaries</strong>](#deployment-using-binaries)
             * [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
             * [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
             * [Deploy isecl-controller](#deploy-isecl-controller)
@@ -64,7 +65,11 @@ Table of Contents
 
 ### OS Requirements
 
-   RHEL 8.2. SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
+    RHEL 8.2
+
+    RHEL 8.4 for Stack based deployment
+
+NOTE: SKC Solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges.
 
 ## **2. Network Requirements**
 
@@ -120,7 +125,11 @@ Access required for the following packages in all systems
 **System Tools and utils**
 
 ```
-dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel skopeo
+dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils openssl-devel
+For RHEL 8.1/8.2 OS
+  dnf install -y skopeo
+For RHEL 8.4 OS	
+  dnf install -y skopeo --nobest
 dnf install https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everything/x86_64/os/Packages/m/makeself-2.4.0-5.fc32.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
@@ -190,10 +199,16 @@ repo sync
   systemctl restart docker
   ```
 
-**Building All SKC Components**
+**Building All SKC Components - Distribution Based Deployment**
 
 ```
 make
+```
+
+**Building All SKC Components – Stack Based Deployment**
+
+```
+make sgx-stack
 ```
 
 **Copy Binaries to a clean folder**
@@ -240,6 +255,10 @@ The below installation is required on the Build & Deployment system only and the
 
 
 ## **8. Deployment**
+
+### Deploy Linux Stacks for Intel SGX
+	
+* To setup and deployment of the Linux* Stacks for Intel® SGX, follow https://download.01.org/intelsgxstack/2021-07-28/Getting_Started.pdf
 
 ### Deployment Using Ansible
 
@@ -387,9 +406,11 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 
 ### Setup K8S Cluster and Deploy Isecl-k8s-extensions
 
+Note: For Stack based deployment, setup master and worker node for k8s is part of Linux Stacks for SGX deployment.
+
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
-* To setup k8 cluster follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos Once the master/worker setup is done, follow below steps on Master Node:
+* To setup k8 cluster, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos. Once the master/worker setup is done, follow below steps on Master Node:
 
 ### Untar packages and push OCI images to registry
 

@@ -115,6 +115,7 @@ Copyright © 2021, Intel Corporation. All Rights Reserved.
     - [Using the provided Database Installation Script](#using-the-provided-database-installation-script)
     - [Provisioning the Database](#provisioning-the-database)
     - [Database Server TLS Certificate](#database-server-tls-certificate)
+  - [Installation of Linux Stacks for Intel SGX](#installation-of-linux-stacks-for-intel-sgx)
   - [Installation of Containerized Services and Agent in K8s Cluster](#installation-of-containerized-services-and-agent-in-k8s-cluster)
     - [Pre-requisites](#pre-requisites)
     - [Deploy Steps](#deploy-steps)
@@ -679,6 +680,8 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 
 -   Linux: RHEL 8.2
 
+-   Linux: RHEL 8.4 for Stack based deployment
+
 -   Linux: Ubuntu 18.04/20.04
 
 ### Requirements for Containerized Deployment with K8s
@@ -686,6 +689,7 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 #### Operating System:
 
 * RHEL 8.2
+* RHEL 8.4 for Stack based deployment
 * Ubuntu 18.04/20.04
 
 #### Kubernetes
@@ -823,6 +827,10 @@ If the database server for a service is located on the same server that the serv
 If the database server will be run separately from the Intel® SecL service(s), the certificate will need to be copied from the database server to the service machine before installing the Intel® SecL services.
 
 The database client for Intel® SecL services will validate that the Subject Alternative Names in the database server's TLS certificate contain the hostname(s)/IP address(es) that the clients will use to access the database server. If configuring a database without using the provided scripts, ensure that these attributes are present in the database TLS certificate.
+
+## Installation of Linux Stacks for Intel SGX
+
+To setup and deployment of the Linux* Stacks for Intel® SGX, follow https://download.01.org/intelsgxstack/2021-07-28/Getting_Started.pdf
 
 ## Installation of Containerized Services and Agent in K8s Cluster
 
