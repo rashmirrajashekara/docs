@@ -147,7 +147,7 @@ Enable the Following package repositories
 
 ```shell
 dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils curl openssl-devel
-dnf install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/m makeself-2.4.2-1.el8.noarch.rpm
+dnf install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/m/makeself-2.4.2-1.el8.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 export PATH=/usr/local/bin:$PATH
