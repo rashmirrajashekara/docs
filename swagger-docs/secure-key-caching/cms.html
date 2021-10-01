@@ -787,7 +787,7 @@ CMS acts as a root CA and issuing TLS certificates for all other ISecL services.
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-CACertificate-getCACertificates-0-curl">
-			  <pre><code class="language-bsh">curl -X GET "https://cms.com:8445/cms/v1/ca-certificates" -H "Accept: application/x-pem-file"</br></br>Output: </br>-----BEGIN CERTIFICATE-----
+			  <pre><code class="language-bsh">curl -k -X GET "https://cms.com:8445/cms/v1/ca-certificates" -H "Accept: application/x-pem-file"</br></br>Output: </br>-----BEGIN CERTIFICATE-----
 MIIENTCCAp2gAwIBAgIBAzANBgkqhkiG9w0BAQwFADBHMQswCQYDVQQGEwJVUzEL
 MAkGA1UECBMCU0YxCzAJBgNVBAcTAlNDMQ4wDAYDVQQKEwVJTlRFTDEOMAwGA1UE
 AxMFQ01TQ0EwHhcNMjAwMTA5MTUzMzUyWhcNMjUwMTA5MTUzMzUyWjBQMQswCQYD
