@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### May 2021
+### October 2021
 
-### Revision 3.6
+### Revision 3.6.1
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -48,7 +48,7 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 \*Other names and brands may be claimed as the property of others.
 
-Copyright © 2020, Intel Corporation. All Rights Reserved.
+Copyright © 2021, Intel Corporation. All Rights Reserved.
 
 Revision History
 
@@ -252,22 +252,22 @@ Virtualization enabled on SGX Host machines, uses SGX key features. With Virtual
 
 Intel® Security Libraries is distributed as open source code and must be compiled into installation binaries before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 6)
+Instructions and sample scripts for building the Intel® SecL-DC components can be found in
 
-https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20RHEL.md
+https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure.md
 
 After the components have been built, the installation binaries and database scripts can be found in the binaries directory created by the build scripts.
 
 Generated component binaries/installers are:
 
-- CMS: cms-v3.6.0.bin
-- AAS: authservice-v3.6.0.bin
-- SCS: scs-v3.6.0.bin
-- SHVS: shvs-v3.6.0.bin
-- IHUB: ihub-v3.6.0.bin
-- SQVS: sqvs-v3.6.0.bin
-- KBS: kbs-v3.6.0.bin
-- K8S-Extensions: isecl-k8s-extensions-v3.6.0.tar.gz
+- CMS: cms-v3.6.1.bin
+- AAS: authservice-v3.6.1.bin
+- SCS: scs-v3.6.1.bin
+- SHVS: shvs-v3.6.1.bin
+- IHUB: ihub-v3.6.1.bin
+- SQVS: sqvs-v3.6.1.bin
+- KBS: kbs-v3.6.1.bin
+- K8S-Extensions: isecl-k8s-extensions-v3.6.1.tar.gz
 - SGX-Agent: agent_untar.sh, sgx_agent.sha2 and sgx_agent.tar
 - SKC-Library: skclib_untar.sh, skc_library.sha2 and skc_library.tar
 
@@ -280,23 +280,23 @@ DB scripts:
 
 Intel® Security Libraries is distributed as open source code and must be compiled into OCI images before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#build)
+Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#build)
 
 After the components have been built, the OCI images and pre-req scripts can be found in the `K8s` directory created by the build scripts.
 
 Generated components `OCI images`  under `<working directory>/k8s/container-images`:
 
-* Authentication Authorization Service: `aas-v3.6.0.tar`
-* Certificate Management Service: `cms-v3.6.0.tar`
-* Integration Hub: `ihub-v3.6.0.tar`
-* Key Broker Service: `kbs-v3.6.0.tar`
-* K8s Extensions Custom Controller: `isecl-k8s-controller-v3.6.0.tar`
-* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v3.6.0.tar`
-* SGX Caching Service: `scs-v3.6.0.tar`
-* SGX Quote Verification Service: `sqvs-v3.6.0.tar`
-* SGX Host Verification Service: `shvs-v3.6.0.tar`
-* SGX Agent: `sgx-agent-v3.6.0.tar`
-* SKC Library: `skc-lib-3.6.0.tar`
+* Authentication Authorization Service: `aas-v3.6.1.tar`
+* Certificate Management Service: `cms-v3.6.1.tar`
+* Integration Hub: `ihub-v3.6.1.tar`
+* Key Broker Service: `kbs-v3.6.1.tar`
+* K8s Extensions Custom Controller: `isecl-k8s-controller-v3.6.1.tar`
+* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v3.6.1.tar`
+* SGX Caching Service: `scs-v3.6.1.tar`
+* SGX Quote Verification Service: `sqvs-v3.6.1.tar`
+* SGX Host Verification Service: `shvs-v3.6.1.tar`
+* SGX Agent: `sgx-agent-v3.6.1.tar`
+* SKC Library: `skc-lib-3.6.1.tar`
 
 Generated Components `K8s Manifests` directories under `<working directory>/k8s/manifests`:
 
@@ -503,14 +503,14 @@ The containerized deployment utilizes K8s orchestrator to deploy SGX components.
 
 ### Deploy Steps
 
-* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#deploy-steps) based on the deployment model. Follow the instructions for the deployment using the scripts
+* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#deploy-steps) based on the deployment model. Follow the instructions for the deployment using the scripts
 
 ### Additional Details
 
-* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#default-service-and-agent-mount-paths)
-* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#multi-node-deployments)
-* [Default Service Ports](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#default-service-ports)
-* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#setup-1)
+* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#default-service-and-agent-mount-paths)
+* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#multi-node-deployments)
+* [Default Service Ports](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#default-service-ports)
+* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#setup-1)
 
 ## Installing the Certificate Management Service
 
@@ -554,7 +554,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v3.6.0.bin
+./cms-v3.6.1.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -649,7 +649,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v3.6.0.bin
+./authservice-v3.6.1.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -820,7 +820,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the SCS installer binary:
 
-./scs-v3.6.0.bin
+./scs-v3.6.1.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -921,7 +921,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the installer binary.
 
-./shvs-v3.6.0.bin
+./shvs-v3.6.1.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -1037,6 +1037,10 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        
        SQVS_PORT=12000
        
+       SIGN_QUOTE_RESPONSE=false
+
+       RESPONSE_SIGNING_KEY_LENGTH=3072
+
        SQVS_LOGLEVEL=info
        
        SQVS_INCLUDE_TOKEN=true
@@ -1045,7 +1049,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 3.  Execute the sqvs installer binary.
 
-./sqvs-v3.6.0.bin
+./sqvs-v3.6.1.bin
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1058,7 +1062,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 * To setup k8 cluster on RHEL 8.2, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos 
 
-* To setup k8 cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Ubuntu.md
+* To setup k8 cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Quick Start Guide - https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure.md
 Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and follow from step 3 onwards.
 
 * Once the master/worker setup is done, follow below steps on Master Node:
@@ -1078,11 +1082,11 @@ Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and 
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.6.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v3.6.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0
+     skopeo copy oci-archive:isecl-k8s-controller-v3.6.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.6.1
+     skopeo copy oci-archive:isecl-k8s-scheduler-v3.6.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.1
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.0). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.1). It will automatically pull the images from registry.
   
 
 ##### Deploy isecl-controller
@@ -1319,7 +1323,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the installer binary.
 
-./ihub-v3.6.0.bin
+./ihub-v3.6.1.bin
 
 In case installation fails, its recommended to run the following command to clear failed service instance
 
@@ -1536,7 +1540,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the KBS installer.
 
-./kbs-3.6.0.bin
+./kbs-3.6.1.bin
 
 NOTE: When a 3rd-party Key Management Server is used, KBS supports only association of RSA key. User needs to create RSA key in backend kmip server and note the Private key Id. User also needs to create the tls certificate for the private key (it will be used during key transfer).
 rsa-create.py available in kbs_scripts can be used to create the private key and generate the certificate by providing the kmip server ip and certificates path in the script.
@@ -3051,6 +3055,9 @@ This folder contains log files: /var/log/scs
 | SQVS_LOG_LEVEL           | INFO (default), DEBUG                                        | Defines the log level  for the SQVS. Defaults to INFO.       |
 | SQVS_PORT                | 12000                                                        | SQVS Secure Port                                             |
 | SQVS_NOSETUP             | false                                                        | Skips setup during installation if set to true               |
+| SIGN_QUOTE_RESPONSE      | false                                                        | If set to false, the SQVS response is not signed, signed if set to true              |
+| RESPONSE_SIGNING_KEY_LENGTH    | 3072                                                   | if SIGN_QUOTE_RESPONSE is set to true, then create RSA signing key of length defined by RESPONSE_SIGNING_KEY_LENGTH     |
+
 | SAN_LIST                 | 127.0.0.1,localhost                                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | SQVS_INCLUDE_TOKEN       | true                                                         | If true, SQVS will authenticate KBS before Quote Verifiation |
 
