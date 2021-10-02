@@ -225,6 +225,11 @@ make skc
 make
 ```
 
+For buiding Secure Key Caching usecase
+```shell
+make app
+```
+
 * Built Binaries
 ```shell
 cd /root/workspace/binaries
@@ -287,10 +292,14 @@ Update enterprise_skc.conf
   - Database name, Database username and password for AAS and SCS services
   - Intel PCS Server API URL and API Keys (Refer config file for instructions on getting a API Key)
 
+
+If ECDSA Quote verification response needs to be signed, please set SIGN_QUOTE_RESPONSE=true in /root/binaries/env/sqvs.env
+
+For ICX Production CPUs, copy sgx-verification-service/dist/linux/rootca_icx_prod.pem as trusted_rootca.pem in /root/binaries/env diretory
+
 ```shell
 ./install_sgx_infra.sh
 ```
-
 
 ### Deploying Control Plane Services on Enterprise and Cloud Service Networks
 
@@ -311,6 +320,10 @@ Update enterprise_skc.conf
   - Intel PCS Server API URL and API Keys (Refer config file for instructions on getting a API Key)  
   - Key Manager (can be set to either Directory or KMIP)
   - KMIP server configuration if KMIP is set
+
+If ECDSA Quote verification response needs to be signed, please set SIGN_QUOTE_RESPONSE=true in /root/binaries/env/sqvs.env
+
+For ICX Production CPUs, copy sgx-verification-service/dist/linux/rootca_icx_prod.pem as trusted_rootca.pem in /root/binaries/env diretory
 
 ```shell
 ./install_enterprise_skc.sh
@@ -355,6 +368,11 @@ Update enterprise_skc.conf
   - Intel PCS Server API URL and API Keys (Refer config file for instructions on getting a API Key)  
   - Key Manager (can be set to either Directory or KMIP)
   - KMIP server configuration if KMIP is set
+
+If ECDSA Quote verification response needs to be signed, please set SIGN_QUOTE_RESPONSE=true in /root/binaries/env/sqvs.env
+
+For ICX Production CPUs, copy sgx-verification-service/dist/linux/rootca_icx_prod.pem as trusted_rootca.pem in /root/binaries/env diretory
+
 
 ```shell
 ./install_enterprise_skc.sh
