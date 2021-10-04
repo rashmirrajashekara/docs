@@ -749,35 +749,6 @@ ansible-playbook <playbook-name> --extra-vars setup=<setup var from supported us
 > **Note:** If any service installation fails due to any misconfiguration, just uninstall the specific service manually , fix the misconfiguration in ansible and rerun the playbook. The successfully installed services won't be reinstalled.
 
 
-Create sample yml file for nginx workload and add SGX labels to it such as:
-```
-apiVersion: v1
-kind: Pod
-metadata:
-  name: nginx
-  labels:
-    name: nginx
-spec:
-  affinity:
-    nodeAffinity:
-     requiredDuringSchedulingIgnoredDuringExecution:
-       nodeSelectorTerms:
-       - matchExpressions:
-         - key: SGX-Enabled
-           operator: In
-           values:
-           - "true"
-         - key: EPC-Memory
-           operator: In
-           values:
-           - "2.0GB"
-  containers:
-  - name: nginx
-    image: nginx
-    ports:
-    - containerPort: 80
-```
-
 #### Setup K8S Cluster and Deploy Isecl-k8s-extensions
 
 Note: For Stack based deployment, setup master and worker node for k8s is part of Linux Stacks for SGX deployment.
@@ -801,8 +772,8 @@ Note: For Stack based deployment, setup master and worker node for k8s is part o
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v4.1.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.1.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v4.1.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.1.0
+     skopeo copy oci-archive:isecl-k8s-controller-v3.6.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v3.6.1
+     skopeo copy oci-archive:isecl-k8s-scheduler-v3.6.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v3.6.1
   ```
   
 * Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.1.0). It will automatically pull the images from registry.
@@ -922,60 +893,7 @@ Note: Make sure to use proper indentation and don't delete existing mountPath an
 	kubectl get -o json hostattributes.crd.isecl.intel.com
 ```
 
-#### Deploying SKC Services on Single System
-```
-Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
-Update orchestrator.conf with the following
-  - Deployment system IP address
-  - SAN List (a list of ip address and hostname for the deployment system)
-  - Network Port numbers for CMS, AAS, SCS and SHVS
-  - Install Admin and CSP Admin credentials
-  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
-  - System IP address where Kubernetes or Openstack is deployed
-  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
-  - Database name, Database username and password for SHVS
-Update enterprise_skc.conf with the following
-  - Deployment system IP address
-  - SAN List (a list of ip address and hostname for the deployment system)
-  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
-  - Install Admin and CSP Admin credentials
-  - Database name, Database username and password for AAS and SCS services
-  - Intel PCS Server API URL and API Keys
-  - Key Manager can be set to either Directory or KMIP
-  - KMIP server configuration if KMIP is set
-Save and Close
-./install_skc.sh
-```
-
-In case ihub installation fails, its recommended to run the following command to clear failed service instance
-
-```
-systemctl reset-failed 
-```
-
-#### Deploy CSP SKC Services
-```
-Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
-Update csp_skc.conf with the following
-  - CSP system IP Address
-  - SAN List (a list of ip address and hostname for the CSP system)
-  - Network Port numbers for CMS, AAS, SCS and SHVS
-  - Install Admin and CSP Admin credentials
-  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
-  - System IP address where Kubernetes or Openstack is deployed
-  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
-  - Database name, Database username and password for AAS, SCS and SHVS services
-  - Intel PCS Server API URL and API Keys
-Save and Close
-./install_csp_skc.sh
-```
-
-In case installation fails, its recommended to run the following command to clear failed service instance
-
-```
-systemctl reset-failed 
-```
-
+##### Validate POD launch
 Create sample yml file for nginx workload and add SGX labels to it such as:
 ```
 apiVersion: v1
