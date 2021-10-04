@@ -147,7 +147,7 @@ Enable the Following package repositories
   * `codeready-builder-for-rhel-8-for-x86_64-rpms`
 
 ```shell
-dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils curl openssl-devel
+dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils curl openssl-devel skopeo
 dnf install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/m/makeself-2.4.2-1.el8.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
@@ -159,8 +159,9 @@ On Ubuntu 18.04
 ```shell
 sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+add-apt-repository ppa:projectatomic/ppa
 apt-get update
-apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev
+apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev skopeo
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 add-apt-repository ppa:projectatomic/ppa
@@ -194,6 +195,42 @@ export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
 rm -rf go1.14.4.linux-amd64.tar.gz
 ```
+
+* Install, Enable and start the Docker daemon
+  ```shell
+  On RHEL 8.2:
+    dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+
+  On Ubuntu 18.04:
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.10-3_amd64.deb 
+    dpkg -i containerd.io_1.2.10-3_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_19.03.5~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce-cli_19.03.5~3-0~ubuntu-bionic_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.5~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce_19.03.5~3-0~ubuntu-bionic_amd64.deb
+
+  systemctl enable docker
+  systemctl start docker
+  ```
+
+* Ignore the below steps if not running behind a proxy
+  ```shell
+  mkdir -p /etc/systemd/system/docker.service.d
+  touch /etc/systemd/system/docker.service.d/proxy.conf
+  
+  #Add the below lines in proxy.conf and set proxy server details if proxy is used
+  [Service]
+  Environment="HTTP_PROXY=<http_proxy>"
+  Environment="HTTPS_PROXY=<https_proxy>"
+  Environment="NO_PROXY=<no_proxy>"
+  ```
+
+  ```shell
+  #Reload docker
+  systemctl daemon-reload
+  systemctl restart docker
+  ```
 
 * Pulling Source Code
 
@@ -584,6 +621,7 @@ cd tools/ansible-role
 
 The following inventory can be used and created under `/etc/ansible/hosts`
 
+On RHEL 8.2:
 ```
 [CSP]
 <machine1_ip/hostname>
@@ -607,6 +645,36 @@ ansible_password=<password>
 [Node:vars]
 isecl_role=node
 ansible_user=root
+ansible_password=<password>
+```
+
+On Ubuntu 18.04:
+```
+[CSP]
+<machine1_ip/hostname>
+
+[Enterprise]
+<machine2_ip/hostname>
+
+[Node]
+<machine3_ip/hostname>
+
+[CSP:vars]
+isecl_role=csp
+ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
+ansible_password=<password>
+
+[Enterprise:vars]
+isecl_role=enterprise
+ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
+ansible_password=<password>
+
+[Node:vars]
+isecl_role=node
+ansible_user=<ubuntu_user>
+ansible_sudo_pass=<password>
 ansible_password=<password>
 ```
 
@@ -710,18 +778,246 @@ spec:
     - containerPort: 80
 ```
 
+#### Setup K8S Cluster and Deploy Isecl-k8s-extensions
+
+Note: For Stack based deployment, setup master and worker node for k8s is part of Linux Stacks for SGX deployment.
+
+* Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
+
+* To setup k8 cluster, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos. Once the master/worker setup is done, follow below steps on Master Node:
+
+##### Untar packages and push OCI images to registry
+
+* Copy tar output isecl-k8s-extensions-*.tar.gz from build system's binaries folder to /opt/ directory on the Control-plane Node and extract the contents.
+  
+  ```shell
+    cd /opt/
+    tar -xvzf isecl-k8s-extensions-*.tar.gz
+    cd isecl-k8s-extensions/
+  ```
+  
+* Configure private registry
+
+* Push images to private registry using skopeo command, (this can be done from build vm also)
+  
+  ```shell
+     skopeo copy oci-archive:isecl-k8s-controller-v4.1.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.1.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v4.1.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.1.0
+  ```
+  
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.1.0). It will automatically pull the images from registry.
+
+##### Deploy isecl-controller
+* Create hostattributes.crd.isecl.intel.com crd
+```
+    kubectl apply -f yamls/crd-1.17.yaml
+```
+* Check whether the crd is created
+```
+    kubectl get crds
+```
+* Deploy isecl-controller
+```
+    kubectl apply -f yamls/isecl-controller.yaml
+```
+* Check whether the isecl-controller is up and running
+```
+    kubectl get deploy -n isecl
+```
+* Create clusterrolebinding for ihub to get access to cluster nodes
+```
+    kubectl create clusterrolebinding isecl-clusterrole --clusterrole=system:node --user=system:serviceaccount:isecl:isecl
+```
+* Fetch token required for ihub installation and follow below IHUB installation steps,
+```
+    kubectl get secrets -n isecl
+    kubectl describe secret default-token-<name> -n isecl
+```
+
+For IHUB installation, make sure to update below configuration in /root/binaries/env/ihub.env before installing ihub on CSP system:
+* Copy /etc/kubernetes/pki/apiserver.crt from master node to /root on CSP system. Update KUBERNETES_CERT_FILE.
+* Get k8s token in master, using above commands and update KUBERNETES_TOKEN
+* Update the value of CRD name
+```
+	KUBERNETES_CRD=custom-isecl-sgx
+```
+
+##### Deploy isecl-scheduler
+* The isecl-scheduler default configuration is provided for common cluster support in /opt/isecl-k8s-extensions/yamls/isecl-scheduler.yaml. Variables HVS_IHUB_PUBLIC_KEY_PATH and SGX_IHUB_PUBLIC_KEY_PATH are by default set to default paths. Please use and set only required variables based on the use case. 
+For example, if only sgx based attestation is required then remove/comment HVS_IHUB_PUBLIC_KEY_PATH variables.
+
+* Install cfssl and cfssljson on Kubernetes Control Plane
+```
+    #Download cfssl to /usr/local/bin/
+    wget -O /usr/local/bin/cfssl http://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+    chmod +x /usr/local/bin/cfssl
+
+    #Download cfssljson to /usr/local/bin
+    wget -O /usr/local/bin/cfssljson http://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+    chmod +x /usr/local/bin/cfssljson
+```
+
+* Create tls key pair for isecl-scheduler service, which is signed by k8s apiserver.crt
+```
+    cd /opt/isecl-k8s-extensions/
+    chmod +x create_k8s_extsched_cert.sh
+    ./create_k8s_extsched_cert.sh -n "K8S Extended Scheduler" -s "<K8_MASTER_IP>","<K8_MASTER_HOST>" -c /etc/kubernetes/pki/ca.crt -k /etc/kubernetes/pki/ca.key
+```
+* After iHub deployment, copy /etc/ihub/ihub_public_key.pem from ihub to /opt/isecl-k8s-extensions/ directory on k8 master system. Also, copy tls key pair generated in previous step to secrets directory.
+```
+    mkdir secrets
+    cp /opt/isecl-k8s-extensions/server.key secrets/
+    cp /opt/isecl-k8s-extensions/server.crt secrets/
+    mv /opt/isecl-k8s-extensions/ihub_public_key.pem /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem
+    cp /opt/isecl-k8s-extensions/sgx_ihub_public_key.pem secrets/
+```
+Note: Prefix the attestation type for ihub_public_key.pem before copying to secrets folder.
+* Create kubernetes secrets scheduler-secret for isecl-scheduler
+```
+    kubectl create secret generic scheduler-certs --namespace isecl --from-file=secrets
+```
+* Deploy isecl-scheduler
+```
+    kubectl apply -f yamls/isecl-scheduler.yaml
+```
+* Check whether the isecl-scheduler is up and running
+```
+    kubectl get deploy -n isecl
+```
+
+##### Configure kube-scheduler to establish communication with isecl-scheduler
+* Add scheduler-policy.json under kube-scheduler section, mountPath under container section and hostPath under volumes section in /etc/kubernetes/manifests/kube-scheduler.yaml as mentioned below
+```
+spec:
+  containers:
+  - command:
+    - kube-scheduler
+    - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
+```
+
+```
+  containers:
+    volumeMounts:
+    - mountPath: /opt/isecl-k8s-extensions/
+      name: extendedsched
+      readOnly: true
+```
+
+```
+  volumes:
+  - hostPath:
+      path: /opt/isecl-k8s-extensions/
+      type:
+    name: extendedsched
+```
+
+Note: Make sure to use proper indentation and don't delete existing mountPath and hostPath sections in kube-scheduler.yaml.
+* Restart Kubelet which restart all the k8s services including kube base schedular
+```
+	systemctl restart kubelet
+```
+
+* Check if CRD data is populated
+```
+	kubectl get -o json hostattributes.crd.isecl.intel.com
+```
+
+#### Deploying SKC Services on Single System
+```
+Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
+Update orchestrator.conf with the following
+  - Deployment system IP address
+  - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
+  - Install Admin and CSP Admin credentials
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
+  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
+  - Database name, Database username and password for SHVS
+Update enterprise_skc.conf with the following
+  - Deployment system IP address
+  - SAN List (a list of ip address and hostname for the deployment system)
+  - Network Port numbers for CMS, AAS, SCS, SQVS and KBS
+  - Install Admin and CSP Admin credentials
+  - Database name, Database username and password for AAS and SCS services
+  - Intel PCS Server API URL and API Keys
+  - Key Manager can be set to either Directory or KMIP
+  - KMIP server configuration if KMIP is set
+Save and Close
+./install_skc.sh
+```
+
+In case ihub installation fails, its recommended to run the following command to clear failed service instance
+
+```
+systemctl reset-failed 
+```
+
+#### Deploy CSP SKC Services
+```
+Copy the binaries directory generated in the build system system to the /root/ directory on the CSP system
+Update csp_skc.conf with the following
+  - CSP system IP Address
+  - SAN List (a list of ip address and hostname for the CSP system)
+  - Network Port numbers for CMS, AAS, SCS and SHVS
+  - Install Admin and CSP Admin credentials
+  - TENANT as KUBERNETES or OPENSTACK (based on the orchestrator chosen)
+  - System IP address where Kubernetes or Openstack is deployed
+  - Netowrk Port Number of Kubernetes or Openstack Keystone/Placement Service
+  - Database name, Database username and password for AAS, SCS and SHVS services
+  - Intel PCS Server API URL and API Keys
+Save and Close
+./install_csp_skc.sh
+```
+
+In case installation fails, its recommended to run the following command to clear failed service instance
+
+```
+systemctl reset-failed 
+```
+
+Create sample yml file for nginx workload and add SGX labels to it such as:
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  affinity:
+    nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+       - matchExpressions:
+         - key: SGX-Enabled
+           operator: In
+           values:
+           - "true"
+         - key: EPC-Memory
+           operator: In
+           values:
+           - "2.0GB"
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+```
+
 Validate if pod can be launched on the node. Run following commands:
 
-```shell
+```
     kubectl apply -f pod.yml
     kubectl get pods
     kubectl describe pods nginx
 ```
 
 Pod should be in running state and launched on the host as per values in pod.yml. Validate by running below command on sgx host:
-```shell
+```
 	docker ps
 ```
+
 #### Openstack Setup and Associate Traits
 
 > **Note**: Openstack Support only validated with RHEL 8.1/8.2
