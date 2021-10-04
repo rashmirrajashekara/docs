@@ -20,7 +20,7 @@ Table of Contents
     - [<strong>4.3 Secure Key Caching Usecase </strong>](#building-secure-key-caching-usecase)
     - [<strong>4.4 Orchestration Support Usecase </strong>](#building-orchestration-usecase)
     - [<strong>4.5 All Usecases </strong>](#building-all-usecases)
-  - [<strong>5. Deployment Model </strong>>](#5-deployment-model)
+  - [<strong>5. Deployment Model </strong>](#5-deployment-model)
   - [<strong>6. Deployment </strong>](#6-deployment)
     - [<strong>6.1 Deployment Using Binaries </strong>](#deployment-using-binaries)
       - [<strong>6.1.1 Deploying Control Plane Services on a Enterprise Network </strong>](#deploying-control-plane-services-on-a-enterprise-network)
@@ -40,11 +40,13 @@ Table of Contents
       - [<strong>6.2.4 Usecase Setup Options </strong>](#usecase-setup-options)
       - [<strong>6.2.5 Update the Ansible Role </strong>](#update-ansible-inventory)
       - [<strong>6.2.6 Create and Run Playbook </strong>](#create-and-run-playbook)
-    - [<strong>6.3 Openstack Setup and Associate Traits </strong>](#openstack-setup-and-associate-traits)
+    - [<strong>6.3 Setup K8S Cluster and Deploy Isecl-k8s-extensions
+ </strong>](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
+    - [<strong>6.4 Openstack Setup and Associate Traits </strong>](#openstack-setup-and-associate-traits)
   - [<strong>7. Usecase Workflows API Collections </strong>](#7-usecase-workflows-api-collections)
       - [<strong>7.1 Pre-requisites </strong>](#pre-requisites-2)
       - [<strong>7.2 Use Case Collections </strong>](#use-case-collections)
-      - [<strong>7.3 Download Postman API Collections </strong>](#download-api-collections)
+      - [<strong>7.3 Download Postman API Collections </strong>](#downloading-api-collections)
       - [<strong>7.4 Running API Collections </strong>](#running-api-collections)
   - [<strong>8. Appendix </strong>](#8-appendix)
       - [<strong>8.1 SGX Attestation flow </strong>](#sgx-attestation-flow)
@@ -52,7 +54,7 @@ Table of Contents
       - [<strong>8.3 Configuration for NGINX testing </strong>](#configuration-for-nginx-testing)
       - [<strong>8.4 KBS key-transfer flow validation </strong>](#kbs-key-transfer-flow-validation)
       - [<strong>8.5 Note on Key Transfer Policy </strong>](#note-on-key-transfer-policy)
-      - [<strong>8.6 Note on SKC Library Deployment </strong>](#note-n-skc-library-deployment)
+      - [<strong>8.6 Note on SKC Library Deployment </strong>](#note-on-skc-library-deployment)
       - [<strong>8.7 Extracting SGX Enclave values for Key Transfer Policy </strong>](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
 <!-- /code_chunk_output -->
@@ -304,8 +306,9 @@ Following diagram illustrates the CSP/Enterprise Network Model
 
 For most of the requirements, Enterprise Network Deployment model should suffice.
 
+# **6. Deployment**
 
-# 6. Deployment Using Binaries
+## **Deployment Using Binaries**
 
  The Control Plane Services comprise of AAS, CMS, SCS, SQVS, KBS, SHVS and IHUB. These services can be deployed as below
 
