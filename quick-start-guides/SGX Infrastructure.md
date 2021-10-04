@@ -9,55 +9,55 @@ Table of Contents
 
 - [Quick Start Guide - SGX Attestation & Secure Key Caching](#sgx-attestation-secure-key-caching-quick-start-guide)
   - [Table of Contents](#table-of-contents)
-  - [**Introduction**](#introduction)
-  - [**Hardware Requirements**](#hardware-requirements)
-  - [**OS Requirements**](#os-requirements)
-    - [User Access](#user-access)
-    - [Proxy Settings](#proxy-settings)
-  - [**Build Services**](#build-services)
-    - [Pre-requisites](#pre-requisites)
-    - [SGX Attestation Infrastructure Usecase](#building-sgx-attestation-usecase)
-    - [Secure Key Caching Usecase](#building-secure-key-caching-usecase)
-    - [Orchestration Support Usecase](#building-orchestration-usecase)
-    - [All Usecases](#building-all-usecases)
-  - [**Deployment Model**](#deployment-model)
-  - [**Deployment**](#4-deployment)
-    - [**Deployment Using Binaries**](#deployment-using-binaries)
-      - [**Deploying Control Plane Services on a Enterprise Network**](#deploying-control-plane-services-on-a-enterprise-network)
-        - [Deploying Services for SGX Attestation Usecase](#deploying-services-for-sgx-attestation-usecase)
-      - [**Deploying Control Plane Services on Enterprise and Cloud Service Networks**](#deploying-control-plane-services-on-enterprise-and-cloud-service-networks)                    
-         - [Deploy Enterprise Network Services](#deploy-enterprise-skc-services)
-         - [Deploy CSP Network Services](#deploy-csp-skc-services)
-         - [Deploying Services for Secure Key Caching Usecase](#deploying-services-for-secure-key-caching-usecase)
-         - [Deploying Services for Orchestrator Usecase](#deploying-services-for-orchestration-usecase)
-         - [Deploying Services for All Usecases](#deploying-services-for-all-usecases)
-      - [**Deploy SGX Agent**](#deploy-sgx-agent)
-      - [**Deploy SKC Library**](#deploy-skc-library)
-    - [**Deployment Using Ansible**](#deployment-using-ansible)
-      - [Pre-requisites](#pre-requisites-1)
-      - [Installing Ansible](#installing-ansible)
-      - [Download the Ansible Role](#download-the-ansible-role)
-      - [Usecase Setup Options](#usecase-setup-options)
-      - [Update the Ansible Role](#update-ansible-inventory)
-      - [Create and Run Playbook](#create-and-run-playbook)
-    - [**Openstack Setup and Associate Traits**](#openstack-setup-and-associate-traits)
-  - [**Usecase Workflows API Collections**](#usecase-workflows-api-collections)
-      - [Pre-requisites](#pre-requisites-2)
-      - [Use Case Collections](#use-case-collections)
-      - [Download Postman API Collections](#download-api-collections)
-      - [Running API Collections](#running-api-collections)
-  - [**Appendix**](#appendix)
-      - [SGX Attestation flow](#sgx-attestation-flow)
-      - [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
-      - [Configuration for NGINX testing](#configuration-for-nginx-testing)
-      - [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
-      - [Note on Key Transfer Policy](#note-on-key-transfer-policy)
-      - [Note on SKC Library Deployment](#note-n-skc-library-deployment)
-      - [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
+  - [<strong>1. Introduction </strong>](#1-introduction)
+  - [<strong>2.  Hardware Requirements </strong>](#2-hardware-requirements)
+  - [<strong>3. OS Requirements  </strong>](#3-os-requirements)
+    - [<strong>3.1 User Access </strong>](#user-access)
+    - [<strong>3.2 Proxy Settings </strong>](#proxy-settings)
+  - [<strong>4. Build Services </strong>](#4-build-services)
+    - [<strong>4.1 Pre-requisites </strong>](#pre-requisites)
+    - [<strong>4.2 SGX Attestation Infrastructure Usecase </strong>](#building-sgx-attestation-usecase)
+    - [<strong>4.3 Secure Key Caching Usecase </strong>](#building-secure-key-caching-usecase)
+    - [<strong>4.4 Orchestration Support Usecase </strong>](#building-orchestration-usecase)
+    - [<strong>4.5 All Usecases </strong>](#building-all-usecases)
+  - [<strong>5. Deployment Model </strong>>](#5-deployment-model)
+  - [<strong>6. Deployment </strong>](#6-deployment)
+    - [<strong>6.1 Deployment Using Binaries </strong>](#deployment-using-binaries)
+      - [<strong>6.1.1 Deploying Control Plane Services on a Enterprise Network </strong>](#deploying-control-plane-services-on-a-enterprise-network)
+        - [<strong>6.1.1.1 Deploying Services for SGX Attestation Usecase </strong>](#deploying-services-for-sgx-attestation-usecase)
+      - [<strong>6.1.2 Deploying Control Plane Services on Enterprise and Cloud Service Networks </strong>](#deploying-control-plane-services-on-enterprise-and-cloud-service-networks)                    
+         - [<strong>6.1.2.1 Deploy Enterprise Network Services </strong>](#deploy-enterprise-skc-services)
+         - [<strong>6.1.2.2 Deploy CSP Network Services </strong>](#deploy-csp-skc-services)
+         - [<strong>6.1.2.3 Deploying Services for Secure Key Caching Usecase </strong>](#deploying-services-for-secure-key-caching-usecase)
+         - [<strong>6.1.2.4 Deploying Services for Orchestrator Usecase </strong>](#deploying-services-for-orchestration-usecase)
+         - [<strong>6.1.2.5 Deploying Services for All Usecases </strong>](#deploying-services-for-all-usecases)
+      - [<strong>6.1.3 Deploy SGX Agent </strong>](#deploy-sgx-agent)
+      - [<strong>6.1.4 Deploy SKC Library </strong>](#deploy-skc-library)
+    - [<strong>6.2 Deployment Using Ansible </strong>](#deployment-using-ansible)
+      - [<strong>6.2.1 Pre-requisites </strong>](#pre-requisites-1)
+      - [<strong>6.2.2 Installing Ansible </strong>](#installing-ansible)
+      - [<strong>6.2.3 Download the Ansible Role </strong>](#download-the-ansible-role)
+      - [<strong>6.2.4 Usecase Setup Options </strong>](#usecase-setup-options)
+      - [<strong>6.2.5 Update the Ansible Role </strong>](#update-ansible-inventory)
+      - [<strong>6.2.6 Create and Run Playbook </strong>](#create-and-run-playbook)
+    - [<strong>6.3 Openstack Setup and Associate Traits </strong>](#openstack-setup-and-associate-traits)
+  - [<strong>7. Usecase Workflows API Collections </strong>](#7-usecase-workflows-api-collections)
+      - [<strong>7.1 Pre-requisites </strong>](#pre-requisites-2)
+      - [<strong>7.2 Use Case Collections </strong>](#use-case-collections)
+      - [<strong>7.3 Download Postman API Collections </strong>](#download-api-collections)
+      - [<strong>7.4 Running API Collections </strong>](#running-api-collections)
+  - [<strong>8. Appendix </strong>](#8-appendix)
+      - [<strong>8.1 SGX Attestation flow </strong>](#sgx-attestation-flow)
+      - [<strong>8.2 Creating RSA Keys in Key Broker Service </strong>](#creating-rsa-keys-in-key-broker-service)
+      - [<strong>8.3 Configuration for NGINX testing </strong>](#configuration-for-nginx-testing)
+      - [<strong>8.4 KBS key-transfer flow validation </strong>](#kbs-key-transfer-flow-validation)
+      - [<strong>8.5 Note on Key Transfer Policy </strong>](#note-on-key-transfer-policy)
+      - [<strong>8.6 Note on SKC Library Deployment </strong>](#note-n-skc-library-deployment)
+      - [<strong>8.7 Extracting SGX Enclave values for Key Transfer Policy </strong>](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
 <!-- /code_chunk_output -->
 
-## **Introduction**
+## **1. Introduction**
 
 [Intel® SecL-DC libraries](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.6.1/develop/product-guides/Secure%20Key%20Caching.md#sgx-attestation-infrastructure-and-skc-components) support SGX attestation as a base use case. For a detailed description of SGX Attestation, please refer to [SGX ECDSA Attestation](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.6.1/product-guides/SGX%20Infrastructure.md#sgx-ecdsa-attestation)
 
@@ -88,7 +88,7 @@ Intel® SecL-DC libraries also support following usecases which build upon the S
 | Orchestration Support             | ✔   | ✔   | ✔         | ✔   |      |             |     | ✔    | ✔    |
 
 
-## **Hardware Requirements**
+## **2. Hardware Requirements**
 
 For Enterprise Network Deployment
 
@@ -105,7 +105,7 @@ For Cloud Service Provider (CSP) and Enterprise Network Deployment
 - Deployment system for orchestration support
 
 
-## **OS Requirements**
+## **3. OS Requirements**
 
 Ensure that you have one of the following required operating systems:
 
@@ -130,7 +130,7 @@ export https_proxy=http://<proxy-url>:<proxy-port>
 export no_proxy=0.0.0.0,127.0.0.1,localhost,<Deployment System IP>, <SGX Compute Node IP>, <KBS system Hostname>
 ```
 
-## **Build Services**
+## **4. Build Services**
 
 The below steps needs to be carried out on the Build and Deployment VM
 
@@ -258,14 +258,15 @@ For buiding Secure Key Caching usecase
 make skc
 ```
 
+### Building Sample Application
+For buiding Sample Application for SGX Attestation
+```shell
+make app
+```
+
 ### Building All Usecases
 ```shell
 make
-```
-
-For buiding Secure Key Caching usecase
-```shell
-make app
 ```
 
 * Built Binaries
@@ -275,7 +276,7 @@ cd /root/workspace/binaries
 Copy the binaries directory generated in the build system to the /root/ directory on the deployment system
 
 
-## **Deployment Model**
+## **5. Deployment Model**
 
 Following deployment models are supported
 
@@ -304,7 +305,7 @@ Following diagram illustrates the CSP/Enterprise Network Model
 For most of the requirements, Enterprise Network Deployment model should suffice.
 
 
-# Deployment Using Binaries
+# 6. Deployment Using Binaries
 
  The Control Plane Services comprise of AAS, CMS, SCS, SQVS, KBS, SHVS and IHUB. These services can be deployed as below
 
@@ -1004,7 +1005,7 @@ Pod should be in running state and launched on the host as per values in pod.yml
 ```
 
 
-## **Usecase Workflows API Collections**
+## **7. Usecase Workflows API Collections**
 
 The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
 
@@ -1062,9 +1063,10 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
   ![running-collection](./images/running_collection.gif)
 
 
-## **Appendix**
+## **8. Appendix**
 
-### SGX Attestation flow
+###  SGX Attestation flow
+
 ```
 To Deploy SampleApp:
   Copy sample_apps.tar, sample_apps.sha2 and sampleapps_untar.sh from binaries directory to a directory in SGX compute node and untar it using './sample_apps_untar.sh'
@@ -1140,28 +1142,28 @@ In the kbs_script folder, Run rsa_create.py script
     cd /root/binaries/kbs_script
     python3 rsa_create.py
 ```
-
 This script will generate “Private Key ID” and “Server certificate”, which should be provided in the kbs.conf file for “KMIP_KEY_ID” and “SERVER_CERT”.
 
 **Configuration Update to create Keys in KBS**
 ```shell
-	cd /root/binaries/kbs_script
+cd /root/binaries/kbs_script
 ```
 
-**To register keys with KBS KMIP**
-    
-    Update the following variables in kbs.conf:
-    
-        KMIP_KEY_ID (Private key ID registered in KMIP server)
+To register keys with KBS KMIP
+
+Update the following variables in kbs.conf:
+
+```    
+KMIP_KEY_ID (Private key ID registered in KMIP server)
         
-        SERVER_CERT (Server certificate for created private key)
-		
-		Enterprise system IP address where CMS, AAS and KBS services are deployed
+SERVER_CERT (Server certificate for created private key)
+
+Enterprise system IP address where CMS, AAS and KBS services are deployed
         
-		Port of CMS, AAS and KBS services deployed on enterprise system
+Port of CMS, AAS and KBS services deployed on enterprise system
     
-	    AAS admin and Enterprise admin credentials
-        
+AAS admin and Enterprise admin credentials
+```        
 > **NOTE**: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
 
 Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
@@ -1232,9 +1234,10 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
   Any number of keys can be added in keys.txt. Key IDs are specified in PKCS11 URL format. Each PKCS11 URL should contain different Key ID, along with respective object tag
 
   Sample PKCS11 url is as below
-  
+ ``` 
   pkcs11:token=KMS;id=164b41ae-be61-4c7c-a027-4a2ab1e5e4c4;object=RSAKEY;type=private;pin-value=1234;
-  
+ ```
+
   Token, object and pin-value given in PKCS11 url entry in keys.txt should match with the one in nginx.conf.
 
   The keyID should match the keyID of RSA key created in KBS. File location should match with preload_keys directive in pkcs11-apimodule.ini; 
