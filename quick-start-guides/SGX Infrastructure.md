@@ -7,40 +7,64 @@ Table of Contents
 
 <!-- code_chunk_output -->
 
-- [Quick Start Guide - SGX Attestation & Secure Key Caching](#sgx-attestation-secure-key-caching-quick-start-guide)
+- [Quick Start Guide - SGX Attestation Infrastructure and Secure Key Caching (SKC)](#quick-start-guide---sgx-attestation-infrastructure-and-secure-key-caching-skc)
   - [Table of Contents](#table-of-contents)
-  - [<strong>1. Introduction </strong>](#1-introduction)
-  - [<strong>2.  Hardware Requirements </strong>](#2-hardware-requirements)
-  - [<strong>3. OS Requirements  </strong>](#3-os-requirements)
-    - [<strong>3.1 User Access </strong>](#user-access)
-    - [<strong>3.2 Proxy Settings </strong>](#proxy-settings)
-  - [<strong>4. Build Services </strong>](#4-build-services)
-    - [<strong>4.1 Pre-requisites </strong>](#pre-requisites)
-    - [<strong>4.2 SGX Attestation Infrastructure Usecase </strong>](#building-sgx-attestation-usecase)
-    - [<strong>4.3 Secure Key Caching Usecase </strong>](#building-secure-key-caching-usecase)
-    - [<strong>4.4 Orchestration Support Usecase </strong>](#building-orchestration-usecase)
-    - [<strong>4.5 All Usecases </strong>](#building-all-usecases)
-  - [<strong>5. Deployment Model </strong>](#5-deployment-model)
-  - [<strong>6. Deployment </strong>](#6-deployment)
-    - [<strong>6.1 Deployment Using Binaries </strong>](#deployment-using-binaries)
-      - [<strong>6.1.1 Deploying Control Plane Services on a Enterprise Network </strong>](#deploying-control-plane-services-on-a-enterprise-network)
-        - [<strong>6.1.1.1 Deploying Services for SGX Attestation Usecase </strong>](#deploying-services-for-sgx-attestation-usecase)
-      - [<strong>6.1.2 Deploying Control Plane Services on Enterprise and Cloud Service Networks </strong>](#deploying-control-plane-services-on-enterprise-and-cloud-service-networks)                    
-         - [<strong>6.1.2.1 Deploy Enterprise Network Services </strong>](#deploy-enterprise-skc-services)
-         - [<strong>6.1.2.2 Deploy CSP Network Services </strong>](#deploy-csp-skc-services)
-         - [<strong>6.1.2.3 Deploying Services for Secure Key Caching Usecase </strong>](#deploying-services-for-secure-key-caching-usecase)
-         - [<strong>6.1.2.4 Deploying Services for Orchestrator Usecase </strong>](#deploying-services-for-orchestration-usecase)
-         - [<strong>6.1.2.5 Deploying Services for All Usecases </strong>](#deploying-services-for-all-usecases)
-      - [<strong>6.1.3 Deploy SGX Agent </strong>](#deploy-sgx-agent)
-      - [<strong>6.1.4 Deploy SKC Library </strong>](#deploy-skc-library)
-    - [<strong>6.2 Deployment Using Ansible </strong>](#deployment-using-ansible)
-      - [<strong>6.2.1 Pre-requisites </strong>](#pre-requisites-1)
-      - [<strong>6.2.2 Installing Ansible </strong>](#installing-ansible)
-      - [<strong>6.2.3 Download the Ansible Role </strong>](#download-the-ansible-role)
-      - [<strong>6.2.4 Usecase Setup Options </strong>](#usecase-setup-options)
-      - [<strong>6.2.5 Update the Ansible Role </strong>](#update-ansible-inventory)
-      - [<strong>6.2.6 Create and Run Playbook </strong>](#create-and-run-playbook)
-    - [<strong>6.3 Setup K8S Cluster and Deploy Isecl-k8s-extensions
+  - [**1. Introduction**](#1-introduction)
+    - [Glossary](#glossary)
+    - [Intel® SecL-DC libraries Services Deployment Matrix for All Supported Usecases](#intel-secl-dc-libraries-services-deployment-matrix-for-all-supported-usecases)
+  - [**2. Hardware Requirements**](#2-hardware-requirements)
+  - [**3. OS Requirements**](#3-os-requirements)
+    - [User Access](#user-access)
+    - [Proxy Settings](#proxy-settings)
+  - [**4. Build Services**](#4-build-services)
+    - [Pre-requisites](#pre-requisites)
+      - [Building SGX Attestation Usecase](#building-sgx-attestation-usecase)
+    - [Building Orchestration Usecase](#building-orchestration-usecase)
+    - [Building Secure Key Caching Usecase](#building-secure-key-caching-usecase)
+    - [Building Sample Application](#building-sample-application)
+    - [Building All Usecases](#building-all-usecases)
+  - [**5. Deployment Model**](#5-deployment-model)
+- [**6. Deployment**](#6-deployment)
+  - [**Deployment Using Binaries**](#deployment-using-binaries)
+    - [Deploying Control Plane Services on a Enterprise network](#deploying-control-plane-services-on-a-enterprise-network)
+      - [Deploying Services for SGX Attestation Usecase](#deploying-services-for-sgx-attestation-usecase)
+    - [Deploying Control Plane Services on Enterprise and Cloud Service Networks](#deploying-control-plane-services-on-enterprise-and-cloud-service-networks)
+      - [Deploy Enterprise SKC Services](#deploy-enterprise-skc-services)
+      - [Deploy CSP SKC Services](#deploy-csp-skc-services)
+      - [Deploying Services for Secure Key Caching Usecase](#deploying-services-for-secure-key-caching-usecase)
+      - [Deploying Services for Orchestration Usecase](#deploying-services-for-orchestration-usecase)
+      - [Deploying Services for All Usecases](#deploying-services-for-all-usecases)
+      - [Deploy SGX Agent](#deploy-sgx-agent)
+      - [Deploy SKC Library](#deploy-skc-library)
+  - [**Deployment & Usecase Workflow Tools Installation**](#deployment--usecase-workflow-tools-installation)
+    - [Usecases Workflow Tools Installation](#usecases-workflow-tools-installation)
+  - [**Deployment Using Ansible**](#deployment-using-ansible)
+    - [Pre-requisites](#pre-requisites-1)
+    - [Installing Ansible on Build Machine](#installing-ansible-on-build-machine)
+    - [Download the Ansible Role](#download-the-ansible-role)
+    - [Usecase Setup Options](#usecase-setup-options)
+    - [Update Ansible Inventory](#update-ansible-inventory)
+    - [Create and Run Playbook](#create-and-run-playbook)
+      - [Setup K8S Cluster and Deploy Isecl-k8s-extensions](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
+        - [Untar packages and push OCI images to registry](#untar-packages-and-push-oci-images-to-registry)
+        - [Deploy isecl-controller](#deploy-isecl-controller)
+        - [Deploy isecl-scheduler](#deploy-isecl-scheduler)
+        - [Configure kube-scheduler to establish communication with isecl-scheduler](#configure-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+        - [Validate POD launch](#validate-pod-launch)
+      - [Openstack Setup and Associate Traits](#openstack-setup-and-associate-traits)
+  - [**7. Usecase Workflows API Collections**](#7-usecase-workflows-api-collections)
+    - [Pre-requisites](#pre-requisites-2)
+    - [Use Case Collections](#use-case-collections)
+    - [Downloading API Collections](#downloading-api-collections)
+    - [Running API Collections](#running-api-collections)
+  - [**8. Appendix**](#8-appendix)
+    - [SGX Attestation flow](#sgx-attestation-flow)
+    - [Creating RSA Keys in Key Broker Service](#creating-rsa-keys-in-key-broker-service)
+    - [Configuration for NGINX testing](#configuration-for-nginx-testing)
+    - [KBS key-transfer flow validation](#kbs-key-transfer-flow-validation)
+    - [Note on Key Transfer Policy](#note-on-key-transfer-policy)
+    - [Note on SKC Library Deployment](#note-on-skc-library-deployment)
+    - [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
  </strong>](#setup-k8s-cluster-and-deploy-isecl-k8s-extensions)
     - [<strong>6.4 Openstack Setup and Associate Traits </strong>](#openstack-setup-and-associate-traits)
   - [<strong>7. Usecase Workflows API Collections </strong>](#7-usecase-workflows-api-collections)
@@ -56,7 +80,6 @@ Table of Contents
       - [<strong>8.5 Note on Key Transfer Policy </strong>](#note-on-key-transfer-policy)
       - [<strong>8.6 Note on SKC Library Deployment </strong>](#note-on-skc-library-deployment)
       - [<strong>8.7 Extracting SGX Enclave values for Key Transfer Policy </strong>](#extracting-sgx-enclave-values-for-key-transfer-policy)
-
 <!-- /code_chunk_output -->
 
 ## **1. Introduction**
@@ -1010,13 +1033,13 @@ Pod should be in running state and launched on the host as per values in pod.yml
 
 ## **7. Usecase Workflows API Collections**
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v3.6.1/develop/tools/api-collections)
 
 ### Use Case Collections
 

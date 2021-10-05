@@ -35,7 +35,7 @@ This guide goes over the deployment steps to enable Common Cluster for Foundatio
   - [Workload POD Launch Validation](#workload-pod-launch-validation)
     - [Launch Workload for SGX](#launch-workload-for-sgx)
     - [Launch Workload for FS](#launch-workload-for-fs)
-- [Appendix](#appendix)
+  - [Appendix](#appendix)
 
 <!-- /code_chunk_output -->
 
@@ -132,7 +132,7 @@ All Build steps and pre-requisites are given in the table below
   cd isecl-k8s-extensions/
   ```
 
-- Add the image names in `isecl-controller.yml` and `isecl-scheduler.yml` in `/opt/isecl-k8s-extensions/yamls` with full image name including registry IP/hostname (e.g :/isecl-k8s-scheduler:v3.6.0). 
+- Add the image names in `isecl-controller.yml` and `isecl-scheduler.yml` in `/opt/isecl-k8s-extensions/yamls` with full image name including registry IP/hostname (e.g :/isecl-k8s-scheduler:v3.6.1).
 
 
 
