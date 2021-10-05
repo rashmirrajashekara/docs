@@ -84,7 +84,7 @@ Table of Contents
 
 ## **1. Introduction**
 
-[Intel® SecL-DC libraries](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.6.1/develop/product-guides/Secure%20Key%20Caching.md#sgx-attestation-infrastructure-and-skc-components) support SGX attestation as a base use case. For a detailed description of SGX Attestation, please refer to [SGX ECDSA Attestation](https://gitlab.devtools.intel.com/sst/isecl/docs/-/blob/v3.6.1/product-guides/SGX%20Infrastructure.md#sgx-ecdsa-attestation)
+[Intel® SecL-DC libraries](https://github.com/intel-secl/docs/-/blob/v3.6.1/develop/product-guides/Secure%20Key%20Caching.md#sgx-attestation-infrastructure-and-skc-components) support SGX attestation as a base use case. For a detailed description of SGX Attestation, please refer to [SGX ECDSA Attestation](https://github.com/intel-secl/docs/-/blob/v3.6.1/product-guides/SGX%20Infrastructure.md#sgx-ecdsa-attestation)
 
 Intel® SecL-DC libraries also support following usecases which build upon the SGX Attestation usecase
 * Secure Key Caching
@@ -261,7 +261,7 @@ rm -rf go1.14.4.linux-amd64.tar.gz
 
 ```shell
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u ssh://git@gitlab.devtools.intel.com:29418/sst/isecl/build-manifest.git -b v3.6.1/develop-gitlab -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v3.6.1 -m manifest/skc.xml
 repo sync
 ```
 
