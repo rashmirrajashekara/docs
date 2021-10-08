@@ -189,7 +189,6 @@ apt-get update
 apt-get install -y git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev skopeo
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
-add-apt-repository ppa:projectatomic/ppa
 apt-get install makeself
 ```
 
