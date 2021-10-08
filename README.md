@@ -49,6 +49,7 @@
   - [License](#license)
 
   - [Contributing](#contributing)
+  - [Known Issues](#known-issues)
   - [Legalities](#legalities)
 
 ## Overview
@@ -120,5 +121,9 @@ Application keys are wrapped with a Symmetric Wrapping Key (SWK) by KBS prior to
 ## Contributing
 
 <https://github.com/intel-secl/intel-secl/>
+
+## Known Issues
+
+Container build for SGX Attestation and Secure Key caching use cases are not supported in Ubuntu.
 
 ## Legalities
