@@ -280,7 +280,7 @@ DB scripts:
 
 Intel® Security Libraries is distributed as open source code and must be compiled into OCI images before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#build)
+Instructions and sample scripts for building the Intel® SecL-DC components  as containerized images for Kubernetes deployments can be found in [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#build)
 
 After the components have been built, the OCI images and pre-req scripts can be found in the `K8s` directory created by the build scripts.
 
@@ -503,14 +503,14 @@ The containerized deployment utilizes K8s orchestrator to deploy SGX components.
 
 ### Deploy Steps
 
-* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#deploy-steps) based on the deployment model. Follow the instructions for the deployment using the scripts
+* The deploy steps are detailed in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#deploy-steps) based on the deployment model. Follow the instructions for the deployment using the scripts
 
 ### Additional Details
 
-* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#default-service-and-agent-mount-paths)
-* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#multi-node-deployments)
-* [Default Service Ports](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#default-service-ports)
-* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure-%20Containerization.md#setup-1)
+* [Default Service and Agent Mount Paths - Single Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#build#default-service-and-agent-mount-paths)
+* [Default Service and Agent Mount Paths - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#build#multi-node-deployments)
+* [Default Service Ports](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#build#default-service-ports)
+* [NFS Setup Pre-reqs - Multi Node](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#build#setup-1)
 
 ## Installing the Certificate Management Service
 
@@ -3160,6 +3160,15 @@ Available Tasks for setup:
                                 - KEY_PATH=<key_path>              : Path of file where TLS key needs to be stored
                                 - CERT_PATH=<cert_path>            : Path of file/directory where TLS certificate needs to be stored
 
+    create_signing_key_pair  Generates Key pair and CSR and downloads Signing certificate from CMS
+                             - Option [--force] overwrites any existing files and always downloads new Signing cert
+                             Required env variable if SQVS_NOSETUP=true or variable not set in config.yml:
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>      : to ensure that AAS is talking to the right CMS instance
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>               : for CMS API url
+                                 - BEARER_TOKEN=<token>             : for authenticating with CMS
+
+
 ```
 
 ### Directory Layout
@@ -3338,6 +3347,143 @@ Cluster admin can uninstall the isecl-k8s-extensions by running following comman
     rm -rf /opt/isecl-k8s-extensions
     rm -rf /var/log/isecl-k8s-extensions
 ```
+
+# Binary Upgrades
+
+***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the SHVS, SCS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
+
+```
+Backup to tar file:
+pg_dump --dbname <database_name> --username=<database username> -F t > <database_backup_file>.tar
+Restore from tar file:
+pg_restore --dbname=<database_name> --username=<database username><database_backup_file>.tar	
+```
+
+Some upgrades may involve changes to database content, and a backup will ensure that data is not lost in the case of an error during the upgrade process.
+
+## Backward Compatibility
+
+In general Intel SecL services are made to be backward-compatible within a given major release (for example, the 3.6.1 SHVS should be compatible with the 3.5 SGX Agent) in an upgrade priority order (see below).  Major version upgrades may require coordinated upgrades across all services.
+
+## Upgrade Order
+
+Upgrades should be performed in the following order to prevent misconfiguration or any service unavailability:
+
+1) CMS, AAS
+
+2) SCS, SHVS
+
+3) SQVS, KBS, SGX Agent
+
+Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.  
+
+## Upgrade Process
+
+### Binary Installations
+
+For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
+
+# Container Upgrades
+
+Container upgrades will be supported only on multi node deployments and will be based on recreate strategy from v3.6 to v4.0. All services except KBS can be upgraded just by updating the image name and tag to newer version in respective deployment.yml files.
+
+## Backup and roll back applicable to all services
+
+1.	Take back up of data in NFS mount for all services from NFS server system <NFS-Mount-Path>/isecl
+2.	If upgrade is not successful, then update deployment.yml files with older images(v3.6) for 4.0 upgrade path and restore the backed up NFS data at same mount path.
+3.	Bring up individual components with ./isecl-bootstrap.sh up <service>.
+
+**Note:** If in case service fails to start or gets crashed, then copy all the backed up data as per folder structure like how was it earlier. Bring up DB instance pointing to backed up data and bring up component deployment by pointing to older version of container image.
+
+## Backward Compatibility
+
+In general Intel SecL services are made to be backward-compatible within a given major release (for example, the  SHVS should be compatible with the 3.5 SGX Agent) in an upgrade priority order (see below). Major version upgrades may require coordinated upgrades across all services.
+
+## Upgrade Order
+
+Upgrades should be performed in the following order to prevent misconfiguration or any service unavailability:
+
+1.	CMS, AAS
+2.	SCS, SHVS
+3.	SQVS, KBS, SGX Agent
+4.	ISECL-CONTROLLER, IHUB, ISECL-SCHEDULER
+
+Upgrading in this order will make each service unavailable only for the duration of the upgrade for that service.
+
+## Upgrade Process
+
+### Container Installations
+
+Assuming all services for any use-case are up and running.
+
+Push all the newer version of container images to registry. All oci images will be in k8s/container-images.
+
+e.g
+```
+skopeo copy oci-archive:<oci-image-tar-name> docker://<registry-ip/hostname>:<registry-port>/<image-name>:<image-tag> --dest-tls-verify=false
+```
+
+#### Individual services upgrade except KBS
+
+1.	Update the image name in existing deployment.yml of respective service.
+2.	Redeploy by running the below command, By doing "kubectl apply -f" on deployment.yml with change in image name will terminate service with older image version and bring up service with new image version.
+
+```
+cd /k8s/manifests/<service-manifests-folder> &&  kubectl kustomize . | kubectl apply -f -
+e.g cd /k8s/manifests/cms && kubectl kustomize . | kubectl apply -f -
+```
+
+#### KBS Upgrade
+
+1.	Update the image name with new image name/image tag in existing deployment.yml.
+2.	Copy upgrade-job.yml from builds k8s/manifests/kbs/upgrade-job.yml into control plane node k8s/manifests/kbs/
+```
+scp <build-vm>:<build-dir>/k8s/manifests/kbs/upgrade-job.yml <control-plane-vm>:<existing dir>/k8s/manifests/kbs/upgrade-job.yml
+```
+3.	Add the following variables in kbs/configMap.yml
+```
+KMIP_HOSTNAME: <kmip fqdn or ip>
+```
+Run the command
+```
+kubectl apply -f kbs/configMap.yml --namespace=isecl
+```
+4.	(Optional) Add the following variables in kbs/secrets.yml if required KMIP_USERNAME and KMIP_PASSWORD Run the following commands
+```
+kubectl delete secret -n isecl kbs-secret
+kubectl create secret generic kbs-secret --from-file=kbs/secrets.txt --namespace=isecl
+```
+5.	Update "image-name" and "image-tag" and existing version of deployed kbs in "current deployed version" in k8s/manifests/kbs/upgrade-job.yml
+```
+      containers:
+        - name: kbs
+          image: <image-name>:<image-tag>
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1001
+            runAsGroup: 1001
+          env:
+            - name: CONFIG_DIR
+              value: "/etc/kbs"
+            - name: COMPONENT_VERSION
+              value: <current deployed version>
+```
+6.	Run the upgrade job,
+```
+cd k8s/manifests
+kubectl delete deployment -n isecl kbs-deployment
+kubectl apply -f kbs/upgrade-job.yml
+```
+7.	Check the status of kbs-upgrade job for completion.
+```
+kubectl get jobs -n isecl
+kubectl logs -n isecl kbs-upgrade-<pod id>
+```
+8.	Update the image name in kbs/deployment.yml to newer version and deploy the latest kbs
+```
+kubectl apply -f kbs/deployment.yml or cd kbs && kubectl kustomize . | kubectl apply -f -
+```
+
 
 # Appendix 
 
