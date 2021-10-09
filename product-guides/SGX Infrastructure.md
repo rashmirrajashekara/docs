@@ -590,7 +590,7 @@ Virtualization enabled on SGX Host machines, uses SGX key features. With Virtual
 
 Intel® Security Libraries is distributed as open source code and must be compiled into installation binaries before installation.
 
-Instructions and sample scripts for building the Intel® SecL-DC components can be found here (Section 1 to 6)
+Instructions and sample scripts for building the Intel® SecL-DC components can be found in
 
 https://github.com/intel-secl/docs/blob/v4.0/develop/quick-start-guides/SGX%20Infrastructure%20-%20RHEL.md
 
@@ -598,14 +598,14 @@ After the components have been built, the installation binaries and database scr
 
 Generated component binaries/installers are:
 
-- CMS: cms-v4.0.0.bin
-- AAS: authservice-v4.0.0.bin
-- SCS: scs-v4.0.0.bin
-- SHVS: shvs-v4.0.0.bin
-- IHUB: ihub-v4.0.0.bin
-- SQVS: sqvs-v4.0.0.bin
-- KBS: kbs-v4.0.0.bin
-- K8S-Extensions: isecl-k8s-extensions-v4.0.0.tar.gz
+- CMS: cms-v4.0.1.bin
+- AAS: authservice-v4.0.1.bin
+- SCS: scs-v4.0.1.bin
+- SHVS: shvs-v4.0.1.bin
+- IHUB: ihub-v4.0.1.bin
+- SQVS: sqvs-v4.0.1.bin
+- KBS: kbs-v4.0.1.bin
+- K8S-Extensions: isecl-k8s-extensions-v4.0.1.tar.gz
 - SGX-Agent: agent_untar.sh, sgx_agent.sha2 and sgx_agent.tar
 - SKC-Library: skclib_untar.sh, skc_library.sha2 and skc_library.tar
 
@@ -624,17 +624,17 @@ After the components have been built, the OCI images and pre-req scripts can be 
 
 Generated components `OCI images`  under `<working directory>/k8s/container-images`:
 
-* Authentication Authorization Service: `aas-v4.0.0.tar`
-* Certificate Management Service: `cms-v4.0.0.tar`
-* Integration Hub: `ihub-v4.0.0.tar`
-* Key Broker Service: `kbs-v4.0.0.tar`
-* K8s Extensions Custom Controller: `isecl-k8s-controller-v4.0.0.tar`
-* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v4.0.0.tar`
-* SGX Caching Service: `scs-v4.0.0.tar`
-* SGX Quote Verification Service: `sqvs-v4.0.0.tar`
-* SGX Host Verification Service: `shvs-v4.0.0.tar`
-* SGX Agent: `sgx-agent-v4.0.0.tar`
-* SKC Library: `skc-lib-4.0.0.tar`
+* Authentication Authorization Service: `aas-v4.0.1.tar`
+* Certificate Management Service: `cms-v4.0.1.tar`
+* Integration Hub: `ihub-v4.0.1.tar`
+* Key Broker Service: `kbs-v4.0.1.tar`
+* K8s Extensions Custom Controller: `isecl-k8s-controller-v4.0.1.tar`
+* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v4.0.1.tar`
+* SGX Caching Service: `scs-v4.0.1.tar`
+* SGX Quote Verification Service: `sqvs-v4.0.1.tar`
+* SGX Host Verification Service: `shvs-v4.0.1.tar`
+* SGX Agent: `sgx-agent-v4.0.1.tar`
+* SKC Library: `skc-lib-4.0.1.tar`
 
 Generated Components `K8s Manifests` directories under `<working directory>/k8s/manifests`:
 
@@ -890,7 +890,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v4.0.0.bin
+./cms-v4.0.1.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -985,7 +985,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v4.0.0.bin
+./authservice-v4.0.1.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -1156,7 +1156,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the SCS installer binary:
 
-./scs-v4.0.0.bin
+./scs-v4.0.1.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -1257,7 +1257,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the installer binary.
 
-./shvs-v4.0.0.bin
+./shvs-v4.0.1.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -1375,6 +1375,10 @@ A sample minimal sqvs.env file is provided below. For all configuration options 
        
        SQVS_PORT=12000
        
+       SIGN_QUOTE_RESPONSE=false
+
+       RESPONSE_SIGNING_KEY_LENGTH=3072
+
        SQVS_LOGLEVEL=info
        
        SQVS_INCLUDE_TOKEN=true
@@ -1385,7 +1389,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 3.  Execute the sqvs installer binary.
 
-./sqvs-v4.0.0.bin
+./sqvs-v4.0.1.bin
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1398,7 +1402,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 * To setup k8 cluster on RHEL 8.2, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos 
 
-* To setup k8 cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v4.0/develop/quick-start-guides/SGX%20Infrastructure%20-%20Ubuntu.md
+* To setup k8s cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v3.6/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Ubuntu.md
 Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and follow from step 3 onwards.
 
 * Once the master/worker setup is done, follow below steps on Master Node:
@@ -1418,11 +1422,11 @@ Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and 
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.0.0
-     skopeo copy oci-archive:isecl-k8s-scheduler-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0
+     skopeo copy oci-archive:isecl-k8s-controller-v4.0.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.0.1
+     skopeo copy oci-archive:isecl-k8s-scheduler-v4.0.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.1
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.1). It will automatically pull the images from registry.
   
 
 ##### Deploy isecl-controller
@@ -1659,7 +1663,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the installer binary.
 
-./ihub-v4.0.0.bin
+./ihub-v4.0.1.bin
 
 In case installation fails, its recommended to run the following command to clear failed service instance
 
@@ -1888,7 +1892,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the KBS installer.
 
-./kbs-4.0.0.bin
+./kbs-4.0.1.bin
 
 NOTE: When a 3rd-party Key Management Server is used, KBS supports only association of RSA key. User needs to create RSA key in backend kmip server and note the Private key Id. User also needs to create the tls certificate for the private key (it will be used during key transfer).
 rsa-create.py available in kbs_scripts can be used to create the private key and generate the certificate by providing the kmip server ip and certificates path in the script.
@@ -3404,6 +3408,9 @@ This folder contains log files: /var/log/scs
 | SQVS_LOG_LEVEL           | INFO (default), DEBUG                                        | Defines the log level  for the SQVS. Defaults to INFO.       |
 | SQVS_PORT                | 12000                                                        | SQVS Secure Port                                             |
 | SQVS_NOSETUP             | false                                                        | Skips setup during installation if set to true               |
+| SIGN_QUOTE_RESPONSE      | false                                                        | If set to false, the SQVS response is not signed, signed if set to true              |
+| RESPONSE_SIGNING_KEY_LENGTH    | 3072                                                   | if SIGN_QUOTE_RESPONSE is set to true, then create RSA signing key of length defined by RESPONSE_SIGNING_KEY_LENGTH     |
+
 | SAN_LIST                 | 127.0.0.1,localhost                                          | Comma-separated list of IP addresses and hostnames that will be valid connection points for the service. Requests sent to the service using an IP or hostname not in this list will be denied, even if it resolves to this service. |
 | SQVS_INCLUDE_TOKEN       | true                                                         | If true, SQVS will authenticate KBS before Quote Verifiation |
 
@@ -3505,6 +3512,15 @@ Available Tasks for setup:
                              Optional env variables specific to setup task are:
                                 - KEY_PATH=<key_path>              : Path of file where TLS key needs to be stored
                                 - CERT_PATH=<cert_path>            : Path of file/directory where TLS certificate needs to be stored
+
+    create_signing_key_pair  Generates Key pair and CSR and downloads Signing certificate from CMS
+                             - Option [--force] overwrites any existing files and always downloads new Signing cert
+                             Required env variable if SQVS_NOSETUP=true or variable not set in config.yml:
+                                 - CMS_TLS_CERT_SHA384=<CMS TLS cert sha384 hash>      : to ensure that AAS is talking to the right CMS instance
+                             Required env variables specific to setup task are:
+                                 - CMS_BASE_URL=<url>               : for CMS API url
+                                 - BEARER_TOKEN=<token>             : for authenticating with CMS
+
 
 ```
 
@@ -3717,7 +3733,7 @@ typically these are the same variables set in the service installation
 
 
 
-# Binary Upgrades
+## Binary Upgrades
 
 ***NOTE:***  Before performing any upgrade, Intel strongly recommends backing up the database for the SHVS, SCS, and AAS.  See Postgres documentation for detailed options for backing up databases.  Below is a sample method for backing up an entire database server:
 
@@ -3752,7 +3768,7 @@ Upgrading in this order will make each service unavailable only for the duration
 
 For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required.
 
-# Container Upgrades
+## Container Upgrades
 
 Container upgrades will be supported only on multi node deployments and will be based on recreate strategy from v3.6 to v4.0. All services except KBS can be upgraded just by updating the image name and tag to newer version in respective deployment.yml files.
 
@@ -3853,7 +3869,7 @@ kubectl logs -n isecl kbs-upgrade-<pod id>
 kubectl apply -f kbs/deployment.yml or cd kbs && kubectl kustomize . | kubectl apply -f -
 ```
 
-# Appendix 
+## Appendix 
 
 **Important Note:** SGX Attestation fails when SGX is enabled on a host booted using tboot
 
@@ -4133,7 +4149,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
        [SGX]
         module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-# KBS key-transfer flow validation
+## KBS key-transfer flow validation
 
 On SGX compute node, Execute below commands for KBS key-transfer:
 
@@ -4168,7 +4184,7 @@ Establish tls session with the nginx using the key transferred inside the enclav
     wget https://localhost:2443 --no-check-certificate
 ```
 
-# Note on Key Transfer Policy
+## Note on Key Transfer Policy
 
 Key transfer policy is used to enforce a set of policies which need to be compiled with before the secret can be securely provisioned onto a sgx enclave
 
@@ -4192,7 +4208,7 @@ A typical Key Transfer Policy would look as below
     In above example: the key is provisioned only to the nginx workload and platform which is tagged with value for ex: USA
 
 
-# Note on SKC Library Deployment
+## Note on SKC Library Deployment
 
 SKC Library Deployment (Binary as well as container) needs to performed with root privilege
 

@@ -658,4 +658,3 @@ The EFI variables required by SGX are only needed during the SGX provisioning/re
    `txt-stat |grep "TXT measured launch"`
 
 7. The SGX and Platform Integrity Attestation use cases should now work as normal.
-
