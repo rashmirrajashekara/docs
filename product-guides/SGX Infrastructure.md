@@ -406,7 +406,6 @@ The containerized deployment makes use of Kubernetes orchestrator for single nod
 ![k8s-single-node](./Images/k8s-single-node.png)
 
 
-
 **Multi Node:**
 
 ![K8s Deployment-sqx](./Images/k8s-deployment-sgx.jpg)
@@ -428,7 +427,6 @@ For stateful services which requires database like shvs, aas, scs, A separate da
 **Networking within the Cluster:**
 
 ![Networking within cluster](./Images/within-cluster-communication-sgx.jpg)
-
 
 
 **Networking Outside the Cluster:**
@@ -499,7 +497,7 @@ The containerized deployment utilizes K8s orchestrator to deploy SGX components.
 * Ensure based on the deployment model , `microk8s` or `kubeadm` in installed. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
 * Docker runtime is configured for each of these deployments. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
 * The build would generate a script for platform dependencies under `<working directory>/k8s/platform dependencies`
-* Follow the deployment pre-reqs as given in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Containerization.md#deployment) based on the chosen deployment model
+* Follow the deployment pre-reqs as given in the [Quick Sta) based on the chosen deployment model
 
 ### Deploy Steps
 
@@ -3484,7 +3482,6 @@ kubectl logs -n isecl kbs-upgrade-<pod id>
 kubectl apply -f kbs/deployment.yml or cd kbs && kubectl kustomize . | kubectl apply -f -
 ```
 
-
 # Appendix 
 
 **Important Note:** SGX Attestation fails when SGX is enabled on a host booted using tboot
@@ -3689,7 +3686,7 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
-	debug=true
+	debug=false
 	
 	[SW]
 	module=/usr/lib64/pkcs11/libsofthsm2.so
@@ -3763,7 +3760,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
         preload_keys=/root/keys.txt
         keyagent_conf=/opt/skc/etc/key-agent.ini
         mode=SGX
-        debug=true
+        debug=false
     
         [SW]
         module=/usr/lib/softhsm/libsofthsm2.so
@@ -3813,7 +3810,7 @@ Key transfer policy is used to enforce a set of policies which need to be compil
 A typical Key Transfer Policy would look as below
 ```
         "sgx_enclave_issuer_anyof":["83d719e77deaca1470f6baf62a4d774303c899db69020f9c70ee1dfc08c7ce9e"],
-        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_issuer_product_id_anyof":0,
         "sgx_enclave_measurement_anyof":["ad46749ed41ebaa2327252041ee746d3791a9f2431830fee0883f7993caf316a"],
         "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
         "client_permissions_allof":["nginx","USA"],
