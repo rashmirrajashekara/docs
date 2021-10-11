@@ -1194,7 +1194,7 @@ To install the Intel® SecL-DC Certificate Management Service:
 3. Execute the installer binary.
 
    ```shell
-   ./cms-v4.0.1.bin
+   ./cms-v4.0.0.bin
    ```
 
    When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
@@ -1285,7 +1285,7 @@ BEARER_TOKEN=<bearer token from CMS installation>
 Execute the AAS installer:
 
 ```shell
-./authservice-v4.0.1.bin
+./authservice-v4.0.0.bin
 ```
 
 > **Note:** the `AAS_ADMIN` credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
@@ -1463,7 +1463,7 @@ To install the Verification Service, follow these steps:
 3. Execute the installer binary.
 
    ```shell
-   ./hvs-v4.0.1.bin
+   ./hvs-v4.0.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -1531,7 +1531,7 @@ Ubuntu 18.04
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v4.0.1.bin
+  ./wls-v4.0.0.bin
   ```
   
   
@@ -1808,7 +1808,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v4.0.1.bin
+  ./trustagent-v4.0.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -1870,7 +1870,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v4.0.1.bin
+  ./workload-agent-v4.0.0.bin
   ```
 
 * Reboot the server. The Workload Agent populates files that are
@@ -2224,7 +2224,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
     directory & execute the installer binary.
 
    ```shell
-   ./ihub-v4.0.1.bin
+   ./ihub-v4.0.0.bin
    ```
 
 5. Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Controller machine to `/<path>/secrets/` directory
@@ -2713,7 +2713,7 @@ Ubuntu 18.04
 3.  Execute the WPM installer:
 
     ```shell
-    ./wpm-v4.0.1.bin
+    ./wpm-v4.0.0.bin
     ```
 
 
@@ -2850,7 +2850,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.1
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.0
   repo sync
   ```
 
@@ -2904,7 +2904,7 @@ Workload Confidentiality can be used with either the CRIO container runtime.
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.1
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.0
   repo sync
   ```
 

@@ -598,14 +598,14 @@ After the components have been built, the installation binaries and database scr
 
 Generated component binaries/installers are:
 
-- CMS: cms-v4.0.1.bin
-- AAS: authservice-v4.0.1.bin
-- SCS: scs-v4.0.1.bin
-- SHVS: shvs-v4.0.1.bin
-- IHUB: ihub-v4.0.1.bin
-- SQVS: sqvs-v4.0.1.bin
-- KBS: kbs-v4.0.1.bin
-- K8S-Extensions: isecl-k8s-extensions-v4.0.1.tar.gz
+- CMS: cms-v4.0.0.bin
+- AAS: authservice-v4.0.0.bin
+- SCS: scs-v4.0.0.bin
+- SHVS: shvs-v4.0.0.bin
+- IHUB: ihub-v4.0.0.bin
+- SQVS: sqvs-v4.0.0.bin
+- KBS: kbs-v4.0.0.bin
+- K8S-Extensions: isecl-k8s-extensions-v4.0.0.tar.gz
 - SGX-Agent: agent_untar.sh, sgx_agent.sha2 and sgx_agent.tar
 - SKC-Library: skclib_untar.sh, skc_library.sha2 and skc_library.tar
 
@@ -624,17 +624,17 @@ After the components have been built, the OCI images and pre-req scripts can be 
 
 Generated components `OCI images`  under `<working directory>/k8s/container-images`:
 
-* Authentication Authorization Service: `aas-v4.0.1.tar`
-* Certificate Management Service: `cms-v4.0.1.tar`
-* Integration Hub: `ihub-v4.0.1.tar`
-* Key Broker Service: `kbs-v4.0.1.tar`
-* K8s Extensions Custom Controller: `isecl-k8s-controller-v4.0.1.tar`
-* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v4.0.1.tar`
-* SGX Caching Service: `scs-v4.0.1.tar`
-* SGX Quote Verification Service: `sqvs-v4.0.1.tar`
-* SGX Host Verification Service: `shvs-v4.0.1.tar`
-* SGX Agent: `sgx-agent-v4.0.1.tar`
-* SKC Library: `skc-lib-4.0.1.tar`
+* Authentication Authorization Service: `aas-v4.0.0.tar`
+* Certificate Management Service: `cms-v4.0.0.tar`
+* Integration Hub: `ihub-v4.0.0.tar`
+* Key Broker Service: `kbs-v4.0.0.tar`
+* K8s Extensions Custom Controller: `isecl-k8s-controller-v4.0.0.tar`
+* K8s Extensions Extended Scheduler: `isecl-k8s-scheduler-v4.0.0.tar`
+* SGX Caching Service: `scs-v4.0.0.tar`
+* SGX Quote Verification Service: `sqvs-v4.0.0.tar`
+* SGX Host Verification Service: `shvs-v4.0.0.tar`
+* SGX Agent: `sgx-agent-v4.0.0.tar`
+* SKC Library: `skc-lib-4.0.0.tar`
 
 Generated Components `K8s Manifests` directories under `<working directory>/k8s/manifests`:
 
@@ -890,7 +890,7 @@ For all configuration options and their descriptions, refer to the Intel® SecL 
 
 3.  Execute the installer binary.
 
-./cms-v4.0.1.bin
+./cms-v4.0.0.bin
 
 When the installation completes, the Certificate Management Service is available. The services can be verified by running cms status from the command line.
 
@@ -985,7 +985,7 @@ Create the authservice.env installation answer file in /root/ directory as below
 
 Execute the AAS installer:
 
-./authservice-v4.0.1.bin
+./authservice-v4.0.0.bin
 
 Note: the AAS_ADMIN credentials specified in this answer file will have administrator rights for the AAS and can be used to create other users, create new roles, and assign roles to users.
 
@@ -1156,7 +1156,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the SCS installer binary:
 
-./scs-v4.0.1.bin
+./scs-v4.0.0.bin
 
 ## Installing the SGX Host Verification Service 
 
@@ -1257,7 +1257,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 Execute the installer binary.
 
-./shvs-v4.0.1.bin
+./shvs-v4.0.0.bin
 
 When the installation completes, the SGX Host Verification Service is available. The service can be verified by running **shvs** status from the SGX Host Verification Service command line.
 
@@ -1389,7 +1389,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 3.  Execute the sqvs installer binary.
 
-./sqvs-v4.0.1.bin
+./sqvs-v4.0.0.bin
 
 When the installation completes, the SGX Quote Verification Service is available. The service can be verified by sqvs status from the sqvs command line.
 
@@ -1402,7 +1402,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 * To setup k8 cluster on RHEL 8.2, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos 
 
-* To setup k8s cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v3.6/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Ubuntu.md
+* To setup k8s cluster on Ubuntu 18.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v4.0/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Ubuntu.md
 Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and follow from step 3 onwards.
 
 * Once the master/worker setup is done, follow below steps on Master Node:
@@ -1422,11 +1422,11 @@ Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and 
 * Push images to private registry using skopeo command, (this can be done from build vm also)
   
   ```shell
-     skopeo copy oci-archive:isecl-k8s-controller-v4.0.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.0.1
-     skopeo copy oci-archive:isecl-k8s-scheduler-v4.0.1-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.1
+     skopeo copy oci-archive:isecl-k8s-controller-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-controller:v4.0.0
+     skopeo copy oci-archive:isecl-k8s-scheduler-v4.0.0-<commitid>.tar docker://<registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0
   ```
   
-* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.1). It will automatically pull the images from registry.
+* Add the image names in isecl-controller.yml and isecl-scheduler.yml in /opt/isecl-k8s-extensions/yamls with full image name including registry IP/hostname (e.g <registryIP>:<registryPort>/isecl-k8s-scheduler:v4.0.0). It will automatically pull the images from registry.
   
 
 ##### Deploy isecl-controller
@@ -1663,7 +1663,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the installer binary.
 
-./ihub-v4.0.1.bin
+./ihub-v4.0.0.bin
 
 In case installation fails, its recommended to run the following command to clear failed service instance
 
@@ -1892,7 +1892,7 @@ Update the BEARER_TOKEN with the TOKEN obtained after running populate-users.sh 
 
 4.  Execute the KBS installer.
 
-./kbs-4.0.1.bin
+./kbs-4.0.0.bin
 
 NOTE: When a 3rd-party Key Management Server is used, KBS supports only association of RSA key. User needs to create RSA key in backend kmip server and note the Private key Id. User also needs to create the tls certificate for the private key (it will be used during key transfer).
 rsa-create.py available in kbs_scripts can be used to create the private key and generate the certificate by providing the kmip server ip and certificates path in the script.
