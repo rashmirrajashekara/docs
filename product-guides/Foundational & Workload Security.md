@@ -2,9 +2,9 @@
 
 **Product Guide**
 
-**May 2021**
+**October 2021**
 
-**Revision 3.6**
+**Revision 3.6.1**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -50,7 +50,7 @@ Intel, the Intel logo, Intel TXT, and Xeon are trademarks of Intel Corporation i
 
 Copyright © 2020, Intel Corporation. All Rights Reserved.
 
-# Revision History
+## Revision History
 
 | Revision  Number | Description                     | Date          |
 | ---------------- | ------------------------------- | ------------- |
@@ -66,20 +66,439 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.2              | Updated for version 3.2 release | November 2020 |
 | 3.3              | Updated for version 3.3 release | December 2020 |
 | 3.3.1            | Updated for version 3.3.1 release | January 2021 |
-| 3.4 | Updated for version 3.4 release | February 2021 |
-| 3.5 | Updated for version 3.5 release | March 2021 |
-| 3.6 | Updated for version 3.6 release | May 2021 |
+| 3.4              | Updated for version 3.4 release | February 2021 |
+| 3.5              | Updated for version 3.5 release | March 2021 |
+| 3.6              | Updated for version 3.6 release | May 2021 |
+| 3.6.1            | Updated for version 3.6.1 release | October 2021 |
 
+## Table of Contents
 
+- [Intel® Security Libraries - Datacenter Foundational Security](#intel-security-libraries---datacenter-foundational-security)
+  - [Revision History](#revision-history)
+  - [Table of Contents](#table-of-contents)
+- [## Introduction](#-introduction)
+    - [Overview](#overview)
+    - [Trusted Computing](#trusted-computing)
+      - [The Chain of Trust](#the-chain-of-trust)
+      - [Hardware Root of Trust](#hardware-root-of-trust)
+        - [Intel® Trusted Execution Technology (Intel® TXT)](#intel-trusted-execution-technology-intel-txt)
+        - [Intel® BootGuard (Intel® BtG)](#intel-bootguard-intel-btg)
+      - [Supported Trusted Boot Options](#supported-trusted-boot-options)
+      - [Remote Attestation](#remote-attestation)
+    - [Intel® Security Libraries for Datacenter Features](#intel-security-libraries-for-datacenter-features)
+      - [Platform Integrity](#platform-integrity)
+      - [Data Sovereignty](#data-sovereignty)
+      - [Application Integrity](#application-integrity)
+      - [Workload Confidentiality for Virtual Machines and Containers](#workload-confidentiality-for-virtual-machines-and-containers)
+      - [Signed Flavors](#signed-flavors)
+      - [Trusted Virtual Kubernetes Worker Nodes](#trusted-virtual-kubernetes-worker-nodes)
+- [Intel® Security Libraries Components](#intel-security-libraries-components)
+  - [Certificate Management Service](#certificate-management-service)
+  - [Authentication and Authorization Service](#authentication-and-authorization-service)
+  - [Verification Service](#verification-service)
+  - [Workload Service](#workload-service)
+  - [Trust Agent](#trust-agent)
+  - [Workload Agent](#workload-agent)
+  - [Integration Hub](#integration-hub)
+  - [Workload Policy Manager](#workload-policy-manager)
+  - [Key Broker Service](#key-broker-service)
+- [Intel® Security Libraries Binary Installation](#intel-security-libraries-binary-installation)
+  - [Building Binary Installers](#building-binary-installers)
+  - [Hardware Considerations](#hardware-considerations)
+  - [Recommended Service Layout](#recommended-service-layout)
+    - [Platform Integrity](#platform-integrity-1)
+    - [Workload Confidentiality](#workload-confidentiality)
+  - [Recommended Service Layout & Architecture - Containerized Deployment with K8s](#recommended-service-layout--architecture---containerized-deployment-with-k8s)
+  - [Installing/Configuring the Database](#installingconfiguring-the-database)
+    - [Using the Provided Database Installation Script](#using-the-provided-database-installation-script)
+    - [Provisioning the Database](#provisioning-the-database)
+    - [Database Server TLS Certificate](#database-server-tls-certificate)
+  - [Installing the Certificate Management Service](#installing-the-certificate-management-service)
+    - [Required For](#required-for)
+    - [Supported Operating Systems](#supported-operating-systems)
+    - [Recommended Hardware](#recommended-hardware)
+    - [Installation](#installation)
+  - [Installing the Authentication and Authorization Service](#installing-the-authentication-and-authorization-service)
+    - [Required For](#required-for-1)
+    - [Prerequisites](#prerequisites)
+    - [Package Dependencies](#package-dependencies)
+    - [Supported Operating Systems](#supported-operating-systems-1)
+    - [Recommended Hardware](#recommended-hardware-1)
+    - [Installation](#installation-1)
+    - [Creating Users](#creating-users)
+  - [Installing the Host Verification Service](#installing-the-host-verification-service)
+    - [Required For](#required-for-2)
+    - [Prerequisites](#prerequisites-1)
+    - [Package Dependencies](#package-dependencies-1)
+    - [Supported Operating Systems](#supported-operating-systems-2)
+    - [Recommended Hardware](#recommended-hardware-2)
+    - [Installation](#installation-2)
+  - [Installing the Workload Service](#installing-the-workload-service)
+    - [Required For](#required-for-3)
+    - [Prerequisites](#prerequisites-2)
+    - [Supported Operating Systems](#supported-operating-systems-3)
+    - [Recommended Hardware](#recommended-hardware-3)
+    - [Installation](#installation-3)
+  - [Installing the Trust Agent for Linux](#installing-the-trust-agent-for-linux)
+    - [Required For](#required-for-4)
+    - [Package Dependencies](#package-dependencies-2)
+    - [Supported Operating Systems](#supported-operating-systems-4)
+    - [Prerequisites](#prerequisites-3)
+      - [Tboot Installation](#tboot-installation)
+    - [Installation](#installation-4)
+  - [Installing the Workload Agent](#installing-the-workload-agent)
+    - [Required For](#required-for-5)
+    - [Supported Operating Systems](#supported-operating-systems-5)
+    - [Prerequisites](#prerequisites-4)
+    - [Installation](#installation-5)
+  - [Trust Agent Provisioning](#trust-agent-provisioning)
+  - [Trust Agent Registration](#trust-agent-registration)
+  - [Importing the HOST\_UNIQUE Flavor](#importing-the-host_unique-flavor)
+  - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
+  - [### Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
+  - [### Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
+    - [Required For](#required-for-6)
+    - [Deployment Architecture Considerations for the Hub](#deployment-architecture-considerations-for-the-hub)
+    - [Prerequisites](#prerequisites-5)
+    - [Package Dependencies](#package-dependencies-3)
+    - [Supported Operating Systems](#supported-operating-systems-6)
+    - [Recommended Hardware](#recommended-hardware-4)
+    - [Installing the Integration Hub](#installing-the-integration-hub)
+  - [### Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
+      - [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
+  - [Installing the Key Broker Service](#installing-the-key-broker-service)
+    - [Required For](#required-for-7)
+    - [Prerequisites](#prerequisites-6)
+    - [Package Dependencies](#package-dependencies-4)
+    - [Supported Operating Systems](#supported-operating-systems-7)
+    - [Recommended Hardware](#recommended-hardware-5)
+    - [Installation](#installation-6)
+      - [Configure the Key Broker to use a KMIP-compliant Key Management Server](#configure-the-key-broker-to-use-a-kmip-compliant-key-management-server)
+    - [Importing Verification Service Certificates](#importing-verification-service-certificates)
+      - [Importing a SAML certificate](#importing-a-saml-certificate)
+      - [Importing a PrivacyCA Certificate](#importing-a-privacyca-certificate)
+  - [Installing the Workload Policy Manager](#installing-the-workload-policy-manager)
+    - [Required For](#required-for-8)
+    - [Package Dependencies](#package-dependencies-5)
+    - [Supported Operating Systems](#supported-operating-systems-8)
+    - [Recommended Hardware](#recommended-hardware-6)
+    - [Installation](#installation-7)
+- [Intel® Security Libraries Container Deployment](#intel-security-libraries-container-deployment)
+  - [Prerequisites for Containerized Deployment using Kubernetes](#prerequisites-for-containerized-deployment-using-kubernetes)
+    - [Supported Operating Systems](#supported-operating-systems-9)
+    - [Kubernetes Distributions](#kubernetes-distributions)
+    - [Container Runtime](#container-runtime)
+    - [Storage](#storage)
+  - [Building from Source](#building-from-source)
+    - [Prerequisites](#prerequisites-7)
+      - [System Tools and Utilities](#system-tools-and-utilities)
+      - [Repo tool](#repo-tool)
+      - [Golang](#golang)
+      - [Docker](#docker)
+    - [Building OCI Container images and K8s Manifests](#building-oci-container-images-and-k8s-manifests)
+      - [Platform Integrity Attestation Only](#platform-integrity-attestation-only)
+      - [Workload Confidentiality](#workload-confidentiality-1)
+        - [Container Confidentiality with Docker Runtime](#container-confidentiality-with-docker-runtime)
+        - [Container Confidentiality with CRIO Runtime](#container-confidentiality-with-crio-runtime)
+  - [Intel® SecL-DC Foundational Security Pod Deployment](#intel-secl-dc-foundational-security-pod-deployment)
+    - [Pre-requisites](#pre-requisites)
+      - [Foundational Security](#foundational-security)
+      - [Workload Security](#workload-security)
+        - [Container Confidentiality with Docker runtime](#container-confidentiality-with-docker-runtime-1)
+        - [Container Confidentiality with CRIO runtime](#container-confidentiality-with-crio-runtime-1)
+    - [Deploy](#deploy)
+      - [Single-Node Deployment](#single-node-deployment)
+        - [Pre-requisites](#pre-requisites-1)
+          - [Setup](#setup)
+          - [Manifests](#manifests)
+        - [Deploy steps](#deploy-steps)
+          - [Update .env file](#update-env-file)
+          - [Run scripts on Kubernetes Controller Node](#run-scripts-on-kubernetes-controller-node)
+      - [Multi-Node Deployment](#multi-node-deployment)
+        - [Pre-requisites](#pre-requisites-2)
+          - [Setup](#setup-1)
+          - [Manifests](#manifests-1)
+        - [Deploy steps](#deploy-steps-1)
+          - [Update .env file](#update-env-file-1)
+          - [Run scripts on Kubernetes Controller Node](#run-scripts-on-kubernetes-controller-node-1)
+  - [Default Service and Agent Mount Paths](#default-service-and-agent-mount-paths)
+    - [Single Node Deployments](#single-node-deployments)
+    - [Multi Node Deployments](#multi-node-deployments)
+  - [Default Service Ports](#default-service-ports)
+- [Authentication](#authentication)
+  - [Create Token](#create-token)
+  - [User Management](#user-management)
+    - [Username and Password requirements](#username-and-password-requirements)
+    - [Create User](#create-user)
+    - [Search Users by Username](#search-users-by-username)
+    - [Change User Password](#change-user-password)
+    - [Delete User](#delete-user)
+  - [Roles and Permissions](#roles-and-permissions)
+    - [Create Role](#create-role)
+    - [Search Roles](#search-roles)
+    - [Delete Role](#delete-role)
+    - [Assign Role to User](#assign-role-to-user)
+    - [List Roles Assigned to User](#list-roles-assigned-to-user)
+    - [Remove Role from User](#remove-role-from-user)
+    - [Role Definitions](#role-definitions)
+- [Connection Strings](#connection-strings)
+  - [Trust Agent](#trust-agent-1)
+  - [VMware ESXi](#vmware-esxi)
+    - [Importing VMware TLS Certificates](#importing-vmware-tls-certificates)
+    - [Registering a VMware ESXi Host](#registering-a-vmware-esxi-host)
+- [Platform Integrity Attestation](#platform-integrity-attestation)
+  - [Host Registration](#host-registration)
+    - [Trust Agent](#trust-agent-2)
+      - [Registration via Trust Agent Command Line](#registration-via-trust-agent-command-line)
+    - [Registration via Verification Service API](#registration-via-verification-service-api)
+      - [Sample Call](#sample-call)
+      - [Sample Call for ESXi Cluster Registration](#sample-call-for-esxi-cluster-registration)
+  - [Flavor Creation for Automatic Flavor Matching](#flavor-creation-for-automatic-flavor-matching)
+    - [Importing a Flavor from a Sample Host](#importing-a-flavor-from-a-sample-host)
+    - [Creating a Flavor Manually](#creating-a-flavor-manually)
+  - [Creating the Default SOFTWARE Flavor (Linux Only)](#creating-the-default-software-flavor-linux-only)
+  - [Creating and Provisioning Asset Tags](#creating-and-provisioning-asset-tags)
+    - [Creating Asset Tag Certificates](#creating-asset-tag-certificates)
+    - [Deploying Asset Tags](#deploying-asset-tags)
+      - [Red Hat Enterprise Linux](#red-hat-enterprise-linux)
+      - [VMWare](#vmware)
+        - [Calculate the Certificate Hash Value](#calculate-the-certificate-hash-value)
+        - [Provision the Certificate Hash to the Host TPM](#provision-the-certificate-hash-to-the-host-tpm)
+          - [**vSphere 6.5 Update 2 or Later**](#vsphere-65-update-2-or-later)
+          - [**vSphere 6.5 Update 1 or Older**](#vsphere-65-update-1-or-older)
+        - [Creating the Asset Tag Flavor (VMWare ESXi Only)](#creating-the-asset-tag-flavor-vmware-esxi-only)
+  - [Retrieving Current Attestation Reports](#retrieving-current-attestation-reports)
+  - [Retrieving Current Host State Information](#retrieving-current-host-state-information)
+  - [Upgrading Hosts in the Datacenter to a New BIOS or OS Version](#upgrading-hosts-in-the-datacenter-to-a-new-bios-or-os-version)
+  - [Removing Hosts From the Verification Service](#removing-hosts-from-the-verification-service)
+  - [Removing Flavors](#removing-flavors)
+  - [Invalidating Asset Tags](#invalidating-asset-tags)
+  - [Remediating an Untrusted attestation](#remediating-an-untrusted-attestation)
+  - [Attestation Reporting](#attestation-reporting)
+    - [Sample Call – Generating a New Attestation Report](#sample-call--generating-a-new-attestation-report)
+    - [Sample Call – Retrieving an Existing Attestation Report](#sample-call--retrieving-an-existing-attestation-report)
+  - [Integration](#integration)
+    - [The Integration Hub](#the-integration-hub)
+    - [Integration with OpenStack](#integration-with-openstack)
+      - [Prerequisites](#prerequisites-8)
+      - [Setting Image Traits](#setting-image-traits)
+      - [Configuring the Integration Hub for Use with OpenStack](#configuring-the-integration-hub-for-use-with-openstack)
+      - [Scheduling Instances](#scheduling-instances)
+    - [Integration with Kubernetes](#integration-with-kubernetes)
+      - [Prerequisites](#prerequisites-9)
+      - [Installing the Intel® SecL Custom Resource Definitions](#installing-the-intel-secl-custom-resource-definitions)
+      - [Configuring Pods to Require Intel® SecL Attributes](#configuring-pods-to-require-intel-secl-attributes)
+      - [Tainting Untrusted Worker Nodes](#tainting-untrusted-worker-nodes)
+- [Workload Confidentiality](#workload-confidentiality-2)
+  - [Virtual Machine Confidentiality](#virtual-machine-confidentiality)
+    - [Prerequisites](#prerequisites-10)
+    - [Workflow](#workflow)
+      - [Encrypting Images](#encrypting-images)
+      - [Uploading the Image Flavor](#uploading-the-image-flavor)
+      - [Creating the Image Flavor to Image ID Association](#creating-the-image-flavor-to-image-id-association)
+      - [Launching Encrypted VMs](#launching-encrypted-vms)
+  - [Container Confidentiality](#container-confidentiality)
+    - [Container Integrity and Confidentiality with Docker](#container-integrity-and-confidentiality-with-docker)
+      - [Docker Container Integrity](#docker-container-integrity)
+      - [Prerequisites](#prerequisites-11)
+      - [Workflow](#workflow-1)
+        - [Encrypting Docker Container Images](#encrypting-docker-container-images)
+        - [Uploading the Image Flavor](#uploading-the-image-flavor-1)
+        - [Creating the Image Flavor to Image ID Association](#creating-the-image-flavor-to-image-id-association-1)
+        - [Launching Encrypted Docker Containers](#launching-encrypted-docker-containers)
+    - [Container Confidentiality with Cri-o and Skopeo](#container-confidentiality-with-cri-o-and-skopeo)
+      - [Prerequisites](#prerequisites-12)
+      - [Workflow](#workflow-2)
+          - [Skopeo Commands](#skopeo-commands)
+          - [Examples](#examples)
+          - [Prepare an Image](#prepare-an-image)
+        - [Pulling and Encrypting a Container Image](#pulling-and-encrypting-a-container-image)
+        - [Launching an Encrypted Container Image](#launching-an-encrypted-container-image)
+- [Trusted Virtual Kubernetes Worker Nodes](#trusted-virtual-kubernetes-worker-nodes-1)
+  - [Prerequisites](#prerequisites-13)
+  - [Workflow](#workflow-3)
+  - [Sample VM Trust Report](#sample-vm-trust-report)
+- [Flavor Management](#flavor-management)
+  - [Flavor Format Definitions](#flavor-format-definitions)
+    - [Meta](#meta)
+    - [Hardware](#hardware)
+    - [PCRs](#pcrs)
+    - [Sample PLATFORM Flavor](#sample-platform-flavor)
+    - [Sample OS Flavor](#sample-os-flavor)
+    - [Sample HOST\_UNIQUE Flavor](#sample-host_unique-flavor)
+    - [Sample ASSET\_TAG Flavor](#sample-asset_tag-flavor)
+  - [Flavor Matching](#flavor-matching)
+    - [When Does Flavor Matching Happen?](#when-does-flavor-matching-happen)
+    - [Flavor Matching Performance](#flavor-matching-performance)
+    - [Flavor Groups](#flavor-groups)
+    - [Default Flavor Group](#default-flavor-group)
+      - [automatic](#automatic)
+      - [unique](#unique)
+    - [Flavor Match Policies](#flavor-match-policies)
+      - [Default Flavor Match Policy](#default-flavor-match-policy)
+      - [ANY\_OF](#any_of)
+      - [ALL\_OF](#all_of)
+      - [LATEST](#latest)
+      - [REQUIRED](#required)
+      - [REQUIRED\_IF\_DEFINED](#required_if_defined)
+    - [Flavor Match Event Triggers](#flavor-match-event-triggers)
+    - [Sample Flavorgroup API Calls](#sample-flavorgroup-api-calls)
+      - [Create a New Flavorgroup](#create-a-new-flavorgroup)
+  - [SOFTWARE Flavor Management](#software-flavor-management)
+    - [What is a SOFTWARE Flavor?](#what-is-a-software-flavor)
+    - [Creating a SOFTWARE Flavor part](#creating-a-software-flavor-part)
+      - [Directories](#directories)
+      - [Symlinks](#symlinks)
+      - [Files](#files)
+    - [Sample SOFTWARE Flavor Creation Call](#sample-software-flavor-creation-call)
+    - [Deploying a SOFTWARE Flavor Manifest to a Host](#deploying-a-software-flavor-manifest-to-a-host)
+    - [SOFTWARE Flavor Matching](#software-flavor-matching)
+    - [Kernel Upgrades](#kernel-upgrades)
+- [Scalability and Sizing](#scalability-and-sizing)
+  - [Configuration Maximums](#configuration-maximums)
+    - [Registered Hosts](#registered-hosts)
+    - [HDD Space](#hdd-space)
+  - [Database Rotation Settings](#database-rotation-settings)
+  - [Log Rotation](#log-rotation)
+- [Intel Security Libraries Configuration Settings](#intel-security-libraries-configuration-settings)
+  - [Verification Service](#verification-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options)
+    - [Configuration Options](#configuration-options)
+    - [Command-Line Options](#command-line-options)
+      - [Help](#help)
+      - [Start](#start)
+      - [Stop](#stop)
+      - [Status](#status)
+      - [Uninstall](#uninstall)
+      - [Version](#version)
+      - [Erase-data](#erase-data)
+      - [Setup](#setup-2)
+    - [Directory Layout](#directory-layout)
+  - [Trust Agent](#trust-agent-3)
+    - [Installation Answer File Options](#installation-answer-file-options-1)
+    - [Configuration Options](#configuration-options-1)
+    - [Command-Line Options](#command-line-options-1)
+    - [Directory Layout](#directory-layout-1)
+      - [Linux](#linux)
+        - [Bin](#bin)
+        - [Configuration](#configuration)
+        - [Var](#var)
+  - [Integration Hub](#integration-hub-1)
+    - [Installation Answer File](#installation-answer-file)
+    - [Configuration Options](#configuration-options-2)
+    - [Command-Line Options](#command-line-options-2)
+      - [Available Commands](#available-commands)
+        - [Help](#help-1)
+        - [Start](#start-1)
+        - [Stop](#stop-1)
+        - [Status](#status-1)
+        - [Uninstall](#uninstall-1)
+        - [Version](#version-1)
+        - [Setup](#setup-3)
+    - [Directory Layout](#directory-layout-2)
+      - [Logs](#logs)
+  - [Certificate Management Service](#certificate-management-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-2)
+    - [Configuration Options](#configuration-options-3)
+    - [Command-Line Options](#command-line-options-3)
+      - [Help](#help-2)
+      - [Start](#start-2)
+      - [Stop](#stop-2)
+      - [Status](#status-2)
+      - [Uninstall](#uninstall-2)
+      - [Version](#version-2)
+      - [Tlscertsha384](#tlscertsha384)
+      - [setup \[task\]](#setup-task)
+    - [Directory Layout](#directory-layout-3)
+      - [Bin](#bin-1)
+      - [Cacerts](#cacerts)
+  - [Authentication and Authorization Service](#authentication-and-authorization-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-3)
+    - [Configuration Options](#configuration-options-4)
+    - [Command-Line Options](#command-line-options-4)
+    - [Directory Layout](#directory-layout-4)
+      - [Bin](#bin-2)
+      - [dbscripts](#dbscripts)
+  - [Workload Service](#workload-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-4)
+    - [Configuration Options](#configuration-options-5)
+    - [Command-Line Options](#command-line-options-5)
+      - [Help](#help-3)
+      - [start](#start-3)
+      - [stop](#stop-3)
+      - [status](#status-3)
+      - [uninstall](#uninstall-3)
+      - [setup](#setup-4)
+    - [Directory Layout](#directory-layout-5)
+  - [Key Broker Service](#key-broker-service-1)
+    - [Installation Answer File Options](#installation-answer-file-options-5)
+    - [Configuration Options](#configuration-options-6)
+    - [Command-Line Options](#command-line-options-6)
+    - [Directory Layout](#directory-layout-6)
+      - [/opt/kbs/bin](#optkbsbin)
+      - [/etc/kbs/](#etckbs)
+      - [/var/log/kbs/](#varlogkbs)
+  - [Workload Agent](#workload-agent-1)
+    - [Installation Answer File Options](#installation-answer-file-options-6)
+    - [Configuration Options](#configuration-options-7)
+    - [Command-Line Options](#command-line-options-7)
+      - [Help](#help-4)
+      - [setup](#setup-5)
+        - [Available Tasks for setup](#available-tasks-for-setup)
+          - [SigningKey](#signingkey)
+          - [BindingKey](#bindingkey)
+          - [RegisterSigningKey](#registersigningkey)
+          - [RegisterBindingKey](#registerbindingkey)
+      - [start](#start-4)
+      - [stop](#stop-4)
+      - [status](#status-4)
+      - [uninstall](#uninstall-4)
+      - [uninstall --purge](#uninstall---purge)
+      - [version](#version-3)
+    - [Directory Layout](#directory-layout-7)
+      - [Bin](#bin-3)
+  - [Workload Policy Manager](#workload-policy-manager-1)
+    - [Installation Answer File Options](#installation-answer-file-options-7)
+    - [Configuration Options](#configuration-options-8)
+    - [Command-Line Options](#command-line-options-8)
+      - [create-image-flavor](#create-image-flavor)
+      - [create-container-image-flavor](#create-container-image-flavor)
+      - [get-container-image-id](#get-container-image-id)
+      - [create-software-flavor](#create-software-flavor)
+      - [Uninstall](#uninstall-5)
+      - [--help](#--help)
+      - [--version](#--version)
+      - [Setup](#setup-6)
+        - [wpm setup](#wpm-setup)
+        - [wpm setup CreateEnvelopeKey](#wpm-setup-createenvelopekey)
+        - [wpm setup RegisterEnvelopeKey](#wpm-setup-registerenvelopekey)
+        - [wpm setup download\_ca\_cert \[--force\]](#wpm-setup-download_ca_cert---force)
+        - [wpm setup download\_cert Flavor-Signing \[--force\]](#wpm-setup-download_cert-flavor-signing---force)
+- [Certificate and Key Management](#certificate-and-key-management)
+  - [Host Verification Service Certificates and Keys](#host-verification-service-certificates-and-keys)
+    - [SAML](#saml)
+    - [Asset Tag](#asset-tag)
+    - [Privacy CA](#privacy-ca)
+    - [Endorsement CA](#endorsement-ca)
+  - [TLS Certificates](#tls-certificates)
+- [Upgrades](#upgrades)
+  - [Backward Compatibility](#backward-compatibility)
+  - [Upgrade Order](#upgrade-order)
+  - [Upgrade Process](#upgrade-process)
+    - [Binary Installations](#binary-installations)
+- [Appendix](#appendix)
+  - [PCR Definitions](#pcr-definitions)
+    - [Red Had Enterprise Linux](#red-had-enterprise-linux)
+      - [TPM 2.0](#tpm-20)
+    - [VMWare ESXi](#vmware-esxi-1)
+      - [TPM 1.2](#tpm-12)
+      - [TPM 2.0](#tpm-20-1)
+  - [Attestation Rules](#attestation-rules)
 
-# Table of Contents
-
-[TOC]
-
-Introduction
+## Introduction
 ============
 
-## Overview
+### Overview
 
 Intel Security Libraries for Datacenter is a collection of software applications and development libraries intended to help turn Intel platform security  features into real-world security use cases.
 
@@ -120,7 +539,7 @@ Because Intel® BtG only measures/verifies the integrity of the IBB, it’s impo
 Intel® SecL-DC supports several options for Trusted Computing, depending
 on the features available on the platform.
 
-<img src="Images\tboot options.png" style="zoom:150%;" />
+<img src="Images/tboot options.png" style="zoom:150%;" />
 
 
 
@@ -294,7 +713,7 @@ Key points:
 
 Use the chart below for a guide to acceptable configuration options. .
 
-<img src="Images\hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
+<img src="Images/hardware_considerations.png" alt="image-20200620161440899" style="zoom:150%;" />
 
 > ***Note**: A security bug related to UEFI Secure Boot and Grub2 modules has resulted in some modules required by tboot to not be available on RedHat 8 UEFI systems. Tboot therefore cannot be used currently on RedHat 8. A future tboot release is expected to resolve this dependency issue and restore support for UEFI mode. 
 
@@ -341,7 +760,7 @@ Trust Agent (TA)
 
 Workload Agent (WLA)
 
-<img src="Images\service_layout" alt="image-20200620161752980" style="zoom:150%;" />
+<img src="Images/service_layout" alt="image-20200620161752980" style="zoom:150%;" />
 
 
 
@@ -1235,7 +1654,7 @@ POST <https://verification.service.com:8443/hvs/v2/hosts>
 > registered, but will be in an Untrusted state until/unless
 > appropriate Flavors are added to the Verification Service.
 
-<img src="Images\ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
+<img src="Images/ta_registration.png" alt="image-20200621070159371" style="zoom:150%;" />
 
 
 
@@ -3931,7 +4350,7 @@ For example, Tenant A is using hosts 1-10 for an OpenStack environment. Tenant B
 
 Different integration endpoints can be added to the Integration Hub through a plugin architecture. By default, the Integration Hub includes plugins for OpenStack and Kubernetes (Kubernetes deployments require the additional installation of two Intel® SecL-DC Custom Resource Definitions on the Kube Control Plane).
 
-<img src="Images\integration2" alt="image-20200621122316170" style="zoom:150%;" />
+<img src="Images/integration2" alt="image-20200621122316170" style="zoom:150%;" />
 
 ### Integration with OpenStack 
 
@@ -4230,7 +4649,7 @@ using the KBS, and will output the encrypted image and an Image Flavor.
 The image owner can then upload the encrypted image to the CSP’s image
 storage service, and then upload the Image Flavor to the CSP-hosted WLS.
 
-<img src="Images\image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
+<img src="Images/image-encryption.png" alt="image-20200622081105459" style="zoom:150%;" />
 
 When a compute host at the CSP attempts to launch a protected image, the
 WLA on the host will detect the launch request, and will issue a key
@@ -4268,7 +4687,7 @@ Attestation reports. In this way, if a host is compromised in a method
 detectable by the Platform Integrity feature, protected images will be
 unable to launch on this server.
 
-<img src="Images\workload-decryption" alt="image-20200622081137301" style="zoom:150%;" />
+<img src="Images/workload-decryption" alt="image-20200622081137301" style="zoom:150%;" />
 
 Virtual Machine Confidentiality
 -------------------------------

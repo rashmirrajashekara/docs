@@ -497,7 +497,7 @@ The containerized deployment utilizes K8s orchestrator to deploy SGX components.
 * Ensure based on the deployment model , `microk8s` or `kubeadm` in installed. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
 * Docker runtime is configured for each of these deployments. Supported versions in [Requirements for Containerized Deployment with K8s](#requirements-for-containerized-deployment-with-k8s)
 * The build would generate a script for platform dependencies under `<working directory>/k8s/platform dependencies`
-* Follow the deployment pre-reqs as given in the [Quick Sta) based on the chosen deployment model
+* Follow the deployment pre-reqs as given in the [Quick Start guide](https://github.com/intel-secl/docs/blob/v3.6.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20Containerization.md#deployment) based on the chosen deployment model
 
 ### Deploy Steps
 
