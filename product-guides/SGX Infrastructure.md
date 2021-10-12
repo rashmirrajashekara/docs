@@ -744,7 +744,6 @@ The containerized deployment makes use of Kubernetes orchestrator for single nod
 ![k8s-single-node](./Images/k8s-single-node.png)
 
 
-
 **Multi Node:**
 
 ![K8s Deployment-sqx](./Images/k8s-deployment-sgx.jpg)
@@ -4073,7 +4072,7 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	preload_keys=/root/keys.txt
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
-	debug=true
+	debug=false
 	
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
@@ -4144,7 +4143,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
         preload_keys=/root/keys.txt
         keyagent_conf=/opt/skc/etc/key-agent.ini
         mode=SGX
-        debug=true
+        debug=false
     
        [SGX]
         module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
@@ -4191,7 +4190,7 @@ Key transfer policy is used to enforce a set of policies which need to be compil
 A typical Key Transfer Policy would look as below
 ```
         "sgx_enclave_issuer_anyof":["83d719e77deaca1470f6baf62a4d774303c899db69020f9c70ee1dfc08c7ce9e"],
-        "sgx_enclave_issuer_product_id_anyof":[0],
+        "sgx_enclave_issuer_product_id_anyof":0,
         "sgx_enclave_measurement_anyof":["ad46749ed41ebaa2327252041ee746d3791a9f2431830fee0883f7993caf316a"],
         "tls_client_certificate_issuer_cn_anyof":["CMSCA", "CMS TLS Client CA"],
         "client_permissions_allof":["nginx","USA"],
