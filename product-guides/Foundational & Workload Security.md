@@ -66,10 +66,11 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.2              | Updated for version 3.2 release | November 2020 |
 | 3.3              | Updated for version 3.3 release | December 2020 |
 | 3.3.1            | Updated for version 3.3.1 release | January 2021 |
-| 3.4 | Updated for version 3.4 release | February 2021 |
-| 3.5 | Updated for version 3.5 release | March 2021 |
-| 3.6 | Updated for version 3.6 release | May 2021 |
+| 3.4              | Updated for version 3.4 release | February 2021 |
+| 3.5              | Updated for version 3.5 release | March 2021 |
+| 3.6              | Updated for version 3.6 release | May 2021 |
 | 4.0 | Updated for version 4.0 release | July 2021 |
+| 3.6.1            | Updated for version 3.6.1 release | October 2021 |
 | 4.1 | Updated for version 4.1 release | August 2021 |
 
 
@@ -126,7 +127,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Recommended Hardware](#recommended-hardware-1)
     - [Installation](#installation-1)
     - [Creating Users](#creating-users)
-    - [Installing the Host Verification Service](#installing-the-host-verification-service)
+  - [Installing the Host Verification Service](#installing-the-host-verification-service)
     - [Required For](#required-for-2)
     - [Prerequisites](#prerequisites-1)
     - [Package Dependencies](#package-dependencies-1)
@@ -230,7 +231,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems)
     - [Recommended Hardware](#recommended-hardware)
     - [Installation](#installation)
-  - [## Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
+  - [Installing the Authentication and Authorization Service](#-installing-the-authentication-and-authorization-service)
     - [Required For](#required-for-1)
     - [Prerequisites](#prerequisites)
     - [Package Dependencies](#package-dependencies)
@@ -268,8 +269,8 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
   - [Trust Agent Registration](#trust-agent-registration)
   - [Importing the HOST\_UNIQUE Flavor](#importing-the-host_unique-flavor)
   - [Installing the Intel® SecL Kubernetes Extensions and Integration Hub](#installing-the-intel-secl-kubernetes-extensions-and-integration-hub)
-  - [### Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
-  - [### Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
+  - [Deploy Intel® SecL Custom Controller](#-deploy-intel-secl-custom-controller)
+  - [Installing the Intel® SecL Integration Hub](#-installing-the-intel-secl-integration-hub)
     - [Required For](#required-for-6)
     - [Deployment Architecture Considerations for the Hub](#deployment-architecture-considerations-for-the-hub)
     - [Prerequisites](#prerequisites-5)
@@ -277,7 +278,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
     - [Supported Operating Systems](#supported-operating-systems-6)
     - [Recommended Hardware](#recommended-hardware-4)
     - [Installing the Integration Hub](#installing-the-integration-hub)
-  - [### Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
+  - [Deploy Intel® SecL Extended Scheduler](#-deploy-intel-secl-extended-scheduler)
       - [Configuring kube-scheduler to establish communication with isecl-scheduler](#configuring-kube-scheduler-to-establish-communication-with-isecl-scheduler)
   - [Installing the Key Broker Service](#installing-the-key-broker-service)
     - [Required For](#required-for-7)
@@ -946,6 +947,13 @@ wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssljson_1.6.
 wget https://github.com/cloudflare/cfssl/releases/download/v1.6.0/cfssl_1.6.0_linux_amd64 -o /usr/bin/cfssl && chmod +x /usr/bin/cfssl 
 ```
 
+User has two methods to generate custom claims token for TA.
+
+1. Run populate-user.sh whenever it is required.
+2. Alternatively use AAS API directly to generate custom claims token.
+
+#### Generating Custom Claims Token using populate-users script
+</br>
 Use the following **additional** options in populate-users.env and run populate-users:
 
 ```ini
@@ -965,8 +973,69 @@ CCC_ADMIN_USERNAME=<username for generating long-lived tokens>
 CCC_ADMIN_PASSWORD=<password for generating long-lived tokens>
 ```
 
-When populate-users is run, there will now be an additional "Custom Claims Token For TA:" bearer token.  
+When populate-users script is run, there will now be an additional "Custom Claims Token For TA:" bearer token.
 
+#### Generating Custom Claims Token using AAS API
+</br>
+To generate custom claims using AAS API, following are the steps to be followed:
+
+1. Create CCC_ADMIN_USERNAME and CCC_ADMIN_PASSWORD entry in the database along with the roles using the populate-users script.
+```
+CCC_ADMIN_USERNAME=<username for generating long-lived tokens>
+CCC_ADMIN_PASSWORD=<password for generating long-lived tokens>
+```
+2. Get the JWT from AAS to get access to the `/custom-claims-token`. Sample call to get the JWT from `/token` using the CCC_ADMIN_USERNAME/PASSWORD has been provided below:
+
+```
+curl -s -X POST "${AAS_BASE_URL}/token" --header 'Content-Type: application/json' --data-raw '{"username" : "'"$CCC_ADMIN_USERNAME"'", "password" : "'"$CCC_ADMIN_PASSWORD"'"}' -k
+```
+3. Once the JWT has been received, admin can get the custom claims token using the JWT ($bearer_token) received in step 2. A sample curl command to get the custom claims token has been provided below:
+```
+curl -s -X POST "${AAS_BASE_URL}/custom-claims-token" \
+--header 'Content-Type: application/json' \
+--header "Authorization: Bearer $bearer_token" \
+--data-raw '{
+    "subject": "AAS-JWT-Issuer",
+    "validity_seconds": '"$((TOKEN_VALIDITY_SECONDS))"',
+    "claims": {
+        "roles": [
+            {
+                "service": "HVS",
+                "name": "AttestationRegister"
+            },
+            {
+                "service": "AAS",
+                "name": "CredentialCreator",
+                "context": "type=TA"
+            },
+            {
+                "service": "CMS",
+                "name": "CertApprover",
+                "context": "CN=Trust Agent TLS Certificate;SAN=*;certType=TLS"
+            }
+        ],
+         "permissions": [
+            {
+                "service": "HVS",
+                "rules": ["hosts:store:*", "hosts:search:*", "host_unique_flavors:create:*", "flavors:search:*",
+                                        "host_aiks:certify:*", "tpm_endorsements:create:*", "tpm_endorsements:search:*"]
+            },
+            {
+                "service": "AAS",
+                "rules": ["credential:create:*"]
+            }
+         ]
+    }
+}' -k
+```
+
+Note:
+
+-  - The "rules" under "permissions" describe which permissions are embedded in the token and describe what actions will be allowed by HVS.  The list in this example are the permissions required for the Trust-Agent.  For example, Trust-Agent command line tools like "tagent setup", "tagent setup create-host", "tagent setup create-host-unique-flavor" use HVS' REST API and therefore need a token with sufficient permissions. The CCC admin is responsible for creating tokens with the appropriate permissions.  For example, providing "hosts:store:*" allows the token permissions to add hosts to HVS (which may not be desirable in all circumstances).  For more information about permissions please refer to AAS swagger doc.
+-  TOKEN_VALIDITY_SECONDS should be provided as per requirement 
+-  "-k" from curl request can be removed by adding AAS TLS certificate to the trusted ca directory of the respective OS
+
+#### Installing HVS
 When installing the HVS, add the following to hvs.env:
 
 ```ini
@@ -1502,6 +1571,32 @@ The following must be completed before installing the Trust Agent:
 #### Tboot Installation
 
 Tboot is required to build a complete Chain of Trust for Intel® TXT systems that are not using UEFI Secure Boot. Tboot acts to initiate the Intel® TXT SINIT ACM (Authenticated Code Module), which populates several TPM measurements including measurement of the kernel, grub command line, and initrd. Without either tboot or UEFI Secure Boot, the Chain of Trust will be broken because the OS-related components will be neither measured nor signature-verified prior to execution. Because tboot acts to initiate the Intel® TXT SINIT ACM, tboot is only required for platforms using Intel® TXT, and is not required for platforms using another hardware Root of Trust technology like Intel® Boot Guard.
+
+**Important Note:** SGX Attestation fails when SGX is enabled on a host booted using tboot
+
+**Root Cause:** tboot requires the "noefi" kernel parameter to be passed during boot, in order to not use unmeasured EFI runtime services. As a result, the kernel does not expose EFI variables to user-space. SGX Attestation requires these EFI variables to fetch Platform Manifest data. 
+
+**Workaround:**
+
+The EFI variables required by SGX are only needed during the SGX provisioning/registration phase. Once this step is completed successfully, access to the EFI variables is no longer required. This means this issue can be worked around by installing the SGX agent without booting to tboot, then rebooting the system to tboot. SGX attestation will then work as expected while booted to tboot.
+
+1. Enable SGX and TXT in the platform BIOS
+
+2. Perform SGX Factory Reset and boot into the “plain” distribution kernel (without tboot or TCB)
+
+3. Install tboot and ISecL components (SGX Agent, Trust Agent and Workload Agent)
+
+4. The SGX Agent installation fetches the SGX Platform Manifest data and caches it
+
+5. Reboot the system into the tboot kernel mode.
+
+6. Verify that TXT measured launch was successful:
+
+​    txt-stat |grep "TXT measured launch"
+
+7. The SGX and Platform Integrity Attestation use cases should now work as normal.
+
+   
 
 Intel® SecL-DC requires tboot 1.10.1 or greater. This may be a later version of tboot than is available on public software repositories.  
 
@@ -8736,7 +8831,289 @@ Upgrading in this order will make each service unavailable only for the duration
 For services installed directly (not deployed as containers), the upgrade process simply requires executing the new-version installer on the same machine where the old-version is running.  The installer will re-use the same configuration elements detected in the existing version's config file.  No additional answer file is required unless configuration settings will change.
 
 
+### Container Deployments
 
+Container upgrades will be based on recreate strategy. All services except(KBS and HVS) can be upgraded just by updating
+the image name and tag to newer version in respective deployment.yml files.
+
+Config and database schema changes and data migration will be done through K8s jobs, during the upgrade job, the service
+should be down, otherwise may lead to inconsistent data or data corruption. For 4.0 there is change in database schema
+for HVS and k8s job manifest will be provided along with other manifests for deployment.
+
+Agent upgrade jobs, by default copy backup of configuration directories on all hosts at location /tmp/<agent_name>_backup,
+this location can be updated in respective upgrade jobs. There is also a rollback job for each agent, which restores the
+backed up configuration files back to original location.
+
+##### Build
+
+Intel assumes all services for any use-case are up and running before proceeding with the upgrade.
+
+Push all the newer version of container images to registry. All oci images will be in k8s/container-images.
+
+e.g
+
+```shell
+skopeo copy oci-archive:<oci-image-tar-name> docker://<registry-ip/hostname>:<registry-port>/<image-name>:<image-tag> --dest-tls-verify=false
+```
+
+------
+
+##### Upgrade/Deploy
+
+##### Backup Services
+
+1. Take back up of data in NFS mount for all services from NFS server system \<NFS-Mount-Path>/isecl
+
+   ```shell
+   #Example
+   cp -r <nfs-location/isecl <nfs-location>/isecl-<version>-backup
+   ```
+
+##### Rollback Services
+
+1. If upgrade is not successful, then update `deployment.yml` files with older images(v3.6) for 4.0 upgrade path and restore the backed up nfs data at same mount path
+2. Bring up individual components with `isecl-bootstrap.sh up <service>`
+
+>  **Note:** If in case service fails to start or gets crashed, then copy all the backed up data as per folder
+> structure like how was it earlier. Bring up db instance pointing to backed up data and bring up component deployment by
+> pointing to older version of container image.
+
+##### HVS Upgrade
+
+1. Update the image name with new image name/image tag in existing `deployment.yml`
+
+2. Copy `upgrade-job.yml` from builds `k8s/manifests/hvs/upgrade-job.yml` into control plane node `k8s/manifests/hvs/`
+
+```
+scp <build-vm>:<build-dir>/k8s/manifests/hvs/upgrade-job.yml <control-plane-vm>:<existing dir>/k8s/manifests/hvs/upgrade-job.yml
+```
+
+3. Update `<image-name>` and `<image-tag>` and existing version of deployed hvs in  `<current deployed version>` in `k8s/manifests/hvs/upgrade-job.yml`
+
+```yaml
+containers:
+  - name: hvs
+    image: '<image-name>:<image-tag>'
+    imagePullPolicy: Always
+    securityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+    env:
+      - name: CONFIG_DIR
+        value: /etc/hvs
+      - name: COMPONENT_VERSION
+        value: <current deployed version>      
+```
+
+4. Run the upgrade job,
+
+```shell
+cd k8s/manifests
+kubectl delete deployment hvs-deployment -n isecl
+kubectl apply -f hvs/upgrade-job.yml
+```
+
+5. Check the status of hvs-upgrade job for completion.
+
+```shell
+kubectl get jobs -n isecl
+```
+
+and check for successful database and config upgrades in hvs-upgrade job pod logs
+
+```shell
+kubectl logs -n isecl hvs-upgrade-<podname>
+```
+
+6. Redeploy the latest hvs
+
+```shell
+kubectl apply -f hvs/deployment.yml
+```
+
+> **Note:** If hvs-upgrade job is failed or upgraded service deployment went into `CrashLoopBackOff`, restore the service with instruction given in Rollback Services section
+
+**KBS Upgrade:**
+
+1. Update the image name with new image name/image tag in existing `deployment.yml`
+
+2. Copy `upgrade-job.yml` from builds `k8s/manifests/kbs/upgrade-job.yml` into control plane node k8s/manifests/kbs/
+
+```
+scp <build-vm>:<build-dir>/k8s/manifests/kbs/upgrade-job.yml <control-plane-vm>:<existing dir>/k8s/manifests/kbs/upgrade-job.yml
+```
+
+3. Add the following variables in `kbs/configMap.yml`
+
+```yaml
+KMIP_HOSTNAME: <kmip hostname>
+```
+
+Run the command
+
+```shell
+kubectl apply -f kbs/configMap.yml --namespace=isecl
+```
+
+4. (Optional) Add the following variables in `kbs/secrets.yml` if required
+   `KMIP_USERNAME` and `KMIP_PASSWORD`. Run the following commands
+
+```shell
+kubectl delete secret -n isecl kbs-secret
+kubectl create secret generic kbs-secret --from-file=kbs/secrets.txt --namespace=isecl
+```
+
+5. Update `<image-name>` and `<image-tag>` and existing version of deployed kbs in  `<current deployed version>` in `k8s/manifests/kbs/upgrade-job.yml`
+
+```yaml
+containers:
+  - name: kbs
+    image: '<image-name>:<image-tag>'
+    imagePullPolicy: Always
+    securityContext:
+      runAsUser: 1001
+      runAsGroup: 1001
+    env:
+      - name: CONFIG_DIR
+        value: /etc/kbs
+      - name: COMPONENT_VERSION
+        value: <current deployed version>      
+```
+
+6. Run the upgrade job,
+
+```shell
+cd k8s/manifests
+kubectl delete deployment -n isecl kbs-deployment
+kubectl apply -f kbs/upgrade-job.yml
+```
+
+7. Check the status of kbs-upgrade job for completion.
+
+```shell
+kubectl get jobs -n isecl
+kubectl logs -n isecl kbs-upgrade-<pod id>
+```
+
+8. Update the image name in `kbs/deployment.yml` to newer version and deploy the latest kbs
+
+```shell
+kubectl apply -f kbs/deployment.yml 
+or 
+cd kbs && kubectl kustomize . | kubectl apply -f -
+```
+
+**Individual services upgrade**
+
+1. Update the image name in existing `deployment.yml` of respective service.
+
+2. Redeploy by running the below command, By doing `kubectl apply -f` on `deployment.yml` with change in image name will terminate service with older image version and bring up service with new image version
+
+```shell
+cd /k8s/manifests/<service-manifests-folder> &&  kubectl kustomize . | kubectl apply -f -
+e.g cd /k8s/manifests/cms && kubectl kustomize . | kubectl apply -f -
+```
+
+**TA\WLA Upgrade:**
+
+Copy following manifests and scripts from build vm to k8s control plane vm
+
+```shell
+scp <build-vm>:<build-dir>/k8s/manifests/<component>/<component>-upgrade.yml <control-plane-vm>:<existing dir>/k8s/manifests/<component>/
+scp <build-vm>:<build-dir>/k8s/manifests/<component>/rollback.yml <control-plane-vm>:<existing dir>/k8s/manifests/<component>/
+```
+
+Addional step for TA:
+```shell
+scp <build-vm>:<build-dir>/k8s/manifests/ta/daemonset.yml <control-plane-vm>:<existing dir>/k8s/manifests/ta/daemonset.yml
+scp <build-vm>:<build-dir>/k8s/manifests/ta/daemonset-suefi.yml <control-plane-vm>:<existing dir>/k8s/manifests/ta/daemonset-suefi.yml
+```
+
+
+Log in to the worker nodes with TXT+TPM2.0 enabled and perform the following steps:
+
+1. Update tboot to 1.10.1
+
+Log in to control plane node and perform following steps:
+
+1. Update the new image name and tag in `daemonset.yml` and `daemonset-suefi.yml` files
+
+```yaml
+containers:
+  - image: <image-name>:<image-tag>
+```
+
+2. Update `<image-name>` and `<image-tag>` and existing version of deployed component in `<component-exising-installed-version>` in `k8s/manifests/<component>/<component>-upgrade.yml`
+
+```yaml
+containers:
+  - name: tagent
+    image: '<image-name>:<image-tag>'
+    imagePullPolicy: Always
+    command:
+      - /container_upgrade.sh
+    securityContext:
+      privileged: true
+    env:
+      - name: CONFIG_DIR
+        value: <component-config-dir>
+      - name: COMPONENT_VERSION
+        value: <component-exising-installed-version>
+```
+
+3. Upgrade job for TA\WLA will re provision all tasks. This might require new `BEARER_TOKEN` in existing ta-secret or wla-secret
+   (Optional). Update new value for TPM_OWNER_SECRET in `<component>/secret.txt`. Run the following commands
+```shell
+ kubectl delete secret -n isecl <component>-secret
+ #Post updation of BEARER_TOKEN & TPM_OWNER_SECRET in <component>/secrets.txt
+ kubectl create secret generic <component>-secret --from-file=secrets.txt --namespace=isecl
+```
+
+4.  Perform upgrade and redeploy trustagent or workload agent daemonsets
+```shell
+ cd k8s/manifests/ 
+ kubectl apply -f <component>/<component>-upgrade.yml
+```
+
+5. Wait for all <component>-upgrade daemonset come up in running state
+
+6. Delete <component>-upgrade daemonset once all <component>-upgrade daemonsets are running.
+
+```shell
+kubectl delete daemonset -n isecl <component>-upgrade
+```
+
+7. Bring up newer version of <component>-daemonsets
+
+```shell
+kubectl apply -f <component>/daemonset.yml
+```
+
+Additional step for TA:
+```shell
+kubectl apply -f ta/daemonset-suefi.yml
+```
+
+##### Backup and Rollback in TA
+
+The `<component>-upgrade.yml` is run once daemonset, while performing upgrade job, ta will copy the `/opt/trustagent` into backup directory `/tmp/trustagent_backup` on every host
+and wla upgrade will copy the '/etc/workload-agent' into backup directory `/tmp/wlagent_backup`
+Following steps will help us to achieve rollback
+
+1. Restore the backed up directories from `/tmp/trustagent_backup` into `/opt/trustagent` in TA and in WLA from `/tmp/wlagent_backup` into `/etc/workload-agent`
+```shell
+cd k8s/manifests/ 
+kubectl apply -f <componenet>/rollback.yml
+```
+2. Update the image name to previous version in `<component>/daemonset.yml` and `<component>/daemonset-suefi.yml`(if upgrade path is 3.6 -> 4.0, then update image tag to 3.6)
+```shell
+kubectl apply -f <component>/daemonset.yml
+```
+
+Additional step for TA:
+```shell
+kubectl apply -f ta/daemonset-suefi.yml
+```
 
 
 Appendix
