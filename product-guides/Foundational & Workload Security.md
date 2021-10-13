@@ -66,11 +66,11 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.2              | Updated for version 3.2 release | November 2020 |
 | 3.3              | Updated for version 3.3 release | December 2020 |
 | 3.3.1            | Updated for version 3.3.1 release | January 2021 |
-| 3.4 | Updated for version 3.4 release | February 2021 |
-| 3.5 | Updated for version 3.5 release | March 2021 |
-| 3.6 | Updated for version 3.6 release | May 2021 |
+| 3.4              | Updated for version 3.4 release | February 2021 |
+| 3.5              | Updated for version 3.5 release | March 2021 |
+| 3.6              | Updated for version 3.6 release | May 2021 |
 | 4.0 | Updated for version 4.0 release | July 2021 |
-
+| 3.6.1            | Updated for version 3.6.1 release | October 2021 |
 
 ## Table of Contents
 
