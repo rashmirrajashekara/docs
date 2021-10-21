@@ -2,9 +2,9 @@
 
 ## Product Guide
 
-### July 2021
+**October 2021**
 
-### Revision 4.0
+**Revision 4.0.1**
 
 Notice: This document contains information on products in the design phase of development. The information here is subject to change without notice. Do not finalize a design with this information.
 
@@ -64,6 +64,7 @@ Copyright © 2021, Intel Corporation. All Rights Reserved.
 | 3.6 | Updated for version 3.6 release | May 2021 |
 | 4.0 | Updated for version 4.0 release | July 2021 |
 | 3.6.1 | Updated for version 3.6.1 release | October 2021 |
+| 4.0.1 | Updated for version 4.0.1 release | October 2021 |
 
 - [Intel® Security Libraries - Datacenter SGX Attestation Infrastructure and Secure Key Caching](#intel-security-libraries---datacenter-sgx-attestation-infrastructure-and-secure-key-caching)
   - [Product Guide](#product-guide)
@@ -393,7 +394,7 @@ Copyright © 2021, Intel Corporation. All Rights Reserved.
 - [Note on SKC Library Deployment](#note-on-skc-library-deployment)
   - [Extracting SGX Enclave values for Key Transfer Policy](#extracting-sgx-enclave-values-for-key-transfer-policy)
 
-## 1 Introduction 
+## 1 Introduction
 
 ## 1 Introduction
 
@@ -541,7 +542,7 @@ SWK -- Symmetric Wrapping Key
 
 CRDs -- Custom Resource Definitions
 
-## Architecture Overview 
+## Architecture Overview
 
 As indicated in the Features section, SKC provides 3 features essentially:
 
@@ -1862,7 +1863,7 @@ NA
 
        ## Session Expiry Time Between KBS and SKC Library in Minutes
        SESSION_EXPIRY_TIME=60
-       
+
        KMIP_SERVER_IP=<IP address of KMIP server>
 
        KMIP_SERVER_PORT=<Port number of KMIP server>
@@ -1875,13 +1876,13 @@ NA
        ## KMIP server certificate should contain SAN(IP/DNS) or valid COMMON NAME and this value can be provided in KMIP_HOSTNAME. Only FQDN names are allowed.
        ## This is an OPTIONAL field; if KMIP_HOSTNAME is not provided then KMIP_SERVER_IP will be considered as ServerName in TLS configuration.
        KMIP_HOSTNAME=<Hostname of KMIP server>
-       
-       ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field. 
-       ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD. 
-       ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager. 
+
+       ## KMIP supports authentication mechanism to authenticate requestor. This is an OPTIONAL field.
+       ## This feature can be added to KBS by updating kbs.env with KMIP_USERNAME and KMIP_PASSWORD.
+       ## These are OPTIONAL variables. PyKMIP doesn't supports this feature. This feature is validated in Thales cipher trust manager.
        KMIP_USERNAME=<Username of KMIP server>
        KMIP_PASSWORD=<Password of KMIP server>
-       
+
        ### Retrieve the following certificates and keys from the KMIP server
 
        KMIP_CLIENT_KEY_PATH=<path>/client_key.pem
@@ -3716,20 +3717,20 @@ typically these are the same variables set in the service installation
 
 -   `<servicename> download_ca_cert`
 -   Download CMS root CA certificate
-    
+
 -   Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-    
--   `<servicename> download_cert TLS` 
+
+-   `<servicename> download_cert TLS`
 -   Generates Key pair and CSR, gets it signed from CMS
-    
+
 -   Environment variable CMS\_BASE\_URL=\<url\> for CMS API url
-    
+
 -   Environment variable BEARER\_TOKEN=\<token\> for authenticating
         with CMS
-    
+
 -   Environment variable KEY\_PATH=\<key\_path\> to override default
         specified in config
-    
+
 -   Environment variable CERT\_PATH=\<cert\_path\> to override
         default specified in config
 
@@ -3871,7 +3872,7 @@ kubectl logs -n isecl kbs-upgrade-<pod id>
 kubectl apply -f kbs/deployment.yml or cd kbs && kubectl kustomize . | kubectl apply -f -
 ```
 
-## Appendix 
+## Appendix
 
 **Important Note:** SGX Attestation fails when SGX is enabled on a host booted using tboot
 
@@ -4076,7 +4077,7 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	keyagent_conf=/opt/skc/etc/key-agent.ini
 	mode=SGX
 	debug=false
-	
+
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
@@ -4147,7 +4148,7 @@ ssl_certificate_key "engine:pkcs11:pkcs11:token=KMS;object=RSAKEY;pin-value=1234
         keyagent_conf=/opt/skc/etc/key-agent.ini
         mode=SGX
         debug=false
-    
+
 
        [SGX]
         module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so

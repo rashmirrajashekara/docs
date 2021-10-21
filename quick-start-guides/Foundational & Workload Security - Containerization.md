@@ -9,8 +9,9 @@ Table of Contents
 
 <!-- code_chunk_output -->
 
-- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide-foundation-workload-security-containerization)
-  - [Hardware & OS Requirements](#hardware-os-requirements)
+- [Quick start Guide - Foundation & Workload Security - Containerization](#quick-start-guide---foundation--workload-security---containerization)
+  - [Table of Contents](#table-of-contents)
+  - [Hardware & OS Requirements](#hardware--os-requirements)
     - [Physical Server requirements](#physical-server-requirements)
     - [Machines](#machines)
     - [OS Requirements](#os-requirements)
@@ -23,7 +24,7 @@ Table of Contents
     - [Enterprise Managed Services](#enterprise-managed-services)
     - [TXT/SUEFI Enabled Host](#txtsuefi-enabled-host)
     - [Firewall Settings](#firewall-settings)
-  - [Rpms & Debs Requirement](#rpms-debs-requirement)
+  - [Rpms & Debs Requirement](#rpms--debs-requirement)
     - [RHEL](#rhel)
     - [Ubuntu](#ubuntu)
   - [Deployment Model](#deployment-model)
@@ -68,14 +69,13 @@ Table of Contents
   - [Appendix](#appendix)
     - [Hardware feature detection](#hardware-feature-detection)
     - [Running behind Proxy](#running-behind-proxy)
-    - [Git Config Sample (~/.gitconfig)](#git-config-sample-~gitconfig)
+    - [Git Config Sample (~/.gitconfig)](#git-config-sample-gitconfig)
     - [Rebuilding Repos](#rebuilding-repos)
     - [Setup Task Flow](#setup-task-flow)
     - [Configuration Update Flow](#configuration-update-flow)
     - [Cleanup workflows](#cleanup-workflows)
       - [Single-node](#single-node-2)
       - [Multi-node](#multi-node-2)
-- [Only in case of KBS, perform one more step along with above 2 steps](#only-in-case-of-kbs-perform-one-more-step-along-with-above-2-steps)
 
 <!-- /code_chunk_output -->
 
@@ -386,7 +386,7 @@ systemctl restart docker
 
   * Foundational Security
 
-    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
+    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
 
     * Only for `Ubuntu-18.04`, run the following commands
 
@@ -397,7 +397,7 @@ systemctl restart docker
   * Workload Security
     * Container Confidentiality with CRIO runtime
       
-      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
+      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
         
       * Copy `container-runtime` directory to each of the  physical servers  
       
