@@ -215,15 +215,15 @@ rm -rf go1.14.4.linux-amd64.tar.gz
   ```shell
   On RHEL 8.2/8.4:
     dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-    dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+    dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
 
   On Ubuntu 18.04/20.04:
-    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.10-3_amd64.deb 
-    dpkg -i containerd.io_1.2.10-3_amd64.deb
-    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_19.03.5~3-0~ubuntu-bionic_amd64.deb"
-    dpkg -i docker-ce-cli_19.03.5~3-0~ubuntu-bionic_amd64.deb
-    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.5~3-0~ubuntu-bionic_amd64.deb"
-    dpkg -i docker-ce_19.03.5~3-0~ubuntu-bionic_amd64.deb
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb 
+    dpkg -i containerd.io_1.4.11-1_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb
 
   systemctl enable docker
   systemctl start docker
@@ -785,7 +785,11 @@ Note: For Stack based deployment, setup master and worker node for k8s is part o
 
 * Setup master and worker node for k8s. Worker node should be setup on SGX enabled host machine. Master node can be any system.
 
-* To setup k8 cluster, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos. Once the master/worker setup is done, follow below steps on Master Node:
+* To setup k8 cluster for RHEL, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos.
+
+* To setup k8 cluster for Ubuntu, follow https://phoenixnap.com/kb/install-kubernetes-on-ubuntu 
+
+Once the master/worker setup is done, follow below steps on Master Node:
 
 ##### Untar packages and push OCI images to registry
 
@@ -796,7 +800,6 @@ Note: For Stack based deployment, setup master and worker node for k8s is part o
     tar -xvzf isecl-k8s-extensions-*.tar.gz
     cd isecl-k8s-extensions/
   ```
-  
 * Configure private registry
 
 * Push images to private registry using skopeo command, (this can be done from build vm also)
