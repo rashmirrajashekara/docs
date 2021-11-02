@@ -18,7 +18,7 @@ Table of Contents
     - [Proxy Settings](#proxy-settings)
   - [**4. Build Services**](#4-build-services)
     - [Pre-requisites](#pre-requisites)
-      - [Building SGX Attestation Usecase](#building-sgx-attestation-usecase)
+    - [Building SGX Attestation Usecase](#building-sgx-attestation-usecase)
     - [Building Orchestration Usecase](#building-orchestration-usecase)
     - [Building Secure Key Caching Usecase](#building-secure-key-caching-usecase)
     - [Building Sample Application](#building-sample-application)
@@ -162,7 +162,13 @@ Enable the Following package repositories
   * `codeready-builder-for-rhel-8-for-x86_64-rpms`
 
 ```shell
-dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils curl openssl-devel skopeo
+dnf install git wget tar python3 gcc gcc-c++ zip tar make yum-utils curl openssl-devel
+
+# RHEL-8.2
+	dnf install skopeo -y
+# RHEL-8.4
+	dnf install skopeo -y --nobest
+  
 dnf install https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/m/makeself-2.4.2-1.el8.noarch.rpm
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
@@ -213,9 +219,13 @@ rm -rf go1.14.4.linux-amd64.tar.gz
 
 * Install, Enable and start the Docker daemon
   ```shell
-  On RHEL 8.2/8.4:
+  On RHEL 8.2:
     dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
     dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
+
+  On RHEL 8.4:
+    dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install -y docker-ce-20.10.9 docker-ce-cli-20.10.9
 
   On Ubuntu 18.04/20.04:
     wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb 
@@ -255,28 +265,48 @@ repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1 
 repo sync
 ```
 
-#### Building SGX Attestation Usecase
-For buiding SGX Attestation usecase only,
+### Building SGX Attestation Usecase
+For buiding SGX Attestation usecase only - Distribution Based Deployment
 ```shell
 make attest
 ```
 
+For buiding SGX Attestation usecase only - Stack Based Deployment
+```shell
+make attest_stacks
+```
+
 ### Building Orchestration Usecase
-For buiding Orchestration usecase
+For buiding Orchestration usecase - Distribution Based Deployment
 ```shell
 make orchestrator
 ```
 
+For buiding Orchestration usecase - Stack Based Deployment
+```shell
+make orchestrator_stacks
+```
+
 ### Building Secure Key Caching Usecase
-For buiding Secure Key Caching usecase
+For buiding Secure Key Caching usecase  - Distribution Based Deployment
 ```shell
 make skc
 ```
 
+For buiding Secure Key Caching usecase - Stack Based Deployment
+```shell
+make skc_stacks
+```
+
 ### Building Sample Application
-For buiding Sample Application for SGX Attestation
+For buiding Sample Application for SGX Attestation - Distribution Based Deployment
 ```shell
 make app
+```
+
+For buiding Sample Application for SGX Attestation - Stack Based Deployment
+```shell
+make app_stacks
 ```
 
 ### Building All Usecases - Distribution Based Deployment
