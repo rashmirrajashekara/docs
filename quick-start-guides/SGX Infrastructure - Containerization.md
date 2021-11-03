@@ -206,10 +206,25 @@ rm -rf go1.14.4.linux-amd64.tar.gz
 #### Docker
 
 ```shell
-dnf module enable -y container-tools
-dnf install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+On RHEL 8.2:
+    dnf module enable -y container-tools
+    dnf install -y yum-utils
+    dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
+
+On RHEL 8.4:
+    dnf module enable -y container-tools
+    dnf install -y yum-utils
+    dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install -y docker-ce-20.10.9 docker-ce-cli-20.10.9
+
+On Ubuntu 18.04/20.04:
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb
+    dpkg -i containerd.io_1.4.11-1_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb"
+    dpkg -i docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb
 
 systemctl enable docker
 systemctl start docker
@@ -239,6 +254,24 @@ For RHEL 8.4 OS
 
 ```shell
 dnf install -y skopeo --nobest
+```
+
+For Ubuntu 18.04 OS
+
+```shell
+add-apt-repository ppa:projectatomic/ppa
+apt-get update
+apt-get install skopeo
+```
+
+For Ubuntu 20.04 OS
+
+```shell
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key | sudo apt-key add -
+apt-get update
+apt-get -y upgrade
+apt-get -y install skopeo
 ```
 
 ### Build OCI Container images and K8s Manifests

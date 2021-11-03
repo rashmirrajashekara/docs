@@ -695,13 +695,13 @@ Bootstrap scripts and answer file under `<working directory>/k8s/manifests`:
 
 #### Kubernetes
 
-* Single-node: `microk8s` (1.17.17)
-* Multi-node: `kubeadm` (1.17.17)
+* Single-node: `microk8s` (1.21.3)
+* Multi-node: `kubeadm` (1.21.3)
 
 #### Container Runtime
 
-* Docker 19.03.13 on RHEL 8.2
-* Docker 19.03.5 on Ubuntu 18.04/20.04
+* Docker 20.10.8 on RHEL 8.2
+* Docker 20.10.8 on Ubuntu 18.04/20.04
 
 #### Storage:
 
