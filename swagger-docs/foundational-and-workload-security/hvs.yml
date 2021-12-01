@@ -7,26 +7,23 @@ definitions:
         type: boolean
         x-go-name: Enabled
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   AssetTag:
-    description: AssetTag is used to hold the Asset Tag certificate provisioned by
-      VS for the host
+    description: AssetTag is used to hold the Asset Tag certificate provisioned by VS for the host
     properties:
       tag_certificate:
         $ref: '#/definitions/X509AttributeCertificate'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   AttrObjects:
-    description: AttrObject holds the individual TagKeyValue Pair - TagKVAttribute
-      which is decoded from ASN.1 values
+    description: AttrObject holds the individual TagKeyValue Pair - TagKVAttribute which is decoded from ASN.1 values
     properties:
       objects:
         $ref: '#/definitions/TagKvAttribute'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Attribute:
-    description: Attribute is used to store the custom Asset Tags embedded in the
-      tag certificate
+    description: Attribute is used to store the custom Asset Tags embedded in the tag certificate
     properties:
       attr_type:
         properties:
@@ -41,7 +38,7 @@ definitions:
         type: array
         x-go-name: AttributeValues
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Bios:
     description: Bios holds details of the Bios vendor firmware information
     properties:
@@ -52,7 +49,7 @@ definitions:
         type: string
         x-go-name: BiosVersion
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   CBNT:
     properties:
       enabled:
@@ -176,7 +173,7 @@ definitions:
         type: string
         x-go-name: TypeName
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   EventLogEqual:
     properties:
       events:
@@ -190,15 +187,12 @@ definitions:
         type: array
         x-go-name: ExcludeTags
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   EventLogEquals:
-    description: 'EventlogEquals key needs to be included when equals rule has to
-      be applied for the particular PCR. Sample value: "eventlog_equals": {"excluding_tags":
-      ["LCP_CONTROL_HASH","initrd","vmlinuz"]}'
+    description: 'EventlogEquals key needs to be included when equals rule has to be applied for the particular PCR. Sample value: "eventlog_equals": {"excluding_tags": ["LCP_CONTROL_HASH","initrd","vmlinuz"]}'
     properties:
       excluding_tags:
-        description: To exclude events, list of event tags need to be provided as
-          string array.
+        description: To exclude events, list of event tags need to be provided as string array.
         items:
           type: string
         type: array
@@ -211,7 +205,7 @@ definitions:
       asset_tag:
         $ref: '#/definitions/AssetTag'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Fault:
     properties:
       actual_pcrvalue:
@@ -283,8 +277,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Feature:
-    description: Feature encapsulates the presence of various Platform security features
-      on the Host hardware
+    description: Feature encapsulates the presence of various Platform security features on the Host hardware
     properties:
       AES_NI:
         $ref: '#/definitions/AES_NI'
@@ -301,7 +294,7 @@ definitions:
       UEFI:
         $ref: '#/definitions/UEFI'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FileManifestType:
     properties:
       Path:
@@ -312,6 +305,7 @@ definitions:
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/ta
   Flavor:
     description: |-
+      Flavor sourced from the lib/flavor - this is a external request/response on the HVS API
       Flavor is a standardized set of expectations that determines what platform
       measurements will be considered “trusted.”
     properties:
@@ -331,10 +325,9 @@ definitions:
       software:
         $ref: '#/definitions/Software'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FlavorCollection:
-    description: FlavorCollection is a list of Flavor objects in response to a Flavor
-      Search query
+    description: FlavorCollection is a list of Flavor objects in response to a Flavor Search query
     properties:
       flavors:
         items:
@@ -357,7 +350,7 @@ definitions:
         x-go-name: FlavorgroupNames
       partial_flavor_types:
         items:
-          $ref: '#/definitions/FlavorPart'
+          $ref: '#/definitions/FlavorPartName'
         type: array
         x-go-name: FlavorParts
       signed_flavor_collection:
@@ -398,7 +391,7 @@ definitions:
   FlavorMatchPolicy:
     properties:
       flavor_part:
-        $ref: '#/definitions/FlavorPart'
+        $ref: '#/definitions/FlavorPartName'
       match_policy:
         $ref: '#/definitions/MatchPolicy'
     type: object
@@ -427,8 +420,7 @@ definitions:
       meta:
         additionalProperties:
           type: object
-        description: Meta is key:value pair section used to define flavorparts with
-          its own meta fields.
+        description: Meta is key:value pair section used to define flavorparts with its own meta fields.
         type: object
         x-go-name: Meta
       pcr_rules:
@@ -437,6 +429,10 @@ definitions:
         type: array
         x-go-name: PcrRules
     type: object
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
+  FlavorPartName:
+    description: FlavorPart
+    type: string
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FlavorParts:
     properties:
@@ -466,15 +462,14 @@ definitions:
         type: boolean
         x-go-name: PCRMatches
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FlavorRequiredPolicy:
     type: string
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FlavorTemplate:
     properties:
       condition:
-        description: 'An array of ''jsonquery'' statements that are used to determine
-          if the template should be executed. Sample value: ["//host_info/os_name//*[text()=''RedHatEnterprise'']","//host_info/hardware_features/TPM/meta/tpm_version//*[text()=''2.0'']"].'
+        description: 'An array of ''jsonquery'' statements that are used to determine if the template should be executed. Sample value: ["//host_info/os_name//*[text()=''RedHatEnterprise'']","//host_info/hardware_features/TPM/meta/tpm_version//*[text()=''2.0'']"].'
         items:
           type: string
         type: array
@@ -571,8 +566,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   FlavorgroupFlavorLinkCriteria:
-    description: FlavorgroupFlavorLinkCriteria is used to hold the request details
-      of a Flavor-FlavorGroup Link Request
+    description: FlavorgroupFlavorLinkCriteria is used to hold the request details of a Flavor-FlavorGroup Link Request
     properties:
       flavor_id:
         format: uuid
@@ -587,8 +581,6 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Hardware:
-    description: Hardware contains information about the host's Hardware, Processor
-      and Platform Features
     properties:
       feature:
         $ref: '#/definitions/Feature'
@@ -602,7 +594,7 @@ definitions:
         type: string
         x-go-name: Vendor
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   HardwareFeature:
     properties:
       enabled:
@@ -793,7 +785,7 @@ definitions:
         type: string
         x-go-name: QuoteDigest
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   HostManifestPcrs:
     properties:
       index:
@@ -804,16 +796,14 @@ definitions:
         type: string
         x-go-name: Value
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   HostState:
-    description: HostState is an enumerated set of states that describe the connection
-      state between VS and the Host at any point of time
+    description: HostState is an enumerated set of states that describe the connection state between VS and the Host at any point of time
     format: int64
     type: integer
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   HostStatus:
-    description: HostStatus contains the response for the Host Status API for an individual
-      host
+    description: HostStatus contains the response for the Host Status API for an individual host
     properties:
       created:
         format: date-time
@@ -834,8 +824,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   HostStatusCollection:
-    description: HostStatusCollection holds a collection of HostStatus in response
-      to an API query
+    description: HostStatusCollection holds a collection of HostStatus in response to an API query
     properties:
       host_status:
         items:
@@ -944,7 +933,7 @@ definitions:
       vendor:
         $ref: '#/definitions/Vendor'
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   MismatchField:
     properties:
       description:
@@ -1011,7 +1000,7 @@ definitions:
         x-go-name: Index
     title: PCR - To store PCR index with respective PCR bank.
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   PcrEventLogMap:
     properties:
       SHA1:
@@ -1030,11 +1019,11 @@ definitions:
         type: array
         x-go-name: Sha384EventLogs
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   PcrIndex:
     format: int64
     type: integer
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   PcrManifest:
     properties:
       pcr_event_log_map:
@@ -1055,14 +1044,13 @@ definitions:
         type: array
         x-go-name: Sha384Pcrs
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   PcrRules:
     properties:
       eventlog_equals:
         $ref: '#/definitions/EventLogEquals'
       eventlog_includes:
-        description: 'To include events, list of event tags need to be provided as
-          string array. Sample value: "eventlog_includes": ["shim","db","kek","vmlinuz"]'
+        description: 'To include events, list of event tags need to be provided as string array. Sample value: "eventlog_includes": ["shim","db","kek","vmlinuz"]'
         items:
           type: string
         type: array
@@ -1070,8 +1058,7 @@ definitions:
       pcr:
         $ref: '#/definitions/PCR'
       pcr_matches:
-        description: Boolean value to denote whether pcr matches rule needs to be
-          applied.
+        description: Boolean value to denote whether pcr matches rule needs to be applied.
         type: boolean
         x-go-name: PcrMatches
     type: object
@@ -1156,7 +1143,7 @@ definitions:
         x-go-name: FlavorName
       markers:
         items:
-          $ref: '#/definitions/FlavorPart'
+          $ref: '#/definitions/FlavorPartName'
         type: array
         x-go-name: Markers
       measurement:
@@ -1200,7 +1187,7 @@ definitions:
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   SHAAlgorithm:
     type: string
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Schema:
     description: Schema defines the Uri of the schema
     properties:
@@ -1208,10 +1195,9 @@ definitions:
         type: string
         x-go-name: Uri
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   SignedFlavor:
-    description: SignedFlavor combines the Flavor along with the cryptographically
-      signed hash that authenticates its source
+    description: SignedFlavor combines the Flavor along with the cryptographically signed hash that authenticates its source
     properties:
       flavor:
         $ref: '#/definitions/Flavor'
@@ -1219,7 +1205,7 @@ definitions:
         type: string
         x-go-name: Signature
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   SignedFlavorCollection:
     description: SignedFlavorCollection is a list of SignedFlavor objects
     properties:
@@ -1231,8 +1217,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   Software:
-    description: Software consists of integrity measurements of Software/OS related
-      resources
+    description: Software consists of integrity measurements of Software/OS related resources
     properties:
       cumulative_hash:
         type: string
@@ -1243,7 +1228,7 @@ definitions:
         type: object
         x-go-name: Measurements
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   SymlinkManifestType:
     properties:
       Path:
@@ -1301,8 +1286,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   TagCertificateCollection:
-    description: TagCertificateCollection is the response sent by the tag-certificate
-      API
+    description: TagCertificateCollection is the response sent by the tag-certificate API
     properties:
       certificates:
         items:
@@ -1315,14 +1299,12 @@ definitions:
     description: TagCertificateCreateCriteria holds the data used to create a TagCertificate
     properties:
       hardware_uuid:
-        description: HardwareUUID The hardware UUID of the host to which the tag certificate
-          is associated.
+        description: HardwareUUID The hardware UUID of the host to which the tag certificate is associated.
         format: uuid
         type: string
         x-go-name: HardwareUUID
       selection_content:
-        description: SelectionContent is an array of one or more key-value pairs with
-          the tag selection attributes.
+        description: SelectionContent is an array of one or more key-value pairs with the tag selection attributes.
         items:
           $ref: '#/definitions/TagKvAttribute'
         type: array
@@ -1330,8 +1312,7 @@ definitions:
     type: object
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/hvs/domain/models
   TagCertificateDeployCriteria:
-    description: TagCertificateDeployCriteria holds the data used to deploy a TagCertificate
-      onto a host
+    description: TagCertificateDeployCriteria holds the data used to deploy a TagCertificate onto a host
     properties:
       certificate_id:
         format: uuid
@@ -1349,7 +1330,7 @@ definitions:
         type: string
         x-go-name: Value
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/asset-tag
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   TpmEndorsement:
     description: TpmEndorsement struct
     properties:
@@ -1397,7 +1378,7 @@ definitions:
         type: array
         x-go-name: TpmEvent
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/types
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
   TrustInformation:
     properties:
       OVERALL:
@@ -1455,8 +1436,7 @@ definitions:
     type: integer
     x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/host-connector/constants
   X509AttributeCertificate:
-    description: X509AttributeCertificate holds a subset of x509.Certificate that
-      has relevant information for Flavor
+    description: X509AttributeCertificate holds a subset of x509.Certificate that has relevant information for Flavor
     properties:
       attribute:
         items:
@@ -1491,7 +1471,7 @@ definitions:
         type: string
         x-go-name: Subject
     type: object
-    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/lib/flavor/model
+    x-go-package: github.com/intel-secl/intel-secl/v4/pkg/model/hvs
 host: hvs.com:8443
 info:
   description: |-
@@ -1541,11 +1521,9 @@ paths:
         "400":
           description: Invalid domain/Certificate Type provided
         "415":
-          description: Invalid Accept Header in Request - should be application/json
-            or application/x-pem-file
+          description: Invalid Accept Header in Request - should be application/json or application/x-pem-file
         "500":
-          description: Internal server error - Certificates with specified type have
-            not been created/loaded
+          description: Internal server error - Certificates with specified type have not been created/loaded
       tags:
       - CACertificates
       x-sample-call-endpoint: https://hvs.com:8443/hvs/v2/ca-certificates?domain=ek
@@ -1597,8 +1575,7 @@ paths:
           schema:
             $ref: '#/definitions/CaCertificate'
         "400":
-          description: Invalid CACertificate in request body/Invalid type, only root
-            or endorsement ca certificate can be added
+          description: Invalid CACertificate in request body/Invalid type, only root or endorsement ca certificate can be added
         "415":
           description: Invalid Accept/Content-Type Header in Request - should be application/json
         "500":
@@ -1628,8 +1605,7 @@ paths:
         Returns - The retrieved CA Certificate from the Certificate store.
       operationId: RetrieveCACertificate
       parameters:
-      - description: Available Certificate Types are {root, endorsement, ek, privacy,
-          aik, tag, saml, tls}
+      - description: Available Certificate Types are {root, endorsement, ek, privacy, aik, tag, saml, tls}
         enum:
         - root
         - endorsement
@@ -1662,8 +1638,7 @@ paths:
         "415":
           description: Invalid Accept Header in Request - should be application/json
         "500":
-          description: Internal server error - Certificates with specified type have
-            not been created/loaded
+          description: Internal server error - Certificates with specified type have not been created/loaded
       tags:
       - CACertificates
       x-sample-call-endpoint: https://hvs.com:8443/hvs/v2/ca-certificates/tag
@@ -1732,14 +1707,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: "Creates a ESXi cluster record in database.\n\nThe serialized ESXi
-        cluster Go struct object represents the content of the request body.\n\n |
-        Attribute                      | Description                                     |\n
-        |--------------------------------|-------------------------------------------------|\n
-        | cluster_name                   | Name of the vCenter cluster. The name needs
-        to be exactly as it appears in vCenter. |\n | connection_string \t\t\t   |
-        The connection string is of the form <b>https://vCenter-url:443/sdk;u=vCenter-username;p=password\"</b>.
-        This is used to connect to vCenter and get the cluster information. |\n"
+      description: "Creates a ESXi cluster record in database.\n\nThe serialized ESXi cluster Go struct object represents the content of the request body.\n\n | Attribute                      | Description                                     |\n |--------------------------------|-------------------------------------------------|\n | cluster_name                   | Name of the vCenter cluster. The name needs to be exactly as it appears in vCenter. |\n | connection_string \t\t\t   | The connection string is of the form <b>https://vCenter-url:443/sdk;u=vCenter-username;p=password\"</b>. This is used to connect to vCenter and get the cluster information. |\n"
       operationId: Create-ESXi-cluster-record
       parameters:
       - in: body
@@ -1969,8 +1937,7 @@ paths:
         Retrieves all the flavor templates available in the database.
       operationId: Search-FlavorTemplates
       parameters:
-      - description: Boolean value to indicate whether the deleted templates should
-          be included in the search.
+      - description: Boolean value to indicate whether the deleted templates should be included in the search.
         format: bool
         in: query
         name: includeDeleted
@@ -1988,8 +1955,7 @@ paths:
         in: query
         name: conditionContains
         type: string
-      - description: Flavor templates that contain the specified flavor part will
-          be included
+      - description: Flavor templates that contain the specified flavor part will be included
         in: query
         name: flavorPartContains
         type: string
@@ -2290,8 +2256,7 @@ paths:
         type: string
       responses:
         "204":
-          description: Successfully performed lazy delete on flavor template based
-            on flavortemplate_id
+          description: Successfully performed lazy delete on flavor template based on flavortemplate_id
         "400":
           description: Invalid or Bad request
         "401":
@@ -2525,8 +2490,7 @@ paths:
           schema:
             $ref: '#/definitions/FlavorTemplateFlavorgroupCreateRequest'
         "400":
-          description: Invalid request body provided/FlavorgroupID provided in request
-            body does not exist/FlavorTemplate-FlavorGroup link already exists
+          description: Invalid request body provided/FlavorgroupID provided in request body does not exist/FlavorTemplate-FlavorGroup link already exists
         "404":
           description: FlavorTemplate ID in request path does not exist
         "415":
@@ -2664,9 +2628,7 @@ paths:
         in: query
         name: nameContains
         type: string
-      - description: Boolean value to indicate whether the content of the flavors
-          contained within the <br> specified flavor group should be included in the
-          response body. Default value is false.
+      - description: Boolean value to indicate whether the content of the flavors contained within the <br> specified flavor group should be included in the response body. Default value is false.
         in: query
         name: includeFlavorContent
         type: boolean
@@ -3055,8 +3017,7 @@ paths:
           schema:
             $ref: '#/definitions/FlavorgroupFlavorLink'
         "400":
-          description: Invalid request body provided/FlavorID provided in request
-            body does not exist/FlavorGroup-Flavor link already exists
+          description: Invalid request body provided/FlavorID provided in request body does not exist/FlavorGroup-Flavor link already exists
         "404":
           description: FlavorGroup ID in request path does not exist
         "415":
@@ -3180,25 +3141,19 @@ paths:
         in: query
         name: id
         type: string
-      - description: The key can be any “key” field from the meta description section
-          of a flavor. The value can be any “value” of the specified key field in
-          the flavor meta description section. Both key and value query parameters
-          need to be specified.
+      - description: The key can be any “key” field from the meta description section of a flavor. The value can be any “value” of the specified key field in the flavor meta description section. Both key and value query parameters need to be specified.
         in: query
         name: key
         type: string
-      - description: The value of the key attribute in flavor description. When provided,
-          key must be provided in query as well.
+      - description: The value of the key attribute in flavor description. When provided, key must be provided in query as well.
         in: query
         name: value
         type: string
-      - description: The flavor group ID. Returns all the flavors associated with
-          the flavor group ID.
+      - description: The flavor group ID. Returns all the flavors associated with the flavor group ID.
         in: query
         name: flavorgroupId
         type: string
-      - description: An array of flavor parts returns all the flavors associated with
-          the flavor parts
+      - description: An array of flavor parts returns all the flavors associated with the flavor parts
         in: query
         name: flavorParts
         type: string
@@ -3745,13 +3700,11 @@ paths:
         name: toDate
         type: string
       - default: true
-        description: Return only the latest status of HostStatus records if true.
-          Else returns records from audit log entries.
+        description: Return only the latest status of HostStatus records if true. Else returns records from audit log entries.
         in: query
         name: latestPerHost
         type: boolean
-      - description: Returns HostStatus records created since the past 'n' days. For
-          an exact range, use `fromDate` and `toDate` instead.
+      - description: Returns HostStatus records created since the past 'n' days. For an exact range, use `fromDate` and `toDate` instead.
         in: query
         minimum: 1
         name: numberOfDays
@@ -3773,8 +3726,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the HostStatus records. Also returned
-            when no results are found.
+          description: Successfully retrieved the HostStatus records. Also returned when no results are found.
           schema:
             $ref: '#/definitions/HostStatusCollection'
         "400":
@@ -5025,15 +4977,11 @@ paths:
         in: query
         name: hostHardwareId
         type: string
-      - description: User needs to specify values for both key and value fields. Key
-          can be any field in host info section of host report field in host status
-          table.
+      - description: User needs to specify values for both key and value fields. Key can be any field in host info section of host report field in host status table.
         in: query
         name: key
         type: string
-      - description: User needs to specify values for both key and value fields. Value
-          will be content of key field in host info section of host report field in
-          host status table.
+      - description: User needs to specify values for both key and value fields. Value will be content of key field in host info section of host report field in host status table.
         in: query
         name: value
         type: string
@@ -5049,8 +4997,7 @@ paths:
         in: query
         name: getHostStatus
         type: boolean
-      - description: Orders the host collection in ascending/descending order. Accepted
-          values are "asc"/"desc" the default being "asc".
+      - description: Orders the host collection in ascending/descending order. Accepted values are "asc"/"desc" the default being "asc".
         enum:
         - asc
         - desc
@@ -5355,8 +5302,7 @@ paths:
         Returns - The serialized HostFlavorgroupCollection Go struct object that was retrieved, which is a collection of serialized HostFlavorgroup Go struct objects.
       operationId: SearchHostFlavorgroupLink
       parameters:
-      - description: Unique ID of the host for which the host-flavorgroup association
-          needs to be retrieved.
+      - description: Unique ID of the host for which the host-flavorgroup association needs to be retrieved.
         format: uuid
         in: path
         name: host_id
@@ -5466,8 +5412,7 @@ paths:
         name: host_id
         required: true
         type: string
-      - description: Unique ID of the flavorgroup that need to be dissociated from
-          the host.
+      - description: Unique ID of the flavorgroup that need to be dissociated from the host.
         format: uuid
         in: path
         name: flavorgroup_id
@@ -5492,15 +5437,13 @@ paths:
         Returns - The serialized HostFlavorgroup Go struct object that was retrieved.
       operationId: RetrieveHostFlavorgroupLink
       parameters:
-      - description: Unique ID of the host for which the host-flavorgroup association
-          needs to be retrieved.
+      - description: Unique ID of the host for which the host-flavorgroup association needs to be retrieved.
         format: uuid
         in: path
         name: host_id
         required: true
         type: string
-      - description: Unique ID of the flavorgroup for which the host-flavorgroup association
-          needs to be retrieved.
+      - description: Unique ID of the flavorgroup for which the host-flavorgroup association needs to be retrieved.
         format: uuid
         in: path
         name: flavorgroup_id
@@ -5602,25 +5545,21 @@ paths:
         in: query
         name: id
         type: string
-      - description: host Id of the host. If this parameter is specified, it will
-          return report only for active host with specified host id.
+      - description: host Id of the host. If this parameter is specified, it will return report only for active host with specified host id.
         format: uuid
         in: query
         name: hostId
         type: string
-      - description: Hostname of the host. If this parameter is specified, it will
-          return report only for active host with specified host name.
+      - description: Hostname of the host. If this parameter is specified, it will return report only for active host with specified host name.
         in: query
         name: hostName
         type: string
-      - description: Hardware UUID of the host. If this parameter is specified, it
-          will return report only for active host with specified host hardware uuid.
+      - description: Hardware UUID of the host. If this parameter is specified, it will return report only for active host with specified host hardware uuid.
         format: uuid
         in: query
         name: hostHardwareId
         type: string
-      - description: Current state of an active host.  A list of host states is defined
-          in the description section of the HostStatus.
+      - description: Current state of an active host.  A list of host states is defined in the description section of the HostStatus.
         format: string
         in: query
         name: hostStatus
@@ -5653,9 +5592,7 @@ paths:
         name: toDate
         type: string
       - default: true
-        description: Returns only the latest report for each host. If latestPerHost
-          is specified in conjuction with a date filter, it will return the latest
-          report for within the specified date range per host.
+        description: Returns only the latest report for each host. If latestPerHost is specified in conjuction with a date filter, it will return the latest report for within the specified date range per host.
         in: query
         name: latestPerHost
         type: boolean
@@ -5779,6 +5716,12 @@ paths:
         in: header
         name: Accept
         required: true
+        type: string
+      - description: Create the report asynchronously by adding the host to flavor-verification queue
+        enum:
+        - async
+        in: query
+        name: process
         type: string
       produces:
       - application/json
@@ -6180,8 +6123,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved the Tag Certificates. Returns an empty
-            list when no matching records are found.
+          description: Successfully retrieved the Tag Certificates. Returns an empty list when no matching records are found.
           schema:
             $ref: '#/definitions/TagCertificateCollection'
         "400":
@@ -6357,8 +6299,7 @@ paths:
         in: query
         name: issuerContains
         type: string
-      - description: Boolean value to indicate status of the ek certificate. Default
-          value is false.
+      - description: Boolean value to indicate status of the ek certificate. Default value is false.
         in: query
         name: revokedEqualTo
         type: boolean
@@ -6396,15 +6337,7 @@ paths:
       - TpmEndorsements
       x-permissions: tpm_endorsements:search
       x-sample-call-endpoint: https://hvs.com:8443/hvs/v2/tpm-endorsements?hardwareUuidEqualTo=80e54342-94f2-e711-906e-001560a04062
-      x-sample-call-output: "{\n     \"tpm_endorsements\": [\n        {\n            \"id\"
-        \           \t\t: \"d7e24dd4-76c0-4384-a8b0-09552ebaa1a1\",\n            \"hardware_uuid\"
-        \t\t: \"80e54342-94f2-e711-906e-001560a04062\",\n            \"issuer\"       \t\t:
-        \"C=DE,O=Infineon Technologies AG,OU=OPTIGA(TM) TPM2.0,CN=Infineon OPTIGA(TM)
-        RSA Manufacturing CA 007\",\n            \"revoked\"       \t\t: false,\n
-        \           \"certificate\"   \t\t: \"MIIEnDCCA4SgAwIBAgIEUilBVDANBgkqhkiG9w0BAQsFADCBgzELMAk...NBgkqhkiG9w0BAQsFADCBgzELMAk==\",\n
-        \           \"comment\"       \t\t: \"registered by trust agent\"\n            \"certificate_digest\"
-        : \"da8e9c68faf66d2634a4cbe14534a1916db261f401ffaffd42dc901eae33dd57695f365a31d19da67e4cebf1491dea60\"\n
-        \          }\n       ]\n   }"
+      x-sample-call-output: "{\n     \"tpm_endorsements\": [\n        {\n            \"id\"            \t\t: \"d7e24dd4-76c0-4384-a8b0-09552ebaa1a1\",\n            \"hardware_uuid\" \t\t: \"80e54342-94f2-e711-906e-001560a04062\",\n            \"issuer\"       \t\t: \"C=DE,O=Infineon Technologies AG,OU=OPTIGA(TM) TPM2.0,CN=Infineon OPTIGA(TM) RSA Manufacturing CA 007\",\n            \"revoked\"       \t\t: false,\n            \"certificate\"   \t\t: \"MIIEnDCCA4SgAwIBAgIEUilBVDANBgkqhkiG9w0BAQsFADCBgzELMAk...NBgkqhkiG9w0BAQsFADCBgzELMAk==\",\n            \"comment\"       \t\t: \"registered by trust agent\"\n            \"certificate_digest\" : \"da8e9c68faf66d2634a4cbe14534a1916db261f401ffaffd42dc901eae33dd57695f365a31d19da67e4cebf1491dea60\"\n           }\n       ]\n   }"
     post:
       consumes:
       - application/json
@@ -6620,13 +6553,7 @@ paths:
                   "certificate"   : "MIIEnDCCA4SgAwIBAgIEUilBVDANBgkqhkiG9w0BAQsFADCBgzELMAk...NBgkqhkiG9w0BAQsFADCBgzELMAk==",
                   "comment"       : "registered by trust agent"
         }
-      x-sample-call-output: "{\n     \"id\"            \t\t: \"ebec68d1-a78f-4b66-b643-d80ba44e7fc0\",\n
-        \    \"hardware_uuid\" \t\t: \"0002bfac-9ac5-e711-906e-00163566263e\",\n     \"issuer\"
-        \       \t\t: \"C=DE,O=Infineon Technologies AG,OU=OPTIGA(TM) TPM2.0,CN=Infineon
-        OPTIGA(TM) RSA Manufacturing CA 007\",\n     \"revoked\"       \t\t: false,\n
-        \    \"certificate\"   \t\t: \"MIIEnDCCA4SgAwIBAgIEUilBVDANBgkqhkiG9w0BAQsFADCBgzELMAk...NBgkqhkiG9w0BAQsFADCBgzELMAk==\",\n
-        \    \"comment\"       \t\t: \"registered by trust agent\",\n     \"certificate_digest\"\t:
-        \"da8e9c68faf66d2634a4cbe14534a1916db261f401ffaffd42dc901eae33dd57695f365a31d19da67e4cebf1491dea60\"\n}"
+      x-sample-call-output: "{\n     \"id\"            \t\t: \"ebec68d1-a78f-4b66-b643-d80ba44e7fc0\",\n     \"hardware_uuid\" \t\t: \"0002bfac-9ac5-e711-906e-00163566263e\",\n     \"issuer\"        \t\t: \"C=DE,O=Infineon Technologies AG,OU=OPTIGA(TM) TPM2.0,CN=Infineon OPTIGA(TM) RSA Manufacturing CA 007\",\n     \"revoked\"       \t\t: false,\n     \"certificate\"   \t\t: \"MIIEnDCCA4SgAwIBAgIEUilBVDANBgkqhkiG9w0BAQsFADCBgzELMAk...NBgkqhkiG9w0BAQsFADCBgzELMAk==\",\n     \"comment\"       \t\t: \"registered by trust agent\",\n     \"certificate_digest\"\t: \"da8e9c68faf66d2634a4cbe14534a1916db261f401ffaffd42dc901eae33dd57695f365a31d19da67e4cebf1491dea60\"\n}"
   /version:
     get:
       description: |
