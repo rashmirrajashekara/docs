@@ -132,7 +132,7 @@ The rest of this document will indicate steps that are only needed for SKC.
 
 ```
 mkdir -p /root/workspace && cd /root/workspace
-repo init -u https://github.com/intel-secl/build-manifest -b refs/tags/v4.1.0 -m manifest/skc.xml
+repo init -u https://github.com/intel-secl/build-manifest -b refs/tags/v4.1.0-Beta -m manifest/skc.xml
 repo sync
 ```
 
