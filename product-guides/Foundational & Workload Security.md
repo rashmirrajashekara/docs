@@ -2,7 +2,7 @@
 
 **Product Guide**
 
-**August 2021**
+**December 2021**
 
 **Revision 4.1**
 
@@ -71,7 +71,7 @@ Copyright © 2020, Intel Corporation. All Rights Reserved.
 | 3.6              | Updated for version 3.6 release | May 2021 |
 | 4.0 | Updated for version 4.0 release | July 2021 |
 | 3.6.1            | Updated for version 3.6.1 release | October 2021 |
-| 4.1 | Updated for version 4.1 release | August 2021 |
+| 4.1 | Updated for version 4.1 release | December 2021 |
 
 
 ## Table of Contents
