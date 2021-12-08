@@ -279,7 +279,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.0.1
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/fs.xml -b refs/tags/v4.1.0-Beta
   repo sync
   ```
 
@@ -328,7 +328,7 @@ systemctl restart docker
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.0.1
+  repo init -u https://github.com/intel-secl/build-manifest.git -m manifest/cc-crio.xml -b refs/tags/v4.1.0-Beta
   repo sync
   ```
 
@@ -395,15 +395,9 @@ systemctl restart docker
       ```
 
   * Workload Security
-    * Container Confidentiality with CRIO runtime
+    * Container Confidentiality with CRIO(>=v1.21) runtime 
       
       * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
-        
-      * Copy `container-runtime` directory to each of the  physical servers  
-      
-      * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-      
-        > **Note:** `container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
       
       * Reboot the server
       
@@ -1046,13 +1040,13 @@ WLA: None
 
 ## Usecase Workflows API Collections
 
-The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v4.0.1/develop/tools/api-collections) repository
+The below allow to get started with workflows within Intel® SecL-DC for Foundational and Workload Security Usecases. More details available in [API Collections](https://github.com/intel-secl/utils/tree/v4.1/develop/tools/api-collections) repository
 
 ### Pre-requisites
 
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
-  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v4.0.1/develop/tools/api-collections)
+  >  **Note:** The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v4.1/develop/tools/api-collections)
 
 ### Use Case Collections
 
@@ -1061,8 +1055,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
 |                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
 |                        | Trusted Workload Placement (Containers)  | ✔️ |
-| Workload Security | Container Confidentiality with Docker Runtime | ✔️                  |
-|                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
+| Workload Security | Container Confidentiality with CRIO Runtime | ✔️                  |
 
 ### Downloading API Collections
 
