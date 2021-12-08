@@ -227,13 +227,21 @@ rm -rf go1.14.4.linux-amd64.tar.gz
     dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
     dnf install -y docker-ce-20.10.9 docker-ce-cli-20.10.9
 
-  On Ubuntu 18.04/20.04:
-    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb 
+  On Ubuntu 18.04:
+    wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb
     dpkg -i containerd.io_1.4.11-1_amd64.deb
     wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb"
     dpkg -i docker-ce-cli_20.10.8~3-0~ubuntu-bionic_amd64.deb
     wget "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb"
     dpkg -i docker-ce_20.10.8~3-0~ubuntu-bionic_amd64.deb
+
+  On Ubuntu 20.04:
+    wget https://download.docker.com/linux/ubuntu/dists/focal/pool/stable/amd64/containerd.io_1.4.11-1_amd64.deb
+    dpkg -i containerd.io_1.4.11-1_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/focal/pool/stable/amd64/docker-ce-cli_20.10.8~3-0~ubuntu-focal_amd64.deb"
+    dpkg -i docker-ce-cli_20.10.8~3-0~ubuntu-focal_amd64.deb
+    wget "https://download.docker.com/linux/ubuntu/dists/focal/pool/stable/amd64/docker-ce_20.10.8~3-0~ubuntu-focal_amd64.deb"
+    dpkg -i docker-ce_20.10.8~3-0~ubuntu-focal_amd64.deb
 
   systemctl enable docker
   systemctl start docker
