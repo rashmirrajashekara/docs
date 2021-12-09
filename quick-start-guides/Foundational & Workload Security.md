@@ -263,7 +263,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   make binaries
   ```
   
-  > **Note:** The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
+  > **Note:** The crio use case uses containerd that is bundled with `docker-ce-20.10.8` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
   
 * Built binaries
   

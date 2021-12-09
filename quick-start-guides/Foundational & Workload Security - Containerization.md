@@ -108,7 +108,7 @@ Table of Contents
 
 ### Container Runtime
 
-* Docker-19.03.13
+* Docker-20.10.8
 * CRIO-1.17.5
 
 ### K8s Distributions
@@ -229,7 +229,7 @@ rm -rf go1.14.4.linux-amd64.tar.gz
 dnf module enable -y container-tools
 dnf install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
 
 systemctl enable docker
 systemctl start docker
@@ -249,7 +249,12 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt-get update
-apt-get install docker-ce=5:19.03.13~3-0~ubuntu-bionic docker-ce-cli=5:19.03.13~3-0~ubuntu-bionic containerd.io
+
+# Ubuntu 18.04 
+apt-get install docker-ce=5:20.10.8~3-0~ubuntu-bionic docker-ce-cli=5:20.10.8~3-0~ubuntu-bionic containerd.io
+
+# Ubuntu 20.04 
+apt-get install docker-ce=5:20.10.8~3-0~ubuntu-focal docker-ce-cli=5:20.10.8~3-0~ubuntu-focal containerd.io
 
 systemctl enable docker
 systemctl start docker

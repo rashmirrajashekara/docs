@@ -140,7 +140,7 @@ repo sync
 
   ```shell
   dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
-  dnf install -y docker-ce-19.03.13 docker-ce-cli-19.03.13
+  dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
   systemctl enable docker
   systemctl start docker
   ```
