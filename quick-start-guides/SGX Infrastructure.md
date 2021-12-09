@@ -209,12 +209,12 @@ rm -rf $tmpdir
 * Golang Installation
 
 ```shell
-wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
-tar -xzf go1.14.4.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz
+tar -xzf go1.16.7.linux-amd64.tar.gz
 mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.4.linux-amd64.tar.gz
+rm -rf go1.16.7.linux-amd64.tar.gz
 ```
 
 * Install, Enable and start the Docker daemon
@@ -1232,20 +1232,9 @@ To Verify the SampleApp flow:
 
 3. Run the install_pykmip.sh script and KMIP server will be installed as daemon process
    ./install_pykmip.sh
-
 ```
 
-**Create RSA key in PyKMIP and generate certificate**
-
-> **NOTE**: This step is required only when PyKMIP script is used as a backend KMIP server.
-
-Update Host IP in /root/binaries/kbs_script rsa_create.py script
-In the kbs_script folder, Run rsa_create.py script
-```shell
-    cd /root/binaries/kbs_script
-    python3 rsa_create.py
-```
-This script will generate “Private Key ID” and “Server certificate”, which should be provided in the kbs.conf file for “KMIP_KEY_ID” and “SERVER_CERT”.
+Update KMIP_IP in /root/binaries/kbs_script/rsa_create.py
 
 **Configuration Update to create Keys in KBS**
 ```shell
@@ -1263,7 +1252,6 @@ Port of CMS, AAS and KBS services deployed on enterprise system
     
 AAS admin and Enterprise admin credentials
 ```        
-> **NOTE**: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
 
 Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 

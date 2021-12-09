@@ -112,12 +112,12 @@ rm -rf $tmpdir
 ***Golang Installation***
 
 ```
-wget https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
-tar -xzf go1.14.1.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz
+tar -xzf go1.16.7.linux-amd64.tar.gz
 sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.1.linux-amd64.tar.gz
+rm -rf go1.16.7.linux-amd64.tar.gz
 ```
 
 
@@ -215,7 +215,7 @@ The below installation is required on the Build & Deployment system only and the
 
 ### Deployment Using Ansible
 
-The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v3.6/develop/tools/ansible-role) repository.
+The below details would enable the deployment through Ansible Role for Intel® SecL-DC Secure Key Caching Usecase. However the services can still be installed manually using the Product Guide. More details on Ansible Role for Intel® SecL-DC in [Ansible-Role](https://github.com/intel-secl/utils/tree/v4.1/develop/tools/ansible-role) repository.
 
 ### Download the Ansible Role 
 
@@ -436,38 +436,21 @@ Note: Below mentioned steps are provided as script (install_pykmip.sh and pykmip
    ./install_pykmip.sh
 
 ```
-**Create RSA key in PyKMIP and generate certificate**
 
-NOTE: This step is required only when PyKMIP script is used as a backend KMIP server.
-
-```
-1. Update Host IP in /root/binaries/kbs_script rsa_create.py script
-2. In the kbs_script folder, Run rsa_create.py script
-    > cd /root/binaries/kbs_script
-    > python3 rsa_create.py
-
-This script will generate “Private Key ID” and “Server certificate”, which should be provided in the kbs.conf file for “KMIP_KEY_ID” and “SERVER_CERT”.
-
-```
 **Configuration Update to create Keys in KBS**
     
-	cd into /root/binaries/kbs_script folder
+    Update KMIP_IP in /root/binaries/kbs_script/rsa_create.py
+
+    cd into /root/binaries/kbs_script folder
 	
-    **To register keys with KBS KMIP**
-    
     Update the following variables in kbs.conf:
     
-        KMIP_KEY_ID (Private key ID registered in KMIP server)
-        
-        SERVER_CERT (Server certificate for created private key)
-		
-		Enterprise system IP address where CMS, AAS and KBS services are deployed
-        
-		Port of CMS, AAS and KBS services deployed on enterprise system
+     - Enterprise system IP address where CMS, AAS and KBS services are deployed
+     
+     - Port of CMS, AAS and KBS services deployed on enterprise system
     
-	    AAS admin and Enterprise admin credentials
+     - AAS admin and Enterprise admin credentials
         
-NOTE: If KMIP_KEY_ID is not provided then RSA key register will be done with keystring.
 
 Update sgx_enclave_measurement_anyof value in transfer_policy_request.json with enclave measurement value obtained using sgx_sign utility. Refer to "Extracting SGX Enclave values for Key Transfer Policy" section.
 
