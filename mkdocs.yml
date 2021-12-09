@@ -75,28 +75,28 @@ nav:
       - Foundational and Workload Security:
         -  Product Guide: product-guides/Foundational & Workload Security/01.md
         -  Introduction: product-guides/Foundational & Workload Security/Introduction.md
-        -  Intel® Security Libraries Components: product-guides/Foundational & Workload Security/2Intel® Security Libraries Components.md
-        -  Intel® Security Libraries Container Deployment: product-guides/Foundational & Workload Security/25Intel® Security Libraries Container Deployment.md
-        -  Authentication: product-guides/Foundational & Workload Security/26Authentication.md
-        -  Connection Strings: product-guides/Foundational & Workload Security/27Connection Strings.md
-        -  Platform Integrity Attestation: product-guides/Foundational & Workload Security/28Platform Integrity Attestation.md
-        -  Workload Confidentiality: product-guides/Foundational & Workload Security/29Workload Confidentiality.md
-        -  Trusted Virtual Kubernetes Worker Nodes: product-guides/Foundational & Workload Security/30Trusted Virtual Kubernetes Worker Nodes.md
-        -  Flavor Management: product-guides/Foundational & Workload Security/31Flavor Management.md
-        -  Scalability and Sizing: product-guides/Foundational & Workload Security/32Scalability and Sizing.md
+        -  Intel® Security Libraries Components: product-guides/Foundational & Workload Security/20 Intel® Security Libraries Components.md
+        -  Intel® Security Libraries Container Deployment: product-guides/Foundational & Workload Security/30 Intel® Security Libraries Container Deployment.md
+        -  Authentication: product-guides/Foundational & Workload Security/40 Authentication.md
+        -  Connection Strings: product-guides/Foundational & Workload Security/50 Connection Strings.md
+        -  Platform Integrity Attestation: product-guides/Foundational & Workload Security/60 Platform Integrity Attestation.md
+        -  Workload Confidentiality: product-guides/Foundational & Workload Security/70 Workload Confidentiality.md
+        -  Trusted Virtual Kubernetes Worker Nodes: product-guides/Foundational & Workload Security/80 Trusted Virtual Kubernetes Worker Nodes.md
+        -  Flavor Management: product-guides/Foundational & Workload Security/90 Flavor Management.md
+        -  Scalability and Sizing: product-guides/Foundational & Workload Security/100 Scalability and Sizing.md
         -  Intel Security Libraries Configuration Settings:
-            - Configuration Settings (Verification Services): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings1.md
-            - Configuration Settings (Trust Agent): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings2.md
-            - Configuration Settings (Integration Hub): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings3.md
-            - Configuration Settings (Certificate Management Services): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings4.md
-            - Configuration Settings (Authentication and Authorization Service): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings5.md
-            - Configuration Settings (Workload Service): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings6.md
-            - Configuration Settings (Key Broker Service): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings7.md
-            - Configuration Settings (Workload Agent): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings8.md
-            - Configuration Settings (Workload Policy Manager): product-guides/Foundational & Workload Security/33Intel Security Libraries Configuration Settings9.md
-        -  Certificate and Key Management: product-guides/Foundational & Workload Security/34Certificate and Key Management.md
-        -  Upgrades: product-guides/Foundational & Workload Security/35Upgrades.md
-        -  Appendix: product-guides/Foundational & Workload Security/36Appendix.md
+            - Configuration Settings (Verification Services): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings1.md
+            - Configuration Settings (Trust Agent): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings2.md
+            - Configuration Settings (Integration Hub): product-guides/Foundational & Workload Security/3110 Intel Security Libraries Configuration Settings3.md
+            - Configuration Settings (Certificate Management Services): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings4.md
+            - Configuration Settings (Authentication and Authorization Service): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings5.md
+            - Configuration Settings (Workload Service): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings6.md
+            - Configuration Settings (Key Broker Service): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings7.md
+            - Configuration Settings (Workload Agent): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings8.md
+            - Configuration Settings (Workload Policy Manager): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings9.md
+        -  Certificate and Key Management: product-guides/Foundational & Workload Security/120 Certificate and Key Management.md
+        -  Upgrades: product-guides/Foundational & Workload Security/130 Upgrades.md
+        -  Appendix: product-guides/Foundational & Workload Security/999 Appendix.md
       - SGX Infrastructure:
         -  Product Guide: product-guides/SGX Infrastructure/01.md
         -  Introduction: product-guides/SGX Infrastructure/1Introduction.md
