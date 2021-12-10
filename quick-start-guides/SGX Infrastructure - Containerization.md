@@ -267,9 +267,11 @@ dnf install -y skopeo --nobest
 For Ubuntu 18.04 OS
 
 ```shell
-add-apt-repository ppa:projectatomic/ppa
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo apt-key add -
 apt-get update
-apt-get install skopeo
+apt-get -y upgrade
+apt-get -y install skopeo
 ```
 
 For Ubuntu 20.04 OS

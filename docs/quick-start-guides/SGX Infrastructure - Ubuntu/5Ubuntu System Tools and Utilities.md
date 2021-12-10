@@ -6,9 +6,11 @@
 apt-get install -y software-properties-common git gcc zip wget make python3 python3-yaml python3-pip tar lsof jq nginx curl libssl-dev
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
-add-apt-repository ppa:projectatomic/ppa
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo apt-key add -
 apt-get update
-apt-get install skopeo
+apt-get -y upgrade
+apt-get -y install skopeo
 apt-get install makeself
 export PATH=/usr/local/bin:$PATH
 ```
