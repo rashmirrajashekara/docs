@@ -182,9 +182,11 @@ ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 
 # Ubuntu-18.04
-add-apt-repository ppa:projectatomic/ppa
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo apt-key add -
 apt-get update
-apt-get install skopeo
+apt-get -y upgrade
+apt-get -y install skopeo
 
 # Ubuntu-20.04
 echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
@@ -1459,14 +1461,14 @@ In future, Multiple workloads might be supported For container deployment, since
 The SKC Client Library TLS client certificate private key is stored in the configuration directories and can be read only with elevated root privileges
 keys.txt (set of PKCS11 URIs for the keys to be securely provisioned into an SGX enclave) can only be modified with elevated privileges
 
-### Deploying SKC Library as a Container 
+### Deploy SKC Library as a Container 
 ```
 Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
 
 Note: All the configuration files required for SKC Library container are modified in the resources directory only 
 
 1. Docker should be installed, enabled and services should be active
-2.To get the SKC library tar file, run "make skc_library_k8s".
+2.To get the SKC library tar file, run "make skc_library_k8s" for distribution based deployment or run "make skc_library_k8s_stacks" for stack based deployment.
   In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
 3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
 4. Update sgx_default_qcnl.conf file inside resources folder with SCS IP and SCS port and also update the kms_npm.ini with KBS IP and KBS PORT and update hosts file present in same folder with KBS IP and hostname.
