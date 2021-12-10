@@ -79,7 +79,8 @@ nav:
         -  Building Binary Installers: product-guides/Foundational & Workload Security/22 Building Binary Installers.md
         -  Hardware Considerations: product-guides/Foundational & Workload Security/23 Hardware Considerations.md
         -  Recommended Service Layout: product-guides/Foundational & Workload Security/24 Recommended Service Layout.md
-        -  Intel Security Libraries Binary Installation: product-guides/Foundational & Workload Security/25 Intel Security Libraries Binary Installation.md
+        -  Intel Security Libraries Binary Installation: 
+            - Intel Security Libraries Binary Installation: product-guides/Foundational & Workload Security/25 Intel Security Libraries Binary Installation.md
             -  Using NATS with Intel SecL: product-guides/Foundational & Workload Security/25.0 Using NATS with Intel SecL.md
             -  Installing and Configuring the Database: product-guides/Foundational & Workload Security/25.1 Installing and Configuring the Database.md
             -  Installing the Certificate Management Service: product-guides/Foundational & Workload Security/25.2 Installing the Certificate Management Service.md
@@ -104,7 +105,7 @@ nav:
         -  Intel Security Libraries Configuration Settings: 
             - Configuration Settings (Verification Services): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings1.md
             - Configuration Settings (Trust Agent): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings2.md
-            - Configuration Settings (Integration Hub): product-guides/Foundational & Workload Security/3110 Intel Security Libraries Configuration Settings3.md
+            - Configuration Settings (Integration Hub): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings3.md
             - Configuration Settings (Certificate Management Services): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings4.md
             - Configuration Settings (Authentication and Authorization Service): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings5.md
             - Configuration Settings (Workload Service): product-guides/Foundational & Workload Security/110 Intel Security Libraries Configuration Settings6.md
