@@ -267,9 +267,11 @@ dnf install -y skopeo --nobest
 For Ubuntu 18.04 OS
 
 ```shell
-add-apt-repository ppa:projectatomic/ppa
+echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo apt-key add -
 apt-get update
-apt-get install skopeo
+apt-get -y upgrade
+apt-get -y install skopeo
 ```
 
 For Ubuntu 20.04 OS
@@ -1095,22 +1097,18 @@ Below steps to be followed post successful deployment with Single-Node/Multi-Nod
 
 #### Generating keys
 
-* From cluster node, copy `k8s/manifests/kbs/rsa_create.py` to KMIP server, update KMIP server IP in rsa_create.py inside single quote and execute it using `python3 rsa_create.py`. It will generate the KMIP KEY ID and server.crt. Copy server.crt to cluster node.
+* From cluster node, copy `k8s/manifests/kbs/rsa_create.py` to KMIP server, update KMIP server IP in rsa_create.py inside single quote.
 
 * On cluster node, navigate to `k8s/manifests/kbs/` 
 
-* Update `kbs.conf` with `SYSTEM_IP`, `AAS_PORT`, `KBS_PORT`, `CMS_PORT`, `KMIP_KEY_ID` and `SERVER_CERT`
+* Update `kbs.conf` with `SYSTEM_IP`, `AAS_PORT`, `KBS_PORT` and `CMS_PORT`
   * `SYSTEM_IP` : K8s control-plane IP
   * `AAS_PORT` : k8s exposed port for AAS (default 30444)
   * `KBS_PORT` : k8s exposed port for KBS (default 30448)
   * `CMS_PORT` : k8s exposed port for CMS (default 30445)
-  * `KMIP_KEY_ID` : KMIP KEY ID obtained by running rsa_create.py on KMIP server.
-  * `SERVER_CERT` : Complete path of copied server.crt file obtained by running rsa_create.py on KMIP server.
 
 
 * Generate the key using `./run.sh reg`
-
-> **Note:** Before generating new key, every time we have to follow above 4 steps. rsa_create.py script will generate new `KMIP_KEY_ID` and `SERVER_CERT` everytime.
 
 #### Setup configurations
 

@@ -596,7 +596,7 @@ Intel® Security Libraries is distributed as open source code and must be compil
 
 Instructions and sample scripts for building the Intel® SecL-DC components can be found in
 
-https://github.com/intel-secl/docs/blob/v4.1/develop/quick-start-guides/SGX%20Infrastructure%20-%20RHEL.md
+https://github.com/intel-secl/docs/blob/v4.1/develop/quick-start-guides/SGX%20Infrastructure.md
 
 After the components have been built, the installation binaries and database scripts can be found in the binaries directory created by the build scripts.
 
@@ -1412,7 +1412,7 @@ When the installation completes, the SGX Quote Verification Service is available
 
 * To setup k8 cluster on RHEL 8.2, follow https://phoenixnap.com/kb/how-to-install-kubernetes-on-centos
 
-* To setup k8s cluster on Ubuntu 18.04/20.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v4.1/develop/quick-start-guides/Secure%20Key%20Caching%20-%20Ubuntu.md
+* To setup k8s cluster on Ubuntu 18.04/20.04, follow the "Install, Enable and start the Docker daemon" section in Ubuntu Quick Start Guide - https://github.com/intel-secl/docs/blob/v4.1/develop/quick-start-guides/SGX%20Infrastructure.md
 Once done, go to https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/ and follow from step 3 onwards.
 
 * Once the master/worker setup is done, follow below steps on Master Node:
