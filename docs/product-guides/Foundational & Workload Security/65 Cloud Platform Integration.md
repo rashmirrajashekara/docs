@@ -253,7 +253,8 @@ Similarly, if the TAINT_REBOOTED option is used, worker nodes will be tainted by
 
 If a worker was previously considered tainted and the untrusted state is resolved, the Intel® SecL CRDs will remove the tainted flag and the worker will be able to launch pods again.
 
-Important: the taint rules can potentially result in all available worker nodes becoming tainted, due to a mass-reboot, a mistake with Flavor configuration, etc.  This is especially relevant for small proof-of-concept deployments that may only use a limited number of worker nodes.  Tainted worker nodes will be evacuate any Intel SecL services 
+???+ note
+    Important: The taint rules can potentially result in all available worker nodes becoming tainted due to a mass-reboot, a mistake with Flavor configuration, etc.  This is especially relevant for small proof-of-concept deployments that may only use a limited number of worker nodes.  Tainted worker nodes will be evacuate any Intel SecL services, which prevents ISecL from being used to remediate the issue.  It is strongly recommended to set taint tolerations for each of the Intel SecL management plane services such that they can still run on tainted workers to prevent such a situation.  These settings are not required if the taint options are set to "false" (default).
 
 The following taints are used by the Intel SecL extension controller:
 
