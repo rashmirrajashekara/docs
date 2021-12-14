@@ -190,7 +190,7 @@ Copyright © 2021, Intel Corporation. All Rights Reserved.
     - [Supported Operation System](#supported-operation-system)
     - [Recommended Hardware](#recommended-hardware-7)
     - [Installation](#installation-7)
-      - [Deploying SKC Library as a Container (Supported only on RHEL 8.2, not supported on Ubuntu 18.04/20.04)](#deploying-skc-library-as-a-container-supported-only-on-rhel-82-not-supported-on-ubuntu-1804)
+      - [Deploy SKC Library as a Container (Build Supported only on RHEL 8.2/8.4, not supported on Ubuntu 18.04/20.04)](#deploy-skc-library-as-a-container-build-supported-only-on-rhel-82-not-supported-on-ubuntu-1804)
   - [Authentication](#authentication)
   - [Create Token](#create-token)
   - [User Management](#user-management)
@@ -1966,7 +1966,7 @@ Save and Close
 
 ./deploy_skc_library.sh
 ```
-#### Deploying SKC Library as a Container (Supported only on RHEL 8.2, not supported on Ubuntu 18.04/20.04)
+#### Deploy SKC Library as a Container (Build supported only on RHEL 8.2/8.4, not supported on Ubuntu 18.04/20.04)
 ```
 Use the following steps to configure SKC library running in a container and to validate key transfer in container on bare metal and inside a VM on SGX enabled hosts.
 
@@ -1974,7 +1974,8 @@ Note: All the configuration files required for SKC Library container are modifie
 
 1. Docker should be installed, enabled and services should be active
 
-2. In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.  
+2.To get the SKC library tar file, run "make skc_library_k8s" for distribution based deployment or run "make skc_library_k8s_stacks" for stack based deployment.
+  In the build System, SKC Library tar file "<skc-lib*>.tar" required to load is located in the "/root/workspace/skc_library" directory.
 
 3. Copy "resources" folder from "workspace/skc_library/container/resources" to the "/root/" directory of SGX host. Inside the resources folder all the key transfer flow related files will be available.
 

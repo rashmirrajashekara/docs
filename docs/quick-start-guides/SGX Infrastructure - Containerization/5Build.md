@@ -25,12 +25,12 @@ rm -rf $tmpdir
 ### Golang
 
 ```shell
-wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
-tar -xzf go1.14.4.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz
+tar -xzf go1.16.7.linux-amd64.tar.gz
 sudo mv go /usr/local
 export GOROOT=/usr/local/go
 export PATH=$GOROOT/bin:$PATH
-rm -rf go1.14.4.linux-amd64.tar.gz
+rm -rf go1.16.7.linux-amd64.tar.gz
 ```
 
 ### Docker
