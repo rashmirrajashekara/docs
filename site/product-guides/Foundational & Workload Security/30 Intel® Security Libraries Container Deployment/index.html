@@ -3461,12 +3461,12 @@ install -m <span class="m">755</span> <span class="nv">$tmpdir</span>/repo /usr/
 rm -rf <span class="nv">$tmpdir</span>
 </code></pre></div>
 <h4 id="golang">Golang</h4>
-<div class="highlight"><pre><span></span><code>wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
-tar -xzf go1.14.4.linux-amd64.tar.gz
+<div class="highlight"><pre><span></span><code>wget https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz
+tar -xzf go1.16.7.linux-amd64.tar.gz
 sudo mv go /usr/local
 <span class="nb">export</span> <span class="nv">GOROOT</span><span class="o">=</span>/usr/local/go
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$GOROOT</span>/bin:<span class="nv">$PATH</span>
-rm -rf go1.14.4.linux-amd64.tar.gz
+rm -rf go1.16.7.linux-amd64.tar.gz
 </code></pre></div>
 <h4 id="docker">Docker</h4>
 <div class="highlight"><pre><span></span><code><span class="c1"># RedHat Enterprise Linux-8.3</span>
@@ -3493,7 +3493,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span>
 <span class="s2">  </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> stable&quot;</span> <span class="p">|</span> sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
 
 apt-get update
-apt-get install docker-ce<span class="o">=</span><span class="m">5</span>:19.03.13~3-0~ubuntu-bionic docker-ce-cli<span class="o">=</span><span class="m">5</span>:19.03.13~3-0~ubuntu-bionic containerd.io
+apt-get -y install docker-ce<span class="o">=</span><span class="m">5</span>:19.03.13~3-0~ubuntu-bionic docker-ce-cli<span class="o">=</span><span class="m">5</span>:19.03.13~3-0~ubuntu-bionic containerd.io
 
 systemctl <span class="nb">enable</span> docker
 systemctl start docker

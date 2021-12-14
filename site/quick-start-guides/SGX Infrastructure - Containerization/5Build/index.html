@@ -2839,12 +2839,12 @@ install -m <span class="m">755</span> <span class="nv">$tmpdir</span>/repo /usr/
 rm -rf <span class="nv">$tmpdir</span>
 </code></pre></div>
 <h3 id="golang">Golang</h3>
-<div class="highlight"><pre><span></span><code>wget https://dl.google.com/go/go1.14.4.linux-amd64.tar.gz
-tar -xzf go1.14.4.linux-amd64.tar.gz
+<div class="highlight"><pre><span></span><code>wget https://dl.google.com/go/go1.16.7.linux-amd64.tar.gz
+tar -xzf go1.16.7.linux-amd64.tar.gz
 sudo mv go /usr/local
 <span class="nb">export</span> <span class="nv">GOROOT</span><span class="o">=</span>/usr/local/go
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$GOROOT</span>/bin:<span class="nv">$PATH</span>
-rm -rf go1.14.4.linux-amd64.tar.gz
+rm -rf go1.16.7.linux-amd64.tar.gz
 </code></pre></div>
 <h3 id="docker">Docker</h3>
 <div class="highlight"><pre><span></span><code>dnf module <span class="nb">enable</span> -y container-tools
