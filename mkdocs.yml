@@ -115,10 +115,11 @@ nav:
         -  Certificate and Key Management: product-guides/Foundational & Workload Security/120 Certificate and Key Management.md
         -  Upgrades: product-guides/Foundational & Workload Security/130 Upgrades.md
         -  Appendix: product-guides/Foundational & Workload Security/999 Appendix.md
-      - SGX Infrastructure:
+      - SGX Infrastructure and Secure Key Caching:
         -  Product Guide: product-guides/SGX Infrastructure/01.md
         -  Introduction: product-guides/SGX Infrastructure/1Introduction.md
-        -  SGX Attestation Infrastructure and SKC Components: product-guides/SGX Infrastructure/2SGX Attestation Infrastructure and SKC Components.md
+        -  SGX Attestation Infrastructure : product-guides/SGX Infrastructure/2SGX Attestation Infrastructure.md
+        -  Secure Key Caching: product-guides/SGX Infrastructure/2.1Secure Key Caching.md
         -  Intel® Security Libraries Installation: product-guides/SGX Infrastructure/3Intel® Security Libraries Installation.md
         -  Authentication: product-guides/SGX Infrastructure/4Authentication.md
         -  SGX Features Provisioning: product-guides/SGX Infrastructure/5SGX Features Provisioning.md
