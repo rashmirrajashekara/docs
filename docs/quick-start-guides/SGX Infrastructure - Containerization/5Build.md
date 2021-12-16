@@ -175,3 +175,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.4 must 
   ```shell
   /root/intel-secl/build/skc-k8s-multi-node/k8s/
   ```
+
+## Deploy Linux Stacks for Intel SGX
+	
+* To setup and deployment of the Linux* Stacks for Intel® SGX, follow https://download.01.org/intelsgxstack/2021-07-28/Getting_Started.pdf
