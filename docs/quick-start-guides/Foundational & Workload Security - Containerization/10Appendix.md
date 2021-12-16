@@ -140,7 +140,7 @@ rm -rf /opt/kbs
 ./isecl-bootstrap.sh up <service-name>
 ```
 
-In order to redeploy again on single node with data, config from previous deployment
+In order to redeploy single service again on single node with data, config from previous deployment
 ```shell
 ./isecl-bootstrap.sh down <service-name>
 ./isecl-bootstrap.sh up <service-name>
@@ -148,7 +148,7 @@ In order to redeploy again on single node with data, config from previous deploy
 
 ### Multi-node
 
-In order to cleanup and setup fresh again on multi-node with data,config from previous deployment
+In order to cleanup and setup fresh again on multi-node without data,config from previous deployment
 
 ```shell
 #Purge all data and pods,deploy,cm,secrets
@@ -184,6 +184,13 @@ systemctl restart kubelet
 ./isecl-bootstrap-db-services.sh purge
 
 #Cleanup all data from NFS share --> User controlled
+rm -rf /<nfs-mount-path>/isecl/<service-name>/config
+rm -rf /<nfs-mount-path>/isecl/<service-name>/logs
+
+Repeat the above steps for all service
+
+#Only in case of KBS, perform one more step along with above 2 steps
+rm -rf /<nfs-mount-path>/isecl/<service-name>/opt
 
 #Cleanup data from each worker node --> User controlled
 rm -rf /etc/workload-agent
@@ -196,22 +203,30 @@ rm -rf /var/log/trustagent
 ./isecl-bootstrap.sh up <all/usecase of choice>
 
 #Reconfigure K8s-scheduler
+#Uncomment '--policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 containers:
   - command:
     - kube-scheduler
     - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
 
+#Uncomment '- mountPath: ...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 containers:
     volumeMounts:
     - mountPath: /opt/isecl-k8s-extensions/
       name: extendedsched
       readOnly: true
 
+#Uncomment '-hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 volumes:
   - hostPath:
       path: /opt/isecl-k8s-extensions/
       type:
     name: extendedsched
+
+#Copy ihub_public_key.pem from <NFS-vol-base-path>/ihub/config/ to K8s control-plane and update IHUB_PUB_KEY_PATH in isecl-k8s.env
+
+#Bootstrap isecl-scheduler
+./isecl-bootstrap.sh up isecl-scheduler
 
 #Restart kubelet
 systemctl restart kubelet
@@ -253,27 +268,26 @@ systemctl restart kubelet
 ./isecl-bootstrap-db-services.sh up
 ./isecl-bootstrap.sh up <all/usecase of choice>
 
-#Setup fresh
-./isecl-bootstrap-db-services.sh up
-./isecl-bootstrap.sh up <all/usecase of choice>
-
-#Copy ihub_public_key.pem from <NFS-PATH>/ihub/config/ to K8s control-plane and update IHUB_PUB_KEY_PATH in isecl-isecl-k8s.env
+#Copy ihub_public_key.pem from <NFS-vol-base-path>/ihub/config/ to K8s control-plane and update IHUB_PUB_KEY_PATH in isecl-k8s.env
 
 #Bootstrap isecl-scheduler
 ./isecl-bootstrap.sh up isecl-scheduler
 
 #Reconfigure K8s-scheduler
+#Uncomment '--policy-config-file=...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 containers:
   - command:
     - kube-scheduler
     - --policy-config-file=/opt/isecl-k8s-extensions/scheduler-policy.json
 
+#Uncomment '- mountPath: ...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 containers:
     volumeMounts:
     - mountPath: /opt/isecl-k8s-extensions/
       name: extendedsched
       readOnly: true
 
+#Uncomment '-hostPath:...' from /etc/kubernetes/manifests/kube-scheduler.yaml as below
 volumes:
   - hostPath:
       path: /opt/isecl-k8s-extensions/
@@ -294,11 +308,19 @@ rm -rf /<nfs-mount-path>/isecl/<service-name>/logs
 
 #Only in case of KBS, perform one more step along with above 2 steps
 rm -rf /<nfs-mount-path>/isecl/<service-name>/opt
+
+#Cleanup data from each worker node incase of workload agent
+rm -rf /etc/workload-agent
+rm -rf /var/log/workload-agent
+
+#Cleanup data from each worker node incase of trustagent
+rm -rf /opt/trustagent
+rm -rf /var/log/trustagent
 ```
 log into K8s control-plane
 ```./isecl-bootstrap.sh up <service-name>```
 
-In order to redeploy again on multi node with data, config from previous deployment
+In order to redeploy single service again on multi node with data, config from previous deployment
 ```shell
 ./isecl-bootstrap.sh down <service-name>
 ./isecl-bootstrap.sh up <service-name>

@@ -325,7 +325,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
     grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
 
     # For Ubuntu
-    grub-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+    grub-mkconfig -o /boot/grub/grub.cfg
     ```
 
 * Update the default boot option
@@ -345,7 +345,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
    grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
 
    # For Ubuntu
-   grub-mkconfig -o /boot/efi/EFI/redhat/grub.cfg
+   grub-mkconfig -o /boot/grub/grub.cfg
    ```
 
 * Reboot the system
