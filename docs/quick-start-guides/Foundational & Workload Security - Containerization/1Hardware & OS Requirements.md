@@ -28,7 +28,7 @@
 
 ## Container Runtime
 
-* Docker-19.03.13
+* Docker-20.10.8
 * CRIO-1.17.5
 
 ## K8s Distributions

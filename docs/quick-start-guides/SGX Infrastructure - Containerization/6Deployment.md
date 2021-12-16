@@ -29,19 +29,12 @@
 
 * On each worker node with SGX enabled and registered to K8s control-plane, the following pre-req needs to be done
 
-  * `RHEL 8.2` enabled K8s worker node with SGX:
+  * `RHEL 8.2` or Ubuntu 18.04/20.04 or RHEL 8.4 stack based` enabled K8s worker node with SGX:
     * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
     * Copy the platform-dependencies script to SGX enabled worker nodes on K8s
     * Execute  `./agent_untar.sh`  
     * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
     
-  * `Ubuntu 18.04` enabled K8s worker node with SGX:
-    * Pre requisite scripts will be available under `k8s/platform-dependencies/` on build machine
-    * Copy the platform-dependencies script to SGX enabled worker nodes
-    * Execute  `./agent_untar.sh`  
-    * Execute `./agent_container_prereq.sh` for deploying all pre-reqs required for agent
-
-
 * Ensure a backend KMIP-2.0 compliant server like pykmip is up and running.
     * Retrieve KMIP server's key and certificates i.e. client_certificate.pem, client_key.pem and root_certificate.pem files from /etc/pykmip (default path) to K8s control-plane node under `k8s/manifests/kbs/kmip-secrets/` path.
 ???+ note 
@@ -97,8 +90,8 @@ The bootstrap script would facilitate the deployment of all SGX components at a 
 ```shell
 #Kubernetes Distribution microk8s or kubeadm
 K8S_DISTRIBUTION=microk8s
-K8S_MASTER_IP=<K8s control-plane IP>
-K8S_MASTER_HOSTNAME=<K8s control-plane hostname>
+K8S_CONTROL_PLANE_IP=<K8s control-plane IP>
+K8S_CONTROL_PLANE_HOSTNAME=<K8s control-plane hostname>
 
 # cms
 CMS_SAN_LIST=cms-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
@@ -125,7 +118,7 @@ SHVS_ADMIN_USERNAME=shvsuser@shvs
 SHVS_ADMIN_PASSWORD=shvspassword
 SHVS_DB_USERNAME=shvsdbuser
 SHVS_DB_PASSWORD=shvsdbpassword
-SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,K8s control-plane IP/Hostname>
+SHVS_CERT_SAN_LIST=shvs-svc.isecl.svc.cluster.local,K8s control-plane IP>,<K8s control-plane Hostname>
 
 # SGX Quote Verification Service bootstrap
 SQVS_INCLUDE_TOKEN="true"
@@ -150,7 +143,7 @@ IHUB_PUB_KEY_PATH=/etc/ihub/ihub_public_key.pem
 KBS_SERVICE_USERNAME=admin@kbs
 KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s control-plane IP>>:30448/v1
-ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/kbs/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>
@@ -317,7 +310,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 
 * Update all the K8s manifests with the image names to be pulled from the registry
 
-* The key field in `tolerations` and `nodeAffinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master
+* The key field in `tolerations` and `nodeAffinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master`
 * All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data`
 
 #### Deploy steps
@@ -365,12 +358,12 @@ SQVS_NOSETUP="false"
 #For production CascadeLake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca_clx_prod.pem
 #For pre production Icelake CPUs SGX_TRUSTED_ROOT_CA_FILE = trusted_rootca.pem
 SGX_TRUSTED_ROOT_CA_FILE=
-SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s ontrol-plane Hostname>
+SQVS_CERT_SAN_LIST=sqvs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 
 # ihub bootstrap
 IHUB_SERVICE_USERNAME=admin@hub
 IHUB_SERVICE_PASSWORD=hubAdminPass
-IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<control-plane IP/Hostname>
+IH_CERT_SAN_LIST=ihub-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 # For Kubeadm
 # K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
 K8S_API_SERVER_CERT=/etc/kubernetes/pki/apiserver.crt
@@ -381,7 +374,7 @@ IHUB_PUB_KEY_PATH=<skip this during initial deploy of K8s multi-node>
 KBS_SERVICE_USERNAME=admin@kbs
 KBS_SERVICE_PASSWORD=kbsAdminPass
 # For SKC Virtualization use case set ENDPOINT_URL=https://<K8s control-plane IP>:30448/v1
-ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/kbs/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>, <k8s control-plane Hostname>
 
 KMIP_SERVER_IP=<KMIP Server IP>

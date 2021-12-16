@@ -58,7 +58,7 @@ To Verify the SampleApp flow:
 1. Install python3 and vim-common
    For RHEL 8.2
    # dnf -y install python3-pip vim-common  
-   For Ubuntu 18.04     
+   For Ubuntu 18.04/20.04    
    # apt -y install python3-pip vim-common    
    ln -s /usr/bin/python3 /usr/bin/python  > /dev/null 2>&1
    ln -s /usr/bin/pip3 /usr/bin/pip  > /dev/null 2>&1
@@ -212,7 +212,7 @@ The keyID should match the keyID of RSA key created in KBS. File location should
 	[SGX]
 	module=/opt/intel/cryptoapitoolkit/lib/libp11sgx.so
 
-## Configuration for NGINX testing for Ubuntu 18.04
+## Configuration for NGINX testing for Ubuntu 18.04/20.04
 
 ???+ note 
     Below mentioned OpenSSL and NGINX configuration updates are provided as patches (nginx.patch and openssl.patch) as part of skc_library deployment script. Patch can be applied with default nginx and openssl file. In case nginx/openssl contains any external changes then refer manual step.

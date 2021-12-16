@@ -866,7 +866,7 @@ This folder /opt/authservice/dbscripts Contains database scripts
 | BEARER_TOKEN         |                                               | JWT token for installation user                    |
 | KBS_SERVICE_USERNAME | admin@kms                                     | KBS Service Username                               |
 | KBS_SERVICE_PASSWORD | kmsAdminPass                                  | KBS Service User Password                          |
-| ENDPOINT_URL         | https://< KBS Hostname >:9443/v1              | KBS Endpoint URL                                   |
+| ENDPOINT_URL         | https://< KBS Hostname >:9443/kbs/v1              | KBS Endpoint URL                                   |
 | TLS_COMMON_NAME      | KBS TLS Certificate                           | KBS TLS Certificate common-name                    |
 | SERVER_PORT          | 9443                                          | KBS Secure Port                                    |
 | SKC_CHALLENGE_TYPE   | SGX                                           | Challenge Type                                     |

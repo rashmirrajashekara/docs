@@ -29,7 +29,7 @@
 
   * Foundational Security
 
-    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
+    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
 
     * Only for `Ubuntu-18.04`, run the following commands
 
@@ -38,17 +38,10 @@
       ```
 
   * Workload Security
-    * Container Confidentiality with CRIO runtime
+    * Container Confidentiality with CRIO(>=v1.21) runtime
       
-      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
+      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
         
-      * Copy `container-runtime` directory to each of the  physical servers  
-      
-      * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-      
-	???+ note 
-		`container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
-      
       * Reboot the server
       
       * Only for `Ubuntu-18.04`, run the following command
