@@ -296,7 +296,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.4 must 
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-single-node && cd /root/intel-secl/build/skc-k8s-single-node
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/skc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/skc.xml
   repo sync
   ```
 
@@ -324,7 +324,7 @@ The build process for OCI containers images and K8s manifests for RHEL 8.4 must 
 
   ```shell
   mkdir -p /root/intel-secl/build/skc-k8s-multi-node && cd /root/intel-secl/build/skc-k8s-multi-node
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/skc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/skc.xml
   repo sync
   ```
 
