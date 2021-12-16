@@ -7,7 +7,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 * Postman client should be [downloaded](https://www.postman.com/downloads/) on supported platforms or on the web to get started with the usecase collections.
 
 ???+ note 
-    The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v4.0.1/develop/tools/api-collections)
+    The Postman API Network will always have the latest released version of the API Collections. For all releases, refer the github repository for [API Collections](https://github.com/intel-secl/utils/tree/v4.1/develop/tools/api-collections)
 
 ## Use Case Collections
 
@@ -16,8 +16,7 @@ The below allow to get started with workflows within Intel® SecL-DC for Foundat
 | Foundational Security  | Host Attestation(RHEL & VMWARE)                              | ✔️                  |
 |                        | Data Fencing  with Asset Tags(RHEL & VMWARE)                 | ✔️                  |
 |                        | Trusted Workload Placement (Containers)  | ✔️ |
-| Workload Security | Container Confidentiality with Docker Runtime | ✔️                  |
-|                        | Container Confidentiality with CRIO Runtime   | ✔️                  |
+| Workload Security | Container Confidentiality with CRIO Runtime | ✔️                 
 
 ## Downloading API Collections
 

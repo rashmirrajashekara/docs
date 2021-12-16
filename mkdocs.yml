@@ -47,30 +47,16 @@ nav:
       - Default Service Ports: quick-start-guides/SGX Infrastructure - Containerization/8Default Service Ports.md
       - Usecase Workflows API Collections: quick-start-guides/SGX Infrastructure - Containerization/9Usecase Workflows API Collections.md
       - Appendix: quick-start-guides/SGX Infrastructure - Containerization/10Appendix.md
-    - SGX Infrastructure - RHEL:
-      - Hardware & OS Requirements: quick-start-guides/SGX Infrastructure - RHEL/1Hardware & OS Requirements.md
-      - Network Requirements: quick-start-guides/SGX Infrastructure - RHEL/2Network Requirements.md
-      - RHEL Package Requirements: quick-start-guides/SGX Infrastructure - RHEL/3RHEL Package Requirements.md
-      - Deployment Model: quick-start-guides/SGX Infrastructure - RHEL/4Deployment Model.md
-      - System Tools and Utilities: quick-start-guides/SGX Infrastructure - RHEL/5System Tools and Utilities.md
-      - Build Services, Libraries and Install packages: quick-start-guides/SGX Infrastructure - RHEL/6Build Services, Libraries and Install packages.md
-      - Deployment & Usecase Workflow Tools Installation: quick-start-guides/SGX Infrastructure - RHEL/7Deployment & Usecase Workflow Tools Installation.md
-      - Deployment: quick-start-guides/SGX Infrastructure - RHEL/8Deployment.md
-      - Usecase Workflows with Postman API Collections: quick-start-guides/SGX Infrastructure - RHEL/9Usecase Workflows with Postman API Collections.md
-      - System User Configuration: quick-start-guides/SGX Infrastructure - RHEL/10System User Configuration.md
-      - Appendix: quick-start-guides/SGX Infrastructure - RHEL/11Appendix.md
-    - SGX Infrastructure - Ubuntu:
-      - Hardware & OS Requirements: quick-start-guides/SGX Infrastructure - Ubuntu/1Hardware & OS Requirements.md
-      - Network Requirements: quick-start-guides/SGX Infrastructure - Ubuntu/2Network Requirements.md
-      - Ubuntu Package Requirements: quick-start-guides/SGX Infrastructure - Ubuntu/3Ubuntu Package Requirements.md
-      - Deployment Model: quick-start-guides/SGX Infrastructure - Ubuntu/4Deployment Model.md
-      - Ubuntu System Tools and Utilities: quick-start-guides/SGX Infrastructure - Ubuntu/5Ubuntu System Tools and Utilities.md
-      - Build Services, Libraries and Install packages: quick-start-guides/SGX Infrastructure - Ubuntu/6Build Services, Libraries and Install packages.md
-      - Deployment & Usecase Workflow Tools Installation: quick-start-guides/SGX Infrastructure - Ubuntu/7Deployment & Usecase Workflow Tools Installation.md
-      - Deployment: quick-start-guides/SGX Infrastructure - Ubuntu/8Deployment.md
-      - Usecase Workflows with Postman API Collections: quick-start-guides/SGX Infrastructure - Ubuntu/9Usecase Workflows with Postman API Collection.md
-      - System User Configuration: quick-start-guides/SGX Infrastructure - Ubuntu/10System User Configuration.md
-      - Appendix: quick-start-guides/SGX Infrastructure - Ubuntu/11Appendix.md    
+    - SGX Infrastructure:
+      - Introduction: quick-start-guides/SGX Infrastructure/1Introduction.md
+      - Hardware Requirements: quick-start-guides/SGX Infrastructure/2Hardware Requirements.md
+      - OS Requirements: quick-start-guides/SGX Infrastructure/3OS Requirements.md
+      - Build Services: quick-start-guides/SGX Infrastructure/4Build Services.md
+      - Deployment Model: quick-start-guides/SGX Infrastructure/5Deployment Model.md
+      - Deployment: quick-start-guides/SGX Infrastructure/6Deployment.md
+      - Usecase Workflows with Postman API Collections: quick-start-guides/SGX Infrastructure/7Usecase Workflows API Collections.md
+      - System User Configuration: quick-start-guides/SGX Infrastructure/8System User Configuration.md
+      - Appendix: quick-start-guides/SGX Infrastructure/9Appendix.md
   - Product Guide: 
       - Foundational and Workload Security:
         -  Product Guide: product-guides/Foundational & Workload Security/01.md
