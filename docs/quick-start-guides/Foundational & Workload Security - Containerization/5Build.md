@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04` Build machine (VM/Physical Node)
+The below steps need to be done on `RHEL 8.3`/`Ubuntu-18.04`/`Ubuntu 20.04` Build machine (VM/Physical Node)
 
 ### Development Tools and Utilities
 
@@ -13,7 +13,7 @@ dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/releases/32/Everyth
 ln -s /usr/bin/python3 /usr/bin/python
 ln -s /usr/bin/pip3 /usr/bin/pip
 
-# Ubuntu-18.04
+# Ubuntu-18.04/Ubuntu-20.04
 apt update
 apt remove -y gcc gcc-7
 apt install -y python3-problem-report git wget tar python3 gcc-8 make makeself openssl libssl-dev libgpg-error-dev
@@ -54,7 +54,7 @@ dnf install -y docker-ce-20.10.8 docker-ce-cli-20.10.8
 systemctl enable docker
 systemctl start docker
 
-# Ubuntu-18.04
+# Ubuntu-18.04/Ubuntu-20.04
 apt-get install -y \
     apt-transport-https \
     ca-certificates \
@@ -68,8 +68,9 @@ echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Ubuntu 18.04
 apt-get update
+
+# Ubuntu 18.04
 apt-get -y install docker-ce=5:20.10.8~3-0~ubuntu-bionic docker-ce-cli=5:20.10.8~3-0~ubuntu-bionic containerd.io
 
 # Ubuntu 20.04 
@@ -123,7 +124,14 @@ systemctl restart docker
 
   # Ubuntu 18.04
   echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo apt-key add -
+  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | sudo 
+  
+  # Ubuntu 20.04
+  echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+  curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key | sudo 
+
+  # Ubuntu-18.04/Ubuntu-20.04
+  apt-key add -
   apt-get update
   apt-get -y upgrade
   apt-get -y install skopeo
