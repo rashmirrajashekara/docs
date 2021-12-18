@@ -1,9 +1,7 @@
-
 Intel Security Libraries for Data Center Foundational Security
-Release Notes
 =========================================
 
-***Intel(R) SecL-DC version 4.1 GA***
+# ***Intel(R) SecL-DC version 4.1 GA***
 
 - New attestation reports will now be triggered whenever a Trust Agent starts, including as a result of a host reboot.  Note that this does not affect VMWare hosts.  
 	-	As part of this feature, the HVS /reports API now has an additional option for asynchronous report generation - see the Swagger API 
@@ -21,7 +19,7 @@ Release Notes
 	-	As with all Kubernetes worker node tainting, pods can be configured with "tolerations" to be scheduled even on tainted workers.  
 
 
-***Intel(R) SecL-DC version 4.0 GA***
+# ***Intel(R) SecL-DC version 4.0 GA***
 
 - Support for Client Intel (R) PTT (fTPM) has been added. ISecL has always supported the server implementation of PTT.  However, the client implementation has a difference in the endorsement certificate hierarchies that would cause the TPM authenticity verification to fail during Trust Agent provisioning.  This alternative implementation is now supported.
 
@@ -60,21 +58,21 @@ The Trust Agent will also now support TPM ownership secrets other than the previ
 
 
 
-***Intel(R) SecL-DC Version 3.6 ***
+# ***Intel(R) SecL-DC Version 3.6 ***
 - The Intel SecL-DC Foundational Security components can now be deployed as containers as well as direct installation
 - TPM Endorsement Certificate CAs will now be updated automatically at build time for teh HVS 
 - Added Ubuntu support for all Intel SecL-DC components
 - Resolved some issues that could appear for very large-scale deployments (100,000 registered hosts)
 
 
-***Intel(R) SecL-DC Version 3.5 ***
+# ***Intel(R) SecL-DC Version 3.5 ***
 - Additional performance and scalability improvements
 - Added new filter criteria to the /v2/hosts API.  Hosts can now be searched by trust status, and the response data when retrieving host details can now optionally also include the host-status and Trusted state. See the HVS Swaggerdoc for details.
 - Host searches will now return data in a consistent order (based on the timestamp when the host was registered), and can be sorted by ascending or descending order.  See the HVS Swaggerdoc for details.
 - The CLI command "setup server" has been replaced by "setup update-service-config" across all Foundational Security services.  See the Product Guide for details.
 
 
-***Intel(R) SecL-DC Version 3.4 ***
+# ***Intel(R) SecL-DC Version 3.4 ***
 - Some environment variables have chaged for clarity/consistency.  These changes are in:
 	- populate-users.env
 	- trustagent.env
@@ -84,7 +82,7 @@ The Trust Agent will also now support TPM ownership secrets other than the previ
 - Backend changes have been made to improve the performance of the HVS, particularly for large scale deployments.  
 
 
-***Intel(R) SecL-DC Version 3.3 ***
+# ***Intel(R) SecL-DC Version 3.3 ***
 
 - The Integration Hub installation variables have been adjusted.  See the Product Guide for details on the updated .env file options.
 - Compatibility updates for integration with OpenStack Ussuri
@@ -95,7 +93,7 @@ Before installing the Workload Agent, in /etc/libvirt/qemu.conf, ensure that the
 "Error starting domain: internal error: child reported (status=125): Requested operation is not valid: Setting different SELinux label on /var/lib/nova/instances/15d7ec2f-27ad-41ed-9632-32a83c3d10ef/disk which is already in use"
 
 
-***Intel(R) SecL-DC Version 3.2 ***
+# ***Intel(R) SecL-DC Version 3.2 ***
 
 - The Key Broker now supports both Secure Key Caching and Foundational Security workflows with a single codebase.  Previously separate KBS builds were required for each of these use cases, and they have now been merged into a single service.
 
@@ -106,14 +104,14 @@ Before installing the Workload Agent, in /etc/libvirt/qemu.conf, ensure that the
 Known issues:
 - The KBS may not restart automatically when the system it runs on is restarted.  To start the KBS, use "kbs start".  Be sure that the 3rd party KMIP server is available before starting the KBS, if the KBS is configured to use KMIP.
 
-***Intel(R) SecL-DC Version 3.1 ***
+# ***Intel(R) SecL-DC Version 3.1 ***
 
 - Added support for CRI-O and Skopeo to the Container Confidentiality use case.  Previously only the Docker container runtime was supported for this use case.
 
 - The Integration Hub now also pushes information about enabled hardware security features to Kubernetes in addition to the existing Trust and Asset Tag information.
 
 
-***Intel(R) SecL-DC Version 3.0 ***
+# ***Intel(R) SecL-DC Version 3.0 ***
 
 Updated name - Intel(R) Security Libraries encompasses use cases and enablement solutions for multiple Intel(R) security features.  As new features are covered by Intel(R) SecL, the need has arisen to distinguish use cases based on different classes of security features.  Documents and applications that build on platform integrity attestation solutions related to hardware Root of Trust technologies will be referred to as "Foundational Security" elements.  Other Intel(R) SecL solutions will have their own documentation and applications, including those for SGX.
 
@@ -133,7 +131,7 @@ Updated name - Intel(R) Security Libraries encompasses use cases and enablement 
 
 - The Intel(R) SecL Custom Resource Definitions for Kubernetes integration have been updated to be entirely container-based.  The installer binary will now configure containers on the Kube Master node to handle the CRD functions.
 
-***Intel(R) SecL-DC Version 2.2.1 ***
+# ***Intel(R) SecL-DC Version 2.2.1 ***
 
 - Removed IP address salt for TA and VS
 
@@ -141,7 +139,7 @@ Bug Fixes
 - Resolved an issue where the TA provisioning would fail with certain TPM modules 
 
 
-***Intel(R) SecL-DC Version 2.2 ***
+# ***Intel(R) SecL-DC Version 2.2 ***
 
 Bug Fixes
 - Resolved an issue where the Key Broker uninstall would fail to remove some files
@@ -151,7 +149,7 @@ Bug Fixes
 - Resolved an issue where Trust Agent hosts could appear untrusted after restarting the Agent
 
 
-***Intel(R) SecL-DC Version 2.1 ***
+# ***Intel(R) SecL-DC Version 2.1 ***
 
 - Added support for 3rd-party KMIP key managers to the Intel(R) SecL-DC Key Broker
 	- The Key Broker still supports a built-in basic key management system for POCs, not intended for use in production
@@ -171,7 +169,7 @@ Bug Fixes
 KNOWN ISSUES
 - When using Workload Confidentiality to launch multiple Docker container replicas, containers may go to the CrashLoopBackOff state.  The replicas will still start as expected after a small number of failed attempts, impacting container startup performance.
 
-***Intel(R) SecL-DC Version 2.0 ***
+# ***Intel(R) SecL-DC Version 2.0 ***
 
 - The Trust Agent is now written in GO
 	- The Trust Agent installer no longer automatically installs tboot.  Instructions for tboot installation are now included in the Product Guide.
@@ -183,11 +181,11 @@ KNOWN ISSUES
 - Resolved an issue where, if a software manifest was deleted from a Trust Agent host, the host could still appear trusted even though the measurements required in the flavor would now be missing.
 
 
-***Intel(R) SecL-DC Version 1.6.1 ***
+# ***Intel(R) SecL-DC Version 1.6.1 ***
  - Updated the Workload Agent for Workload Confidentiality using Docker Container Encryption.  An update to the Docker runtime required adjustment to the Secure Docker Daemon used to manage encrypted containers.  
 
 
-***Intel(R) SecL-DC Version 1.6 ***
+# ***Intel(R) SecL-DC Version 1.6 ***
 
 - Added the Signed Flavor feature
 	- Allows the Verification Service to sign Flavors and verify the signature at attestation time to maintain the integrity of the Flavors.
@@ -208,7 +206,7 @@ KNOWN ISSUES
 
 -----------------------------------------------------------------
 
-***Intel(R) SecL-DC Version 1.5***
+# ***Intel(R) SecL-DC Version 1.5***
 
 - Updated algorithms to use SHA384 instead of SHA256
 - Updated key generation to use RSA-3K
@@ -223,7 +221,7 @@ KNOWN ISSUES
 
 -----------------------------------------------------------------
 
-***Intel(R) SecL-DC Version 1.4***
+# ***Intel(R) SecL-DC Version 1.4***
 
 Resolved Bugs:
 - Additional security enhancements following penetration testing
@@ -238,7 +236,7 @@ New Features:
 
 -----------------------------------------------------------------
 
-***Intel(R) SecL-DC Version 1.3***
+# ***Intel(R) SecL-DC Version 1.3***
 
 Resolved Bugs:
 
@@ -254,7 +252,7 @@ New Features:
 
 -----------------------------------------------------------------
 
-***Intel(R) SecL-DC Version 1.2***
+# ***Intel(R) SecL-DC Version 1.2***
 
 New Features:
 
@@ -262,7 +260,7 @@ New Features:
 - Added support for Platform Attestation of TPM 2.0 ESXi hosts with vSphere 6.7u1.  Asset Tag is currently not supported for TPM 2.0 with VMWare hosts at this time; TPM 1.2 ESXi hosts remain supported
 
 
-***Intel(R) SecL-DC Version 1.1***
+# ***Intel(R) SecL-DC Version 1.1***
 
 New Features:
 
@@ -278,12 +276,12 @@ System Improvements:
 
 
 
-***Intel(R) SecL-DC Version 1.0.1***
+# ***Intel(R) SecL-DC Version 1.0.1***
 
 Updated Javadoc REST API documentation
 
 
-***Intel(R) SecL-DC Version 1.0.***
+# ***Intel(R) SecL-DC Version 1.0.***
 
 New Features: 
 
