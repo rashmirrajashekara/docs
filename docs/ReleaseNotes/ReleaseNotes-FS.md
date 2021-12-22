@@ -1,4 +1,4 @@
-Intel Security Libraries for Data Center Foundational Security
+Intel Security Libraries for Data Center
 =========================================
 
 # ***Intel(R) SecL-DC version 4.1 GA***

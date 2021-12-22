@@ -128,7 +128,7 @@ nav:
         - Appendix: supplementary-guides/Common Cluster Deployment Guide/5Appendix.md
   - Release Notes:
       - Foundational Security: ReleaseNotes/ReleaseNotes-FS.md
-      - SGX Infrastructure: ReleaseNotes/ReleaseNotes-TEE.md
+      #- SGX Infrastructure: ReleaseNotes/ReleaseNotes-TEE.md
 theme:
    name: material
    font: 
