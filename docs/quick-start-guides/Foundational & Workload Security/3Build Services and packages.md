@@ -54,7 +54,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/fs && cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.1 -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/fs.xml
   repo sync
   ```
 
@@ -87,7 +87,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/vmc && cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.1 -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/vmc.xml
   repo sync
   ```
 
@@ -117,7 +117,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
   ```shell
   mkdir -p /root/intel-secl/build/cc-crio && cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.0.1 -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/cc-crio.xml
   repo sync
   ```
 
@@ -171,7 +171,7 @@ The below steps needs to be carried out on the Build and Deployment VM
   ```
   
 ???+ note  
-    The crio use case uses containerd that is bundled with `docker-ce-19.03.13` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
+    The crio use case uses containerd that is bundled with `docker-ce-20.10.8` during build time. As of this release , the version being used is `containerd-1.4.4`. If the remote docker-ce repo gets updated for newer containerd version, then the version of containerd might be incompatible for building crio use case. It is recommended to use the version 1.4.4 in that case.
   
 * Built binaries
   

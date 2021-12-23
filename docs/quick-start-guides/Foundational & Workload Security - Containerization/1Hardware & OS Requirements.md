@@ -19,17 +19,17 @@
 
 ## OS Requirements
 
-* `RHEL 8.3`/`Ubuntu 18.04` for build
+* `RHEL 8.3`/`Ubuntu 18.04`/`Ubuntu 20.04` for build
 
-* `RHEL 8.3`/`Ubuntu 18.04` for K8s cluster deployments
+* `RHEL 8.3`/`Ubuntu 18.04`/`Ubuntu 20.04` for K8s cluster deployments
 
 ???+ note 
     Foundational & Workload Security solution is built, installed and tested with root privileges. Please ensure that all the following instructions are executed with root privileges
 
 ## Container Runtime
 
-* Docker-19.03.13
-* CRIO-1.17.5
+* Docker-20.10.8
+* CRIO-1.21.0
 
 ## K8s Distributions
 

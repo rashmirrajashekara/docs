@@ -72,13 +72,13 @@ skopeo copy oci-archive:<oci-image-tar-name> docker://<registry-ip/hostname>:<re
 
    ```shell
    #Example
-   cp -r <nfs-location/isecl <nfs-location>/isecl-<version>-backup
+   cp -r <nfs-location>/isecl <nfs-location>/isecl-<version>-backup
    ```
 
 ##### Rollback Services
 
 1. If upgrade is not successful, then update `deployment.yml` files with older images(v3.6) for 4.0 upgrade path and restore the backed up nfs data at same mount path
-2. Bring up individual components with `isecl-bootstrap.sh up <service>`
+2. Bring up individual components with `./isecl-bootstrap.sh up <service>`
 
 ???+ note 
     If in case service fails to start or gets crashed, then copy all the backed up data as per folder structure like how was it earlier. Bring up db instance pointing to backed up data and bring up component deployment by pointing to older version of container image.
@@ -128,6 +128,11 @@ and check for successful database and config upgrades in hvs-upgrade job pod log
 
 ```shell
 kubectl logs -n isecl hvs-upgrade-<podname>
+```
+
+Delete hvs-upgrade once upgrade is running.
+```shell
+kubectl delete jobs hvs-upgrade -n isecl
 ```
 
 6. Redeploy the latest hvs
@@ -199,6 +204,11 @@ kubectl apply -f kbs/upgrade-job.yml
 ```shell
 kubectl get jobs -n isecl
 kubectl logs -n isecl kbs-upgrade-<pod id>
+```
+
+Delete kbs-upgrade once upgrade is running.
+```shell
+kubectl delete jobs kbs-upgrade -n isecl
 ```
 
 8. Update the image name in `kbs/deployment.yml` to newer version and deploy the latest kbs
@@ -299,7 +309,7 @@ Additional step for TA:
 kubectl apply -f ta/daemonset-suefi.yml
 ```
 
-##### Backup and Rollback in TA
+##### Backup and Rollback in TA and WLA
 
 The `<component>-upgrade.yml` is run once daemonset, while performing upgrade job, ta will copy the `/opt/trustagent` into backup directory `/tmp/trustagent_backup` on every host
 and wla upgrade will copy the '/etc/workload-agent' into backup directory `/tmp/wlagent_backup`
@@ -308,9 +318,12 @@ Following steps will help us to achieve rollback
 1. Restore the backed up directories from `/tmp/trustagent_backup` into `/opt/trustagent` in TA and in WLA from `/tmp/wlagent_backup` into `/etc/workload-agent`
 ```shell
 cd k8s/manifests/
+#For TA
 kubectl apply -f <componenet>/rollback.yml
+#For WLA
+kubectl apply -f <componenet>/<component>-rollback.yml
 ```
-2. Update the image name to previous version in `<component>/daemonset.yml` and `<component>/daemonset-suefi.yml`(if upgrade path is 3.6 -> 4.0, then update image tag to 3.6)
+2. Update the image name to previous version in `<component>/daemonset.yml` and `<component>/daemonset-suefi.yml`(if upgrade path is 4.0 -> 4.1, then update image tag to 4.0)
 ```shell
 kubectl apply -f <component>/daemonset.yml
 ```

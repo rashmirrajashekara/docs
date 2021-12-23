@@ -25,33 +25,26 @@
 ???+ note 
     In case of microk8s deployment, when docker registry is enabled locally, the OCI container images need to be copied to the node where registry is enabled and then the above example command can be run. The same would not be required when registry is remotely installed
 
-* On each worker node with `TXT/BTG` enabled and registered to K8s control-plane, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04` systems
+* On each worker node with `TXT/BTG` enabled and registered to K8s control-plane, the following pre-req needs to be done on `RHEL-8.3`/`Ubuntu-18.04`/`Ubuntu-20.04` systems
 
   * Foundational Security
 
-    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
+    * `Tboot-1.10.1` or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation)
 
-    * Only for `Ubuntu-18.04`, run the following commands
+    * Only for `Ubuntu-18.04`/`Ubuntu-20.04`, run the following commands
 
       ```shell
       $ modprobe msr
       ```
 
   * Workload Security
-    * Container Confidentiality with CRIO runtime
+    * Container Confidentiality with CRIO(>=v1.21) runtime
       
-      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/v4.0.1/develop/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
+      * `Tboot-1.10.1`  or later to be installed for non `SUEFI` servers. [Tboot installation Details](https://github.com/intel-secl/docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#tboot-installation) 
         
-      * Copy `container-runtime` directory to each of the  physical servers  
-      
-      * Run the `install-prereqs-crio.sh` script on the physical servers from `container-runtime`
-      
-	???+ note 
-		`container-runtime` scripts need to be run on `TXT/BTG/SUEFI` enabled services
-      
       * Reboot the server
       
-      * Only for `Ubuntu-18.04`, run the following command
+      * Only for `Ubuntu-18.04`/`Ubuntu-20.04`, run the following command
       
           ```shell
           $ modprobe msr
@@ -79,7 +72,7 @@
   
   Refer Section in [appendix for Feature Detection](#hardware-feature-detection)
   - `node.type: TXT-ENABLED` should be labeled for nodes installed with tboot, where event logs will be collected from tboot measurements.
-  - `node.type: SUEFI-ENABLED` should be labeled for nodes with SUEFI enabled, where event logs will be efi logs.
+  - `node.type: SUEFI-ENABLED` should be labeled for nodes with SUEFI enabled, where event logs will be EFI logs.
   
   ```shell
   #Label node for TXT
@@ -187,6 +180,8 @@ KMIP_SERVER_PORT=
 KMIP_CLIENT_CERT_NAME=client_certificate.pem
 KMIP_CLIENT_KEY_NAME=client_key.pem
 KMIP_ROOT_CERT_NAME=root_certificate.pem
+KMIP_USERNAME=
+KMIP_PASSWORD=
 
 # ISecl Scheduler
 # For microk8s
@@ -233,6 +228,9 @@ CCC_ADMIN_PASSWORD=
 #    up        Bootstrap Database Services for Authservice, Workload Service and Host #verification Service
 #    purge     Delete Database Services for Authservice, Workload Service and Host #verification Service
 
+#    Available Options for up/purge command:
+#    usecase    Can be one of foundational-security, all
+
 ./isecl-bootstrap-db-services.sh up
 
 #isecl-bootstrap
@@ -246,7 +244,7 @@ CCC_ADMIN_PASSWORD=
 #    Available Options for up/down command:
 #        agent      Can be one of tagent, wlagent
 #        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-#controller, isecl-scheduler
-#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise
+#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise, foundational-security-control-plane, admission-controller
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
@@ -335,13 +333,16 @@ systemctl restart snap.microk8s.daemon-kubelet.service
         accessModes:
         - ReadWriteMany
         persistentVolumeReclaimPolicy: Retain
+        claimRef:
+          namespace: isecl
+          name: cms-config-pvc
         storageClassName: nfs
         nfs:
         path: /<NFS-vol-base-path>/isecl/cms/config
         server: <NFS Server IP/Hostname>
     ```
 
-  * Sample manifest for creating config-pvc for cms service
+  * Sample manifest for creating `config-pvc` for cms service
 
     ```yaml
     ---
@@ -369,7 +370,7 @@ systemctl restart snap.microk8s.daemon-kubelet.service
 * Update all the K8s manifests with the image names to be pulled from the registry
 
 * The `tolerations` and `node-affinity` in case of isecl-scheduler and isecl-controller needs to be updated in the respective manifests under the `manifests/k8s-extensions-controller`  and `manifests/k8s-extensions-scheduler` directories to `node-role.kubernetes.io/master`
-* All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data`
+* All NFS PV yaml files needs to be updated with the  `path: /<NFS-vol-path>`  and `server: <NFS Server IP/Hostname>` under each service manifest file for `config`, `logs` , `db-data` and `opt`
 
 #### Deploy steps
 
@@ -456,6 +457,8 @@ KMIP_SERVER_PORT=
 KMIP_CLIENT_CERT_NAME=client_certificate.pem
 KMIP_CLIENT_KEY_NAME=client_key.pem
 KMIP_ROOT_CERT_NAME=root_certificate.pem
+KMIP_USERNAME=
+KMIP_PASSWORD=
 
 # ISecl Scheduler
 # For Kubeadm
@@ -502,6 +505,9 @@ CCC_ADMIN_PASSWORD=
 #    up        Bootstrap Database Services for Authservice, Workload Service and Host verification Service
 #    purge     Delete Database Services for Authservice, Workload Service and Host verification Service
 
+#    Available Options for up/purge command:
+#    usecase    Can be one of foundational-security, all
+
 ./isecl-bootstrap-db-services.sh up
 
 #isecl-bootstrap
@@ -515,7 +521,7 @@ CCC_ADMIN_PASSWORD=
 #    Available Options for up/down command:
 #        agent      Can be one of tagent, wlagent
 #        service    Can be one of cms, authservice, hvs, ihub, wls, kbs, isecl-#controller, isecl-scheduler
-#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise
+#        usecase    Can be one of foundational-security, workload-security, isecl-#orchestration-k8s, csp, enterprise, foundational-security-control-plane, admission-controller
 
 ./isecl-bootstrap.sh up <all/usecase of choice>
 ```
