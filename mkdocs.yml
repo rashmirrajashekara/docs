@@ -1,6 +1,6 @@
 # Repository
-repo_name: documentation.security.isecl.docs
-repo_url: https://github.com/intel-innersource/documentation.security.isecl.docs
+repo_name: intel-secl
+repo_url: https://github.com/intel-secl/intel-secl
 site_name: Intel® SecL-DC
 plugins:
   - search 
@@ -127,8 +127,7 @@ nav:
         - Workload POD Launch Validation: supplementary-guides/Common Cluster Deployment Guide/4Workload POD Launch Validation.md
         - Appendix: supplementary-guides/Common Cluster Deployment Guide/5Appendix.md
   - Release Notes:
-      - Foundational Security: ReleaseNotes/ReleaseNotes-FS.md
-      #- SGX Infrastructure: ReleaseNotes/ReleaseNotes-TEE.md
+      - Release Notes: ReleaseNotes/ReleaseNotes.md
 theme:
    name: material
    font: 
