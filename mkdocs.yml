@@ -1,6 +1,6 @@
 # Repository
 repo_name: intel-secl
-repo_url: https://github.com/stepin105361/siteisecl
+repo_url: https://github.com/intel-secl/intel-secl
 site_name: Intel® SecL-DC
 plugins:
   - search 
