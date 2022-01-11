@@ -208,7 +208,7 @@ Container Confidentiality with Cri-o runtime requires cri-o with version >=1.21 
 
 Configure the ocicrypt config file  `/etc/ocicrypt-wpm.json` as below 
 
-```shell script
+```shell 
     {
         "key-providers": {
             "isecl": {
