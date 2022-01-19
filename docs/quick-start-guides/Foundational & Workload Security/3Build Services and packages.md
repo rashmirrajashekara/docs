@@ -6,7 +6,7 @@ The below steps needs to be carried out on the Build and Deployment VM
 
 * The repos can be built only as `root` user
 
-* RHEL 8.3 Machine for building repos
+* RHEL 8.4 Machine for building repos
 
 * Enable the following RHEL repos:
 
