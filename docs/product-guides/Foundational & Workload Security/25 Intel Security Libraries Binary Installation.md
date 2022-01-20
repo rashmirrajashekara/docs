@@ -114,7 +114,7 @@ To install the Verification Service, follow these steps:
 * Execute the installer binary.
 
    ```shell
-   ./hvs-v4.0.1.bin
+   ./hvs-v4.1.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -147,9 +147,9 @@ The following must be completed before installing the Workload Service:
 
 The Intel® Security Libraries Workload Service supports:
 
-* Red Hat Enterprise Linux 8.2
+* Red Hat Enterprise Linux 8.4
 
-* Ubuntu 18.04
+* Ubuntu 20.04
 
 ### Recommended Hardware
 
@@ -179,7 +179,7 @@ The Intel® Security Libraries Workload Service supports:
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v4.0.1.bin
+  ./wls-v4.1.bin
   ```
 
 
@@ -216,9 +216,9 @@ Tboot will not be installed automatically. Instructions for installing and confi
 
 The Intel® Security Libraries Trust Agent for Linux supports:
 
-* Red Hat Enterprise Linux 8.2
+* Red Hat Enterprise Linux 8.4
 
-* Ubuntu 18.04
+* Ubuntu 20.04
 
 ### Prerequisites
 
@@ -456,7 +456,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v4.0.1.bin
+  ./trustagent-v4.1.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -490,7 +490,7 @@ The Intel® Security Libraries Workload Agent supports:
 
 * Red Hat Enterprise
 
-* Linux 8.2
+* Linux 8.4
 
 ### Prerequisites
 
@@ -521,7 +521,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v4.0.1.bin
+  ./workload-agent-v4.1.bin
   ```
 
 * Reboot the server. The Workload Agent populates files that are
@@ -776,7 +776,7 @@ repository package lists before installation.
 ### Supported Operating Systems
 
 The Intel Security Libraries Integration Hub supports Red Hat Enterprise
-Linux 8.2
+Linux 8.4
 
 ### Recommended Hardware
 
@@ -857,7 +857,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
     directory & execute the installer binary.
 
    ```shell
-   ./ihub-v4.0.1.bin
+   ./ihub-v4.1.bin
    ```
 
 * Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Controller machine to `/<path>/secrets/` directory
@@ -1074,9 +1074,9 @@ The following must be completed before installing the Key Broker:
 
 The Intel® Security Libraries Key Broker Service supports:
 
-Red Hat Enterprise Linux 8.2
+Red Hat Enterprise Linux 8.4
 
-Ubuntu 18.04
+Ubuntu 20.04
 
 ### Recommended Hardware
 
@@ -1301,9 +1301,9 @@ The WPM is REQUIRED for the following use cases.
 
 The Intel® Security Libraries Workload Policy Manager supports:
 
-* Red Hat Enterprise Linux 8.2
+* Red Hat Enterprise Linux 8.4
 
-* Ubuntu 18.04
+* Ubuntu 20.04
 
 ### Recommended Hardware
 
@@ -1346,5 +1346,5 @@ The Intel® Security Libraries Workload Policy Manager supports:
 * Execute the WPM installer:
 
     ```shell
-    ./wpm-v4.0.1.bin
+    ./wpm-v4.1.bin
     ```
