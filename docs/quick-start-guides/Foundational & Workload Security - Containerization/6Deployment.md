@@ -447,7 +447,7 @@ WLA_SERVICE_USERNAME=wlauser@wls
 WLA_SERVICE_PASSWORD=wlaAdminPass
 
 # KBS
-ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/v1
+ENDPOINT_URL=https://kbs-svc.isecl.svc.cluster.local:9443/kbs/v1
 KBS_CERT_SAN_LIST=kbs-svc.isecl.svc.cluster.local,<K8s control-plane IP>,<K8s control-plane Hostname>
 KMIP_HOSTNAME=<KMIP IP/Hostname>
 KMIP_SERVER_IP=
@@ -581,3 +581,6 @@ volumes:
 systemctl restart kubelet
 ```
 
+## Installing Workload Policy Manager
+
+[Workload Policy Manager Installation](https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#installing-the-workload-policy-manager)

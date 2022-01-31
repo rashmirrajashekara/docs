@@ -202,6 +202,10 @@ Container Confidentiality with Cri-o runtime requires cri-o with version >=1.21 
 
 - Only physical Worker Nodes are supported at this time.  
 
+## Installing Workload Policy Manager
+
+[Workload Policy Manager Installation](https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#installing-the-workload-policy-manager)
+
 #### Workflow
 
 ##### Image encryption
@@ -277,6 +281,9 @@ $ skopeo copy oci:custom-image:enc docker://Registry.server.com:5000/custom-imag
 
 Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in the examples abocve). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.
 
+#####  Importing Verification Service Certificates
+
+[Importing Verification Service Certificates](https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#importing-verification-service-certificates)
 
 #####  Launching an Encrypted Container Image
 

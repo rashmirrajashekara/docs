@@ -114,7 +114,7 @@ To install the Verification Service, follow these steps:
 * Execute the installer binary.
 
    ```shell
-   ./hvs-v4.1.bin
+   ./hvs-v4.1.0.bin
    ```
 
    When the installation completes, the Verification Service is available. The services can be verified by running **hvs status** from the Verification Service command line.
@@ -179,7 +179,7 @@ The Intel® Security Libraries Workload Service supports:
 * Execute the WLS installer binary:
 
   ```shell
-  ./wls-v4.1.bin
+  ./wls-v4.1.0.bin
   ```
 
 
@@ -266,7 +266,7 @@ The EFI variables required by SGX are only needed during the SGX provisioning/re
 
 6. Verify that TXT measured launch was successful:
 
-​    txt-stat |grep "TXT measured launch"
+    txt-stat |grep "TXT measured launch"
 
 7. The SGX and Platform Integrity Attestation use cases should now work as normal.
 
@@ -294,7 +294,7 @@ Tboot requires configuration of the grub boot loader after installation. To inst
 
 * Ensure that `multiboot2.mod` and `relocator.mod` are available for grub2
 
-   This step may not be necessary for all OS versions, for instance, this step is NA in case of Tboot installation on Ubuntu 18.04. In order to utilize tboot, grub2 requires these two modules from the grub2-efi-x64-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).
+   This step may not be necessary for all OS versions, for instance, this step is NA in case of Tboot installation on Ubuntu 20.04. In order to utilize tboot, grub2 requires these two modules from the grub2-efi-x64-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).
 
    These files must be present in this directory:
 
@@ -456,7 +456,7 @@ To install the Trust Agent for Linux:
 * Execute the Trust Agent installer and wait for the installation to complete.
 
   ```shell
-  ./trustagent-v4.1.bin
+  ./trustagent-v4.1.0.bin
   ```
 
 If the `trustagent.env` answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.
@@ -521,7 +521,7 @@ The following must be completed before installing the Workload Agent:
 * Execute the Workload Agent installer binary.
 
   ```shell
-  ./workload-agent-v4.1.bin
+  ./workload-agent-v4.1.0.bin
   ```
 
 * Reboot the server. The Workload Agent populates files that are
@@ -663,10 +663,7 @@ deployment in the `isecl` namespace.
 *  Create `hostattributes.crd.isecl.intel.com` CRD
 
     ```shell
-    #1.14<=k8s_version<=1.16
-    kubectl apply -f yamls/crd-1.14.yaml
-
-    #1.16<=k8s_version<=1.18
+    #1.17<=k8s_version<=1.22
     kubectl apply -f yamls/crd-1.17.yaml
     ```
 
@@ -683,7 +680,7 @@ deployment in the `isecl` namespace.
    skopeo copy oci-archive:<isecl-k8s-controller-*.tar> docker://<docker_private_registry_server>:5000/<imageName>:<tagName>
    ```
 
-* Udate image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
+* Update image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
    ``` shell
       containers:
         - name: isecl-controller
@@ -857,7 +854,7 @@ BEARER_TOKEN=eyJhbGciOiJSUzM4NCIsImtpZCI6ImE…
     directory & execute the installer binary.
 
    ```shell
-   ./ihub-v4.1.bin
+   ./ihub-v4.1.0.bin
    ```
 
 * Copy the `/etc/ihub/ihub_public_key.pem` to Kubernetes Controller machine to `/<path>/secrets/` directory
@@ -1021,7 +1018,7 @@ After installation, the Hub must be configured to integrate with a Cloud orchest
 
 * Whenever the CRD's are deleted and restarted for updates, the CRD's
     using the yaml files present under `/opt/isecl-k8s-extensions/yamls/`.
-    Kubernetes Version 1.14-1.15 uses `crd-1.14.yaml` and 1.16-1.17 uses
+    Kubernetes Version 1.17-1.22 uses
     `crd-1.17.yaml`
 
     ```shell
@@ -1112,7 +1109,7 @@ Ubuntu 20.04
 *  Execute the KBS installer.
 
     ```shell
-    ./kbs-4.0.0.bin
+    ./kbs-4.1.0.bin
     ```
 
 #### Configure the Key Broker to use a KMIP-compliant Key Management Server
@@ -1326,7 +1323,7 @@ The Intel® Security Libraries Workload Policy Manager supports:
 * Create the `wpm.env` answer file:
 
    ```shell
-   KBS_BASE_URL=https://<IP address or hostname of the KBS>:9443/v1/
+   KBS_BASE_URL=https://<IP address or hostname of the KBS>:9443/kbs/v1/
    WPM_SERVICE_USERNAME=<WPM_Service username from populate-users script>
    WPM_SERVICE_PASSWORD=<WPM Service password from populate-users script>
    CMS_TLS_CERT_SHA384=<Sha384 hash of the CMS TLS certificate>
@@ -1346,5 +1343,5 @@ The Intel® Security Libraries Workload Policy Manager supports:
 * Execute the WPM installer:
 
     ```shell
-    ./wpm-v4.1.bin
+    ./wpm-v4.1.0.bin
     ```
