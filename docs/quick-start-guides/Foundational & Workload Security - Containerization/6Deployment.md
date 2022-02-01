@@ -591,20 +591,22 @@ Node Joining or Node Rebooted
 When the worker node is being joined/rebooted in the k8s cluster, Untrusted:True NoExecute and NoSchedule taint would be added to the worker Node
 
 To the K8s cluster, when a new worker node is being joined, such worker Nodes are tainted
-TAINT_REBOOTED_NODES to "true" in in isecl-controller.yml.
+Set TAINT_REBOOTED_NODES to "true" in in isecl-controller.yml.
 
 In the K8s cluster, if any of the worker node is Rebooted, such worker Nodes are tainted
-TAINT_REGISTERED_NODES  to "true" in isecl-controller.yml.
+Set TAINT_REGISTERED_NODES  to "true" in isecl-controller.yml.
 
 ???+ note 
-    In no_proxy, add .svc,.svc.cluster.local, and then do kubeadm init
+    By default, TAINT_REBOOTED_NODES and TAINT_REGISTERED_NODES, will be false.
     
+???+ note 
+    In no_proxy, add .svc,.svc.cluster.local, and then do kubeadm init
+
 Upload image to registry
 The admission controller tar file that is present in k8s image folder should be uploaded to registry and update the image name in admission_controller.yaml file.
 
 To bring up Admisison controller
 ```./isecl-bootstrap.sh up admission-controller```
-
 To bring down Admisison controller
 ```./isecl-bootstrap.sh down admission-controller```
 
