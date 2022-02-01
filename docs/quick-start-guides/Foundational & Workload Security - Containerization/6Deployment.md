@@ -587,7 +587,7 @@ when a new worker node is joined/rebooted in the cluster, below steps can be don
 
 IHUB pulls the data from HVS, and pushes to ISECL Controller, based on the report status of the node, if the worker node is trusted, then that node will be untainted.
 
-Node Joining or Node Reboote
+Node Joining or Node Rebooted
 When the worker node is being joined/rebooted in the k8s cluster, Untrusted:True NoExecute and NoSchedule taint would be added to the worker Node
 
 To the K8s cluster, when a new worker node is being joined, such worker Nodes are tainted
@@ -603,10 +603,10 @@ Upload image to registry
 The admission controller tar file that is present in k8s image folder should be uploaded to registry and update the image name in admission_controller.yaml file.
 
 To bring up Admisison controller
-./isecl-bootstrap.sh up admission-controller
+```./isecl-bootstrap.sh up admission-controller```
 
 To bring down Admisison controller
-./isecl-bootstrap.sh down admission-controller
+```./isecl-bootstrap.sh down admission-controller```
 
 
 ## Installing Workload Policy Manager
