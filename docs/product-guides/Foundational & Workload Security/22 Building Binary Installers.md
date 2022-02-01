@@ -20,8 +20,8 @@ install_pgdb: `authservice/out/install_pgdb.sh`
 
 In addition, sample Ansible roles to automatically build and deploy a testbed environment are provided:
 
-https://github.com/intel-secl/utils/tree/v4.0.1/develop/tools/ansible-role
+https://github.com/intel-secl/utils/tree/v4.1/develop/tools/ansible-role
 
 Also provided are sample API calls organized by workflows for Postman:
 
-https://github.com/intel-secl/utils/tree/v4.0.1/develop/tools/api-collections
+https://github.com/intel-secl/utils/tree/v4.1/develop/tools/api-collections
