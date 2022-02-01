@@ -581,6 +581,34 @@ volumes:
 systemctl restart kubelet
 ```
 
+### Admission Controller
+
+when a new worker node is joined/rebooted in the cluster, below steps can be done, to taint such nodes, by labelling it as untrusted, intiatially. Tainiting, doesn't allow scheduling of any pods on that worker node.
+
+IHUB pulls the data from HVS, and pushes to ISECL Controller, based on the report status of the node, if the worker node is trusted, then that node will be untainted.
+
+Node Joining or Node Reboote
+When the worker node is being joined/rebooted in the k8s cluster, Untrusted:True NoExecute and NoSchedule taint would be added to the worker Node
+
+To the K8s cluster, when a new worker node is being joined, such worker Nodes are tainted
+TAINT_REBOOTED_NODES to "true" in in isecl-controller.yml.
+
+In the K8s cluster, if any of the worker node is Rebooted, such worker Nodes are tainted
+TAINT_REGISTERED_NODES  to "true" in isecl-controller.yml.
+
+???+ note 
+    In no_proxy, add .svc,.svc.cluster.local, and then do kubeadm init
+    
+Upload image to registry
+The admission controller tar file that is present in k8s image folder should be uploaded to registry and update the image name in admission_controller.yaml file.
+
+To bring up Admisison controller
+./isecl-bootstrap.sh up admission-controller
+
+To bring down Admisison controller
+./isecl-bootstrap.sh down admission-controller
+
+
 ## Installing Workload Policy Manager
 
 [Workload Policy Manager Installation](https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#installing-the-workload-policy-manager)
