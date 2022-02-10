@@ -285,7 +285,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-tabs__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-tabs__link">
         Release Notes
       </a>
     </li>
@@ -2508,7 +2508,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-nav__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-nav__link">
         Intel Security Libraries for Data Center
       </a>
     </li>
@@ -2627,7 +2627,7 @@
 <p>The repos can be built only as <code>root</code> user</p>
 </li>
 <li>
-<p>RHEL 8.3 Machine for building repos</p>
+<p>RHEL 8.4 Machine for building repos</p>
 </li>
 <li>
 <p>Enable the following RHEL repos:</p>
@@ -2675,7 +2675,7 @@ rm -rf <span class="nv">$tmpdir</span>
 </ul>
 <p><code>shell
   mkdir -p /root/intel-secl/build/fs &amp;&amp; cd /root/intel-secl/build/fs
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/fs.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/fs.xml
   repo sync</code></p>
 <ul>
 <li>Run the <code>pre-requisites</code> setup script</li>
@@ -2702,7 +2702,7 @@ rm -rf <span class="nv">$tmpdir</span>
 </ul>
 <p><code>shell
   mkdir -p /root/intel-secl/build/vmc &amp;&amp; cd /root/intel-secl/build/vmc
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/vmc.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/vmc.xml
   repo sync</code></p>
 <ul>
 <li>Run the pre-req script</li>
@@ -2728,7 +2728,7 @@ rm -rf <span class="nv">$tmpdir</span>
 </ul>
 <p><code>shell
   mkdir -p /root/intel-secl/build/cc-crio &amp;&amp; cd /root/intel-secl/build/cc-crio
-  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0-Beta -m manifest/cc-crio.xml
+  repo init -u https://github.com/intel-secl/build-manifest.git -b refs/tags/v4.1.0 -m manifest/cc-crio.xml
   repo sync</code></p>
 <ul>
 <li>Run the <code>pre-requisites</code> script</li>

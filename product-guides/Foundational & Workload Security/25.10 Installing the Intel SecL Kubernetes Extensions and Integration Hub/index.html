@@ -285,7 +285,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-tabs__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-tabs__link">
         Release Notes
       </a>
     </li>
@@ -1646,6 +1646,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#admission-controller" class="md-nav__link">
+    Admission Controller
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2548,7 +2555,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-nav__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-nav__link">
         Intel Security Libraries for Data Center
       </a>
     </li>
@@ -2682,6 +2689,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#admission-controller" class="md-nav__link">
+    Admission Controller
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2728,10 +2742,7 @@ tar -xvzf /&lt;path&gt;/isecl-k8s-extensions-*.tar.gz
 </li>
 <li>
 <p>Create <code>hostattributes.crd.isecl.intel.com</code> CRD</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#1.14&lt;=k8s_version&lt;=1.16</span>
-kubectl apply -f yamls/crd-1.14.yaml
-
-<span class="c1">#1.16&lt;=k8s_version&lt;=1.18</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#1.17&lt;=k8s_version&lt;=1.22</span>
 kubectl apply -f yamls/crd-1.17.yaml
 </code></pre></div>
 </li>
@@ -2864,7 +2875,7 @@ to be installed from the package repository, be sure to update your
 repository package lists before installation.</p>
 <h3 id="supported-operating-systems">Supported Operating Systems</h3>
 <p>The Intel Security Libraries Integration Hub supports Red Hat Enterprise
-Linux 8.2</p>
+Linux 8.4</p>
 <h3 id="recommended-hardware">Recommended Hardware</h3>
 <ul>
 <li>
@@ -2944,7 +2955,7 @@ Linux 8.2</p>
 <li>Copy the Integration Hub installation binary to the <code>/root</code>
     directory &amp; execute the installer binary.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>./ihub-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./ihub-v4.1.0.bin
 </code></pre></div>
 <ul>
 <li>Copy the <code>/etc/ihub/ihub_public_key.pem</code> to Kubernetes Controller machine to <code>/&lt;path&gt;/secrets/</code> directory</li>
@@ -3153,7 +3164,7 @@ kubectl apply -f yamls/isecl-scheduler.yaml
 <li>
 <p>Whenever the CRD's are deleted and restarted for updates, the CRD's
     using the yaml files present under <code>/opt/isecl-k8s-extensions/yamls/</code>.
-    Kubernetes Version 1.14-1.15 uses <code>crd-1.14.yaml</code> and 1.16-1.17 uses
+    Kubernetes Version 1.17-1.22 uses
     <code>crd-1.17.yaml</code></p>
 <div class="highlight"><pre><span></span><code>kubectl delete crd hostattributes.crd.isecl.intel.com
 kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-&lt;version&gt;.yaml
@@ -3167,6 +3178,29 @@ kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-&lt;version&gt;.yaml
 </code></pre></div>
 </li>
 </ul>
+<h2 id="admission-controller">Admission Controller</h2>
+<p>when a new worker node is joined/rebooted in the cluster, below steps can be done, to taint such nodes, by labelling it as untrusted, intiatially. Tainiting, doesn't allow scheduling of any pods on that worker node.</p>
+<p>IHUB pulls the data from HVS, and pushes to ISECL Controller, based on the report status of the node, if the worker node is trusted, then that node will be untainted.</p>
+<p>Node Joining or Node Rebooted
+When the worker node is being joined/rebooted in the k8s cluster, Untrusted:True NoExecute and NoSchedule taint would be added to the worker Node</p>
+<p>To the K8s cluster, when a new worker node is being joined, such worker Nodes are tainted
+Set TAINT_REBOOTED_NODES to "true" in in isecl-controller.yml.</p>
+<p>In the K8s cluster, if any of the worker node is Rebooted, such worker Nodes are tainted
+Set TAINT_REGISTERED_NODES  to "true" in isecl-controller.yml.</p>
+<details class="note" open="open">
+<summary>Note</summary>
+<p>By default, TAINT_REBOOTED_NODES and TAINT_REGISTERED_NODES, will be false.</p>
+</details>
+<details class="note" open="open">
+<summary>Note</summary>
+<p>In no_proxy, add .svc,.svc.cluster.local, and then do kubeadm init</p>
+</details>
+<p>Upload image to registry
+The admission controller tar file that is present in k8s image folder should be uploaded to registry and update the image name in admission_controller.yaml file.</p>
+<p>To bring up Admisison controller
+<code>./isecl-bootstrap.sh up admission-controller</code>
+To bring down Admisison controller
+<code>./isecl-bootstrap.sh down admission-controller</code></p>
 
               
             </article>

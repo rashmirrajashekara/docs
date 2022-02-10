@@ -285,7 +285,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-tabs__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-tabs__link">
         Release Notes
       </a>
     </li>
@@ -2925,7 +2925,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../ReleaseNotes/ReleaseNotes-FS/" class="md-nav__link">
+      <a href="../../../ReleaseNotes/ReleaseNotes/" class="md-nav__link">
         Intel Security Libraries for Data Center
       </a>
     </li>
@@ -3502,10 +3502,10 @@
 <p>The Intel® Security Libraries Verification Service supports:</p>
 <ul>
 <li>
-<p>Red Hat Enterprise Linux 8.2</p>
+<p>Red Hat Enterprise Linux 8.4</p>
 </li>
 <li>
-<p>Ubuntu 18.04</p>
+<p>Ubuntu 20.04</p>
 </li>
 </ul>
 <h3 id="recommended-hardware">Recommended Hardware</h3>
@@ -3561,7 +3561,7 @@
 <ul>
 <li>Execute the installer binary.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>./hvs-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./hvs-v4.1.0.bin
 </code></pre></div>
 <p>When the installation completes, the Verification Service is available. The services can be verified by running <strong>hvs status</strong> from the Verification Service command line.</p>
 <div class="highlight"><pre><span></span><code>hvs status
@@ -3592,10 +3592,10 @@
 <p>The Intel® Security Libraries Workload Service supports:</p>
 <ul>
 <li>
-<p>Red Hat Enterprise Linux 8.2</p>
+<p>Red Hat Enterprise Linux 8.4</p>
 </li>
 <li>
-<p>Ubuntu 18.04</p>
+<p>Ubuntu 20.04</p>
 </li>
 </ul>
 <h3 id="recommended-hardware_1">Recommended Hardware</h3>
@@ -3626,7 +3626,7 @@
 <ul>
 <li>Execute the WLS installer binary:</li>
 </ul>
-<div class="highlight"><pre><span></span><code>./wls-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./wls-v4.1.0.bin
 </code></pre></div>
 <h2 id="installing-the-trust-agent-for-linux">Installing the Trust Agent for Linux</h2>
 <h3 id="required-for_2">Required For</h3>
@@ -3664,10 +3664,10 @@
 <p>The Intel® Security Libraries Trust Agent for Linux supports:</p>
 <ul>
 <li>
-<p>Red Hat Enterprise Linux 8.2</p>
+<p>Red Hat Enterprise Linux 8.4</p>
 </li>
 <li>
-<p>Ubuntu 18.04</p>
+<p>Ubuntu 20.04</p>
 </li>
 </ul>
 <h3 id="prerequisites_2">Prerequisites</h3>
@@ -3721,11 +3721,11 @@
 </li>
 <li>
 <p>Verify that TXT measured launch was successful:</p>
+<p>txt-stat |grep "TXT measured launch"</p>
 </li>
-</ol>
-<p>​    txt-stat |grep "TXT measured launch"</p>
-<ol>
-<li>The SGX and Platform Integrity Attestation use cases should now work as normal.</li>
+<li>
+<p>The SGX and Platform Integrity Attestation use cases should now work as normal.</p>
+</li>
 </ol>
 <p>Intel® SecL-DC requires tboot 1.10.1 or greater. This may be a later version of tboot than is available on public software repositories.  </p>
 <p>The most current version of tboot can be found here:</p>
@@ -3742,7 +3742,7 @@
 <ul>
 <li>Ensure that <code>multiboot2.mod</code> and <code>relocator.mod</code> are available for grub2</li>
 </ul>
-<p>This step may not be necessary for all OS versions, for instance, this step is NA in case of Tboot installation on Ubuntu 18.04. In order to utilize tboot, grub2 requires these two modules from the grub2-efi-x64-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).</p>
+<p>This step may not be necessary for all OS versions, for instance, this step is NA in case of Tboot installation on Ubuntu 20.04. In order to utilize tboot, grub2 requires these two modules from the grub2-efi-x64-modules package to be located in the correct directory (if they're absent, the host will throw a grub error when it tries to boot using tboot).</p>
 <p>These files must be present in this directory:</p>
 <div class="highlight"><pre><span></span><code>/boot/efi/EFI/redhat/x86_64-efi/multiboot2.mod
 /boot/efi/EFI/redhat/x86_64-efi/relocator.mod
@@ -3871,7 +3871,7 @@ TA_HOST_ID=&lt;Any unique identifier for the host; this could be the server FQDN
 <ul>
 <li>Execute the Trust Agent installer and wait for the installation to complete.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>./trustagent-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./trustagent-v4.1.0.bin
 </code></pre></div>
 <p>If the <code>trustagent.env</code> answer file was provided with the minimum required options, the Trust Agent will be installed and also Provisioned to the Verification Service specified in the answer file.</p>
 <p>If no answer file was provided, the Trust Agent will be installed, but will not be Provisioned. TPM-related functionality will not be available from the Trust Agent until the Provisioning step is completed.</p>
@@ -3900,7 +3900,7 @@ TA_HOST_ID=&lt;Any unique identifier for the host; this could be the server FQDN
 <p>Red Hat Enterprise</p>
 </li>
 <li>
-<p>Linux 8.2</p>
+<p>Linux 8.4</p>
 </li>
 </ul>
 <h3 id="prerequisites_3">Prerequisites</h3>
@@ -3939,7 +3939,7 @@ TA_HOST_ID=&lt;Any unique identifier for the host; this could be the server FQDN
 <p>Execute the Workload Agent installer binary.</p>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><code>./workload-agent-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./workload-agent-v4.1.0.bin
 </code></pre></div>
 <ul>
 <li>Reboot the server. The Workload Agent populates files that are
@@ -4051,10 +4051,7 @@ tar -xvzf /&lt;path&gt;/isecl-k8s-extensions-*.tar.gz
 </li>
 <li>
 <p>Create <code>hostattributes.crd.isecl.intel.com</code> CRD</p>
-<div class="highlight"><pre><span></span><code><span class="c1">#1.14&lt;=k8s_version&lt;=1.16</span>
-kubectl apply -f yamls/crd-1.14.yaml
-
-<span class="c1">#1.16&lt;=k8s_version&lt;=1.18</span>
+<div class="highlight"><pre><span></span><code><span class="c1">#1.17&lt;=k8s_version&lt;=1.22</span>
 kubectl apply -f yamls/crd-1.17.yaml
 </code></pre></div>
 </li>
@@ -4072,7 +4069,7 @@ skopeo copy oci-archive:&lt;isecl-k8s-controller-*.tar&gt; docker://&lt;docker_p
 </code></pre></div>
 <ul>
 <li>
-<p>Udate image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
+<p>Update image name as above in controller yaml "/opt/isecl-k8s-extensions/yamls/isecl-controller.yaml"
    <div class="highlight"><pre><span></span><code>   containers:
      - name: isecl-controller
        image: &lt;docker_private_registry_server&gt;:5000/&lt;imageName&gt;:&lt;tagName&gt;
@@ -4187,7 +4184,7 @@ to be installed from the package repository, be sure to update your
 repository package lists before installation.</p>
 <h3 id="supported-operating-systems_4">Supported Operating Systems</h3>
 <p>The Intel Security Libraries Integration Hub supports Red Hat Enterprise
-Linux 8.2</p>
+Linux 8.4</p>
 <h3 id="recommended-hardware_2">Recommended Hardware</h3>
 <ul>
 <li>
@@ -4267,7 +4264,7 @@ Linux 8.2</p>
 <li>Copy the Integration Hub installation binary to the <code>/root</code>
     directory &amp; execute the installer binary.</li>
 </ul>
-<div class="highlight"><pre><span></span><code>./ihub-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./ihub-v4.1.0.bin
 </code></pre></div>
 <ul>
 <li>Copy the <code>/etc/ihub/ihub_public_key.pem</code> to Kubernetes Controller machine to <code>/&lt;path&gt;/secrets/</code> directory</li>
@@ -4476,7 +4473,7 @@ kubectl apply -f yamls/isecl-scheduler.yaml
 <li>
 <p>Whenever the CRD's are deleted and restarted for updates, the CRD's
     using the yaml files present under <code>/opt/isecl-k8s-extensions/yamls/</code>.
-    Kubernetes Version 1.14-1.15 uses <code>crd-1.14.yaml</code> and 1.16-1.17 uses
+    Kubernetes Version 1.17-1.22 uses
     <code>crd-1.17.yaml</code></p>
 <div class="highlight"><pre><span></span><code>kubectl delete crd hostattributes.crd.isecl.intel.com
 kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-&lt;version&gt;.yaml
@@ -4520,8 +4517,8 @@ kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-&lt;version&gt;.yaml
 <h3 id="package-dependencies_3">Package Dependencies</h3>
 <h3 id="supported-operating-systems_5">Supported Operating Systems</h3>
 <p>The Intel® Security Libraries Key Broker Service supports:</p>
-<p>Red Hat Enterprise Linux 8.2</p>
-<p>Ubuntu 18.04</p>
+<p>Red Hat Enterprise Linux 8.4</p>
+<p>Ubuntu 20.04</p>
 <h3 id="recommended-hardware_3">Recommended Hardware</h3>
 <h3 id="installation_4">Installation</h3>
 <ul>
@@ -4556,7 +4553,7 @@ kubectl apply -f /opt/isecl-k8s-extensions/yamls/crd-&lt;version&gt;.yaml
 <ul>
 <li>
 <p>Execute the KBS installer.</p>
-<div class="highlight"><pre><span></span><code>./kbs-4.0.0.bin
+<div class="highlight"><pre><span></span><code>./kbs-4.1.0.bin
 </code></pre></div>
 </li>
 </ul>
@@ -4718,10 +4715,10 @@ WTeXt+1HCFSo5WcAZWV8R9FYv7tzFxPY8aoLj82sgrOE4IwRqaA8KMbq3anF4RCk
 <p>The Intel® Security Libraries Workload Policy Manager supports:</p>
 <ul>
 <li>
-<p>Red Hat Enterprise Linux 8.2</p>
+<p>Red Hat Enterprise Linux 8.4</p>
 </li>
 <li>
-<p>Ubuntu 18.04</p>
+<p>Ubuntu 20.04</p>
 </li>
 </ul>
 <h3 id="recommended-hardware_4">Recommended Hardware</h3>
@@ -4753,7 +4750,7 @@ WTeXt+1HCFSo5WcAZWV8R9FYv7tzFxPY8aoLj82sgrOE4IwRqaA8KMbq3anF4RCk
 <p>Create the <code>wpm.env</code> answer file:</p>
 </li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nv">KBS_BASE_URL</span><span class="o">=</span>https://&lt;IP address or hostname of the KBS&gt;:9443/v1/
+<div class="highlight"><pre><span></span><code><span class="nv">KBS_BASE_URL</span><span class="o">=</span>https://&lt;IP address or hostname of the KBS&gt;:9443/kbs/v1/
 <span class="nv">WPM_SERVICE_USERNAME</span><span class="o">=</span>&lt;WPM_Service username from populate-users script&gt;
 <span class="nv">WPM_SERVICE_PASSWORD</span><span class="o">=</span>&lt;WPM Service password from populate-users script&gt;
 <span class="nv">CMS_TLS_CERT_SHA384</span><span class="o">=</span>&lt;Sha384 <span class="nb">hash</span> of the CMS TLS certificate&gt;
@@ -4769,7 +4766,7 @@ WTeXt+1HCFSo5WcAZWV8R9FYv7tzFxPY8aoLj82sgrOE4IwRqaA8KMbq3anF4RCk
 <ul>
 <li>
 <p>Execute the WPM installer:</p>
-<div class="highlight"><pre><span></span><code>./wpm-v4.0.1.bin
+<div class="highlight"><pre><span></span><code>./wpm-v4.1.0.bin
 </code></pre></div>
 </li>
 </ul>
