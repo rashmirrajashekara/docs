@@ -613,4 +613,4 @@ To bring down Admisison controller
 
 ## Installing Workload Policy Manager
 
-[Workload Policy Manager Installation](https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#installing-the-workload-policy-manager)
+[Workload Policy Manager Installation](https://intel-secl.github.io/docs/4.1/product-guides/Foundational%20%26%20Workload%20Security/25.12%20Installing%20the%20Workload%20Policy%20Manager/)
