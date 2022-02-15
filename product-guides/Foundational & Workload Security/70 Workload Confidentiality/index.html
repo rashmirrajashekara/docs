@@ -3053,7 +3053,7 @@ fail, as the decryption key will not be provided.</p>
 </li>
 </ul>
 <h2 id="installing-workload-policy-manager">Installing Workload Policy Manager</h2>
-<p><a href="https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#installing-the-workload-policy-manager">Workload Policy Manager Installation</a></p>
+<p><a href="https://intel-secl.github.io/docs/4.1/product-guides/Foundational%20%26%20Workload%20Security/25.12%20Installing%20the%20Workload%20Policy%20Manager/">Workload Policy Manager Installation</a></p>
 <h4 id="workflow_1">Workflow</h4>
 <h5 id="image-encryption">Image encryption</h5>
 <p>Configure the ocicrypt config file  <code>/etc/ocicrypt-wpm.json</code> as below </p>
@@ -3097,7 +3097,7 @@ fail, as the decryption key will not be provided.</p>
 <h5 id="pulling-and-encrypting-a-container-image">Pulling and Encrypting a Container Image</h5>
 <p>Skopeo can be used to pull a container image from an external registry (a private Docker registry is used in the examples abocve). This image may be encrypted already, but if you wish to pull an image for encryption, it must be in plaintext format. Skopeo has a wrapper that can interact with the Workload Policy Manager. When trying to encrypt an image, Skopeo calls the WPM CLI fetch-key command. In the command, the KBS is called in order to create a new key. The return from the KBS includes the key retrieval URL, which is used when trying to decrypt. After the key is returned to the WPM, the WPM passes the key back to Skopeo. Skopeo uses the key to encrypt the image layer by layer as well as associate the encrypted image with the key's URL. Skopeo then uploads the encrypted image to a remote container registry.</p>
 <h5 id="importing-verification-service-certificates">Importing Verification Service Certificates</h5>
-<p><a href="https://github.com/intel-innersource/documentation.security.isecl.docs/blob/master/product-guides/Foundational%20%26%20Workload%20Security.md#importing-verification-service-certificates">Importing Verification Service Certificates</a></p>
+<p><a href="https://intel-secl.github.io/docs/4.1/product-guides/Foundational%20&amp;%20Workload%20Security/25.11%20Installing%20the%20Key%20Broker%20Service/#importing-verification-service-certificates">Importing Verification Service Certificates</a></p>
 <h5 id="launching-an-encrypted-container-image">Launching an Encrypted Container Image</h5>
 <h5 id="configure-the-ocicrypt-config-file-ocicrypt-wlagentjson-as-below-in-each-wla-nodes">Configure the ocicrypt config file <code>ocicrypt-wlagent.json</code> as below in each WLA nodes.</h5>
 <p><code>shell script
