@@ -60,7 +60,7 @@ Hardware-based cloud security solutions provide a higher level of protection as 
 
 Intel® SecL-DC is an open-source remote attestation implementation comprising a set of building blocks that utilize Intel Security features to discover, attest, and enable critical foundation security and confidential computing use-cases. It applies the remote attestation fundamentals and standard specifications to maintain a platform data collection service, and an efficient verification engine to perform comprehensive trust evaluations. These trust evaluations can be used to govern different trust and security policies applied to any given workload.
 
-For more details please visit : <https://01.org/intel-secl>
+For more details please visit : <https://intel-secl.github.io/docs>
 
 ## Architecture
 
