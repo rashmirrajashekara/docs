@@ -1,6 +1,15 @@
 Intel Security Libraries for Data Center
 =========================================
 
+
+# ***Intel(R) SecL-DC version 4.1.1 GA***
+
+- Base image of Dockerfile is changed from Cent OS to Ubuntu OS.
+
+# ***Intel(R) SecL-DC version 4.0.2 GA***
+
+- Base image of Dockerfile is changed from Cent OS to Ubuntu OS.
+
 # ***Intel(R) SecL-DC version 4.1 GA***
 
 - New attestation reports will now be triggered whenever a Trust Agent starts, including as a result of a host reboot.  Note that this does not affect VMWare hosts.  
