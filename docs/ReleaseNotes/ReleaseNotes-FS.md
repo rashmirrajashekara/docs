@@ -4,11 +4,11 @@ Intel Security Libraries for Data Center
 
 # ***Intel(R) SecL-DC version 4.1.1 GA***
 
-- Base image of Dockerfile is changed from Cent OS to Ubuntu OS.
+- The base image used in the Dockerfiles for all Intel SecL containers has changed from centos:7 to ubuntu:focal.
 
 # ***Intel(R) SecL-DC version 4.0.2 GA***
 
-- Base image of Dockerfile is changed from Cent OS to Ubuntu OS.
+- The base image used in the Dockerfiles for all Intel SecL containers has changed from centos:7 to ubuntu:focal.
 
 # ***Intel(R) SecL-DC version 4.1 GA***
 
